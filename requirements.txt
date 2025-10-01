@@ -4,3 +4,4 @@ django-debug-toolbar
 django-cors-headers
 neo4j
 neomodel
+python-dotenv
