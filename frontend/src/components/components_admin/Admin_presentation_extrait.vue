@@ -8,12 +8,12 @@ export default {
 </script>
 
 <template>
-    <div class="container bg-secondary">
+    <div class="container container_extrait">
         <div class="row base">
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite">Question Extrait</h1>
 
-                <div class="row text-center bg-light decallage_droite ">
+                <div class="row text-center clairepart decallage_droite ">
                     <p> description </p>
                 </div>
 
@@ -95,6 +95,21 @@ ul ,base{
     flex-grow: 0;
     padding: 10px;
     padding-left: 50px;
+}
+
+.container_extrait{
+    filter: drop-shadow(10px 8px 4px #000000) ;
+    background-color:#2C2D32;
+    
+}
+
+.container_extrait h1, p{
+    color: #00FF86;
+    
+}
+
+.clairepart{
+    background-color : #4C4C4C;
 }
 
 </style>
