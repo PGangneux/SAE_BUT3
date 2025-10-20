@@ -49,3 +49,10 @@ export default {
     </main>
 
 </template>
+
+<style scoped>
+header, main{
+    background-color: #4C4C4C;
+}
+
+</style>
