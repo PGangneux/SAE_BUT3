@@ -21,6 +21,7 @@ install:
 migration:
 	$(venv) $(manage) makemigrations $(APP)
 	$(venv) $(manage) migrate
+	$(venv) $(manage) install_labels
 
 tests:
 	$(venv) $(manage) test $(APP)

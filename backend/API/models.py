@@ -14,7 +14,7 @@ class DateHeureRel(StructuredRel):
 class Artiste(StructuredNode):
     """Noeud Artiste"""
     uuid = UniqueIdProperty()
-    name = StringProperty(required=True, index=True)
+    name = StringProperty(required=True, unique_index=True)
     info = StringProperty()
     metadonnees = JSONProperty()
 
@@ -57,7 +57,7 @@ class Question(StructuredNode):
 
 class Theme(StructuredNode):
     uuid = UniqueIdProperty()
-    name = StringProperty(index=True, required=True)
+    name = StringProperty(required=True, unique_index=True)
     description = StringProperty()
 
 
