@@ -11,30 +11,49 @@ const count = ref(0)
 <template>
   <h1>{{ msg }}</h1>
 
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-  </div>
 
-  <p>
-    Check out
-    <a href="https://vuejs.org/guide/quick-start.html#local" target="_blank"
-      >create-vue</a
-    >, the official Vue + Vite starter
-  </p>
-  <p>
-    Install
-    <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
-    in your IDE for a better DX
-  </p>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
+  <nav>
+    <ul>
+      <li>
+          <div class="card">
+            <h1> Extrait </h1>
+        
+            <img src="../../assets/video.svg" alt="Video logo" height="87" width="100">
+            
+          </div>
+      </li>
+      <li>
+          <div class="card">
+            <h1> interview </h1>
+            <img src="../../assets/playlist.svg" alt="playlist logo" height="87" width="100">
+          </div>
+      </li>
+
+      <li>
+          <div class="card">
+            <h1> User </h1>
+            <img src="../../assets/adminlogo.svg" alt="admin logo" height="87" width="100">
+          </div>
+      </li>
+    </ul>
+  </nav>
+
+
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+h1 {
+  color: #ffffff;
 }
+
+.card{
+  background-color: #2C2D32;
+  filter: blur(0.25) drop-shadow(20px 13px 4px #000000) ;
+ 
+}
+
+ul {
+  list-style-type: none;
+}
+
 </style>
