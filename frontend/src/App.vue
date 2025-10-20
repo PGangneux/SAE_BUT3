@@ -1,10 +1,10 @@
 <script>
-import LecteurVideo from './components/LecteurVideo.vue';
+import lecteur_video from './components/lecteur_video/lecteur_video.vue';
 
 
 export default {
   components: {
-    LecteurVideo
+    lecteur_video
   },
 
 };
@@ -12,7 +12,7 @@ export default {
 
 
 <template>
-  <LecteurVideo></LecteurVideo>
+  <lecteur_video></lecteur_video>
   
 
 </template>

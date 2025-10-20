@@ -1,11 +1,11 @@
 <script>
-import IframeLectureVideo from './IframeLectureVideo.vue';
-import BarListeVideo from "./BarListeVideo.vue";
+import iframe_lecture_video from './iframe_lecture_video.vue';
+import bar_liste_video from "./bar_liste_video.vue";
 
 export default {
   components: {
-    IframeLectureVideo,
-    BarListeVideo
+    iframe_lecture_video,
+    bar_liste_video
   },
   methods: {
     parametresVideo() {
@@ -21,7 +21,7 @@ export default {
 <template>
   <div class="layout">
     <main>
-      <IframeLectureVideo url="https://www.youtube.com/embed/10MZrDXjby8" />
+      <iframe_lecture_video url="https://www.youtube.com/embed/10MZrDXjby8" />
       <div>
         <div id="bottom-iframe">
           <h2>Title</h2>
@@ -39,7 +39,7 @@ export default {
     </main>
 
     <aside>
-      <BarListeVideo />
+      <bar_liste_video/>
     </aside>
   </div>
 </template>
