@@ -9,19 +9,19 @@ export default {
         <div class="container text-center mb-2">
             <div class="d-flex justify-content-center gap-3 mb-2">
                 <a href="https://youtube.com" target="_blank">
-                    <img src="./assets/youtube.jpeg" alt="youtube" style="width:32px; height:32px;">
+                    <img src="/imgs/youtube.svg" alt="youtube" style="width:32px; height:32px;">
                 </a>
                 <a href="https://vimeo.com" target="_blank">
-                    <img src="./assets/vimeo.jpeg" alt="vimeo" style="width:32px; height:32px;">
+                    <img src="/imgs/vimeo.svg" alt="vimeo" style="width:32px; height:32px;">
                 </a>
                 <a href="https://www.linkedin.com/" target="_blank">
-                    <img src="./assets/linkedin.jpeg" alt="linkedin" style="width:32px; height:32px;">
+                    <img src="/imgs/linkedin.svg" alt="linkedin" style="width:32px; height:32px;">
                 </a>
                 <a href="https://www.instagram.com/" target="_blank">
-                    <img src="./assets/instagram.jpeg" alt="instagram" style="width:32px; height:32px;">
+                    <img src="/imgs/instagram.svg" alt="instagram" style="width:32px; height:32px;">
                 </a>
                 <a href="https://www.facebook.com" target="_blank">
-                    <img src="./assets/facebook.jpeg" alt="facebook" style="width:32px; height:32px;">
+                    <img src="/imgs/facebook.svg" alt="facebook" style="width:32px; height:32px;">
                 </a>
             </div>
             <div class="d-flex justify-content-center gap-3 mb-2">
@@ -37,6 +37,7 @@ export default {
 
 <style scoped>
 footer {
+    background-color: var(--gris-moyen);
     position: fixed;
     left: 0;
     bottom: 0;

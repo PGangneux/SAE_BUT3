@@ -1,0 +1,21 @@
+:root {
+    --vert-neon : #00FF86;
+    --vert-pale : #26503C;
+    --noire : #0f0f0f;
+    --gris-moyen : #2C2D32;
+    --gris-taupe : #4C4C4C;
+    --gris-foncer : #323339;
+    --gris-clair : #808184;
+    --rouge : #F91119; 
+    --blanc : #FFFFFF;
+    --bleu : #00f;
+    --jaune : #FFD500;
+}
+@media (prefers-color-scheme: light) {
+}
+
+body {
+    background-color: var(--noire);
+    color: var(--gris-clair);
+    font-family: sans-serif;
+}

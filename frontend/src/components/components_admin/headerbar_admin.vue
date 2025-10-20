@@ -2,8 +2,6 @@
 
 export default {
     name: "comp_headerbaradmin",
-    components: {
-    },
 };
 </script>
 
@@ -12,23 +10,18 @@ export default {
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-
                     <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin"> Accueil Admin </RouterLink>
+                        <RouterLink class="nav-link btn btn-secondary" to="/admin">Accueil Admin</RouterLink>
                     </li>
-
                     <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin/extrait"> Extrait </RouterLink>
+                        <RouterLink class="nav-link btn btn-secondary" to="/admin/extrait">Extrait</RouterLink>
                     </li>
-
                     <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin/user"> User </RouterLink>
+                        <RouterLink class="nav-link btn btn-secondary" to="/admin/user">Utilisateurs</RouterLink>
                     </li>
-
                     <li class="nav-item">
                         <RouterLink class="nav-link btn btn-secondary" to="/admin/interview">Playlist</RouterLink>
                     </li>
-
                 </ul>
             </div>
         </nav>
