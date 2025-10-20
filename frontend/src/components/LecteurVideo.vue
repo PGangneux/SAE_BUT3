@@ -111,6 +111,7 @@ main > div {
 aside {
   flex: 2.2;
   background-color: var(--gris-moyen);
+  border-left: 3px solid var(--gris-taupe);
 }
 
 

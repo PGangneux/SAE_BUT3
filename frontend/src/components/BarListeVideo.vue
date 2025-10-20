@@ -19,19 +19,20 @@ export default {
 
 <template>
     <header>
-        <nav>
-        <ul>
+        <nav class="header-nav">
+            <ul class="menu">
             <li>questions</li>
             <li>Auteurs</li>
             <li>Thèmes</li>
-        </ul>
+            </ul>
+            <button class="close-btn">X</button>
         </nav>
-        <button>X</button>
+
     </header>
     <main>
         <div>
             <h2>{{ titreSideBar }}</h2>
-            <div>
+            <div class="search-bar">
                 <input type="text" :placeholder=" placeholderRecherche "/>
                 <img src="../assets/loupe.png" alt="loupe"/>
             </div>
@@ -53,6 +54,59 @@ export default {
 <style scoped>
 header, main{
     background-color: var(--gris-moyen);
+    padding: 0 1rem;
+    
+    
 }
+
+header{
+    border-bottom: 1px solid var(--blanc);
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between; /* menu à gauche, bouton X à droite */
+  align-items: center;            /* centre verticalement */
+  
+}
+
+.menu {
+  display: flex;       /* aligne les <li> horizontalement */
+  list-style: none;    /* supprime les puces */
+  gap: 1rem;           /* espace entre les items */
+  margin: 0;
+  padding: 0;
+}
+
+.menu li {
+  cursor: pointer;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.search-bar {
+  width: 100%;
+  display: flex;
+}
+
+.search-bar input {
+  width: 85%;
+  height: 2rem;
+  border: none;
+  border-radius: 20px;
+  padding-left: 2%;
+  margin-right: 2%;
+}
+
+.search-bar img {
+  width: 9%;
+  cursor: pointer;
+}
+
 
 </style>
