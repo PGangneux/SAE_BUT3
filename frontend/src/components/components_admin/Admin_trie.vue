@@ -8,7 +8,7 @@ export default {
         return {
             tags: ['Foo', 'Bar', 'Bsq', 'Bar2']
         };
-  }
+    }
 };
 
 
@@ -19,41 +19,37 @@ export default {
 
 
 <template>
-   
-<div class="bg-danger col">
 
-    <div class="row">
-        <button type="button" class="btn btn-primary col"> Ajouter un Extrait</button>
-        <img src="../../assets/imgs/add.svg" alt="add" class="col">
-    </div>
+    <div class="bg-danger col ">
 
-    <search class="row">
-        <form>
-            <div>
-            <input
-            class="col"
-                type="search"
-                id="mySearch"
-                name="q"
-                placeholder="Rechercher" />
-            <button class="col" > <img src="../../assets/imgs/search.svg" alt="">  </button>
-            </div>
-        </form>
-    </search>
+        <div class="row text-center">
+            <button type="button" class="btn btn-primary col"> Ajouter un Extrait</button>
+            <img src="../../assets/imgs/add.svg" alt="add" class="col add">
+        </div>
 
-    <div class="row">
+        <search class="row">
+            <form>
+                <div class="text-center">
+                    <input class="col" type="search" id="mySearch" name="q" placeholder="Rechercher" />
+                    <button class="col"> <img src="../../assets/imgs/search.svg" alt=""> </button>
+                </div>
+            </form>
+        </search>
 
-        <p class="row" >Trier par tag</p>
-        <ul class="scroller ultagger">
-            <li class="col" v-for="tag in tags">
-                <button class="btn btn-primary"> {{ tag }} </button>
-            </li>
-        </ul>
+        <div class="row text-center">
 
+            <p class="row text-center">Trier par tag</p>
+
+            <ul class="scroller ultagger">
+                <li class="col" v-for="tag in tags">
+                    <button class="btn btn-primary"> {{ tag }} </button>
+                </li>
+            </ul>
+
+
+        </div>
 
     </div>
-
-</div>
 
 
 
@@ -61,21 +57,25 @@ export default {
 </template>
 
 <style scoped>
-
 .scroller {
-  width: 300px;
-  height: 100px;
-  overflow-y: scroll;
-  scrollbar-color: #FFFFFF #A6A6A6;
-  scrollbar-width: thin;
+    width: 300px;
+    height: 100px;
+    overflow-y: scroll;
+    scrollbar-color: #FFFFFF #A6A6A6;
+    scrollbar-width: thin;
+}
+
+.add {
+    size: 10px;
+    height: 10px;
+    width: 10px;
 }
 
 
 
 
-.ultagger{
-  list-style-type: none;
-  
-}
+.ultagger {
+    list-style-type: none;
 
+}
 </style>

@@ -65,7 +65,6 @@ ul ,base{
   list-style-type: none;
   flex-grow: 1;
 
-  
 }
 
 .vigniette{

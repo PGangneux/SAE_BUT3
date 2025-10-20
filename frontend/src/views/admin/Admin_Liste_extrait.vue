@@ -32,9 +32,9 @@ export default {
   <div class="row" >
     <comp_admin_trie_extrait/>
 
-    <div class="col">
+    <div class="col aggrandir">
 
-      <ul class="scroller2 row">
+      <ul class="scroller2  row">
         <li class="row" v-for="tag in tags">
             <comp_extrait/>
         </li>
@@ -82,10 +82,19 @@ ul {
 
 .scroller2 {
 
-  height: 90%;
+  height: 80%;
   overflow-y: scroll;
   scrollbar-color: #FFFFFF #A6A6A6;
   scrollbar-width: thin;
+}
+
+
+.aggrandir{
+  display: flex;
+  flex-wrap: nowrap;
+  list-style-type: none;
+  flex-grow: 1;
+
 }
 
 
