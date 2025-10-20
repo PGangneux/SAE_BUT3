@@ -1,25 +1,21 @@
-<script setup>
-import Admin from './components/components_Admin/Admin.vue'
+<script>
+import comp_headerbar from './components/Headerbar.vue';
+import comp_footerbar from './components/Footerbar.vue';
+
+export default {
+    name: "page_router",
+    components: {
+        comp_headerbar,
+        comp_footerbar,
+    },
+};
 </script>
 
 <template>
-
-
-  <Admin msg="Admin" />
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <comp_headerbar />
+    <main>
+        <RouterView />
+    </main>
+    <comp_footerbar />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>

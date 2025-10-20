@@ -1,6 +1,8 @@
 APP = API
 manage = ./backend/manage.py
 venv = venv/bin/python
+pip = venv/bin/pip
+npm = npm --prefix ./frontend
 
 .PHONY: run, install, migration, tests
 
@@ -8,11 +10,12 @@ run_back:
 	$(venv) $(manage) runserver
 
 run_front:
-	npm --prefix ./frontend run dev
+	$(npm) run dev
 
 install:
-	virtualenv -p python3 venv
-	venv/bin/pip install -r requirements.txt
+	python3 -m venv venv
+	$(pip) install -r requirements.txt
+	$(npm) install
 
 migration:
 	$(venv) $(manage) makemigrations $(APP)
