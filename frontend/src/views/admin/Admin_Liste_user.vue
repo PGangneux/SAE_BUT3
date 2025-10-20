@@ -1,7 +1,10 @@
 <script>
+import comp_baradmin from '../../components/components_admin/HeaderbarAdmin.vue';
+
 export default {
     name: "page_admin_listuser",
     components: {
+        comp_baradmin,
     },
 };
 
@@ -9,46 +12,48 @@ export default {
 </script>
 
 <template>
-  <h1 class="text-center"> Admin </h1>
+
+    <comp_baradmin/>
+    <h1 class="text-center"> Admin </h1>
 
 
-  <nav>
-    <ul>
-      <li>
+    <nav>
+        <ul>
+        <li>
 
-          <RouterLink class="card" to="/admin/extrait">
+            <RouterLink class="card" to="/admin/extrait">
+                
+                <h1 class="text-center" > Extrait </h1>
+                <div class="text-center align-middle">
+                <img src="../../assets/imgs/video.svg" alt="Video logo" height="87" width="100">
+                </div>
+            </RouterLink>
+
+        </li>
+
+        <li>
+            <RouterLink class="card" to="/admin/interview">
+                <h1 class="text-center" > interview </h1>
+                <div class="text-center">
+                <img src="../../assets/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
+                </div>
+            </RouterLink>
+
+        </li>
+
+        <li>
             
-            <h1 class="text-center" > Extrait </h1>
-            <div class="text-center align-middle">
-              <img src="../../assets/imgs/video.svg" alt="Video logo" height="87" width="100">
-            </div>
-          </RouterLink>
+            <RouterLink class="card" to="/admin/user">
 
-      </li>
+                <h1 class="text-center" > User </h1>
+                <div class="text-center">
+                <img class="text-center" src="../../assets/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
+                </div>
+            </RouterLink>
 
-      <li>
-          <RouterLink class="card" to="/admin/interview">
-            <h1 class="text-center" > interview </h1>
-            <div class="text-center">
-              <img src="../../assets/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
-            </div>
-          </RouterLink>
-
-      </li>
-
-      <li>
-        
-          <RouterLink class="card" to="/admin/user">
-
-            <h1 class="text-center" > User </h1>
-            <div class="text-center">
-              <img class="text-center" src="../../assets/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
-            </div>
-          </RouterLink>
-
-      </li>
-    </ul>
-  </nav>
+        </li>
+        </ul>
+    </nav>
 
 
 </template>

@@ -8,29 +8,51 @@ export default {
 </script>
 
 <template>
-    <header class="bg-dark text-white py-3">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+    <header class="headeradmin text-white py-3">
+        <nav class=" ">
+                <ul class="text-center">
 
-                    <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin"> Accueil Admin </RouterLink>
+                    <li class="nav-item text-white">
+                        <RouterLink class="bt btn " to="/admin"> Accueil Admin </RouterLink>
                     </li>
 
-                    <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin/extrait"> Extrait </RouterLink>
+                    <li class="nav-item text-white">
+                        <RouterLink class="bt btn " to="/admin/extrait"> Extrait </RouterLink>
                     </li>
 
-                    <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin/user"> User </RouterLink>
+                    <li class="nav-item text-white ">
+                        <RouterLink class="bt btn " to="/admin/user"> User </RouterLink>
                     </li>
 
-                    <li class="nav-item">
-                        <RouterLink class="nav-link btn btn-secondary" to="/admin/interview">Playlist</RouterLink>
+                    <li class="nav-item text-white">
+                        <RouterLink class="bt btn " to="/admin/interview">Playlist</RouterLink>
                     </li>
 
                 </ul>
-            </div>
         </nav>
     </header>
 </template>
+
+<style scoped>
+
+.bt{
+    color:white;
+    background-color:#26503C;
+    border-radius: 19%;
+    
+}
+
+ul {
+  display: flex;
+  list-style-type: none;
+  justify-content: space-between;
+
+  
+}
+
+.headeradmin{
+    background-color:#2C2D32;
+    margin: 10px 10px 10px 10px; 
+}
+
+</style>
