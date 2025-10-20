@@ -55,5 +55,5 @@ class ThemeQuestionViewSet(viewsets.ModelViewSet):
             """
             results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs["theme_uuid"]})
             return Question.inflate(results[0][0])
-        except DoesNotExist:
+        except:
             raise NotFound('Question introuvable.')
