@@ -48,4 +48,7 @@ export default {
         </nav>
         <searchbar />
     </header>
+
 </template>
+
+

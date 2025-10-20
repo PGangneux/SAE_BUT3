@@ -6,8 +6,6 @@ export default {
 };
 
 
-
-const count = ref(0)
 </script>
 
 <template>
@@ -18,23 +16,27 @@ const count = ref(0)
     <ul>
       <li>
           <div class="card">
-            <h1> Extrait </h1>
-        
-            <img src="../../assets/video.svg" alt="Video logo" height="87" width="100">
-            
+            <h1 class="text-center" > Extrait </h1>
+            <div class="text-center">
+              <img src="../assets/imgs/video.svg" alt="Video logo" height="87" width="100">
+            </div>
           </div>
       </li>
       <li>
           <div class="card">
-            <h1> interview </h1>
-            <img src="../../assets/playlist.svg" alt="playlist logo" height="87" width="100">
+            <h1 class="text-center" > interview </h1>
+            <div class="text-center">
+              <img src="../assets/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
+            </div>
           </div>
       </li>
 
       <li>
           <div class="card">
-            <h1> User </h1>
-            <img src="../../assets/adminlogo.svg" alt="admin logo" height="87" width="100">
+            <h1 class="text-center" > User </h1>
+            <div class="text-center">
+              <img class="text-center" src="../assets/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
+            </div>
           </div>
       </li>
     </ul>
@@ -44,6 +46,12 @@ const count = ref(0)
 </template>
 
 <style scoped>
+
+body{
+    background-color: #0F0F0F;
+}
+
+
 h1 {
   color: #ffffff;
 }
@@ -57,5 +65,7 @@ h1 {
 ul {
   list-style-type: none;
 }
+
+
 
 </style>
