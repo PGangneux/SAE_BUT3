@@ -27,8 +27,8 @@ export default {
           <h2>Title</h2>
           <div class="right-content">
             <a>Voir toute l’interview</a>
-            <button>Paramètres</button>
-            <button>PIP</button>
+            <img src="../../../public/imgs/Settings.png" alt="Paramètres">
+            <img src="../../../public/imgs/affichage_lecteur_réduit.png" alt="Paramètres">
           </div>
         </div>
 

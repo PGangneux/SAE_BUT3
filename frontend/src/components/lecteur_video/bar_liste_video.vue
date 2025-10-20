@@ -25,7 +25,7 @@ export default {
             <li>Auteurs</li>
             <li>Thèmes</li>
             </ul>
-            <button class="close-btn">X</button>
+            <img src="../../../public/imgs/Close.png" alt="close">
         </nav>
 
     </header>
@@ -34,7 +34,7 @@ export default {
             <h2>{{ titreSideBar }}</h2>
             <div class="search-bar">
                 <input type="text" :placeholder=" placeholderRecherche "/>
-                <img src="../assets/loupe.png" alt="loupe"/>
+                <img src="../../../public/imgs/Search.png" alt="loupe"/>
             </div>
             <div>
                 <ul>
