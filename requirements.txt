@@ -2,6 +2,8 @@ django
 django-rest-framework
 django-debug-toolbar
 django-cors-headers
+django-extensions
+drf-nested-routers
 neo4j
 neomodel
 python-dotenv

@@ -2,7 +2,7 @@ APP = API
 manage = ./backend/manage.py
 venv = venv/bin/python
 
-.PHONY: install migration tests run_back shell run_front
+.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls
 
 run_back:
 	$(venv) $(manage) runserver
@@ -28,3 +28,6 @@ tests:
 
 neomodel_gen_diagram:
 	venv/bin/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir img
+
+show_django_urls:
+	$(venv) $(manage) show_urls

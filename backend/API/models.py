@@ -10,6 +10,9 @@ class PositionExtraitRel(StructuredRel):
 class DateHeureRel(StructuredRel):
     date_heure = DateTimeProperty(required=True)
 
+class StyleMusical(StructuredNode):
+    uuid = UniqueIdProperty()
+    name = StringProperty(required=True, unique_index=True)
 
 class Artiste(StructuredNode):
     """Noeud Artiste"""
@@ -18,7 +21,7 @@ class Artiste(StructuredNode):
     info = StringProperty()
     metadonnees = JSONProperty()
 
-    interviews = RelationshipTo('Interview', 'A_PARTICIPE_A')
+    style = RelationshipTo('StyleMusical', 'STYLE')
 
 
 class Interview(StructuredNode):
@@ -30,6 +33,8 @@ class Interview(StructuredNode):
     description = StringProperty()
     lieu = StringProperty()
     metadonnees = JSONProperty()
+
+    interviewer = RelationshipTo('Artiste', 'PARTICIPER')
 
 
 class Extrait(StructuredNode):
@@ -50,7 +55,6 @@ class Extrait(StructuredNode):
 class Question(StructuredNode):
     uuid = UniqueIdProperty()
     texte = StringProperty(unique_index=True, required=True, db_property='name')
-    variantes = JSONProperty()
 
     theme = RelationshipTo('Theme', 'APPARTIENT_A')
 
