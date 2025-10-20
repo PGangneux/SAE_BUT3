@@ -4,12 +4,20 @@ import comp_baradmin from '../../components/components_admin/HeaderbarAdmin.vue'
 
 import comp_extrait from '../../components/components_admin/Admin_presentation_extrait.vue';
 
+import comp_admin_trie_extrait from '../../components/components_admin/Admin_trie.vue';
+
 export default {
     name: "page_admin_listextrait",
     components: {
       comp_baradmin,
       comp_extrait,
-    },
+      comp_admin_trie_extrait,
+    },data() {
+        return {
+            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB']
+    };
+  }
+
 };
 
 
@@ -21,8 +29,19 @@ export default {
 
   <h1 class="text-center"> Admin </h1>
 
+  <div class="row" >
+    <comp_admin_trie_extrait/>
 
-  <comp_extrait/>
+    <div class="col">
+
+      <ul class="scroller2 row">
+        <li class="row" v-for="tag in tags">
+            <comp_extrait/>
+        </li>
+      </ul>
+      
+    </div>
+  </div>
 
 
 </template>
@@ -61,6 +80,13 @@ ul {
   
 }
 
+.scroller2 {
+
+  height: 90%;
+  overflow-y: scroll;
+  scrollbar-color: #FFFFFF #A6A6A6;
+  scrollbar-width: thin;
+}
 
 
 </style>

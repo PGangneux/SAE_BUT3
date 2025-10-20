@@ -8,7 +8,7 @@ export default {
 </script>
 
 <template>
-    <div class="container container_extrait">
+    <div class="container container_extrait col">
         <div class="row base">
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite">Question Extrait</h1>
