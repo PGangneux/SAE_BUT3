@@ -2,7 +2,7 @@ APP = API
 manage = ./backend/manage.py
 venv = venv/bin/python
 
-.PHONY: run install migration tests run_back shell run_front
+.PHONY: install migration tests run_back shell run_front
 
 run_back:
 	$(venv) $(manage) runserver
@@ -17,6 +17,7 @@ install:
 	virtualenv -p python3 venv
 	venv/bin/pip install -r requirements.txt
 
+# Pour le backend
 migration:
 	$(venv) $(manage) makemigrations $(APP)
 	$(venv) $(manage) migrate

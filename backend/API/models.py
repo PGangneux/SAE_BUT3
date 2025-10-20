@@ -1,42 +1,75 @@
 from neomodel import (
-    db,
-    config,
-    StructuredNode,
-    StringProperty,
-    IntegerProperty,
-    UniqueIdProperty,
-    RelationshipTo
+    StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
+    IntegerProperty, RelationshipTo, StructuredRel,
+    DateTimeProperty, JSONProperty
 )
 
-class Interview(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(required=True)
+class PositionExtraitRel(StructuredRel):
+    position = IntegerProperty(required=True)
 
-class Extrait(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True, required=True)
-    url_youtube = StringProperty()
-    appartient = RelationshipTo('Interview', 'APPARTIENT')
+class DateHeureRel(StructuredRel):
+    date_heure = DateTimeProperty(required=True)
+
 
 class Artiste(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True, required=True)
-    participer = RelationshipTo('Interview', 'PARTICIPER')
+    """Noeud Artiste"""
+    uuid = UniqueIdProperty()
+    name = StringProperty(required=True, index=True)
+    info = StringProperty()
+    metadonnees = JSONProperty()
 
-class Theme(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True, required=True)
+    interviews = RelationshipTo('Interview', 'A_PARTICIPE_A')
+
+
+class Interview(StructuredNode):
+    """Noeud Interview"""
+    uuid = UniqueIdProperty()
+    titre = StringProperty(index=True, db_property='name')
+    date = DateProperty(index=True)
+    occasion = StringProperty()
+    description = StringProperty()
+    lieu = StringProperty()
+    metadonnees = JSONProperty()
+
+
+class Extrait(StructuredNode):
+    """Noeud Extrait (provenant d'une Interview)."""
+    uuid = UniqueIdProperty()
+    titre = StringProperty(db_property='name')
+    description = StringProperty()
+    metadonnees = JSONProperty()
+
+    youtube_url = StringProperty(unique_index=True)
+    vimeo_url = StringProperty(unique_index=True)
+    uploaded_at = DateTimeProperty(default_now=True)
+
+    interview = RelationshipTo('Interview', 'APPARTIENT_A', model=PositionExtraitRel)
+    question = RelationshipTo('Question', 'POSE')
+
 
 class Question(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True, required=True)
-    correspond = RelationshipTo('Extrait', 'CORRESPOND')
-    theme = RelationshipTo('Theme', 'A_POUR_THEME')
+    uuid = UniqueIdProperty()
+    texte = StringProperty(unique_index=True, required=True, db_property='name')
+    variantes = JSONProperty()
+
+    theme = RelationshipTo('Theme', 'APPARTIENT_A')
+
+
+class Theme(StructuredNode):
+    uuid = UniqueIdProperty()
+    name = StringProperty(index=True, required=True)
+    description = StringProperty()
+
 
 class Utilisateur(StructuredNode):
-    uid = UniqueIdProperty()
-    name = StringProperty(unique_index=True, required=True)
-    rechercher_artiste = RelationshipTo('Artiste', 'RECHERCHER_ARTISTE')
-    rechercher_question = RelationshipTo('Question', 'RECHERCHER_QUESTION')
-    visionner_interview = RelationshipTo('Interview', 'VISIONNER_INTERVIEW')
-    visionner_extrait = RelationshipTo('Extrait', 'VISIONNER_EXTRAIT')
+    uuid = UniqueIdProperty()
+    pseudo = StringProperty(index=True, required=True, db_property='name')
+    prenom = StringProperty()
+    nom = StringProperty()
+    email = StringProperty(required=True, unique_index=True)
+    password = StringProperty(required=True)
+
+    recherches_artistes = RelationshipTo('Artiste', 'RECHERCHE', model=DateHeureRel)
+    watched_interviews = RelationshipTo('Interview', 'A_VU', model=DateHeureRel)
+    watched_extraits = RelationshipTo('Extrait', 'A_VU', model=DateHeureRel)
+    searched_questions = RelationshipTo('Question', 'A_RECHERCHE', model=DateHeureRel)
