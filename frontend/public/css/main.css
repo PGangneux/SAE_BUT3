@@ -1,6 +1,37 @@
 :root {
     --vert-neon : #00FF86;
     --vert-pale : #26503C;
+    --noire : #0f0f0f;
+    --gris-moyen : #2C2D32;
+    --gris-taupe : #4C4C4C;
+    --gris-foncer : #323339;
+    --gris-clair : #808184;
+    --rouge : #F91119; 
+    --blanc : #FFFFFF;
+    --bleu : #00f;
+    --jaune : #FFD500;
+}
+@media (prefers-color-scheme: light) {
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+body {
+    background-color: var(--noire);
+    color: var(--gris-clair);
+    font-family: sans-serif;
+}
+
+
+
+:root {
+    --vert-neon : #00FF86;
+    --vert-pale : #26503C;
     --noir : #0f0f0f;
     --gris-moyen : #2C2D32;
     --gris-taupe : #4C4C4C;
@@ -10,11 +41,6 @@
     --blanc : #FFFFFF;
 }
 
-
-html, body {
-  width: 100vw;
-  height: 100vh; /* ou 100% + min-height: 100vh */
-}
 
 body {
   display: flex;

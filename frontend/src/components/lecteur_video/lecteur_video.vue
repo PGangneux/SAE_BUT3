@@ -27,8 +27,8 @@ export default {
           <h2>Title</h2>
           <div class="right-content">
             <a>Voir toute l’interview</a>
-            <img src="../../../public/imgs/Settings.png" alt="Paramètres">
-            <img src="../../../public/imgs/affichage_lecteur_réduit.png" alt="Paramètres">
+            <img src="../../..//imgs/Settings.png" alt="Paramètres">
+            <img src="../../..//imgs/affichage_lecteur_réduit.png" alt="Paramètres">
           </div>
         </div>
 
@@ -47,8 +47,8 @@ export default {
 <style scoped>
 .layout {
   display: flex;
-  height: 100%;
-  width: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
 main {

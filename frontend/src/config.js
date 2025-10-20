@@ -1,0 +1,1 @@
+export default BASE_URL = 'https://localhost:5000/';

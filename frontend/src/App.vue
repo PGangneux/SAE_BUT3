@@ -1,25 +1,23 @@
 <script>
-import lecteur_video from './components/lecteur_video/lecteur_video.vue';
+import comp_headerbar from './components/headerbar.vue';
+import comp_footerbar from './components/footerbar.vue';
 
 
 export default {
-  components: {
-    lecteur_video
-  },
-
+    name: "page_router",
+    components: {
+        comp_headerbar,
+        comp_footerbar,
+    },
 };
 </script>
 
 
 <template>
-  <lecteur_video></lecteur_video>
-  
-
+    <comp_headerbar />
+    <main>
+        <RouterView />
+    </main>
+    <comp_footerbar />
 </template>
-
-<style scoped>
-
-
-</style>
-
 
