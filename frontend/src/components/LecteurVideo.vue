@@ -23,13 +23,18 @@ export default {
     <main>
       <IframeLectureVideo url="https://www.youtube.com/embed/10MZrDXjby8" />
       <div>
-        <h2>Title</h2>
-        <a>Voir toute l’interview</a>
-        <button @click="parametresVideo">Paramètres</button>
-        <button @click="pictureInPicture">PIP</button>
-      </div>
-      <div>
-        <p>Video description</p>
+        <div id="bottom-iframe">
+          <h2>Title</h2>
+          <div class="right-content">
+            <a>Voir toute l’interview</a>
+            <button>Paramètres</button>
+            <button>PIP</button>
+          </div>
+        </div>
+
+        <div id="description">
+          <p>Video description</p>
+        </div>
       </div>
     </main>
 
@@ -67,8 +72,46 @@ main > div {
   flex: 1;
 }
 
+#bottom-iframe {
+  display: flex;
+  justify-content: space-between; /* <-- sépare gauche / droite */
+  align-items: center;             /* <-- aligne verticalement */
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+  margin-top: 2%;
+}
+
+#bottom-iframe h2 {
+  margin: 0;
+}
+
+#bottom-iframe .right-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* espace entre les éléments à droite */
+}
+
+#bottom-iframe a {
+  color: var(--vert-neon);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#description {
+  margin-top: 2%;
+  background-color: var(--gris-foncer);
+  border: var(--gris-foncer);
+  border-radius: 20px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+
 aside {
   flex: 2.2;
-  background-color: #4C4C4C;
+  background-color: var(--gris-moyen);
 }
+
+
 </style>

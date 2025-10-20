@@ -1,11 +1,14 @@
 :root {
-  --primary-color: #2C2D32; 
-  --secondary-color: #26503C; 
-  --third-color: #ffffff; 
-  --background-color: #0f0f0f; 
-  --secondary-background-color: #2C2D32;
+    --vert-neon : #00FF86;
+    --vert-pale : #26503C;
+    --noir : #0f0f0f;
+    --gris-moyen : #2C2D32;
+    --gris-taupe : #4C4C4C;
+    --gris-foncer : #323339;
+    --gris-clair : #808184;
+    --rouge : #F91119; 
+    --blanc : #FFFFFF;
 }
-
 
 
 html, body {
@@ -19,7 +22,7 @@ body {
   align-items: center; /* ou stretch selon le besoin */
   justify-content: center; /* centrer verticalement si tu veux */
 
-  background-color: var(--background-color);
+  background-color: var(--noir);
 }
 
 #app {
@@ -30,6 +33,6 @@ body {
   flex-direction: column;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
-  color: var(--third-color);
+p, h1, h2, h3, h4, h5, h6, li{
+  color: var(--blanc);
 }

@@ -27,7 +27,7 @@ iframe {
   flex : 30;
   width: 100%;
   height: 100%;
-  border: 3px solid var(--third-color);
+  border: 3px solid var(--blanc);
   box-sizing: border-box;
   border-radius: 20px;
 }

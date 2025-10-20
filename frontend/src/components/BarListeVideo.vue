@@ -52,7 +52,7 @@ export default {
 
 <style scoped>
 header, main{
-    background-color: #4C4C4C;
+    background-color: var(--gris-moyen);
 }
 
 </style>
