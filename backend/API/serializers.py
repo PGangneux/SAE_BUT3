@@ -39,7 +39,7 @@ class QuestionSerializer(serializers.Serializer):
     uuid = serializers.CharField(read_only=True)
     texte = serializers.CharField(required=True)
     choices = [(None, '-----')]
-    choices.extend ([(t.uuid, t.name) for t in Theme.nodes.all()])
+    choices.extend([(t.uuid, t.name) for t in Theme.nodes.all()])
     theme = serializers.SerializerMethodField(read_only=True)
     theme_uuid = serializers.ChoiceField(
         choices = choices,
@@ -81,8 +81,7 @@ class QuestionSerializer(serializers.Serializer):
         except UniqueProperty:
             raise serializers.ValidationError({"name": "Cette question existe déjà."}, 400)
         try:
-            for old in instance.theme.all():
-                instance.theme.disconnect(old)
+            instance.theme.disconnect(instance.theme.single())
             if theme_uuid:
                 instance.theme.connect(Theme.nodes.get(uuid=theme_uuid))
         except Theme.DoesNotExist:
@@ -90,177 +89,187 @@ class QuestionSerializer(serializers.Serializer):
         return instance
 
 
-# class ExtraitSerializer(serializers.Serializer):
-#     uuid = serializers.CharField(read_only=True)
-#     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     metadonnees = serializers.JSONField(required=False, allow_null=True)
+class ExtraitSerializer(serializers.Serializer):
+    uuid = serializers.CharField(read_only=True)
+    titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
-#     youtube_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     vimeo_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     uploaded_at = serializers.DateTimeField(required=False, allow_null=True)
+    youtube_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    vimeo_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    uploaded_at = serializers.DateTimeField(required=False, allow_null=True)
 
-#     # relations input:
-#     interview_uuid = serializers.CharField(write_only=True, required=False)
-#     position = serializers.IntegerField(write_only=True, required=False)
-#     question_uuid = serializers.CharField(write_only=True, required=False)
+    # relations input:
+    position = serializers.IntegerField(write_only=True, required=False)
+    interviews = [(None, '-----')]
+    interviews.extend([(t.uuid, t.name) for t in Interview.nodes.all()])
+    interview_uuid = serializers.ChoiceField(
+        choices = interviews,
+        required=False,
+        write_only=True
+    )
+    
+    question_uuid = serializers.CharField(write_only=True, required=False)
+    questions = [(None, '-----')]
+    questions.extend([(t.uuid, t.texte) for t in Question.nodes.all()])
+    question_uuid = serializers.ChoiceField(
+        choices = questions,
+        required=False,
+        write_only=True
+    )
 
-#     # relations output:
-#     interview = serializers.SerializerMethodField(read_only=True)
-#     question = serializers.SerializerMethodField(read_only=True)
+    # relations output:
+    interview = serializers.SerializerMethodField(read_only=True)
+    question = serializers.SerializerMethodField(read_only=True)
 
-#     def get_interview(self, obj):
-#         try:
-#             # obj.interview is RelationshipTo; get single connected node if exists
-#             interviews = obj.interview.all()
-#             if interviews:
-#                 # récupérer relation properties via cypher
-#                 q = """
-#                 MATCH (i:Interview {uuid:$iid})<-[r:APPARTIENT_A]-(e:Extrait {uuid:$eid})
-#                 RETURN i, r
-#                 """
-#                 res, _ = db.cypher_query(q, {'iid': interviews[0].uuid, 'eid': obj.uuid})
-#                 if res:
-#                     node_props = res[0][0]
-#                     rel_props = res[0][1]
-#                     return {
-#                         'uuid': node_props.get('uuid'),
-#                         'titre': node_props.get('titre'),
-#                         'position': rel_props.get('position')
-#                     }
-#                 return {'uuid': interviews[0].uuid, 'titre': interviews[0].titre}
-#         except Exception:
-#             pass
-#         return None
+    def get_interview(self, extrait):
+        try:
+            # obj.interview is RelationshipTo; get single connected node if exists
+            interviews = extrait.interview.all()
+            if interviews:
+                # récupérer relation properties via cypher
+                q = """
+                MATCH (i:Interview {uuid:$iid})<-[r:APPARTIENT_A]-(e:Extrait {uuid:$eid})
+                RETURN i, r
+                """
+                res, _ = db.cypher_query(q, {'iid': interviews[0].uuid, 'eid': extrait.uuid})
+                if res:
+                    node_props = res[0][0]
+                    rel_props = res[0][1]
+                    return {
+                        'uuid': node_props.get('uuid'),
+                        'titre': node_props.get('titre'),
+                        'position': rel_props.get('position')
+                    }
+                return {'uuid': interviews[0].uuid, 'titre': interviews[0].titre}
+        except Exception:
+            pass
+        return None
 
-#     def get_question(self, obj):
-#         try:
-#             qn = obj.question.all()
-#             if qn:
-#                 return {'uuid': qn[0].uuid, 'texte': qn[0].texte}
-#         except Exception:
-#             pass
-#         return None
+    def get_question(self, obj):
+        try:
+            qn = obj.question.all()
+            if qn:
+                return {'uuid': qn[0].uuid, 'texte': qn[0].texte}
+        except Exception:
+            pass
+        return None
 
-#     def validate(self, data):
-#         # si interview_uuid fourni, position doit aussi l'être
-#         if 'interview_uuid' in data and 'position' not in data:
-#             raise serializers.ValidationError({
-#                 'position': 'Le champ position est requis quand interview_uuid est fourni.'
-#             })
-#         return data
+    def validate(self, data):
+        # si interview_uuid fourni, position doit aussi l'être
+        if 'interview_uuid' in data and 'position' not in data:
+            raise serializers.ValidationError({
+                'position': 'Le champ position est requis quand interview_uuid est fourni.'
+            })
+        return data
 
-#     def create(self, validated_data):
-#         interview_uuid = validated_data.pop('interview_uuid', None)
-#         position = validated_data.pop('position', None)
-#         question_uuid = validated_data.pop('question_uuid', None)
+    def create(self, validated_data):
+        interview_uuid = validated_data.pop('interview_uuid', None)
+        position = validated_data.pop('position', None)
+        question_uuid = validated_data.pop('question_uuid', None)
 
-#         extrait = Extrait.nodes.create(**{k: v for k, v in validated_data.items() if v is not None})
+        extrait = Extrait.nodes.create(**{k: v for k, v in validated_data.items() if v is not None})
 
-#         if interview_uuid is not None:
-#             try:
-#                 interview_node = Interview.nodes.get(uuid=interview_uuid)
-#             except DoesNotExist:
-#                 raise serializers.ValidationError({'interview_uuid': 'Interview introuvable.'})
-#             # connecter avec propriété position
-#             extrait.interview.connect(interview_node, {'position': position})
+        if interview_uuid is not None:
+            try:
+                interview_node = Interview.nodes.get(uuid=interview_uuid)
+            except DoesNotExist:
+                raise serializers.ValidationError({'interview_uuid': 'Interview introuvable.'})
+            # connecter avec propriété position
+            extrait.interview.connect(interview_node, {'position': position})
 
-#         if question_uuid is not None:
-#             try:
-#                 question_node = Question.nodes.get(uuid=question_uuid)
-#             except DoesNotExist:
-#                 raise serializers.ValidationError({'question_uuid': 'Question introuvable.'})
-#             extrait.question.connect(question_node)
+        if question_uuid is not None:
+            try:
+                question_node = Question.nodes.get(uuid=question_uuid)
+            except DoesNotExist:
+                raise serializers.ValidationError({'question_uuid': 'Question introuvable.'})
+            extrait.question.connect(question_node)
 
-#         return extrait
+        return extrait
 
-#     def update(self, instance, validated_data):
-#         interview_uuid = validated_data.pop('interview_uuid', None)
-#         position = validated_data.pop('position', None)
-#         question_uuid = validated_data.pop('question_uuid', None)
+    def update(self, instance, validated_data):
+        interview_uuid = validated_data.pop('interview_uuid', None)
+        position = validated_data.pop('position', None)
+        question_uuid = validated_data.pop('question_uuid', None)
 
-#         # update props
-#         for k, v in validated_data.items():
-#             setattr(instance, k, v)
-#         instance.save()
+        # update props
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
+        instance.save()
 
-#         # update interview relation if provided
-#         if interview_uuid is not None:
-#             try:
-#                 interview_node = Interview.nodes.get(uuid=interview_uuid)
-#             except DoesNotExist:
-#                 raise serializers.ValidationError({'interview_uuid': 'Interview introuvable.'})
-#             # Disconnect existing interview relations then connect new with position
-#             try:
-#                 for old in instance.interview.all():
-#                     instance.interview.disconnect(old)
-#             except Exception:
-#                 pass
-#             instance.interview.connect(interview_node, {'position': position})
+        # update interview relation if provided
+        if interview_uuid is not None:
+            try:
+                interview_node = Interview.nodes.get(uuid=interview_uuid)
+            except DoesNotExist:
+                raise serializers.ValidationError({'interview_uuid': 'Interview introuvable.'})
+            # Disconnect existing interview relations then connect new with position
+            try:
+                for old in instance.interview.all():
+                    instance.interview.disconnect(old)
+            except Exception:
+                pass
+            instance.interview.connect(interview_node, {'position': position})
 
-#         # update question relation if provided
-#         if question_uuid is not None:
-#             try:
-#                 question_node = Question.nodes.get(uuid=question_uuid)
-#             except DoesNotExist:
-#                 raise serializers.ValidationError({'question_uuid': 'Question introuvable.'})
-#             try:
-#                 for old in instance.question.all():
-#                     instance.question.disconnect(old)
-#             except Exception:
-#                 pass
-#             instance.question.connect(question_node)
+        # update question relation if provided
+        if question_uuid is not None:
+            try:
+                question_node = Question.nodes.get(uuid=question_uuid)
+            except DoesNotExist:
+                raise serializers.ValidationError({'question_uuid': 'Question introuvable.'})
+            try:
+                for old in instance.question.all():
+                    instance.question.disconnect(old)
+            except Exception:
+                pass
+            instance.question.connect(question_node)
 
-#         return instance
+        return instance
 
 
-# class InterviewSerializer(serializers.Serializer):
-#     uuid = serializers.CharField(read_only=True)
-#     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     date = serializers.DateField(required=False, allow_null=True)
-#     occasion = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-#     metadonnees = serializers.JSONField(required=False, allow_null=True)
+class InterviewSerializer(serializers.Serializer):
+    uuid = serializers.CharField(read_only=True)
+    titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    date = serializers.DateField(required=False, allow_null=True)
+    occasion = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    metadonnees = serializers.JSONField(required=False, allow_null=True)
 
-#     # relations input: lier un artiste à l'interview
-#     artiste_uuids = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
+    # relations input: lier un artiste à l'interview
+    artiste_uuids = serializers.ListField(child=serializers.CharField(), write_only=True, required=False)
 
-#     # relations output: extraits ordonnés
-#     extraits = serializers.SerializerMethodField(read_only=True)
+    # relations output: extraits ordonnés
+    extraits = serializers.SerializerMethodField(read_only=True)
 
-#     def create(self, validated_data):
-#         artiste_uuids = validated_data.pop('artiste_uuids', [])
-#         interview = Interview.nodes.create(**{k: v for k, v in validated_data.items() if v is not None})
+    def create(self, validated_data):
+        artiste_uuid = validated_data.pop("artiste_uuid", None)
+        try:
+            interview = Interview(**validated_data).save()
+        except UniqueProperty:
+            raise serializers.ValidationError({"text": "Cette interview existe déjà"}, 400)
+        if artiste_uuid:
+            try:
+                artiste = Artiste.nodes.get(uuid=artiste_uuid)
+                interview.artiste.connect(artiste)
+            except Artiste.DoesNotExist:
+                raise serializers.ValidationError({"artiste_uuid": "Artiste introuvable."})
+        return interview
 
-#         # connecter artistes si fournis
-#         for a_uuid in artiste_uuids:
-#             try:
-#                 a = Artiste.nodes.get(uuid=a_uuid)
-#                 a.interviews.connect(interview)
-#             except DoesNotExist:
-#                 raise serializers.ValidationError({'artiste_uuids': f'Artiste introuvable: {a_uuid}'})
-
-#         return interview
-
-#     def update(self, instance, validated_data):
-#         artiste_uuids = validated_data.pop('artiste_uuids', None)
-#         for k, v in validated_data.items():
-#             setattr(instance, k, v)
-#         instance.save()
-
-#         if artiste_uuids is not None:
-#             # remplacer les relations artistes -> interview par les nouvelles
-#             # on va déconnecter tous les artistes qui pointent vers cette interview puis reconnecter
-#             q = "MATCH (a:Artiste)-[r:A_PARTICIPE_A]->(i:Interview {uuid:$iid}) DELETE r"
-#             db.cypher_query(q, {'iid': instance.uuid})
-#             for a_uuid in artiste_uuids:
-#                 try:
-#                     a = Artiste.nodes.get(uuid=a_uuid)
-#                     a.interviews.connect(instance)
-#                 except DoesNotExist:
-#                     raise serializers.ValidationError({'artiste_uuids': f'Artiste introuvable: {a_uuid}'})
-#         return instance
+    def update(self, instance, validated_data):
+        artiste_uuid = validated_data.pop("artiste_uuid", None)
+        for k, v in validated_data.items():
+            setattr(instance, k, v)
+        try:
+            instance.save()
+        except UniqueProperty:
+            raise serializers.ValidationError({"name": "Cette interview existe déjà."}, 400)
+        try:
+            instance.artiste.disconnect(instance.artiste.single())
+            if artiste_uuid:
+                instance.artiste.connect(Artiste.nodes.get(uuid=artiste_uuid))
+        except Artiste.DoesNotExist:
+            raise serializers.ValidationError({"artiste_uuid": "Thème introuvable."}, 400)
+        return instance
 
 
 # class ArtisteSerializer(serializers.Serializer):

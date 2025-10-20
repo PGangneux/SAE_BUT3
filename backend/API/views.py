@@ -4,8 +4,8 @@ from rest_framework import viewsets
 from neomodel import db
 from neomodel.exceptions import DoesNotExist
 from rest_framework.exceptions import NotFound
-from .models import Theme, Question
-from .serializers import ThemeSerializer, QuestionSerializer
+from .models import Extrait, Theme, Question
+from .serializers import ExtraitSerializer, ThemeSerializer, QuestionSerializer
 
 
 class ThemeViewSet(viewsets.ModelViewSet):
@@ -57,3 +57,17 @@ class ThemeQuestionViewSet(viewsets.ModelViewSet):
             return Question.inflate(results[0][0])
         except:
             raise NotFound('Question introuvable.')
+
+class ExtraitViewSet(viewsets.ModelViewSet):
+    serializer_class = ExtraitSerializer
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        return Extrait.nodes.all()
+
+    def get_object(self):
+        try:
+            return Extrait.nodes.get(uuid=self.kwargs[self.lookup_field])
+        except DoesNotExist:
+            raise NotFound('Question introuvable.')
+        

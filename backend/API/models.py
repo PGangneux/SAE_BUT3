@@ -42,7 +42,6 @@ class Extrait(StructuredNode):
     uuid = UniqueIdProperty()
     titre = StringProperty(db_property='name')
     description = StringProperty()
-    metadonnees = JSONProperty()
 
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)
@@ -67,7 +66,7 @@ class Theme(StructuredNode):
 
 class Utilisateur(StructuredNode):
     uuid = UniqueIdProperty()
-    pseudo = StringProperty(index=True, required=True, db_property='name')
+    pseudo = StringProperty(unique_index=True, required=True, db_property='name')
     prenom = StringProperty()
     nom = StringProperty()
     email = StringProperty(required=True, unique_index=True)
