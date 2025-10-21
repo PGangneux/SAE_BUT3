@@ -1,18 +1,26 @@
 <script>
+import parametres_lecteur from './parametres_lecteur.vue';
+import parametres_sous_titre from './parametres_sous_titre.vue';
+
+
 export default {
+    components : {parametres_lecteur, parametres_sous_titre},
     props: {
-    pos_x_iframe: {
-        type: Number,
-        required: true
-    },
-    pos_y_iframe: {
-        type: Number,
-        required: true
-    }
+        pos_x_iframe: {
+            type: Number,
+            required: true
+        },
+        pos_y_iframe: {
+            type: Number,
+            required: true
+        }
     },
 
     data() {
         return {
+            parametre_general: true,
+            parametre_lecteur: false,
+            parametre_sous_titre: false,
             lecteur: 'YouTube',
             sous_titres: 'Désactivés',
             pos_x : 0,
@@ -28,6 +36,17 @@ export default {
         get_pos_y(rect) {
             return this.pos_y_iframe - rect.height - 10;
         },  
+
+        toggle_parametre_lecteur() {
+            this.parametre_general = false;
+            this.parametre_lecteur = true;
+        },
+
+        set_lecteur(new_lecteur){
+            this.lecteur = new_lecteur
+            this.$emit('set_lecteur', new_lecteur)
+
+        }
     },
     mounted() {
         this.$nextTick(() => {
@@ -42,6 +61,7 @@ export default {
 <template>
   <!-- popup avec le choix du lecteur et les sous-titres -->
   <div 
+    v-if="parametre_general"
     class="popup-parametres"
     ref="popup_parametres"
     :style="{ top: pos_y + 'px', left: pos_x + 'px' }"
@@ -52,11 +72,29 @@ export default {
         <li>Sous-titres</li>
       </ul>
       <ul class="popup-values">
-        <li>{{ lecteur }}</li>
-        <li>{{ sous_titres }}</li>
+        <li @click="toggle_parametre_lecteur">{{ lecteur }} > </li>
+        <li @click="">{{ sous_titres }} ></li>
       </ul>
     </div>
   </div>
+
+  <parametres_lecteur 
+    v-if="parametre_lecteur"
+    :pos_x="pos_x"
+    :pos_y="pos_y" 
+    :lecteur_selected="lecteur"
+    @set_lecteur="set_lecteur"
+  />
+
+  <parametres_sous_titre 
+    v-if="parametre_sous_titre"
+    :pos_x="pos_x"
+    :pos_y="pos_y" 
+    :lecteur_selected="this.lecteur"
+  />
+
+  
+
 </template>
 
 

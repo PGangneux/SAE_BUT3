@@ -11,6 +11,9 @@ export default {
       param_visible: false,
       pos_x_iframe: 0,
       pos_y_iframe: 0,
+      lecteur: 'YouTube',
+
+      url: "https://vimeo.com/1128762950"
     };
   },
 
@@ -33,6 +36,21 @@ export default {
     get_pos_y_iframe() {
       const rect = this.$refs.iframe.$el.getBoundingClientRect();
       return rect.bottom; // position y
+    },
+
+    set_lecteur(new_lecteur){
+      this.lecteur = new_lecteur
+      console.log("update url")
+      this.set_url(this.lecteur)
+    },
+
+    set_url(lecteur){
+      if (lecteur == "YouTube"){
+        this.url = "https://www.youtube.com/embed/10MZrDXjby8"
+      }
+      else{
+        this.url = "https://vimeo.com/1128762950"
+      }
     },
 
     async updatePopupPosition() {
@@ -64,7 +82,7 @@ export default {
 <template>
   <div class="layout">
     <main>
-      <iframe_lecture_video url="https://www.youtube.com/embed/10MZrDXjby8" ref="iframe"/>
+      <iframe_lecture_video :url="url" ref="iframe"/>
       <div>
         <div id="bottom-iframe">
           <h2>Title</h2>
@@ -89,6 +107,7 @@ export default {
         v-if="param_visible"
         :pos_x_iframe="pos_x_iframe"
         :pos_y_iframe="pos_y_iframe"
+        @set_lecteur="set_lecteur"
       />
   </div>
 </template>
