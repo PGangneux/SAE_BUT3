@@ -1,9 +1,9 @@
 <script>
 export default {
-    name: "comp_searchbar",
+    name: "page_inscription",
 };
 </script>
 
 <template>
-    <p>search bar here</p>
+    <p>page_inscription</p>
 </template>

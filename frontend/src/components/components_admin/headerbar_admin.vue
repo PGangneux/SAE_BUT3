@@ -2,12 +2,11 @@
 
 export default {
     name: "comp_headerbaradmin",
-    components: {
-    },
 };
 </script>
 
 <template>
+<<<<<<< HEAD:frontend/src/components/components_admin/HeaderbarAdmin.vue
     <header class="headeradmin text-white py-3">
         <nav class=" ">
                 <ul class="text-center">
@@ -27,7 +26,6 @@ export default {
                     <li class="nav-item text-white">
                         <RouterLink class="bt btn " to="/admin/interview">Playlist</RouterLink>
                     </li>
-
                 </ul>
         </nav>
     </header>

@@ -42,18 +42,19 @@ export default {
         </li>
 
         <li>
-            
             <RouterLink class="card" to="/admin/user">
 
-                <h1 class="text-center" > User </h1>
-                <div class="text-center">
-                <img class="text-center" src="../../assets/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
-                </div>
+            <h1 class="text-center" > Extrait </h1>
+            <div class="text-center align-middle">
+              <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
+            </div>
+          
             </RouterLink>
 
         </li>
         </ul>
     </nav>
+
 
 
 </template>

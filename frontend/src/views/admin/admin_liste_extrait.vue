@@ -1,6 +1,6 @@
 <script>
 
-import comp_baradmin from '../../components/components_admin/HeaderbarAdmin.vue';
+import comp_baradmin from "../../components/components_admin/headerbar_admin.vue";
 
 import comp_extrait from '../../components/components_admin/Admin_presentation_extrait.vue';
 
@@ -33,7 +33,6 @@ export default {
     <comp_admin_trie_extrait/>
 
     <div class="col aggrandir">
-
       <ul class="scroller2  row">
         <li class="row" v-for="tag in tags">
             <comp_extrait/>
@@ -42,6 +41,7 @@ export default {
       
     </div>
   </div>
+
 
 
 </template>
