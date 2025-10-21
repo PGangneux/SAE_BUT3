@@ -2,8 +2,10 @@
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import parametres from './parametres.vue';
+import { videoStore } from "../../stores/videoStore";
 
 export default {
+  name: "page_lecteur_video",
   components: { iframe_lecture_video, bar_liste_video, parametres },
 
   data() {
@@ -12,9 +14,9 @@ export default {
       pos_x_iframe: 0,
       pos_y_iframe: 0,
       aside_visible: true,
-      lecteur: 'Viméo',
+      lecteur: 'YouTube',
 
-      url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+      url: "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
     };
   },
 
@@ -24,7 +26,13 @@ export default {
     },
 
     picture_in_picture() {
-      console.log("pictureInPicture");
+      console.log("→ Activation du Picture in Picture");
+      videoStore.url = this.url;
+      videoStore.lecteur = this.lecteur;
+      videoStore.isPictureInPicture = true;
+
+      // Rediriger vers la page d’accueil
+      this.$router.push("/");
     },
 
 
