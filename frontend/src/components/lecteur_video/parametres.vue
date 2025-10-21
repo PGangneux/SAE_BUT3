@@ -13,6 +13,10 @@ export default {
         pos_y_iframe: {
             type: Number,
             required: true
+        },
+        lecteur : {
+            type: Number,
+            required: true
         }
     },
 
@@ -21,7 +25,6 @@ export default {
             parametre_general: true,
             parametre_lecteur: false,
             parametre_sous_titre: false,
-            lecteur: 'YouTube',
             sous_titres: 'Désactivés',
             pos_x : 0,
             pos_y : 0,
@@ -42,11 +45,6 @@ export default {
             this.parametre_lecteur = true;
         },
 
-        set_lecteur(new_lecteur){
-            this.lecteur = new_lecteur
-            this.$emit('set_lecteur', new_lecteur)
-
-        }
     },
     mounted() {
         this.$nextTick(() => {
@@ -82,16 +80,11 @@ export default {
     v-if="parametre_lecteur"
     :pos_x="pos_x"
     :pos_y="pos_y" 
-    :lecteur_selected="lecteur"
-    @set_lecteur="set_lecteur"
+    :lecteur_selected="this.lecteur"
+    @set_lecteur="this.$emit('set_lecteur', $event)"
   />
 
-  <parametres_sous_titre 
-    v-if="parametre_sous_titre"
-    :pos_x="pos_x"
-    :pos_y="pos_y" 
-    :lecteur_selected="this.lecteur"
-  />
+
 
   
 

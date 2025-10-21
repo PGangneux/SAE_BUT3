@@ -11,9 +11,9 @@ export default {
       param_visible: false,
       pos_x_iframe: 0,
       pos_y_iframe: 0,
-      lecteur: 'YouTube',
+      lecteur: 'Viméo',
 
-      url: "https://vimeo.com/1128762950"
+      url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
     };
   },
 
@@ -46,10 +46,10 @@ export default {
 
     set_url(lecteur){
       if (lecteur == "YouTube"){
-        this.url = "https://www.youtube.com/embed/10MZrDXjby8"
+        this.url = "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
       }
       else{
-        this.url = "https://vimeo.com/1128762950"
+        this.url = "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
       }
     },
 
@@ -107,6 +107,7 @@ export default {
         v-if="param_visible"
         :pos_x_iframe="pos_x_iframe"
         :pos_y_iframe="pos_y_iframe"
+        :lecteur="lecteur"
         @set_lecteur="set_lecteur"
       />
   </div>

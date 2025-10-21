@@ -10,11 +10,6 @@ export default {
       lecteurs: ["YouTube", "Viméo"]
     }
   },
-  methods: {
-    set_lecteur(new_lecteur){
-      this.$emit('set_lecteur', new_lecteur)
-    }
-  }
 }
 </script>
 
@@ -24,7 +19,7 @@ export default {
     :style="{ top: pos_y + 'px', left: pos_x + 'px' }"
   >
     <ul class="popup-labels">
-      <li v-for="lecteur in lecteurs" :key="lecteur" @click="set_lecteur(lecteur)">
+      <li v-for="lecteur in lecteurs" :key="lecteur" @click="this.$emit('set_lecteur', lecteur)">
         {{ lecteur }}
         <span v-if="lecteur === lecteur_selected">✅</span>
       </li>
