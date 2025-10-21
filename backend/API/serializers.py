@@ -1,11 +1,11 @@
 from django.urls import reverse
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+from neomodel.exceptions import DoesNotExist, UniqueProperty
+from neomodel import db
 from .models import (
     Artiste, Interview, Extrait, Question, Theme, Utilisateur
 )
-from django.contrib.auth.hashers import make_password
-from neomodel import db
-from neomodel.exceptions import DoesNotExist, UniqueProperty
 
 class ThemeSerializer(serializers.Serializer):
     uuid = serializers.CharField(read_only=True)
@@ -43,7 +43,11 @@ class QuestionSerializer(serializers.Serializer):
     theme_uuid = serializers.CharField(write_only=True, required=False)
 
     # Outputs
+    extraits = serializers.SerializerMethodField(read_only=True)
     theme = serializers.SerializerMethodField(read_only=True)
+
+    def get_extraits(self, question):
+        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))}
 
     def get_theme(self, question):
         """
@@ -249,14 +253,10 @@ class ArtisteSerializer(serializers.Serializer):
     info = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     # Output
-    # interviews = serializers.SerializerMethodField(read_only=True)
+    interviews = serializers.SerializerMethodField(read_only=True)
 
-    # def get_interviews(self, obj):
-    #     try:
-    #         interviews = obj.interviews.all()
-    #         return [{'uuid': it.uuid, 'titre': it.titre, 'date': it.date} for it in interviews]
-    #     except Exception:
-    #         return []
+    def get_interviews(self, artiste):
+        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'artiste_uuid': artiste.uuid}))}
 
     def create(self, validated_data):
         return Artiste(**validated_data).save()

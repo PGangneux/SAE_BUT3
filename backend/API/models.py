@@ -1,7 +1,7 @@
 from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
-    DateTimeProperty, JSONProperty
+    DateTimeProperty
 )
 
 class PositionExtraitRel(StructuredRel):
@@ -13,6 +13,7 @@ class DateHeureRel(StructuredRel):
 class StyleMusical(StructuredNode):
     uuid = UniqueIdProperty()
     name = StringProperty(required=True, unique_index=True)
+
 
 class Artiste(StructuredNode):
     """Noeud Artiste"""
