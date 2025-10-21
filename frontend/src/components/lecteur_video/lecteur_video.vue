@@ -88,8 +88,8 @@ export default {
           <h2>Title</h2>
           <div class="right-content">
             <a>Voir toute l’interview</a>
-            <img src="../../../imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
-            <img src="../../../imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
+            <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
+            <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
           </div>
         </div>
 

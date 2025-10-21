@@ -15,7 +15,7 @@ export default {
             required: true
         },
         lecteur : {
-            type: Number,
+            type: String,
             required: true
         }
     },
