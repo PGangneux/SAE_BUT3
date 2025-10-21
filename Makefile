@@ -1,16 +1,17 @@
 APP = API
 manage = ./backend/manage.py
-venv = venv/bin/python
-pip = venv/bin/pip
+venv = venv/bin
+python = ${venv}/python
+pip = ${venv}/pip
 npm = npm --prefix ./frontend
 
-.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls
+.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd
 
 run_back:
-	$(venv) $(manage) runserver
+	$(python) $(manage) runserver
 
 shell:
-	$(venv) $(manage) shell -v 2
+	$(python) $(manage) shell -v 2
 
 run_front:
 	$(npm) run dev
@@ -22,15 +23,19 @@ install:
 
 # Pour le backend
 migration:
-	$(venv) $(manage) makemigrations $(APP)
-	$(venv) $(manage) migrate
-	$(venv) $(manage) install_labels
+	$(python) $(manage) makemigrations $(APP)
+	$(python) $(manage) migrate
+	$(python) $(manage) install_labels
 
 tests:
-	$(venv) $(manage) test $(APP)
+	$(python) $(manage) test $(APP)
 
 neomodel_gen_diagram:
-	venv/bin/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir img
+	${venv}/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir img
+
+load_bd:
+	$(python) $(manage) install_labels
+	$(python) $(manage) basic_load_bd
 
 show_django_urls:
-	$(venv) $(manage) show_urls
+	$(python) $(manage) show_urls

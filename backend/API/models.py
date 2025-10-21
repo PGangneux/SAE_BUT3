@@ -43,7 +43,7 @@ class Extrait(StructuredNode):
 
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)
-    uploaded_at = DateTimeProperty(default_now=True)
+    uploaded_at = DateProperty(default_now=True)
 
     interview = RelationshipTo('Interview', 'APPARTIENT_A', model=PositionExtraitRel)
     question = RelationshipTo('Question', 'POSE')
@@ -53,7 +53,7 @@ class Question(StructuredNode):
     uuid = UniqueIdProperty()
     texte = StringProperty(unique_index=True, required=True, db_property='name')
 
-    theme = RelationshipTo('Theme', 'APPARTIENT_A')
+    theme = RelationshipTo('Theme', 'A_THEME')
 
 
 class Theme(StructuredNode):
