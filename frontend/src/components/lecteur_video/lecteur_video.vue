@@ -1,19 +1,80 @@
 <script>
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
+import parametres from './parametres.vue';
 
 export default {
-  components: {
-    iframe_lecture_video,
-    bar_liste_video
+  components: { iframe_lecture_video, bar_liste_video, parametres },
+
+  data() {
+    return {
+      param_visible: false,
+      pos_x_iframe: 0,
+      pos_y_iframe: 0,
+      lecteur: 'Viméo',
+
+      url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+    };
   },
+
   methods: {
-    parametresVideo() {
-      console.log("parametresVideo");
+    toggle_parametres() {
+      this.param_visible = !this.param_visible;
     },
-    pictureInPicture() {
+
+    picture_in_picture() {
       console.log("pictureInPicture");
     },
+
+
+    get_pos_x_iframe() {
+      const rect = this.$refs.iframe.$el.getBoundingClientRect();
+      return rect.right;
+    },
+
+
+    get_pos_y_iframe() {
+      const rect = this.$refs.iframe.$el.getBoundingClientRect();
+      return rect.bottom; // position y
+    },
+
+    set_lecteur(new_lecteur){
+      this.lecteur = new_lecteur
+      console.log("update url")
+      this.set_url(this.lecteur)
+    },
+
+    set_url(lecteur){
+      if (lecteur == "YouTube"){
+        this.url = "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
+      }
+      else{
+        this.url = "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+      }
+    },
+
+    async updatePopupPosition() {
+      const before_visible = this.param_visible;
+      
+      if (this.param_visible) this.param_visible = false;
+      await new Promise(resolve => setTimeout(resolve, 100));
+      this.pos_x_iframe = this.get_pos_x_iframe();
+      this.pos_y_iframe = this.get_pos_y_iframe();
+      
+      if (before_visible) this.param_visible = true; 
+
+    }
+
+  },
+
+  mounted() {
+    this.pos_x_iframe = this.get_pos_x_iframe();
+    this.pos_y_iframe = this.get_pos_y_iframe();
+    window.addEventListener('resize', this.updatePopupPosition);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updatePopupPosition);
   }
 };
 </script>
@@ -21,14 +82,14 @@ export default {
 <template>
   <div class="layout">
     <main>
-      <iframe_lecture_video url="https://www.youtube.com/embed/10MZrDXjby8" />
+      <iframe_lecture_video :url="url" ref="iframe"/>
       <div>
         <div id="bottom-iframe">
           <h2>Title</h2>
           <div class="right-content">
             <a>Voir toute l’interview</a>
-            <img src="../../..//imgs/Settings.png" alt="Paramètres">
-            <img src="../../..//imgs/affichage_lecteur_réduit.png" alt="Paramètres">
+            <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
+            <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
           </div>
         </div>
 
@@ -41,6 +102,14 @@ export default {
     <aside>
       <bar_liste_video/>
     </aside>
+
+    <parametres
+        v-if="param_visible"
+        :pos_x_iframe="pos_x_iframe"
+        :pos_y_iframe="pos_y_iframe"
+        :lecteur="lecteur"
+        @set_lecteur="set_lecteur"
+      />
   </div>
 </template>
 
@@ -53,7 +122,7 @@ export default {
 
 main {
   flex: 5;
-  background-color: var(--background-color);
+  background-color: var(--noir);
   padding: 1rem;
   box-sizing: border-box;
 
@@ -61,8 +130,7 @@ main {
   flex-direction: column;
   margin: 0 auto; /* centre horizontalement */
   width: 83%;
-  height: 93%;
-  border-radius: 8px;
+  height: 100%;
   padding-left: 2%;
   padding-right: 2%;
 }
@@ -90,6 +158,12 @@ main > div {
   display: flex;
   align-items: center;
   gap: 0.5rem; /* espace entre les éléments à droite */
+}
+
+#bottom-iframe img {
+  width: 2em;
+  height: 2em;
+  cursor: pointer;
 }
 
 #bottom-iframe a {

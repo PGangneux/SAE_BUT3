@@ -38,6 +38,9 @@ export default {
                     <li class="btn local" v-if="!isconnected">
                         <RouterLink class="nav-link" to="/connection">Connection</RouterLink>
                     </li>
+                    <li class="btn local">
+                        <RouterLink class="nav-link" to="/lecteur_video">lecteur video</RouterLink>
+                    </li>
                 </ul>
             </div>
         </nav>
