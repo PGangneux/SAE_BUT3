@@ -40,7 +40,7 @@ export default {
 
             <p class="row ">Trier par tag</p>
 
-            <ul class="scroller ultagger">
+            <ul class="scroller ultagger row">
                 <li class="col" v-for="tag in tags">
                     <button class="btn btn-primary"> {{ tag }} </button>
                 </li>

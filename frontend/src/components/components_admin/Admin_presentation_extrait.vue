@@ -28,7 +28,7 @@ export default {
                         <li class="row vigniette">
                             <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
                             <p class="col">tags</p>
-                            <!-- faire get des tags-->
+                            <!-- faire get des tags TODO-->
                         </li>
 
 
