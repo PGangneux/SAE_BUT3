@@ -8,7 +8,7 @@ export default {
 </script>
 
 <template>
-    <div class="container container_extrait col">
+    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
         <div class="row base">
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite">Question Extrait</h1>
@@ -41,7 +41,7 @@ export default {
             </div>
 
         </div>
-    </div>
+    </RouterLink>
 
 
 
@@ -98,6 +98,7 @@ ul ,base{
 .container_extrait{
     filter: drop-shadow(10px 8px 4px var(--noir)) ;
     background-color:var(--gris-moyen);
+
     
 }
 

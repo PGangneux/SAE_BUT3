@@ -6,10 +6,15 @@ import page_connection from "./views/connection.vue";
 import page_inscription from "./views/inscription.vue";
 import page_reset_password from "./views/reset_password.vue";
 
+
+
+
 // ADMIN PAGES
 import page_admin from "./views/admin/admin_acceuil.vue";
 import page_admin_listextrait from "./views/admin/admin_liste_extrait.vue";
 import page_admin_listuser from "./views/admin/admin_liste_user.vue";
+import page_admin_detail_video from "./views/admin/admin_detail_video.vue";
+
 
 // Lecteur Video Pages
 import lecteur_video from './components/lecteur_video/lecteur_video.vue';
@@ -20,11 +25,15 @@ const routes = [
     { path: "/connection", component: page_connection },
     { path: "/inscription", component: page_inscription },
     { path: "/reset-password", component: page_reset_password },
+    { path: "/lecteur_video", component: lecteur_video },
+    
+    
     { path: "/admin", component: page_admin },
-    { path: "/admin/extrait", component: page_admin_listextrait },
     { path: "/admin/user", component: page_admin_listuser },
     { path: "/admin/interview", component: page_admin },
-    { path: "/lecteur_video", component: lecteur_video },
+
+    { path: "/admin/extrait", component: page_admin_listextrait },
+    { path: "/admin/details/extrait", component: page_admin_detail_video },
 ];
 
 const router = createRouter({
