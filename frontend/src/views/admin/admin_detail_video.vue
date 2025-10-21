@@ -2,17 +2,22 @@
 
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 
+import comp_popup from "../../components/components_admin/popup_admin_edit.vue";
 
 export default {
   name: "page_admin_detail_video",
   components: {
     comp_baradmin,
+    comp_popup,
+
   },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB']
+            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            popup: false
         };
     }
 };
+
 
 
 </script>
@@ -37,8 +42,8 @@ export default {
             </div>
 
             <div class="row" >
-                <label for="name2"  class="col" > Question :</label>
-                <input type="text" id="name2" name="name2" class="textfield col" placeholder="Question" />
+                <label for="question"  class="col" > Question :</label>
+                <input type="text" id="question" name="question" class="textfield col" placeholder="Question" />
             </div>
 
             <div class="row" >
@@ -55,10 +60,13 @@ export default {
                 <div class="col">
                   <img   class="col" src="/imgs/date.svg" alt="">
                   <label class="col" for="name4"> Date </label>
-                  <input class="col" type="date" id="name4" name="name4" />
+                  <input class="col" type="date" lang="fr" id="name4" name="name4" />
                   <!-- rendre jolie TODO -->
                 </div>
-                
+
+            </div>
+            <div class="row" >
+              <input type="aera" placeholder="Description" />
             </div>
           </div>
       </div>
@@ -69,11 +77,18 @@ export default {
           <input type="text" id="name" name="name" class="textfield" placeholder="question de l'interview" />
         </div>
 
-        <RouterLink class="bt btn col" to="/admin/extrait" >Edit</RouterLink>
-        <button  type="submit"   class="bt btn col" to="/admin"> Accueil Admin </button>
-        <button  type="reset"  class="bt btn col" to="/admin"> Accueil Admin </button>
+        
+
+        <div class="bt btn col"  @click="popup = !popup" >
+          <img src="/imgs/add.svg" alt="Edit"> <p class=" col" >Edit</p>
+        </div>
+
+        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
+
+
       </div>
-                
+
     </form>
     
     <div class="row grisee" >
@@ -81,14 +96,20 @@ export default {
       <div class="row">
         <ul class="scroller2  row">
           <li class="col" v-for="tag in tags">
-              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags">
+            <div class="row">
+              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
               <p class="col">{{ tag }}</p>
+            </div>
           </li>
         </ul>
       </div>
     </div>
- 
-</template>
+    
+   
+
+    <div v-if="popup === true">  <comp_popup/> </div>
+
+    </template>
 
 <style scoped>
 .card {

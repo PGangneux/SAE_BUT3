@@ -5,7 +5,11 @@ export default {
     name: "page_admin_listuser",
     components: {
         comp_baradmin,
-    },
+    },data() {
+        return {
+            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+        };
+    }
 };
 
 
@@ -14,46 +18,39 @@ export default {
 <template>
 
     <comp_baradmin/>
-    <h1 class="text-center"> Admin </h1>
+    
+    <div class="row"> 
+        <button class="col btgris"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
 
+        <div class="col">
+            <input type="search" id="site-search" name="q" class="col" />
+            <button class="col" ><img src="/imgs/search.svg" alt="button search"></button>
+        </div>
 
-    <nav>
-        <ul>
-        <li>
+    </div>
 
-            <RouterLink class="card" to="/admin/extrait">
-                
-                <h1 class="text-center" > Extrait </h1>
-                <div class="text-center align-middle">
-                <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
-                </div>
-            </RouterLink>
+    <div class="raw">    
+        <table class="scroller ultagger table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Pseudo</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">État du compte</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="col" v-for="tag in tags">
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+        
 
-        </li>
-
-        <li>
-            <RouterLink class="card" to="/admin/interview">
-                <h1 class="text-center" > interview </h1>
-                <div class="text-center">
-                <img src="/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
-                </div>
-            </RouterLink>
-
-        </li>
-
-        <li>
-            <RouterLink class="card" to="/admin/user">
-
-            <h1 class="text-center" > Extrait </h1>
-            <div class="text-center align-middle">
-              <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
-            </div>
-          
-            </RouterLink>
-
-        </li>
-        </ul>
-    </nav>
 
 
 
@@ -91,6 +88,14 @@ ul {
   
 }
 
+
+.btgris{
+    color:white;
+    background-color:var(--gris-moyen);
+    border-radius: 2em;
+    border: none;
+    
+}
 
 
 

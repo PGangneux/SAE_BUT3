@@ -17,12 +17,12 @@ export default {
                         <RouterLink class="bt btn " to="/admin/extrait"> Extrait </RouterLink>
                     </li>
 
+                    <li class="nav-item text-white">
+                        <RouterLink class="bt btn " to="/admin/interview">Interview</RouterLink>
+                    </li>
+                    
                     <li class="nav-item text-white ">
                         <RouterLink class="bt btn " to="/admin/user"> User </RouterLink>
-                    </li>
-
-                    <li class="nav-item text-white">
-                        <RouterLink class="bt btn " to="/admin/interview">Playlist</RouterLink>
                     </li>
                 </ul>
         </nav>
@@ -33,7 +33,7 @@ export default {
 .bt{
     color:white;
     background-color:var(--vert-pale);
-    border-radius: 19%;
+    border-radius: 2em;
     
 }
 

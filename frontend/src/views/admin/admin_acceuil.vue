@@ -22,7 +22,7 @@ export default {
       </li>
       <li>
         <RouterLink class="card" to="/admin/interview">
-          <h1 class="text-center">interview</h1>
+          <h1 class="text-center">Interview</h1>
           <div class="text-center">
             <img src="/imgs/playlist.svg" alt="playlist logo" height="311" width="311">
           </div>

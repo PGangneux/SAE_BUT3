@@ -23,16 +23,14 @@ export default {
     <div class="main-trie col-md-3 ">
 
         <div class="row ">
-            <button type="button" class="btn button-blanc col"> Ajouter un Extrait</button>
-            <img src="/imgs/add.svg" alt="add" class="col add">
+            <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add.svg" alt="add" class="col "> </button>
+            
         </div>
 
         <search class="row">
             <form>
-                <div>
                     <input class="col" type="search" id="mySearch" name="q" placeholder="Rechercher" />
-                    <button class="col"> <img src="/imgs/search.svg" alt=""> </button>
-                </div>
+                    <button class="col"> <img src="/imgs/search.svg" alt="search"> </button>
             </form>
         </search>
 
@@ -66,11 +64,7 @@ export default {
     scrollbar-width: thin;
 }
 
-.add {
-    size: 10px;
-    height: 10px;
-    width: 10px;
-}
+
 
 .main-trie{
     padding-top: 10px;
