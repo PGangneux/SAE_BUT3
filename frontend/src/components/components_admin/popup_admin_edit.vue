@@ -23,14 +23,18 @@ export default {
 
     <div class="grisee allmighty row">
         <div class="col-md-3 ">
-            <search class="row">
-                <form>
-                    <div>
-                        <input class="col" type="search" id="mySearch" name="q" placeholder="Rechercher" />
-                        <button class="col"> <img src="/imgs/search.svg" alt=""> </button>
+           
+            <div class="container row">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                                <img src="/imgs/search.svg" alt="button search">
+                            </button>
                     </div>
-                </form>
-            </search>
+                </div>
+            </div>
+
 
             <div class="row  trie-tags">
 
@@ -117,6 +121,31 @@ export default {
 
 .trie-tags{
     background-color: var(--gris-taupe);
+}
+
+
+
+
+
+.search-bar {
+    max-width: 500px;
+    margin: auto auto;
+}
+
+.search-bar .input-group {
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar .form-control {
+    border: none;
+    padding-left: 20px;
+}
+
+.search-bar .btn {
+    border: none;
+    padding: 10px 20px;
 }
 
 </style>

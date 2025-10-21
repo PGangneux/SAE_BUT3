@@ -20,24 +20,34 @@ export default {
     <comp_baradmin/>
     
     <div class="row"> 
-        <button class="col btgris"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
+        <button class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
 
-        <div class="col">
-            <input type="search" id="site-search" name="q" class="col" />
-            <button class="col" ><img src="/imgs/search.svg" alt="button search"></button>
+
+        <div class="container col">
+            <div class="search-bar">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
+                </div>
+            </div>
         </div>
+
 
     </div>
 
     <div class="raw">    
+
+        <div class="raw">
+            <button scope="col" class="btgris btn" > Pseudo</button>
+            <button scope="col" class="btgris btn" > Nom</button>
+            <button scope="col" class="btgris btn" > Prénom</button>
+            <button scope="col" class="btgris btn" > État du compte</button>
+        </div>
+
         <table class="scroller ultagger table table-bordered">
             <thead>
-                <tr>
-                    <th scope="col">Pseudo</th>
-                    <th scope="col">Nom</th>
-                    <th scope="col">Prénom</th>
-                    <th scope="col">État du compte</th>
-                </tr>
             </thead>
             <tbody>
                 <tr class="col" v-for="tag in tags">
@@ -98,5 +108,28 @@ ul {
 }
 
 
+
+
+
+.search-bar {
+    max-width: 500px;
+    margin: auto auto;
+}
+
+.search-bar .input-group {
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar .form-control {
+    border: none;
+    padding-left: 20px;
+}
+
+.search-bar .btn {
+    border: none;
+    padding: 10px 20px;
+}
 
 </style>
