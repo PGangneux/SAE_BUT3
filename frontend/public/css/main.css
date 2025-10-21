@@ -1,7 +1,7 @@
 :root {
     --vert-neon : #00FF86;
     --vert-pale : #26503C;
-    --noire : #0f0f0f;
+    --noir : #0f0f0f;
     --gris-moyen : #2C2D32;
     --gris-taupe : #4C4C4C;
     --gris-foncer : #323339;
@@ -28,6 +28,10 @@ body {
   justify-content: center; /* centrer verticalement si tu veux */
 
   background-color: var(--noir);
+}
+
+main{
+    background-color: var(--noir);
 }
 
 #app {

@@ -1,6 +1,6 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/headerbar_admin.vue";
+import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 
 import comp_extrait from '../../components/components_admin/Admin_presentation_extrait.vue';
 
@@ -32,9 +32,9 @@ export default {
   <div class="row" >
     <comp_admin_trie_extrait/>
 
-    <div class="col aggrandir">
+    <div class="col-md-9 aggrandir">
       <ul class="scroller2  row">
-        <li class="row" v-for="tag in tags">
+        <li class="row carte" v-for="tag in tags">
             <comp_extrait/>
         </li>
       </ul>
@@ -48,21 +48,24 @@ export default {
 
 <style scoped>
 
-body{
-    background-color: #0F0F0F;
+
+
+.carte{
+  padding: 5px;
+  margin: 5px;
 }
 
 
-h1 {
-  color: #ffffff;
-}
 
 .card{
-  background-color: #2C2D32;
-  filter: drop-shadow(20px 13px 4px #000000) ;
+  background-color: var(--gris-moyen);
+  filter: drop-shadow(20px 13px 4px var(--noir)) ;
 
  
 }
+
+
+
 
 li > .card{
     padding: 20px 50px 150px;
@@ -84,7 +87,7 @@ ul {
 
   height: 80%;
   overflow-y: scroll;
-  scrollbar-color: #FFFFFF #A6A6A6;
+  scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;
 }
 

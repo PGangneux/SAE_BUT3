@@ -21,12 +21,12 @@ export default {
                     <ul>
 
                         <li class="row vigniette">
-                            <img src="../../assets/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
+                            <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
                             <p class="col" >date publication</p>
                         </li>
 
                         <li class="row vigniette">
-                            <img src="../../assets/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
+                            <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
                             <p class="col">tags</p>
                             <!-- faire get des tags-->
                         </li>
@@ -37,7 +37,7 @@ export default {
             </div>
 
             <div class="col-sm reduction_image">
-                <img src="../../assets/imgs/width550.png" class="video" alt="Video logo" height="150" width="150">
+                <img src="/imgs/width550.png" class="video" alt="Video logo" height="150" width="150">
             </div>
 
         </div>
@@ -54,7 +54,7 @@ export default {
 
 .bt{
     color:white;
-    background-color:#26503C;
+    background-color:var(--vert-pale);
     border-radius: 19%;
     
 }
@@ -80,13 +80,12 @@ ul ,base{
 }
 
 .video{
-    border: solid 10px;
     border-radius: 2em;
 }
 
 .headeradmin{
     
-    background-color:#2C2D32;
+    background-color:var(--gris-moyen);
     margin: 10px 10px 10px 10px; 
 }
 
@@ -97,13 +96,13 @@ ul ,base{
 }
 
 .container_extrait{
-    filter: drop-shadow(10px 8px 4px #000000) ;
-    background-color:#2C2D32;
+    filter: drop-shadow(10px 8px 4px var(--noir)) ;
+    background-color:var(--gris-moyen);
     
 }
 
 .container_extrait h1, p{
-    color: #00FF86;
+    color: var(--vert-neon);
     
 }
 

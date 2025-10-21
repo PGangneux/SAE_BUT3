@@ -6,9 +6,7 @@ export default {
 </script>
 
 <template>
-<<<<<<< HEAD:frontend/src/components/components_admin/HeaderbarAdmin.vue
-    <header class="headeradmin text-white py-3">
-        <nav class=" ">
+        <nav class="headeradmin text-white py-3">
                 <ul class="text-center">
 
                     <li class="nav-item text-white">
@@ -28,14 +26,13 @@ export default {
                     </li>
                 </ul>
         </nav>
-    </header>
 </template>
 
 <style scoped>
 
 .bt{
     color:white;
-    background-color:#26503C;
+    background-color:var(--vert-pale);
     border-radius: 19%;
     
 }
@@ -49,7 +46,7 @@ ul {
 }
 
 .headeradmin{
-    background-color:#2C2D32;
+    background-color:var(--gris-moyen);
     margin: 10px 10px 10px 10px; 
 }
 

@@ -20,25 +20,25 @@ export default {
 
 <template>
 
-    <div class="bg-danger col ">
+    <div class="main-trie col-md-3 ">
 
-        <div class="row text-center">
-            <button type="button" class="btn btn-primary col"> Ajouter un Extrait</button>
-            <img src="../../assets/imgs/add.svg" alt="add" class="col add">
+        <div class="row ">
+            <button type="button" class="btn button-blanc col"> Ajouter un Extrait</button>
+            <img src="/imgs/add.svg" alt="add" class="col add">
         </div>
 
         <search class="row">
             <form>
-                <div class="text-center">
+                <div>
                     <input class="col" type="search" id="mySearch" name="q" placeholder="Rechercher" />
-                    <button class="col"> <img src="../../assets/imgs/search.svg" alt=""> </button>
+                    <button class="col"> <img src="/imgs/search.svg" alt=""> </button>
                 </div>
             </form>
         </search>
 
-        <div class="row text-center">
+        <div class="row  trie-tags">
 
-            <p class="row text-center">Trier par tag</p>
+            <p class="row ">Trier par tag</p>
 
             <ul class="scroller ultagger">
                 <li class="col" v-for="tag in tags">
@@ -61,7 +61,7 @@ export default {
     width: 300px;
     height: 100px;
     overflow-y: scroll;
-    scrollbar-color: #FFFFFF #A6A6A6;
+    scrollbar-color: var(---blanc) #A6A6A6;
     scrollbar-width: thin;
 }
 
@@ -71,11 +71,26 @@ export default {
     width: 10px;
 }
 
-
+.main-trie{
+    padding-top: 10px;
+    background-color: var(--gris-moyen);
+}
 
 
 .ultagger {
     list-style-type: none;
 
+}
+
+
+.button-blanc{
+    background-color: var(--blanc);
+}
+
+
+
+
+.trie-tags{
+    background-color: var(--gris-taupe);
 }
 </style>

@@ -27,7 +27,7 @@ export default {
             
             <h1 class="text-center" > Extrait </h1>
             <div class="text-center align-middle">
-              <img src="../../assets/imgs/video.svg" alt="Video logo" height="87" width="100">
+              <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
             </div>
           </RouterLink>
 
@@ -37,7 +37,7 @@ export default {
           <RouterLink class="card" to="/admin/interview">
             <h1 class="text-center" > interview </h1>
             <div class="text-center">
-              <img src="../../assets/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
+              <img src="/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
             </div>
           </RouterLink>
 
@@ -49,7 +49,7 @@ export default {
 
             <h1 class="text-center" > User </h1>
             <div class="text-center">
-              <img class="text-center" src="../../assets/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
+              <img class="text-center" src="/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
             </div>
           </RouterLink>
 
@@ -63,17 +63,17 @@ export default {
 <style scoped>
 
 body{
-    background-color: #0F0F0F;
+    background-color: var(--noir);
 }
 
 
 h1 {
-  color: #ffffff;
+  color: var(---blanc);
 }
 
 .card{
-  background-color: #2C2D32;
-  filter: drop-shadow(20px 13px 4px #000000) ;
+  background-color: var(--gris-moyen);
+  filter: drop-shadow(20px 13px 4px var(--noir)) ;
 
  
 }
