@@ -19,7 +19,6 @@ class Artiste(StructuredNode):
     uuid = UniqueIdProperty()
     name = StringProperty(required=True, unique_index=True)
     info = StringProperty()
-    metadonnees = JSONProperty()
 
     style = RelationshipTo('StyleMusical', 'STYLE')
 
@@ -32,7 +31,6 @@ class Interview(StructuredNode):
     occasion = StringProperty()
     description = StringProperty()
     lieu = StringProperty()
-    metadonnees = JSONProperty()
 
     interviewer = RelationshipTo('Artiste', 'PARTICIPER')
 
@@ -67,8 +65,8 @@ class Theme(StructuredNode):
 class Utilisateur(StructuredNode):
     uuid = UniqueIdProperty()
     pseudo = StringProperty(unique_index=True, required=True, db_property='name')
-    prenom = StringProperty()
-    nom = StringProperty()
+    prenom = StringProperty(required=True)
+    nom = StringProperty(required=True)
     email = StringProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
 
