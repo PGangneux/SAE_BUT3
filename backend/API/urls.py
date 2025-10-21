@@ -21,7 +21,7 @@ router_theme = NestedDefaultRouter(router, r'themes', lookup='theme')
 router_theme.register(r'questions', ThemeQuestionViewSet, basename='question')
 
 router_question = NestedDefaultRouter(router, r'questions', lookup='question')
-router_theme.register(r'extraits', QuestionExtraitViewSet, basename='extrait')
+router_question.register(r'extraits', QuestionExtraitViewSet, basename='extrait')
 
 router_interview = NestedDefaultRouter(router, r'interviews', lookup='interview')
 router_interview.register(r'extraits', InterviewExtraitViewSet, basename='extrait')
@@ -32,6 +32,7 @@ router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interv
 urlpatterns = [
     path('', include(router.urls)),
     path('', include(router_theme.urls)),
+    path('', include(router_question.urls)),
     path('', include(router_interview.urls)),
     path('', include(router_artiste.urls)),
 ]
