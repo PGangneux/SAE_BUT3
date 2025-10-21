@@ -22,7 +22,7 @@ class Artiste(StructuredNode):
     info = StringProperty()
 
     style = RelationshipTo('StyleMusical', 'STYLE')
-    pays = RelationshipTo('Nationnalite', 'PAYS')
+    nationalite = RelationshipTo('Nation', 'NATIONALITE')
 
 
 class Interview(StructuredNode):
@@ -78,6 +78,6 @@ class Utilisateur(StructuredNode):
     searched_questions = RelationshipTo('Question', 'A_RECHERCHE', model=DateHeureRel)
 
 
-class Nationnalite(StructuredNode):
+class Nation(StructuredNode):
     uuid = UniqueIdProperty()
     name = StringProperty(required=True, unique_index=True)

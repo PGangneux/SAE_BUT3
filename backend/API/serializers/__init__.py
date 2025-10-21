@@ -5,4 +5,4 @@ from .interview import *
 from .artiste import *
 from .utilisateur import *
 from .style_musical import *
-from .nationnalite import *
+from .nation import *

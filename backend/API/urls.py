@@ -8,7 +8,8 @@ from .views import (
     ArtisteViewSet, UtilisateurViewSet,
     ArtisteInterviewViewSet, QuestionExtraitViewSet,
     StyleMusicalViewSet, StyleMusicalArtisteViewSet,
-    ArtisteStyleMusicalViewSet, NationnaliteViewSet,
+    ArtisteStyleMusicalViewSet, NationViewSet,
+    NationArtisteViewSet,
 )
 
 router = DefaultRouter()
@@ -18,7 +19,7 @@ router.register(r'extraits', ExtraitViewSet, basename='extrait')
 router.register(r'interviews', InterviewViewSet, basename='interview')
 router.register(r'artistes', ArtisteViewSet, basename='artiste')
 router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')
-router.register(r'nationnalites', NationnaliteViewSet, basename='nationnalite')
+router.register(r'nations', NationViewSet, basename='nation')
 router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
 
 router_theme = NestedDefaultRouter(router, r'themes', lookup='theme')
@@ -34,8 +35,11 @@ router_artiste = NestedDefaultRouter(router, r'artistes', lookup='artiste')
 router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interview')
 router_artiste.register(r'styles-musicaux', ArtisteStyleMusicalViewSet, basename='style-musical')
 
-routeur_style_musical = NestedDefaultRouter(router, r'styles-musicaux', lookup='stylemusical')
-routeur_style_musical.register(r'artistes', StyleMusicalArtisteViewSet, basename='artiste')
+router_style_musical = NestedDefaultRouter(router, r'styles-musicaux', lookup='stylemusical')
+router_style_musical.register(r'artistes', StyleMusicalArtisteViewSet, basename='artiste')
+
+router_nation = NestedDefaultRouter(router, r'nations', lookup='nation')
+router_nation.register(r'artistes', NationArtisteViewSet, basename='artiste')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -43,5 +47,6 @@ urlpatterns = [
     path('', include(router_question.urls)),
     path('', include(router_interview.urls)),
     path('', include(router_artiste.urls)),
-    path('', include(routeur_style_musical.urls)),
+    path('', include(router_style_musical.urls)),
+    path('', include(router_nation.urls)),
 ]

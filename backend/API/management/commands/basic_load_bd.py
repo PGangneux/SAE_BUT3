@@ -1,7 +1,7 @@
 from datetime import date
 from django.core.management.base import BaseCommand
 from neomodel import db
-from ...models import Artiste, Interview, Extrait, PositionExtraitRel, Question, StyleMusical, Theme, Utilisateur
+from ...models import Artiste, Interview, Extrait, Nation, PositionExtraitRel, Question, StyleMusical, Theme, Utilisateur
 from django.contrib.auth.hashers import make_password
 
 class Command(BaseCommand):
@@ -17,9 +17,11 @@ class Command(BaseCommand):
         interview = Interview(titre="Interview 1", date=date.today(), occasion="Festival de la Musique", description="Interview 1 de l'Artiste 1", lieu="Paris").save()
         extrait = Extrait(titre="Extrait 1", description="Extrait 1 de l'interview 1", youtube_url="youtube.com", vimeo_url= "vimeo.com", uploaded_at=date.today()).save()
         utilisateur = Utilisateur(pseudo="Test Utilisateur", prenom="Jean", nom="Dupond", email="test@exemple.com", password=make_password("testmdp")).save()
+        nation = Nation(name="Test Nation").save()
 
         question.theme.connect(theme)
         artiste.style.connect(style)
+        artiste.nationalite.connect(nation)
         interview.interviewer.connect(artiste)
         extrait.interview.connect(interview, {'position': 1})
         extrait.question.connect(question)
