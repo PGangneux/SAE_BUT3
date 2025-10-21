@@ -1,58 +1,75 @@
 <script>
-/// import { BASE_URL } from "../config.js";
-var BASE_URL = "http://localhost:5000";
+import BASE_URL from "../config.js";
 export default {
     name: "comp_recent",
     data() {
         return {
-            items: [],
+            failed : false,
+            loading : true,
+            interviews: [],
         };
     },
     async mounted() {
+        this.loading = true;
         try {
-            const response = await fetch(BASE_URL + "/api/recent");
-            const data = await response.json();
-            this.items = data;
+            const response = await fetch(BASE_URL + "API/interviews/");
+            this.interviews = await response.json();
+            this.loading = false;
         } catch (error) {
-            this.items = [];
+            this.loading = false;
+            this.failed = true;
         }
     },
 };
 </script>
 
 <template>
-    <div class="recent-flex">
-        <div
-            v-for="item in items"
-            :key="item.id"
-            class="recent-item"
+    <div class="local-flex">
+        <div v-if="loading" v-for="i in [1,2,3]" :key="i" class="local">
+            <img src="/imgs/spinner.gif" alt="loading image...">
+            <p>loading ...</p>
+        </div>
+        <div v-else-if="failed" v-for="k in [1,2,3]" :key="k" class="local">
+            <img src="/imgs/Close.png" alt="erreur image">
+            <p>erreur</p>
+        </div>
+        <div v-else
+            v-for="inter in interviews"
+            :key="inter.uuid"
+            class="local"
         >
-            <router-link :to="`/video/${item.id}`">
+            <router-link to="/lecteur_video">
                 <p>preview</p>
-                <iframe src="${item.url}" frameborder="0"></iframe>
-                <h3>{{ item.title }}</h3>
-                <p>{{ item.description }}</p>
+                <iframe src="https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0"></iframe>
+                <h3>lieu {{ inter.lieu }}</h3>
+                <p>lieu {{ inter.description }}</p>
+                <p>url {{inter.extraits}}</p>
             </router-link>
         </div>
     </div>
 </template>
 
 <style scoped>
-.recent-flex {
+.local-flex {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 20px;
+    justify-content: space-evenly
 }
-.recent-item {
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    border-radius: 8px;
+.local {
+    background: var(--gris-moyen);
+
+    border: 3px solid var(--vert-neon);
+    box-shadow: 12px 8px 3.2px 6px var(--vert-pale);
+    border-radius: 20px;
+
     padding: 16px;
-    min-width: 200px;
-    max-width: 300px;
+    min-width: 350px;
+    min-height: 350px;
+    max-width: 400px;
     flex: 1 1 200px;
 }
-.recent-item h3 {
+.local h3 {
     margin: 0 0 8px 0;
 }
 </style>

@@ -1,23 +1,16 @@
 <script>
 export default {
     name: "comp_searchbar",
-    data() {
-        var tags = ["pop"];
-        return {
-            tags: tags,
-        };
-    },
-    emits: [
-        "search",
-    ],
+    inject : ["searchterm"],
 };
 </script>
 
 <template>
     <div>
-        <input type="text" placeholder="Search..." />
+        <input type="text" v-model="searchterm" placeholder="Search..." />
     </div>
-    <button @click="$emit('search')"></button>
+    <RouterLink to="/">
+        <img src="/imgs/Search.png" alt="rechercher">
+    </RouterLink>
     <img src="" alt="">
-
 </template>

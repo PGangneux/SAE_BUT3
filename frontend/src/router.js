@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 import page_acceuil from "./views/acceuil.vue";
+import page_propos from "./views/a_propos.vue";
+import page_condition_general from "./views/condition_general.vue";
 import page_account from "./views/account.vue";
 import page_connection from "./views/connection.vue";
 import page_inscription from "./views/inscription.vue";
@@ -16,6 +18,8 @@ import lecteur_video from './components/lecteur_video/lecteur_video.vue';
 
 const routes = [
     { path: "/", component: page_acceuil },
+    { path: "/propos", component: page_propos },
+    { path: "/conditiongeneral", component: page_condition_general },
     { path: "/account", component: page_account },
     { path: "/connection", component: page_connection },
     { path: "/inscription", component: page_inscription },

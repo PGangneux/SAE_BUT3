@@ -27,7 +27,7 @@ export default {
             <div class="d-flex justify-content-center gap-3 mb-2">
                 <RouterLink class="text-white mx-2 text-decoration-none" to="/">Accueil</RouterLink>
                 <RouterLink class="text-white mx-2 text-decoration-none" to="/propos">À propos de nous</RouterLink>
-                <RouterLink class="text-white mx-2 text-decoration-none" to="/condition">Conditions générales
+                <RouterLink class="text-white mx-2 text-decoration-none" to="/conditiongeneral">Conditions générales
                     d'utilisation
                 </RouterLink>
             </div>
