@@ -27,22 +27,22 @@ export default {
             
         </div>
 
-        <div class="container row">
+        <div class="container recherche row">
             <div class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                 </div>
             </div>
         </div>
 
-        <div class="row  trie-tags">
+        <div class="row  trie-tags centrer">
 
-            <p class="row ">Trier par tag</p>
+            <p class="row pcentrer" >Trier par tag</p>
 
-            <ul class="scroller ultagger row">
+            <ul class="scroller ultagger row tagsfully">
                 <li class="col" v-for="tag in tags">
                     <button class="btn btn-primary"> {{ tag }} </button>
                 </li>
@@ -68,10 +68,25 @@ export default {
     scrollbar-width: thin;
 }
 
+.pcentrer{
+margin-top: 1em;
+margin-bottom: 1em;
+justify-content: center
+}
 
+
+.tagsfully{
+    width: 100%;
+    height: 100vh;
+}
+
+
+.centrer{
+justify-content: center
+}
 
 .main-trie{
-    padding-top: 10px;
+    padding: 2em;
     background-color: var(--gris-moyen);
 }
 
@@ -87,7 +102,14 @@ export default {
 }
 
 
+.recherche{
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
 
+.buttonsearch{
+    background-color: var(--vert-pale);
+}
 
 .trie-tags{
     background-color: var(--gris-taupe);

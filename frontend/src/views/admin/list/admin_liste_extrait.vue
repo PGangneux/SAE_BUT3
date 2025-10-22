@@ -52,6 +52,7 @@ export default {
 
 .carte{
   padding: 5px;
+  padding-bottom: 1em;
   /*!margin: 5px; */
 }
 
@@ -85,7 +86,7 @@ ul {
 
 .scroller2 {
 
-  height: 80%;
+  height: 100%;
   overflow-y: scroll;
   scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;
