@@ -12,45 +12,48 @@ from .views import (
     NationArtisteViewSet, TagViewSet,
     TagInterviewViewSet, TagExtraitViewSet,
     InterviewTagViewSet, ExtraitTagViewSet,
+    ArtisteStyleRelationShipViewSet,
 )
 
 router = DefaultRouter()
-router.register(r'themes', ThemeViewSet, basename='theme')
-router.register(r'questions', QuestionViewSet, basename='question')
-router.register(r'extraits', ExtraitViewSet, basename='extrait')
-router.register(r'interviews', InterviewViewSet, basename='interview')
-router.register(r'artistes', ArtisteViewSet, basename='artiste')
-router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')
-router.register(r'nations', NationViewSet, basename='nation')
-router.register(r'tags', TagViewSet, basename='tag')
-router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
 
+router.register(r'themes', ThemeViewSet, basename='theme')
 router_theme = NestedDefaultRouter(router, r'themes', lookup='theme')
 router_theme.register(r'questions', ThemeQuestionViewSet, basename='question')
 
+router.register(r'questions', QuestionViewSet, basename='question')
 router_question = NestedDefaultRouter(router, r'questions', lookup='question')
 router_question.register(r'extraits', QuestionExtraitViewSet, basename='extrait')
 
+router.register(r'extraits', ExtraitViewSet, basename='extrait')
 router_extrait = NestedDefaultRouter(router, r'extraits', lookup='extrait')
 router_extrait.register(r'tags', ExtraitTagViewSet, basename='tag')
 
+router.register(r'interviews', InterviewViewSet, basename='interview')
 router_interview = NestedDefaultRouter(router, r'interviews', lookup='interview')
 router_interview.register(r'extraits', InterviewExtraitViewSet, basename='extrait')
 router_interview.register(r'tags', InterviewTagViewSet, basename='tag')
 
+router.register(r'artistes', ArtisteViewSet, basename='artiste')
 router_artiste = NestedDefaultRouter(router, r'artistes', lookup='artiste')
 router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interview')
 router_artiste.register(r'styles-musicaux', ArtisteStyleMusicalViewSet, basename='style-musical')
+router_artiste.register(r'styles', ArtisteStyleRelationShipViewSet, basename='style')
 
+router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')
 router_style_musical = NestedDefaultRouter(router, r'styles-musicaux', lookup='stylemusical')
 router_style_musical.register(r'artistes', StyleMusicalArtisteViewSet, basename='artiste')
 
+router.register(r'nations', NationViewSet, basename='nation')
 router_nation = NestedDefaultRouter(router, r'nations', lookup='nation')
 router_nation.register(r'artistes', NationArtisteViewSet, basename='artiste')
 
+router.register(r'tags', TagViewSet, basename='tag')
 router_tag = NestedDefaultRouter(router, r'tags', lookup='tag')
 router_tag.register(r'extraits', TagExtraitViewSet, basename='extrait')
 router_tag.register(r'interviews', TagInterviewViewSet, basename='interview')
+
+router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
 
 urlpatterns = [
     path('', include(router.urls)),
