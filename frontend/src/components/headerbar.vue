@@ -1,31 +1,38 @@
 <script>
-import user_t from '../model/user.js';
 import comp_searchbar from './searchbar.vue';
+
 export default {
     name: "comp_headerbar",
     components: {
         comp_searchbar,
     },
-    props : {
-        user_current : {
-            type : user_t,
-            required : false,
-        },
-    },
-    computed : {
-        isconnected() {return this.user_current?.uuid || false;},
-        isadmin() {return true;}, // this.user_current?.admin || false;
-    },
-    watch : {
-        user_current(oldu,newu){
-            console.log("UPDATE USER");
-            console.log(oldu);
-            console.log(newu);
+    inject: ['user_current'],
+    data() {
+        return {
+            userKey: 0
         }
     },
-    mounted() {
-        console.log("this.user_current");
-        console.log(this.user_current);
+    watch: {
+        'user_current.get()': {
+            handler() {
+                /// console.log("current_user headerbar");
+                /// console.log(this.user_current.get());
+                this.userKey++; // Force re-render
+            },
+            deep: true
+        }
+    },
+    computed: {
+        isconnected() {
+            // console.log("current_user headerbar");
+            // console.log(this.user_current.get());
+            this.userKey;
+            return this.user_current.get()?.pseudo || false;
+        },
+        isadmin() {
+            this.userKey;
+            return this.user_current.get()?.admin || false;
+        }
     }
 };
 </script>
@@ -61,8 +68,9 @@ export default {
 <style scoped>
 .local {
     background-color: var(--vert-pale) !important;
-    color : var(--blanc);
+    color: var(--blanc);
 }
+
 .local:hover {
     background-color: var(--vert-neon) !important;
 }

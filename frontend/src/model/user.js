@@ -61,7 +61,7 @@ export default class user_t extends CRUD {
     get email() { return this.#email }
     set email(value) { this.#email = this.validateString(value, "email") }
 
-    get admin() { return this.#admin }
+    get admin() { return true ; } // this.#admin }
 
     get token() { return this.#token }
 

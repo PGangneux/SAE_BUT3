@@ -1,7 +1,9 @@
 <script>
+import { markRaw } from 'vue';
 import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Lecteur_video from './components/lecteur_video/lecteur_video.vue';
+import user_t from './model/user';
 
 export default {
     name: "page_router",
@@ -11,27 +13,30 @@ export default {
     },
     data() {
         return {
-            user_current: null, // user_t
-            searchterm : "", // text de recherche
+            user_current: {
+                type: user_t,
+                value: null,
+            },
+            searchterm: "", // text de recherche
         }
     },
     provide() {
         return {
             user_current: {
                 get: () => this.user_current,
-                set: (value) => { this.user_current = value }
+                set: (value) => { this.user_current = value ? markRaw(value) : null; }
             },
             searchterm: {
                 get: () => this.searchterm,
                 set: (value) => { this.searchterm = value }
             }
-        } 
+        }
     },
 };
 </script>
 
 <template>
-    <comp_headerbar :user_current="user_current" />
+    <comp_headerbar />
     <main>
         <router-view>
         </router-view>

@@ -18,12 +18,12 @@ export default {
             try {
                 const sleep = ms => new Promise(r => setTimeout(r, ms));
                 await sleep(500);
-                this.user_current = new user_t(this.username , this.password);
+                this.user_current.set(new user_t(this.username, this.password));
                 /// console.log("current_user");
                 /// console.log(this.user_current);
                 this.apiMessage = "login bon";
                 await sleep(500);
-                router.push({ path: '/', replace: true });
+                router.push({ path: '/admin', replace: true });
             } catch (error) {
                 console.error(error);
                 this.apiMessage = error.message;
