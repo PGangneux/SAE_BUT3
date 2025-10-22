@@ -1,18 +1,39 @@
 <script>
 import comp_searchbar from './searchbar.vue';
+
 export default {
     name: "comp_headerbar",
     components: {
         comp_searchbar,
     },
+    inject: ['user_current'],
     data() {
-        var isconnected = true;
-        var isadmin = true;
         return {
-            isconnected,
-            isadmin,
-        };
+            userKey: 0
+        }
     },
+    watch: {
+        'user_current.get()': {
+            handler() {
+                /// console.log("current_user headerbar");
+                /// console.log(this.user_current.get());
+                this.userKey++; // Force re-render
+            },
+            deep: true
+        }
+    },
+    computed: {
+        isconnected() {
+            // console.log("current_user headerbar");
+            // console.log(this.user_current.get());
+            this.userKey;
+            return this.user_current.get()?.pseudo || false;
+        },
+        isadmin() {
+            this.userKey;
+            return this.user_current.get()?.admin || false;
+        }
+    }
 };
 </script>
 
@@ -38,9 +59,6 @@ export default {
                     <li class="btn local" v-if="!isconnected">
                         <RouterLink class="nav-link" to="/connection">Connection</RouterLink>
                     </li>
-                    <li class="btn local">
-                        <RouterLink class="nav-link" to="/lecteur_video">lecteur video</RouterLink>
-                    </li>
                 </ul>
             </div>
         </nav>
@@ -50,7 +68,9 @@ export default {
 <style scoped>
 .local {
     background-color: var(--vert-pale) !important;
+    color: var(--blanc);
 }
+
 .local:hover {
     background-color: var(--vert-neon) !important;
 }

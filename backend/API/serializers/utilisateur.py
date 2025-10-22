@@ -10,6 +10,7 @@ class UtilisateurSerializer(serializers.Serializer):
     nom = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True)
+    is_admin = serializers.BooleanField()
 
     # # optional relationships creation via serializer (lists of dicts with uuid + date_heure)
     # recherches_artistes = serializers.ListField(
