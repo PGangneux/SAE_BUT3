@@ -2,8 +2,10 @@
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import parametres from './parametres.vue';
+import { videoStore } from "../../stores/videoStore";
 
 export default {
+  name: "page_lecteur_video",
   components: { iframe_lecture_video, bar_liste_video, parametres },
 
   data() {
@@ -24,7 +26,14 @@ export default {
     },
 
     picture_in_picture() {
-      console.log("pictureInPicture");
+      console.log("→ Activation du Picture in Picture");
+      videoStore.url = this.url;
+      videoStore.lecteur = this.lecteur;
+      console.log("le lecteur: "+this.lecteur)
+      videoStore.isPictureInPicture = true;
+
+      // Rediriger vers la page d’accueil
+      this.$router.push("/");
     },
 
 
@@ -43,10 +52,11 @@ export default {
       this.lecteur = new_lecteur
       console.log("update url")
       this.set_url(this.lecteur)
+      this.$refs.iframe.update_player();
     },
 
     set_url(lecteur){
-      if (lecteur == "YouTube"){
+      if (lecteur == "YouTube"){     
         this.url = "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
       }
       else{
@@ -144,9 +154,10 @@ main {
 }
 
 
-main > div {
-  flex: 1;
-}
+
+
+
+
 
 #bottom-iframe {
   display: flex;
@@ -199,6 +210,19 @@ main > div {
 .layout h2{
   margin-right: 10px;
   color: var(--vert-neon);
+}
+
+.player {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--blanc);
+  border-radius: 20px;
+  background-color: #000;
+}
+
+iframe{
+  width: 100%;
+  height: 100%;
 }
 
 
