@@ -1,10 +1,10 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
-import comp_extrait from '../../components/components_admin/Admin_presentation_extrait.vue';
+import comp_extrait from '../../../components/components_admin/Admin_presentation_extrait.vue';
 
-import comp_admin_trie_extrait from '../../components/components_admin/Admin_trie.vue';
+import comp_admin_trie_extrait from '../../../components/components_admin/Admin_trie.vue';
 
 export default {
     name: "page_admin_listextrait",
@@ -27,9 +27,9 @@ export default {
 
   <comp_baradmin/>
 
-  <h1 class="text-center"> Admin </h1>
+  <h1 class="text-center"> Extrait </h1>
 
-  <div class="row" >
+  <div class="row" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" >
     <comp_admin_trie_extrait/>
 
     <div class="col-md-9 aggrandir">
@@ -52,7 +52,7 @@ export default {
 
 .carte{
   padding: 5px;
-  margin: 5px;
+  /*!margin: 5px; */
 }
 
 

@@ -1,6 +1,6 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 
 export default {

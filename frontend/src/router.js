@@ -11,14 +11,13 @@ import page_reset_password from "./views/reset_password.vue";
 
 // ADMIN PAGES
 import page_admin from "./views/admin/admin_acceuil.vue";
-import page_admin_listextrait from "./views/admin/admin_liste_extrait.vue";
-import page_admin_listuser from "./views/admin/admin_liste_user.vue";
-import page_admin_detail_video from "./views/admin/admin_detail_video.vue";
-import page_admin_interview from "./views/admin/admin_interview.vue";
+import page_admin_listextrait from "./views/admin/list/admin_liste_extrait.vue";
+import page_admin_listuser from "./views/admin/list/admin_liste_user.vue";
+import page_admin_interview from "./views/admin/list/admin_liste_interview.vue";
 
-import page_admin_edit_client from "./views/admin/admin_edit_client.vue";
-
-import page_admin_edit_interview from "./views/admin/admin_edit_interview.vue";
+import page_admin_edit_video from "./views/admin/edit/admin_edit_video.vue";
+import page_admin_edit_client from "./views/admin/edit/admin_edit_client.vue";
+import page_admin_edit_interview from "./views/admin/edit/admin_edit_interview.vue";
 
 
 // Lecteur Video Pages
@@ -42,7 +41,7 @@ const routes = [
     { path: "/admin/interview/edit", component: page_admin_edit_interview },
     
     { path: "/admin/extrait", component: page_admin_listextrait },
-    { path: "/admin/details/extrait", component: page_admin_detail_video },
+    { path: "/admin/details/extrait", component: page_admin_edit_video },
 
 
     

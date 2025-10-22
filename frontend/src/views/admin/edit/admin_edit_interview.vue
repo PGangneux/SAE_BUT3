@@ -1,7 +1,7 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
-import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
+import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
 
 
 export default {
@@ -64,7 +64,7 @@ export default {
 
 .carte{
   padding: 5px;
-  margin: 5px;
+  /*!margin: 5px; */
 }
 
 
