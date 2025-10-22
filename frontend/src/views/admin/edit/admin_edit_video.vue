@@ -35,39 +35,43 @@ export default {
 
         <div class="col-md-6 ">
             <div class="row" >
-              <div class="col grisetround" >
-                <label for="urlyoutube">youtube_url :</label>
-                <input type="text" id="urlyoutube" name="urlyoutube" class="textfield" placeholder="youtube_url" />
+              <div class="input-group mb-3 ">
+                <span class="input-group-text" id="basic-addon1">youtube_url :</span>
+                <input type="text" class="form-control textfield" placeholder="youtube_url" aria-label="youtube_url" aria-describedby="basic-addon1">
               </div>
             </div>
-          
+
+
 
 
             <div class="row" >
-                <div class="col grisetround" >
-                  <label for="urlvimeo">vimeo_url :</label>
-                  <input type="text" id="urlvimeo" name="urlvimeo" class="textfield" placeholder="vimeo_url" />
+                <div class="input-group mb-3 ">
+                  <span class="input-group-text" id="basic-addon2">vimeo_url :</span>
+                  <input type="text" class="form-control textfield" placeholder="vimeo_url" aria-label="vimeo_url" aria-describedby="basic-addon2">
                 </div>
             </div>
           
-
             <div class="row" >
-                <label for="question"  class="col" > Question :</label>
-                <input type="text" id="question" name="question" class="textfield col" placeholder="Question" />
+              <div class=" input-group mb-3" >
+                  <span  class="input-group-text" id="basic-addon3" > Question :</span>
+                  <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" aria-label="Question" aria-describedby="basic-addon3" />
+              </div>
             </div>
 
-            <div class="row" >
-                <label for="name3"  class="col" >Artiste :</label>
-                <input type="text" id="name3" name="name3" class="textfield col" placeholder="Artiste" />
 
-                <select id="choix" name="choix" class="col" >
+            <div class="input-group mb-3" >
+                <span class="input-group-text" >Artiste :</span>
+                <input type="text" id="inputartist" name="inputartist" class="textfield form-control" placeholder="Artiste" aria-label="Artiste" />
+
+                <select id="choix" name="choix" class="form-control" >
                   <!-- utiliser js TODO -->
+                   <option value=""> > </option>
                   <option value="option1"> Artiste 1</option> 
                   <option value="option2"> Artiste 2</option>
                   <option value="option3"> Artiste 3</option>
                 </select>
 
-                <div class="col">
+                <div class="form-control">
                   <img   class="col" src="/imgs/date.svg" alt="">
                   <label class="col" for="name4"> Date </label>
                   <input class="col" type="date" lang="fr" id="name4" name="name4" />
@@ -75,23 +79,26 @@ export default {
                 </div>
 
             </div>
+
+
+
             <div class="row" >
-              <input type="aera" placeholder="Description" />
+              <div class="form-group">
+                <textarea type="aera" placeholder="Description" class="form-control"></textarea>/>
+              </div>
             </div>
         </div>
       </div>
 
       <div class="row" >
-        <div class="col grisetround" >
-          <label for="name">Interview Actuelle :</label>
-          <input type="text" id="name" name="name" class="textfield" placeholder="question de l'interview" />
-        </div>
+        <div class="input-group col" >
+          <span class="input-group-text" id="basic-addon8" >Interview Actuelle :</span>
+          <input type="text" id="name" name="name" class="textfield form-control"  placeholder="Interview Actuelle" aria-label="Interview Actuelle :" aria-describedby="basic-addon8"  />
+      </div>
 
         
 
-        <div class="bt btn col"  @click="popup = !popup" >
-          <img src="/imgs/add.svg" alt="Edit"> <p class=" col" >Edit</p>
-        </div>
+        <button type="button" class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</button>
 
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
