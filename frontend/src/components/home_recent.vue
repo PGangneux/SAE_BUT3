@@ -1,4 +1,5 @@
 <script>
+import { markRaw } from 'vue';
 import prefetcher from '../model/prefetcher.js';
 export default {
     name: "comp_recent",
@@ -12,7 +13,7 @@ export default {
     async mounted() {
         this.loading = true;
         try {
-            this.interviews = prefetcher.interview_all();
+            this.interviews = markRaw(prefetcher.interview_all());
             console.log("this.interviews");
             console.log(this.interviews);
         } catch (error) {
