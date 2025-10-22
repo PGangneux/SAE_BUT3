@@ -14,7 +14,14 @@ class ArtisteViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Artiste.nodes.all()
+        artistes = Artiste.nodes
+        search = self.request.query_params.get('search', '').strip()
+        if not search:
+            return artistes.all()
+        for term in search.split():
+            if term:
+                artistes = artistes.filter(name__icontains=term)
+        return artistes.all()
     
     def get_object(self):
         try:
