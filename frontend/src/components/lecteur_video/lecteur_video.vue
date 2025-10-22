@@ -52,10 +52,11 @@ export default {
       this.lecteur = new_lecteur
       console.log("update url")
       this.set_url(this.lecteur)
+      this.$refs.iframe.update_player();
     },
 
     set_url(lecteur){
-      if (lecteur == "YouTube"){
+      if (lecteur == "YouTube"){     
         this.url = "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
       }
       else{
@@ -153,9 +154,10 @@ main {
 }
 
 
-main > div {
-  flex: 1;
-}
+
+
+
+
 
 #bottom-iframe {
   display: flex;

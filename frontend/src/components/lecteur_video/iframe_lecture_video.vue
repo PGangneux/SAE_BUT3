@@ -3,7 +3,6 @@ import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
 import { videoStore } from "../../stores/videoStore";
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
-const VIMEO_API_URL = "https://player.vimeo.com/api/player.js";
 
 // Charger l’API YouTube une seule fois globalement
 function loadYouTubeAPI() {
@@ -24,7 +23,7 @@ function loadYouTubeAPI() {
 export default {
   props: { url: String },
 
-  setup(props) {
+  setup(props, { expose }) {
     const player = ref(null);
 
     function get_YT_videoId(url) {
@@ -95,7 +94,6 @@ export default {
       iframe.allowFullscreen = true;
       iframe.style.width = "100%";
       iframe.style.height = "100%";
-      iframe.style.borderRadius = "20px";
       container.appendChild(iframe);
 
       // Créer le player
@@ -129,11 +127,28 @@ export default {
       player.value = vimeoPlayer;
     }
 
+    async function update_player() {
+      if (player.value && player.value.destroy) {
+        console.log("🔁 Destruction ancien player");
+        player.value.destroy();
+      }
+
+      await nextTick();
+
+      if (props.url.includes("youtube")) {
+        const id = get_YT_videoId(props.url);
+        await initYouTube(id);
+      } else {
+        await initVimeo();
+      }
+    }
+
 
 
 
     onMounted(async () => {
       await nextTick();
+      console.log("création")
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
@@ -142,10 +157,18 @@ export default {
         await initVimeo();
         console.log("test fin init vimeo")
       }
+
+
     });
+
+
 
     onBeforeUnmount(() => {
       if (player.value && player.value.destroy) player.value.destroy();
+    });
+
+    expose({
+      update_player,
     });
 
     return {};
@@ -154,16 +177,6 @@ export default {
 </script>
 
 <template>
-  <div id="player" style="width:100%; height:100%; border-radius:20px"></div>
+  <div class="player" id="player"></div>
 </template>
 
-<style scoped>
-#player {
-  width: 100%;
-  height: 100%;
-  border: 3px solid var(--blanc);
-  border-radius: 20px;
-  background-color: #000;
-  box-sizing: border-box;
-}
-</style>
