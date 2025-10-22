@@ -14,9 +14,9 @@ export default {
       pos_x_iframe: 0,
       pos_y_iframe: 0,
       aside_visible: true,
-      lecteur: 'YouTube',
+      lecteur: 'Viméo',
 
-      url: "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
+      url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
     };
   },
 
@@ -29,6 +29,7 @@ export default {
       console.log("→ Activation du Picture in Picture");
       videoStore.url = this.url;
       videoStore.lecteur = this.lecteur;
+      console.log("le lecteur: "+this.lecteur)
       videoStore.isPictureInPicture = true;
 
       // Rediriger vers la page d’accueil

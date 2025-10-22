@@ -5,7 +5,7 @@ import { videoStore } from "../../stores/videoStore";
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 const VIMEO_API_URL = "https://player.vimeo.com/api/player.js";
 
-// ✅ 1. Charger l’API YouTube une seule fois globalement
+// Charger l’API YouTube une seule fois globalement
 function loadYouTubeAPI() {
   if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
 
@@ -41,6 +41,7 @@ export default {
       return null;
     }
 
+
     async function initYouTube(videoId) {
       const YT = await loadYouTubeAPI();
       await nextTick();
@@ -71,22 +72,65 @@ export default {
       }, 1000);
     }
 
+
+
     async function initVimeo() {
-      if (!window.Vimeo) {
-        const script = document.createElement("script");
-        script.src = VIMEO_API_URL;
-        document.body.appendChild(script);
-        await new Promise((r) => (script.onload = r));
+      // Charger Vimeo API si pas encore là
+      if (!window.Vimeo || !window.Vimeo.Player) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = "https://player.vimeo.com/api/player.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
       }
 
-      player.value = new window.Vimeo.Player("player");
-      if (videoStore.currentTime) player.value.setCurrentTime(videoStore.currentTime);
-      if (videoStore.isPlaying) player.value.play();
+      // Créer l'iframe
+      const container = document.getElementById("player");
+      container.innerHTML = "";
 
-      player.value.on("timeupdate", ({ seconds }) => (videoStore.currentTime = seconds));
-      player.value.on("play", () => (videoStore.isPlaying = true));
-      player.value.on("pause", () => (videoStore.isPlaying = false));
+      const iframe = document.createElement("iframe");
+      iframe.src = props.url;
+      iframe.allow = "autoplay; fullscreen; picture-in-picture";
+      iframe.allowFullscreen = true;
+      iframe.style.width = "100%";
+      iframe.style.height = "100%";
+      iframe.style.borderRadius = "20px";
+      container.appendChild(iframe);
+
+      // Créer le player
+      const vimeoPlayer = new window.Vimeo.Player(iframe);
+
+      // Attendre qu'il soit prêt
+      try {
+        await vimeoPlayer.ready();
+      } catch (e) {
+        console.error("Vimeo jamais prêt :", e);
+        return;
+      }
+
+      // Synchroniser l'état
+      if (videoStore.currentTime) {
+        try {
+          await vimeoPlayer.setCurrentTime(videoStore.currentTime);
+        } catch (err) {
+          console.warn("Impossible de définir le temps :", err);
+        }
+      }
+
+      if (videoStore.isPlaying) await vimeoPlayer.play();
+      else await vimeoPlayer.pause();
+
+      // Écoute des événements
+      vimeoPlayer.on("timeupdate", ({ seconds }) => (videoStore.currentTime = seconds));
+      vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
+      vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
+
+      player.value = vimeoPlayer;
     }
+
+
+
 
     onMounted(async () => {
       await nextTick();
@@ -94,7 +138,9 @@ export default {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
+        console.log("test init vimeo")
         await initVimeo();
+        console.log("test fin init vimeo")
       }
     });
 
