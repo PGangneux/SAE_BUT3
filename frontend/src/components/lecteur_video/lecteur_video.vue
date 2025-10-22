@@ -212,5 +212,18 @@ main {
   color: var(--vert-neon);
 }
 
+.player {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--blanc);
+  border-radius: 20px;
+  background-color: #000;
+}
+
+iframe{
+  width: 100%;
+  height: 100%;
+}
+
 
 </style>
