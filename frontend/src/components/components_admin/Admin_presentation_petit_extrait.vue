@@ -33,7 +33,7 @@ export default {
             </div>
 
             <div class="col-sm reduction_image">
-                <img src="/imgs/width550.png" class="video" alt="Video logo" height="150" width="150">
+                <img src="/imgs/width551.png" class="video" alt="Video logo" height="150" width="150">
             </div>
 
         </div>

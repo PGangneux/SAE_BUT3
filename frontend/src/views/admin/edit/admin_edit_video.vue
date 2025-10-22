@@ -30,7 +30,7 @@ export default {
 
       <div class="row" >
         <div class="col-md-4">
-          <img src="/imgs/width550.png" class="migniature" alt="migniature">
+          <img src="/imgs/width551.png" class="migniature" alt="migniature">
         </div>
 
         <div class="col-md-6 scroller2">
