@@ -25,7 +25,7 @@ export default {
             <li>Auteurs</li>
             <li>Thèmes</li>
             </ul>
-            <img src="../../..//imgs/Close.png" alt="close">
+            <img src="/imgs/Close.png" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
 
     </header>
@@ -34,7 +34,7 @@ export default {
             <h2>{{ titreSideBar }}</h2>
             <div class="search-bar">
                 <input type="text" :placeholder=" placeholderRecherche "/>
-                <img src="../../..//imgs/Search.png" alt="loupe"/>
+                <img src="/imgs/Search.png" alt="loupe"/>
             </div>
             <div>
                 <ul>
