@@ -1,7 +1,7 @@
 from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
-    DateTimeProperty
+    DateTimeProperty, One, ZeroOrMore,
 )
 
 class PositionExtraitRel(StructuredRel):
@@ -21,8 +21,8 @@ class Artiste(StructuredNode):
     name = StringProperty(required=True, unique_index=True)
     info = StringProperty()
 
-    style = RelationshipTo('StyleMusical', 'STYLE')
-    nationalite = RelationshipTo('Nation', 'NATIONALITE')
+    style = RelationshipTo('StyleMusical', 'STYLE', ZeroOrMore)
+    nationalite = RelationshipTo('Nation', 'NATIONALITE', One)
 
 
 class Interview(StructuredNode):
@@ -34,8 +34,8 @@ class Interview(StructuredNode):
     description = StringProperty()
     lieu = StringProperty()
 
-    interviewer = RelationshipTo('Artiste', 'PARTICIPER')
-    tags_interview = RelationshipTo('Tag', 'TAGS_INTERVIEW')
+    interviewer = RelationshipTo('Artiste', 'PARTICIPER', ZeroOrMore)
+    tags_interview = RelationshipTo('Tag', 'TAGS_INTERVIEW', ZeroOrMore)
 
 
 class Extrait(StructuredNode):
@@ -48,16 +48,16 @@ class Extrait(StructuredNode):
     vimeo_url = StringProperty(unique_index=True)
     uploaded_at = DateProperty(default_now=True)
 
-    interview = RelationshipTo('Interview', 'APPARTIENT_A', model=PositionExtraitRel)
-    question = RelationshipTo('Question', 'POSE')
-    tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT')
+    interview = RelationshipTo('Interview', 'APPARTIENT_A', One, PositionExtraitRel)
+    question = RelationshipTo('Question', 'POSE', One)
+    tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT', ZeroOrMore)
 
 
 class Question(StructuredNode):
     uuid = UniqueIdProperty()
     texte = StringProperty(unique_index=True, required=True, db_property='name')
 
-    theme = RelationshipTo('Theme', 'A_THEME')
+    theme = RelationshipTo('Theme', 'A_THEME', One)
 
 
 class Theme(StructuredNode):
@@ -74,10 +74,10 @@ class Utilisateur(StructuredNode):
     email = StringProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
 
-    recherches_artistes = RelationshipTo('Artiste', 'RECHERCHE', model=DateHeureRel)
-    watched_interviews = RelationshipTo('Interview', 'A_VU', model=DateHeureRel)
-    watched_extraits = RelationshipTo('Extrait', 'A_VU', model=DateHeureRel)
-    searched_questions = RelationshipTo('Question', 'A_RECHERCHE', model=DateHeureRel)
+    recherches_artistes = RelationshipTo('Artiste', 'RECHERCHE', ZeroOrMore, DateHeureRel)
+    watched_interviews = RelationshipTo('Interview', 'A_VU', ZeroOrMore, DateHeureRel)
+    watched_extraits = RelationshipTo('Extrait', 'A_VU', ZeroOrMore, DateHeureRel)
+    searched_questions = RelationshipTo('Question', 'A_RECHERCHE', ZeroOrMore, DateHeureRel)
 
 
 class Nation(StructuredNode):

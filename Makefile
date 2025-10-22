@@ -5,7 +5,7 @@ python = ${venv}/python
 pip = ${venv}/pip
 npm = npm --prefix ./frontend
 
-.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd
+.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user
 
 run_back:
 	$(python) $(manage) runserver
@@ -39,3 +39,8 @@ load_bd:
 
 show_django_urls:
 	$(python) $(manage) show_urls
+
+default_admin_user:
+	DJANGO_SUPERUSER_USERNAME=admin \
+	DJANGO_SUPERUSER_PASSWORD=admin \
+	$(python) $(manage) createsuperuser --noinput --email ""
