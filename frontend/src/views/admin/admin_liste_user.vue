@@ -1,54 +1,67 @@
 <script>
+import comp_baradmin from '../../components/components_admin/nav_admin.vue';
+
 export default {
     name: "page_admin_listuser",
     components: {
-    },
+        comp_baradmin,
+    },data() {
+        return {
+            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+        };
+    }
 };
 
 
 </script>
 
 <template>
-  <h1 class="text-center"> Admin </h1>
+
+    <comp_baradmin/>
+    
+    <div class="row"> 
+        <button class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
 
 
-  <nav>
-    <ul>
-      <li>
-
-          <RouterLink class="card" to="/admin/extrait">
-            
-            <h1 class="text-center" > Extrait </h1>
-            <div class="text-center align-middle">
-              <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
+        <div class="container col">
+            <div class="search-bar">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
+                </div>
             </div>
-          </RouterLink>
+        </div>
 
-      </li>
 
-      <li>
-          <RouterLink class="card" to="/admin/interview">
-            <h1 class="text-center" > interview </h1>
-            <div class="text-center">
-              <img src="/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
-            </div>
-          </RouterLink>
+    </div>
 
-      </li>
+    <div class="raw">    
 
-      <li>
+        <div class="raw">
+            <button scope="col" class="btgris btn" > Pseudo</button>
+            <button scope="col" class="btgris btn" > Nom</button>
+            <button scope="col" class="btgris btn" > Prénom</button>
+            <button scope="col" class="btgris btn" > État du compte</button>
+        </div>
+
+        <table class="scroller ultagger table table-bordered">
+            <thead>
+            </thead>
+            <tbody>
+                <tr class="col" v-for="tag in tags">
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                    <td> {{ tag }} </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
         
-          <RouterLink class="card" to="/admin/user">
 
-            <h1 class="text-center" > User </h1>
-            <div class="text-center">
-              <img class="text-center" src="/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
-            </div>
-          </RouterLink>
 
-      </li>
-    </ul>
-  </nav>
 
 
 </template>
@@ -56,17 +69,15 @@ export default {
 <style scoped>
 
 body{
-    background-color: #0F0F0F;
+    background-color: var(--noir);
 }
 
 
-h1 {
-  color: #ffffff;
-}
+
 
 .card{
-  background-color: #2C2D32;
-  filter: drop-shadow(20px 13px 4px #000000) ;
+  background-color: var(--gris-moyen);
+  filter: drop-shadow(20px 13px 4px var(--noir)) ;
 
  
 }
@@ -88,5 +99,37 @@ ul {
 }
 
 
+.btgris{
+    color:white;
+    background-color:var(--gris-moyen);
+    border-radius: 2em;
+    border: none;
+    
+}
+
+
+
+
+
+.search-bar {
+    max-width: 500px;
+    margin: auto auto;
+}
+
+.search-bar .input-group {
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar .form-control {
+    border: none;
+    padding-left: 20px;
+}
+
+.search-bar .btn {
+    border: none;
+    padding: 10px 20px;
+}
 
 </style>
