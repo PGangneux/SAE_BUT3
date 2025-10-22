@@ -28,4 +28,14 @@ export default class theme_t {
     set questions(value) { 
         this.#questions = value ; /// TODO : implement
     }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }

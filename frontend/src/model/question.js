@@ -24,4 +24,14 @@ export default class question_t {
     set theme(value) { 
         this.#theme = value ; /// TODO : implement 
     }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }

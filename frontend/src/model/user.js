@@ -48,4 +48,14 @@ export default class user_t {
 
     get email() { return this.#email }
     set email(value) { this.#email = this.validateString(value, "email") }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }

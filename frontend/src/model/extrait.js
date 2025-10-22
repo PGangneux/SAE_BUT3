@@ -52,4 +52,14 @@ export default class extrait_t {
     set tags(value) { 
         this.#tags = value ; /// TODO : implement 
     }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }

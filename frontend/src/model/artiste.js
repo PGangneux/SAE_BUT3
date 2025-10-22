@@ -22,4 +22,14 @@ export default class artiste_t {
 
     get info() { return this.#info }
     set info(value) { this.#info = this.validateString(value, "info") }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }

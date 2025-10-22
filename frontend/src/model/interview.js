@@ -46,4 +46,14 @@ export default class interview_t {
     set extraits(value) { 
         this.#extraits = value ; /// TODO : implement 
     }
+
+    create() {
+        // todo : todo
+    }
+    update() {
+        // todo : todo
+    }
+    delete() {
+        // todo : todo
+    }
 }
