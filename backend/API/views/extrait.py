@@ -14,7 +14,14 @@ class ExtraitViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Extrait.nodes.all()
+        extraits = Extrait.nodes
+        search = self.request.query_params.get('search', '').strip()
+        if not search:
+            return extraits.all()
+        for term in search.split():
+            if term:
+                extraits = extraits.filter(titre__icontains=term)
+        return extraits.all()
 
     def get_object(self):
         try:

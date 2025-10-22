@@ -1,7 +1,8 @@
 from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
-    DateTimeProperty, One, ZeroOrMore, BooleanProperty
+    DateTimeProperty, ZeroOrMore, BooleanProperty,
+    ZeroOrOne,
 )
 
 class PositionExtraitRel(StructuredRel):
@@ -22,7 +23,7 @@ class Artiste(StructuredNode):
     info = StringProperty()
 
     style = RelationshipTo('StyleMusical', 'STYLE', ZeroOrMore)
-    nationalite = RelationshipTo('Nation', 'NATIONALITE', One)
+    nationalite = RelationshipTo('Nation', 'NATIONALITE', ZeroOrOne)
 
 
 class Interview(StructuredNode):
@@ -48,8 +49,8 @@ class Extrait(StructuredNode):
     vimeo_url = StringProperty(unique_index=True)
     uploaded_at = DateProperty(default_now=True)
 
-    interview = RelationshipTo('Interview', 'APPARTIENT_A', One, PositionExtraitRel)
-    question = RelationshipTo('Question', 'POSE', One)
+    interview = RelationshipTo('Interview', 'APPARTIENT_A', ZeroOrOne, PositionExtraitRel)
+    question = RelationshipTo('Question', 'POSE', ZeroOrOne)
     tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT', ZeroOrMore)
 
 
@@ -57,7 +58,7 @@ class Question(StructuredNode):
     uuid = UniqueIdProperty()
     texte = StringProperty(unique_index=True, required=True, db_property='name')
 
-    theme = RelationshipTo('Theme', 'A_THEME', One)
+    theme = RelationshipTo('Theme', 'A_THEME', ZeroOrOne)
 
 
 class Theme(StructuredNode):
