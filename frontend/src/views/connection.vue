@@ -1,8 +1,12 @@
 <script>
+import user_t from "../model/user.js";
+import router from "../router.js";
 export default {
     name: "page_connection",
+    inject : ["user_current"],
     data() {
         return {
+            loading : false,
             username: "",
             password: "",
             apiMessage: "",
@@ -10,23 +14,21 @@ export default {
     },
     methods: {
         async login() {
+            this.loading = true;
             try {
-                const response = await fetch("http://your-api-url.com/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        username: this.username,
-                        password: this.password,
-                    }),
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    this.apiMessage = "Login successful!";
-                } else {
-                    this.apiMessage = data.message || "Login failed!";
-                }
+                const sleep = ms => new Promise(r => setTimeout(r, ms));
+                await sleep(500);
+                this.user_current.set(new user_t(this.username, this.password));
+                /// console.log("current_user");
+                /// console.log(this.user_current);
+                this.apiMessage = "login bon";
+                await sleep(500);
+                router.push({ path: '/admin', replace: true });
             } catch (error) {
-                this.apiMessage = "API unreachable!";
+                console.error(error);
+                this.apiMessage = error.message;
+            } finally {
+                this.loading = false;
             }
         },
     },
@@ -35,7 +37,7 @@ export default {
 
 <template>
     <div>
-        <p>page_connection</p>
+        <h1 class="vert-neon">Bienvenue</h1>
         <form @submit.prevent="login">
             <label>
                 Username:
@@ -47,8 +49,16 @@ export default {
                 <input v-model="password" type="password" required />
             </label>
             <br />
-            <button type="submit">Login</button>
+            <button>Login</button>
         </form>
-        <p>{{ apiMessage }}</p>
+        <img v-if="this.loading" src="/imgs/spinner.gif" alt="loading image...">
+        <p>Erreur : {{ apiMessage }}</p>
     </div>
 </template>
+
+<style scoped>
+.vert-neon { 
+    color : var(--vert-neon);
+    justify-self: center;
+}
+</style>
