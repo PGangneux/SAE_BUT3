@@ -74,4 +74,7 @@ export default {
 .local:hover {
     background-color: var(--vert-neon) !important;
 }
+
+
+
 </style>

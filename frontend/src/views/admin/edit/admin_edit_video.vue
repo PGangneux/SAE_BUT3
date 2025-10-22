@@ -33,7 +33,7 @@ export default {
           <img src="/imgs/width550.png" class="migniature" alt="migniature">
         </div>
 
-        <div class="col-md-6 ">
+        <div class="col-md-6 scroller2">
             <div class="row" >
               <div class="input-group mb-3 ">
                 <span class="input-group-text" id="basic-addon1">youtube_url :</span>
@@ -90,26 +90,22 @@ export default {
         </div>
       </div>
 
-      <div class="row" >
+      <div class="row pad" >
         <div class="input-group col" >
           <span class="input-group-text" id="basic-addon8" >Interview Actuelle :</span>
           <input type="text" id="name" name="name" class="textfield form-control"  placeholder="Interview Actuelle" aria-label="Interview Actuelle :" aria-describedby="basic-addon8"  />
-      </div>
-
-        
+        </div>
 
         <div class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
-
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
 
       </div>
 
     </form>
     
-    <div class="row grisee" >
-      <p class="row" > Meta Donnée </p>
+    <div class="row grisee " >
+      <h1 class="row pcentrer" > Meta Donnée </h1>
       <div class="row">
         <ul class="scroller2  row">
           <li class="col" v-for="tag in tags">
@@ -141,6 +137,24 @@ li>.card {
   margin: 10px 10px 10px 10px;  
 }
 
+
+.scroller2 {
+  height: 100%;
+  overflow-y: scroll;
+  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-width: thin;
+}
+
+.pad{
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.pcentrer{
+margin-top: 1em;
+margin-bottom: 1em;
+justify-content: center
+}
 
 
 ul {

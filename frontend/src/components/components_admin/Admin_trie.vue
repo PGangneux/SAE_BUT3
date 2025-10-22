@@ -102,6 +102,12 @@ justify-content: center
 }
 
 
+.trie-tags{
+    background-color: var(--gris-taupe);
+}
+
+
+
 .recherche{
     padding-top: 1em;
     padding-bottom: 1em;
@@ -111,9 +117,6 @@ justify-content: center
     background-color: var(--vert-pale);
 }
 
-.trie-tags{
-    background-color: var(--gris-taupe);
-}
 
 .search-bar {
     max-width: 500px;
