@@ -11,6 +11,7 @@ export default {
       param_visible: false,
       pos_x_iframe: 0,
       pos_y_iframe: 0,
+      aside_visible: true,
       lecteur: 'Viméo',
 
       url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
@@ -51,6 +52,11 @@ export default {
       else{
         this.url = "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
       }
+    },
+
+    async toggle_aside(){
+      this.aside_visible = !this.aside_visible
+      await this.updatePopupPosition()
     },
 
     async updatePopupPosition() {
@@ -99,9 +105,11 @@ export default {
       </div>
     </main>
 
-    <aside>
-      <bar_liste_video/>
+    <aside v-if="aside_visible">
+      <bar_liste_video @toggle_aside="toggle_aside"/>
     </aside>
+    <h2 v-else @click="toggle_aside"> < </h2>
+
 
     <parametres
         v-if="param_visible"
@@ -182,10 +190,15 @@ main > div {
 }
 
 
-aside {
+.layout aside{
   flex: 2.2;
   background-color: var(--gris-moyen);
   border-left: 3px solid var(--gris-taupe);
+}
+
+.layout h2{
+  margin-right: 10px;
+  color: var(--vert-neon);
 }
 
 

@@ -25,7 +25,7 @@ export default {
             <li>Auteurs</li>
             <li>Thèmes</li>
             </ul>
-            <img src="/imgs/Close.png" alt="close">
+            <img src="/imgs/close.png" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
 
     </header>

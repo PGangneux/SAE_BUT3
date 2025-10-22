@@ -30,6 +30,10 @@ body {
   background-color: var(--noir);
 }
 
+main{
+    background-color: var(--noir);
+}
+
 #app {
   flex: 1; /* occupe tout l’espace restant du body */
   width: 100vw;
@@ -41,3 +45,5 @@ body {
 p, h1, h2, h3, h4, h5, h6, li{
   color: var(--blanc);
 }
+
+
