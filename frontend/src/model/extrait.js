@@ -1,5 +1,6 @@
-export default class extrait_t {
-    #uuid
+import CRUD from "./crud.js";
+
+export default class extrait_t extends CRUD {
     #titre
     #description
     #youtube_url
@@ -19,9 +20,28 @@ export default class extrait_t {
         return value
     }
 
-    // Getters and Setters
-    get uuid() { return this.#uuid }
-    set uuid(value) { this.#uuid = this.validateString(value, "uuid") }
+    constructor({uuid,
+titre,
+description,
+youtube_url,
+vimeo_url,
+uploaded_at,
+interview,
+question,
+tags,}
+    ){
+        super(uuid);
+        this.#titre = titre;
+        this.#description = description;
+        this.#youtube_url = youtube_url;
+        this.#vimeo_url = vimeo_url;
+        this.#uploaded_at = uploaded_at;
+        this.#interview = interview;
+        this.#question = question;
+        this.#tags = tags;
+    }
+
+    get endpoint() { return "extraits" }
 
     get titre() { return this.#titre }
     set titre(value) { this.#titre = this.validateString(value, "titre") }
@@ -40,26 +60,30 @@ export default class extrait_t {
 
     get interview() { return this.#interview }
     set interview(value) { 
-        this.#interview = value ; /// TODO : implement 
+        this.#interview = value; /// TODO : implement 
     }
 
     get question() { return this.#question }
     set question(value) { 
-        this.#question = value ; /// TODO : implement 
+        this.#question = value; /// TODO : implement 
     }
 
     get tags() { return this.#tags }
     set tags(value) { 
-        this.#tags = value ; /// TODO : implement 
+        this.#tags = value; /// TODO : implement 
     }
 
-    create() {
-        // todo : todo
-    }
-    update() {
-        // todo : todo
-    }
-    delete() {
-        // todo : todo
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            titre: this.#titre,
+            description: this.#description,
+            youtube_url: this.#youtube_url,
+            vimeo_url: this.#vimeo_url,
+            uploaded_at: this.#uploaded_at,
+            interview: this.#interview,
+            question: this.#question,
+            tags: this.#tags
+        }
     }
 }

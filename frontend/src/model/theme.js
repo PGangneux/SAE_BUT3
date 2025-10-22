@@ -1,5 +1,6 @@
-export default class theme_t {
-    #uuid
+import CRUD from "./crud.js";
+
+export default class theme_t extends CRUD {
     #name
     #description
     #questions
@@ -14,9 +15,14 @@ export default class theme_t {
         return value
     }
 
-    // Getters and Setters
-    get uuid() { return this.#uuid }
-    set uuid(value) { this.#uuid = this.validateString(value, "uuid") }
+    constructor({uuid,name,description,questions}){
+        super(uuid);
+        this.#name = name;
+        this.#description = description;
+        this.#questions = questions;
+    }
+
+    get endpoint() { return "themes" }
 
     get name() { return this.#name }
     set name(value) { this.#name = this.validateString(value, "name") }
@@ -26,16 +32,15 @@ export default class theme_t {
 
     get questions() { return this.#questions }
     set questions(value) { 
-        this.#questions = value ; /// TODO : implement
+        this.#questions = value; /// TODO : implement
     }
 
-    create() {
-        // todo : todo
-    }
-    update() {
-        // todo : todo
-    }
-    delete() {
-        // todo : todo
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            name: this.#name,
+            description: this.#description,
+            questions: this.#questions
+        }
     }
 }

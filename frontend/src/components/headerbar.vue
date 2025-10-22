@@ -1,5 +1,5 @@
 <script>
-import user_t from '../user.js';
+import user_t from '../model/user.js';
 import comp_searchbar from './searchbar.vue';
 export default {
     name: "comp_headerbar",
@@ -14,7 +14,7 @@ export default {
     },
     computed : {
         isconnected() {return this.user_current?.uuid || false;},
-        isadmin() {return this.user_current?.isadmin || false;},
+        isadmin() {return true;}, // this.user_current?.admin || false;
     },
     watch : {
         user_current(oldu,newu){

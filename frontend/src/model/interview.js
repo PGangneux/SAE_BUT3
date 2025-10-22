@@ -1,5 +1,6 @@
-export default class interview_t {
-    #uuid
+import CRUD from "./crud.js";
+
+export default class interview_t extends CRUD {
     #titre
     #date
     #occasion
@@ -18,9 +19,26 @@ export default class interview_t {
         return value
     }
 
-    // Getters and Setters
-    get uuid() { return this.#uuid }
-    set uuid(value) { this.#uuid = this.validateString(value, "uuid") }
+    constructor({uuid,
+    titre,
+    date,
+    occasion,
+    description,
+    lieu,
+    artiste,
+    extraits,}
+    ){
+        super(uuid);
+    this.#titre = titre;
+    this.#date = date;
+    this.#occasion = occasion;
+    this.#description = description;
+    this.#lieu = lieu;
+    this.#artiste = artiste;
+    this.#extraits = extraits;
+    }
+
+    get endpoint() { return "interviews" }
 
     get titre() { return this.#titre }
     set titre(value) { this.#titre = this.validateString(value, "titre") }
@@ -39,21 +57,24 @@ export default class interview_t {
 
     get artiste() { return this.#artiste }
     set artiste(value) { 
-        this.#artiste = value ; /// TODO : implement 
+        this.#artiste = value; /// TODO : implement 
     }
 
     get extraits() { return this.#extraits }
     set extraits(value) { 
-        this.#extraits = value ; /// TODO : implement 
+        this.#extraits = value; /// TODO : implement 
     }
 
-    create() {
-        // todo : todo
-    }
-    update() {
-        // todo : todo
-    }
-    delete() {
-        // todo : todo
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            titre: this.#titre,
+            date: this.#date,
+            occasion: this.#occasion,
+            description: this.#description,
+            lieu: this.#lieu,
+            artiste: this.#artiste,
+            extraits: this.#extraits
+        }
     }
 }

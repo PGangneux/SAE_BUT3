@@ -1,80 +1,90 @@
 const BASE_URL = 'http://localhost:8000/';
 
-export default class Prefetcher {
-    constructor() {
-        this.cache = new Map();
-    }
+import artiste_t from "./artiste.js";
+import extrait_t from "./extrait.js";
+import interview_t from "./interview.js";
+import question_t from "./question.js";
+import theme_t from "./theme.js";
+
+class prefetcher {
+    // Class-level cache (shared across all instances)
+    static #cache = new Map();
 
     // Clear cache (call this when user connects)
-    clearCache() {
-        this.cache.clear();
+    static clearCache() {
+        prefetcher.#cache.clear();
     }
 
-    // Generic fetch method with cache
-    _fetch(url) {
-        if (this.cache.has(url)) {
-            return Promise.resolve(this.cache.get(url));
+    // Generic fetch method with cache and object building
+    static fetch(Class, url, returnsList = false) {
+        if (prefetcher.#cache.has(url)) {
+            return prefetcher.#cache.get(url);
         }
 
-        return fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                this.cache.set(url, data);
-                return data;
-            });
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url, false);
+        xhr.send();
+
+        if (xhr.status !== 200) {
+            throw new Error(`HTTP error! status: ${xhr.status}`);
+        }
+
+        const data = JSON.parse(xhr.responseText);
+
+        // Build objects using the class constructor
+        let result;
+        /// console.log("prefetcher data return");
+        /// console.log(data);
+        if (returnsList) {
+            result = data.map(item => new Class(item));
+        } else {
+            result = new Class(data);
+        }
+
+        prefetcher.#cache.set(url, result);
+        return result;
     }
 
-    // Individual fetch methods
-    fetch_theme(id) {
-        return this._fetch(`${BASE_URL}API/themes/${id}/`);
+    static theme(id) {
+        return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/${id}/`, false);
     }
 
-    fetch_themes() {
-        return this._fetch(`${BASE_URL}API/themes/`);
+    static theme_all() {
+        return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/`, true);
     }
 
-    fetch_question(id) {
-        return this._fetch(`${BASE_URL}API/questions/${id}/`);
+    static question(id) {
+        return prefetcher.fetch(question_t, `${BASE_URL}API/questions/${id}/`, false);
     }
 
-    fetch_questions() {
-        return this._fetch(`${BASE_URL}API/questions/`);
+    static question_all() {
+        return prefetcher.fetch(question_t, `${BASE_URL}API/questions/`, true);
     }
 
-    fetch_extrait(id) {
-        return this._fetch(`${BASE_URL}API/extraits/${id}/`);
+    static extrait(id) {
+        return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/${id}/`, false);
     }
 
-    fetch_extraits() {
-        return this._fetch(`${BASE_URL}API/extraits/`);
+    static extrait_all() {
+        return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/`, true);
     }
 
-    fetch_interview(id) {
-        return this._fetch(`${BASE_URL}API/interviews/${id}/`);
+    static interview(id) {
+        return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/${id}/`, false);
     }
 
-    fetch_interviews() {
-        return this._fetch(`${BASE_URL}API/interviews/`);
+    static interview_all() {
+        return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/`, true);
     }
 
-    fetch_artiste(id) {
-        return this._fetch(`${BASE_URL}API/artistes/${id}/`);
+    static artiste(id) {
+        return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/${id}/`, false);
     }
 
-    fetch_artistes() {
-        return this._fetch(`${BASE_URL}API/artistes/`);
-    }
-
-    fetch_utilisateur(id) {
-        return this._fetch(`${BASE_URL}API/utilisateurs/${id}/`);
-    }
-
-    fetch_utilisateurs() {
-        return this._fetch(`${BASE_URL}API/utilisateurs/`);
+    static artiste_all() {
+        return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/`, true);
     }
 }
+
+export { BASE_URL, prefetcher };
+export default prefetcher;

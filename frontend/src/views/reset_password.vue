@@ -6,5 +6,17 @@ export default {
 </script>
 
 <template>
-    <p>page_reset_password</p>
+    <h1 class="vert-neon">mot de passe oublier</h1>
+    <form>
+        <p>address mail</p>
+        <input type="text" placeholder="adresse mail">
+        <input type="submit" value="">
+    </form>
 </template>
+
+<style scoped>
+.vert-neon { 
+    color : var(--vert-neon);
+    justify-self: center;
+}
+</style>

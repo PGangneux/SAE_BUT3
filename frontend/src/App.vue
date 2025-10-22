@@ -1,6 +1,7 @@
 <script>
 import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
+import Lecteur_video from './components/lecteur_video/lecteur_video.vue';
 
 export default {
     name: "page_router",
@@ -32,9 +33,14 @@ export default {
 <template>
     <comp_headerbar :user_current="user_current" />
     <main>
-        <KeepAlive include="lecteur_video">
-        <RouterView />
-        </KeepAlive>
+        <router-view>
+        </router-view>
+        <!--
+            <router-view v-slot="lecteur_video">
+            <keep-alive>
+                <Lecteur_video :is="lecteur_video" />
+            </keep-alive>
+        -->
     </main>
     <comp_footerbar />
 </template>

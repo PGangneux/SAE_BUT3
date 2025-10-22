@@ -1,5 +1,5 @@
 <script>
-import BASE_URL from "../config.js";
+import prefetcher from '../model/prefetcher.js';
 export default {
     name: "comp_recent",
     data() {
@@ -12,12 +12,14 @@ export default {
     async mounted() {
         this.loading = true;
         try {
-            const response = await fetch(BASE_URL + "API/interviews/");
-            this.interviews = await response.json();
-            this.loading = false;
+            this.interviews = prefetcher.interview_all();
+            console.log("this.interviews");
+            console.log(this.interviews);
         } catch (error) {
-            this.loading = false;
             this.failed = true;
+            console.log(error);
+        } finally {
+            this.loading = false;
         }
     },
 };
@@ -30,7 +32,7 @@ export default {
             <p>loading ...</p>
         </div>
         <div v-else-if="failed" v-for="k in [1,2,3]" :key="k" class="local">
-            <img src="/imgs/Close.png" alt="erreur image">
+            <img src="/imgs/close.png" alt="erreur image">
             <p>erreur</p>
         </div>
         <div v-else

@@ -1,6 +1,7 @@
-import BASE_URL from "../config.js";
-export default class user_t {
-    #uuid
+import { BASE_URL, prefetcher } from "./prefetcher.js";
+import CRUD from "./crud.js";
+
+export default class user_t extends CRUD {
     #pseudo
     #prenom
     #nom
@@ -8,19 +9,34 @@ export default class user_t {
     #admin
     #token
 
-    constructor() {
+    get endpoint() {
+        return `utilisateurs`
     }
+    constructor(pseudo, password) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", BASE_URL + "/API/utilisateurs/", false);
+        xhr.send();
 
-    authenticate(pseudo,password){
-        return fetch(BASE_URL + "/API/utilisateurs/",{method : "GET"}).then( u => {
-            this.uuid = u.uuid;
-            this.pseudo = u.pseudo;
-            this.prenom = u.prenom;
-            this.nom = u.nom;
-            this.email = u.email;
-            this.token = u.uuid ;
+        if (xhr.status !== 200) {
+            throw new Error(`HTTP error! status: ${xhr.status}`);
         }
-        ).catch(err => 0);
+
+        const users = JSON.parse(xhr.responseText);
+        const auth = users[0];
+
+        /// console.log("pseudo : " + pseudo + " password : " + password);
+        /// console.log(auth);
+
+        if (pseudo !== auth.prenom) {
+            throw new Error("mauvais mot de passe ou prenom");
+        }
+        super(auth.uuid);
+        this.#pseudo = auth.pseudo;
+        this.#prenom = auth.prenom;
+        this.#nom = auth.nom;
+        this.#email = auth.email;
+        this.#token = auth.uuid;
+        prefetcher.clearCache();
     }
 
     validateString(value, fieldName) {
@@ -32,10 +48,6 @@ export default class user_t {
         }
         return value
     }
-
-    // Getters and Setters
-    get uuid() { return this.#uuid }
-    set uuid(value) { this.#uuid = this.validateString(value, "uuid") }
 
     get pseudo() { return this.#pseudo }
     set pseudo(value) { this.#pseudo = this.validateString(value, "pseudo") }
@@ -49,13 +61,9 @@ export default class user_t {
     get email() { return this.#email }
     set email(value) { this.#email = this.validateString(value, "email") }
 
-    create() {
-        // todo : todo
-    }
-    update() {
-        // todo : todo
-    }
-    delete() {
-        // todo : todo
-    }
+    get admin() { return this.#admin }
+
+    get token() { return this.#token }
+
+    // no tojson
 }

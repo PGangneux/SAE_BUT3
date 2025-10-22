@@ -1,5 +1,6 @@
-export default class artiste_t {
-    #uuid
+import CRUD from "./crud.js";
+
+export default class artiste_t extends CRUD {
     #name
     #info
 
@@ -13,9 +14,13 @@ export default class artiste_t {
         return value
     }
 
-    // Getters and Setters
-    get uuid() { return this.#uuid }
-    set uuid(value) { this.#uuid = this.validateString(value, "uuid") }
+    constructor({uuid,name,info}){
+        super(uuid);
+        this.#name = name;
+        this.#info = info;
+    }
+
+    get endpoint() { return "artistes" }
 
     get name() { return this.#name }
     set name(value) { this.#name = this.validateString(value, "name") }
@@ -23,13 +28,11 @@ export default class artiste_t {
     get info() { return this.#info }
     set info(value) { this.#info = this.validateString(value, "info") }
 
-    create() {
-        // todo : todo
-    }
-    update() {
-        // todo : todo
-    }
-    delete() {
-        // todo : todo
+    toJSON() {
+        return {
+            uuid: this.uuid,
+            name: this.#name,
+            info: this.#info
+        }
     }
 }
