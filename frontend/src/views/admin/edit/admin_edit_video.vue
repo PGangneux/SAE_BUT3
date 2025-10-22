@@ -84,7 +84,7 @@ export default {
 
             <div class="row" >
               <div class="form-group">
-                <textarea type="aera" placeholder="Description" class="form-control"></textarea>/>
+                <textarea type="aera" placeholder="Description" class="form-control"></textarea>
               </div>
             </div>
         </div>
@@ -98,7 +98,7 @@ export default {
 
         
 
-        <button type="button" class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</button>
+        <div class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
 
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
