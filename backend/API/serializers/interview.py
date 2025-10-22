@@ -17,6 +17,7 @@ class InterviewSerializer(serializers.Serializer):
     # relations output: extraits ordonnés
     artiste = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
+    tags = serializers.SerializerMethodField(read_only=True)
 
     def get_artiste(self, interview):
         if interview.interviewer:
@@ -25,6 +26,9 @@ class InterviewSerializer(serializers.Serializer):
 
     def get_extraits(self, interview):
         return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))}
+
+    def get_tags(self, interview):
+        return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'interview_uuid': interview.uuid}))}
 
     def create(self, validated_data):
         artiste_uuid = validated_data.pop("artiste_uuid", None)

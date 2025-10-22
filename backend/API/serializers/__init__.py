@@ -6,3 +6,4 @@ from .artiste import *
 from .utilisateur import *
 from .style_musical import *
 from .nation import *
+from .tag import *

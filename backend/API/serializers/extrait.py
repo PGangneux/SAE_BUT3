@@ -22,6 +22,7 @@ class ExtraitSerializer(serializers.Serializer):
     # Output:
     interview = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
+    tags = serializers.SerializerMethodField(read_only=True)
 
     def get_interview(self, extrait):
         interview = extrait.interview.single()
@@ -36,6 +37,9 @@ class ExtraitSerializer(serializers.Serializer):
                     'position': relationship.get('position')
                 }
         return None
+
+    def get_tags(self, extrait):
+        return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))}
 
     def get_question(self, extrait):
         qn = extrait.question.single()

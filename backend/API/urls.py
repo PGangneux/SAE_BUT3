@@ -9,7 +9,9 @@ from .views import (
     ArtisteInterviewViewSet, QuestionExtraitViewSet,
     StyleMusicalViewSet, StyleMusicalArtisteViewSet,
     ArtisteStyleMusicalViewSet, NationViewSet,
-    NationArtisteViewSet,
+    NationArtisteViewSet, TagViewSet,
+    TagInterviewViewSet, TagExtraitViewSet,
+    InterviewTagViewSet, ExtraitTagViewSet,
 )
 
 router = DefaultRouter()
@@ -20,6 +22,7 @@ router.register(r'interviews', InterviewViewSet, basename='interview')
 router.register(r'artistes', ArtisteViewSet, basename='artiste')
 router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')
 router.register(r'nations', NationViewSet, basename='nation')
+router.register(r'tags', TagViewSet, basename='tag')
 router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
 
 router_theme = NestedDefaultRouter(router, r'themes', lookup='theme')
@@ -28,8 +31,12 @@ router_theme.register(r'questions', ThemeQuestionViewSet, basename='question')
 router_question = NestedDefaultRouter(router, r'questions', lookup='question')
 router_question.register(r'extraits', QuestionExtraitViewSet, basename='extrait')
 
+router_extrait = NestedDefaultRouter(router, r'extraits', lookup='extrait')
+router_extrait.register(r'tags', ExtraitTagViewSet, basename='tag')
+
 router_interview = NestedDefaultRouter(router, r'interviews', lookup='interview')
 router_interview.register(r'extraits', InterviewExtraitViewSet, basename='extrait')
+router_interview.register(r'tags', InterviewTagViewSet, basename='tag')
 
 router_artiste = NestedDefaultRouter(router, r'artistes', lookup='artiste')
 router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interview')
@@ -41,12 +48,18 @@ router_style_musical.register(r'artistes', StyleMusicalArtisteViewSet, basename=
 router_nation = NestedDefaultRouter(router, r'nations', lookup='nation')
 router_nation.register(r'artistes', NationArtisteViewSet, basename='artiste')
 
+router_tag = NestedDefaultRouter(router, r'tags', lookup='tag')
+router_tag.register(r'extraits', TagExtraitViewSet, basename='extrait')
+router_tag.register(r'interviews', TagInterviewViewSet, basename='interview')
+
 urlpatterns = [
     path('', include(router.urls)),
     path('', include(router_theme.urls)),
     path('', include(router_question.urls)),
+    path('', include(router_extrait.urls)),
     path('', include(router_interview.urls)),
     path('', include(router_artiste.urls)),
     path('', include(router_style_musical.urls)),
     path('', include(router_nation.urls)),
+    path('', include(router_tag.urls)),
 ]

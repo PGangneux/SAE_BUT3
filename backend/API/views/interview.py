@@ -43,3 +43,25 @@ class ArtisteInterviewViewSet(viewsets.ModelViewSet):
             return Interview.inflate(results[0][0])
         except:
             raise NotFound('Interview introuvable.', 404)
+
+
+class TagInterviewViewSet(viewsets.ModelViewSet):
+    """
+    Renvoie les interviews en fonction d'un tag
+    """
+    serializer_class = InterviewSerializer
+    router_lookup_field = 'tag_uuid'
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        query = "MATCH (q:Interview)-[:TAGS_INTERVIEW]->(t:Tag {uuid: $uuid}) RETURN q"
+        results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})
+        return [Interview.inflate(row[0]) for row in results]
+
+    def get_object(self):
+        try:
+            query = "MATCH (q:Interview {uuid: $uuid})-[:TAGS_INTERVIEW]->(t:Tag {uuid: $tag}) RETURN q"
+            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
+            return Interview.inflate(results[0][0])
+        except:
+            raise NotFound('Interview introuvable.', 404)

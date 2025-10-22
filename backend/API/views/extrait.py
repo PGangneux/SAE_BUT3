@@ -63,3 +63,25 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
         except:
             raise NotFound('Extrait introuvable.', 404)
 
+
+class TagExtraitViewSet(viewsets.ModelViewSet):
+    """
+    Renvoie les extraits en fonction d'un tag
+    """
+    serializer_class = ExtraitSerializer
+    router_lookup_field = 'tag_uuid'
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        query = "MATCH (q:Extrait)-[:TAGS_EXTRAIT]->(t:Tag {uuid: $uuid}) RETURN q"
+        results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})
+        return [Extrait.inflate(row[0]) for row in results]
+
+    def get_object(self):
+        try:
+            query = "MATCH (q:Extrait {uuid: $uuid})-[:TAGS_EXTRAIT]->(t:Tag {uuid: $tag}) RETURN q"
+            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
+            return Extrait.inflate(results[0][0])
+        except:
+            raise NotFound('Extrait introuvable.', 404)
+

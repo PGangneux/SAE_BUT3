@@ -35,6 +35,7 @@ class Interview(StructuredNode):
     lieu = StringProperty()
 
     interviewer = RelationshipTo('Artiste', 'PARTICIPER')
+    tags_interview = RelationshipTo('Tag', 'TAGS_INTERVIEW')
 
 
 class Extrait(StructuredNode):
@@ -49,6 +50,7 @@ class Extrait(StructuredNode):
 
     interview = RelationshipTo('Interview', 'APPARTIENT_A', model=PositionExtraitRel)
     question = RelationshipTo('Question', 'POSE')
+    tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT')
 
 
 class Question(StructuredNode):
@@ -79,5 +81,9 @@ class Utilisateur(StructuredNode):
 
 
 class Nation(StructuredNode):
+    uuid = UniqueIdProperty()
+    name = StringProperty(required=True, unique_index=True)
+
+class Tag(StructuredNode):
     uuid = UniqueIdProperty()
     name = StringProperty(required=True, unique_index=True)
