@@ -1,12 +1,20 @@
 <script>
+import { computed, watch } from "vue";
+
 export default {
     name: "comp_mindmap",
-    inject : ["searchterm"],
-    watch : {
-        searchterm(olds,news){
-            console.log("mindmap searchterm change");
-            console.log(olds);
-            console.log(news);
+    inject: ["searchterm"],
+    computed: {
+        searchValue: {
+            get() { return this.searchterm.get(); },
+            set(v) { this.searchterm.set(v); }
+        }
+    },
+    watch: {
+        searchValue(newVal, oldVal) {
+            /// console.log("mindmap searchterm change");
+            /// console.log("Old:", oldVal);
+            /// console.log("New:", newVal);
         }
     }
 };
@@ -15,6 +23,6 @@ export default {
 <template>
     <div>
         <h2>Mindmap Component</h2>
-        <h2>{{ searchterm }}</h2>
+        <h2>{{ searchValue }}</h2>
     </div>
 </template>
