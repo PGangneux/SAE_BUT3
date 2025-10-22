@@ -72,3 +72,26 @@ class TagInterviewViewSet(viewsets.ModelViewSet):
             return Interview.inflate(results[0][0])
         except:
             raise NotFound('Interview introuvable.', 404)
+
+
+class UtilisateurInterviewViewSet(viewsets.ModelViewSet):
+    """
+    Renvoie les interviews qui ont été regardé par l'utilisateur
+    """
+    serializer_class = InterviewSerializer
+    router_lookup_field = 'utilisateur_uuid'
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        query = "MATCH (q:Interview)<-[:REGARDER_INTERVIEWS]-(t:Utilisateur {uuid: $uuid}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
+        return [Interview.inflate(row[0]) for row in results]
+    
+    def get_object(self):
+        try:
+            query = "MATCH (q:Interview {uuid: $uuid})<-[:REGARDER_INTERVIEWS]-(t:Utilisateur {uuid: $utilisateur}) RETURN q"
+            results = db.cypher_query(query, {'utilisateur': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+            return Interview.inflate(results[0][0])
+        except DoesNotExist:
+            raise NotFound('Interview introuvable.', 404)
+

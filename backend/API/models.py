@@ -76,10 +76,10 @@ class Utilisateur(StructuredNode):
     password = StringProperty(required=True)
     is_admin = BooleanProperty(default=False)
 
-    recherches_artistes = RelationshipTo('Artiste', 'RECHERCHE', ZeroOrMore, DateHeureRel)
-    watched_interviews = RelationshipTo('Interview', 'A_VU', ZeroOrMore, DateHeureRel)
-    watched_extraits = RelationshipTo('Extrait', 'A_VU', ZeroOrMore, DateHeureRel)
-    searched_questions = RelationshipTo('Question', 'A_RECHERCHE', ZeroOrMore, DateHeureRel)
+    recherches_artistes = RelationshipTo('Artiste', 'RECHERCHES_ARTISTES', ZeroOrMore, DateHeureRel)
+    regarder_interviews = RelationshipTo('Interview', 'REGARDER_INTERVIEWS', ZeroOrMore, DateHeureRel)
+    regarder_extraits = RelationshipTo('Extrait', 'REGARDER_EXTRAITS', ZeroOrMore, DateHeureRel)
+    recherches_questions = RelationshipTo('Question', 'RECHERCHES_QUESTIONS', ZeroOrMore, DateHeureRel)
 
 
 class Nation(StructuredNode):

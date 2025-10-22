@@ -72,3 +72,25 @@ class NationArtisteViewSet(viewsets.ModelViewSet):
             return Artiste.inflate(results[0][0])
         except DoesNotExist:
             raise NotFound('Artiste introuvable.', 404)
+
+
+class UtilisateurArtisteViewSet(viewsets.ModelViewSet):
+    """
+    Renvoie les artistes qui ont été recherché par l'utilisateur
+    """
+    serializer_class = ArtisteSerializer
+    router_lookup_field = 'utilisateur_uuid'
+    lookup_field = 'uuid'
+
+    def get_queryset(self):
+        query = "MATCH (q:Artiste)<-[:RECHERCHES_ARTISTES]-(t:Utilisateur {uuid: $uuid}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
+        return [Artiste.inflate(row[0]) for row in results]
+    
+    def get_object(self):
+        try:
+            query = "MATCH (q:Artiste {uuid: $uuid})<-[:RECHERCHES_ARTISTES]-(t:Utilisateur {uuid: $utilisateur}) RETURN q"
+            results = db.cypher_query(query, {'utilisateur': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+            return Artiste.inflate(results[0][0])
+        except DoesNotExist:
+            raise NotFound('Artiste introuvable.', 404)

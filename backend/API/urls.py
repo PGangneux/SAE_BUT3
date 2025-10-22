@@ -13,6 +13,8 @@ from .views import (
     TagInterviewViewSet, TagExtraitViewSet,
     InterviewTagViewSet, ExtraitTagViewSet,
     ArtisteStyleRelationShipViewSet,
+    UtilisateurArtisteViewSet, UtilisateurExtraitViewSet,
+    UtilisateurInterviewViewSet, UtilisateurQuestionViewSet,
 )
 
 router = DefaultRouter()
@@ -54,6 +56,11 @@ router_tag.register(r'extraits', TagExtraitViewSet, basename='extrait')
 router_tag.register(r'interviews', TagInterviewViewSet, basename='interview')
 
 router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
+router_utilisateur = NestedDefaultRouter(router, r'utilisateurs', lookup='utilisateur')
+router_utilisateur.register(r'artistes', UtilisateurArtisteViewSet, basename='artiste')
+router_utilisateur.register(r'interviews', UtilisateurInterviewViewSet, basename='interview')
+router_utilisateur.register(r'extraits', UtilisateurExtraitViewSet, basename='extrait')
+router_utilisateur.register(r'questions', UtilisateurQuestionViewSet, basename='question')
 
 urlpatterns = [
     path('', include(router.urls)),
