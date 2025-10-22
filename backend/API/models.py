@@ -1,7 +1,7 @@
 from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
-    DateTimeProperty, One, ZeroOrMore,
+    DateTimeProperty, One, ZeroOrMore, BooleanProperty
 )
 
 class PositionExtraitRel(StructuredRel):
@@ -73,6 +73,7 @@ class Utilisateur(StructuredNode):
     nom = StringProperty(required=True)
     email = StringProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
+    is_admin = BooleanProperty(default=False)
 
     recherches_artistes = RelationshipTo('Artiste', 'RECHERCHE', ZeroOrMore, DateHeureRel)
     watched_interviews = RelationshipTo('Interview', 'A_VU', ZeroOrMore, DateHeureRel)
