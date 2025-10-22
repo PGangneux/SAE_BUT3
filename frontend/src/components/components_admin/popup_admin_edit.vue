@@ -50,7 +50,7 @@ export default {
 
         <div class="col-md-6 ">
 
-                <table class="scroller ultagger table table-bordered">
+                <table class="scroller ultagger table tables table-bordered">
                     <thead>
                         <tr>
                         <th scope="col">Nom interview</th>
@@ -70,7 +70,7 @@ export default {
         </div>
         <div class="col-md-1 ">
             <div class="row">
-                <button class="bt btn col" type="button" @click="popup = !popup" ><img src="/imgs/close.png" alt=""></button>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="popup = !popup"></button>
             </div>
         </div>
     </div>
@@ -91,7 +91,9 @@ export default {
     scrollbar-width: thin;
 }
 
-
+.tables{
+    width: 100%;
+}
 
 .allmighty {
   position: fixed;        

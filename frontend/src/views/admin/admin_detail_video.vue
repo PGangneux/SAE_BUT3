@@ -29,17 +29,27 @@ export default {
     <form action="" class="row">
 
       <div class="row" >
-          <div class="col-md-4">
-            <img src="/imgs/width550.png" class="migniature" alt="migniature">
-          </div>
+        <div class="col-md-4">
+          <img src="/imgs/width550.png" class="migniature" alt="migniature">
+        </div>
 
-          <div class="col-md-6 ">
+        <div class="col-md-6 ">
             <div class="row" >
               <div class="col grisetround" >
-                <label for="name2">URL Video :</label>
-                <input type="text" id="name2" name="name2" class="textfield" placeholder="URL VIDEO" />
+                <label for="urlyoutube">youtube_url :</label>
+                <input type="text" id="urlyoutube" name="urlyoutube" class="textfield" placeholder="youtube_url" />
               </div>
             </div>
+          
+
+
+            <div class="row" >
+                <div class="col grisetround" >
+                  <label for="urlvimeo">vimeo_url :</label>
+                  <input type="text" id="urlvimeo" name="urlvimeo" class="textfield" placeholder="vimeo_url" />
+                </div>
+            </div>
+          
 
             <div class="row" >
                 <label for="question"  class="col" > Question :</label>
@@ -68,7 +78,7 @@ export default {
             <div class="row" >
               <input type="aera" placeholder="Description" />
             </div>
-          </div>
+        </div>
       </div>
 
       <div class="row" >

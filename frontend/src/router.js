@@ -18,6 +18,7 @@ import page_admin_interview from "./views/admin/admin_interview.vue";
 
 import page_admin_edit_client from "./views/admin/admin_edit_client.vue";
 
+import page_admin_edit_interview from "./views/admin/admin_edit_interview.vue";
 
 
 // Lecteur Video Pages
@@ -33,11 +34,18 @@ const routes = [
     
     
     { path: "/admin", component: page_admin },
+    
     { path: "/admin/user", component: page_admin_listuser },
     { path: "/admin/user/edit", component: page_admin_edit_client },
+    
     { path: "/admin/interview", component: page_admin_interview },
+    { path: "/admin/interview/edit", component: page_admin_edit_interview },
+    
     { path: "/admin/extrait", component: page_admin_listextrait },
     { path: "/admin/details/extrait", component: page_admin_detail_video },
+
+
+    
 ];
 
 const router = createRouter({
