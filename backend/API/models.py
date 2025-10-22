@@ -1,7 +1,7 @@
 from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
-    DateTimeProperty, JSONProperty
+    DateTimeProperty
 )
 
 class PositionExtraitRel(StructuredRel):
@@ -14,6 +14,7 @@ class StyleMusical(StructuredNode):
     uuid = UniqueIdProperty()
     name = StringProperty(required=True, unique_index=True)
 
+
 class Artiste(StructuredNode):
     """Noeud Artiste"""
     uuid = UniqueIdProperty()
@@ -21,6 +22,7 @@ class Artiste(StructuredNode):
     info = StringProperty()
 
     style = RelationshipTo('StyleMusical', 'STYLE')
+    nationalite = RelationshipTo('Nation', 'NATIONALITE')
 
 
 class Interview(StructuredNode):
@@ -33,6 +35,7 @@ class Interview(StructuredNode):
     lieu = StringProperty()
 
     interviewer = RelationshipTo('Artiste', 'PARTICIPER')
+    tags_interview = RelationshipTo('Tag', 'TAGS_INTERVIEW')
 
 
 class Extrait(StructuredNode):
@@ -47,6 +50,7 @@ class Extrait(StructuredNode):
 
     interview = RelationshipTo('Interview', 'APPARTIENT_A', model=PositionExtraitRel)
     question = RelationshipTo('Question', 'POSE')
+    tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT')
 
 
 class Question(StructuredNode):
@@ -74,3 +78,12 @@ class Utilisateur(StructuredNode):
     watched_interviews = RelationshipTo('Interview', 'A_VU', model=DateHeureRel)
     watched_extraits = RelationshipTo('Extrait', 'A_VU', model=DateHeureRel)
     searched_questions = RelationshipTo('Question', 'A_RECHERCHE', model=DateHeureRel)
+
+
+class Nation(StructuredNode):
+    uuid = UniqueIdProperty()
+    name = StringProperty(required=True, unique_index=True)
+
+class Tag(StructuredNode):
+    uuid = UniqueIdProperty()
+    name = StringProperty(required=True, unique_index=True)

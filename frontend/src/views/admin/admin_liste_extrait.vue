@@ -1,12 +1,23 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/headerbar_admin.vue";
+import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+
+import comp_extrait from '../../components/components_admin/Admin_presentation_extrait.vue';
+
+import comp_admin_trie_extrait from '../../components/components_admin/Admin_trie.vue';
 
 export default {
     name: "page_admin_listextrait",
     components: {
       comp_baradmin,
-    },
+      comp_extrait,
+      comp_admin_trie_extrait,
+    },data() {
+        return {
+            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB']
+    };
+  }
+
 };
 
 
@@ -18,65 +29,43 @@ export default {
 
   <h1 class="text-center"> Admin </h1>
 
+  <div class="row" >
+    <comp_admin_trie_extrait/>
 
-  <nav>
-    <ul>
-      <li>
+    <div class="col-md-9 aggrandir">
+      <ul class="scroller2  row">
+        <li class="row carte" v-for="tag in tags">
+            <comp_extrait/>
+        </li>
+      </ul>
+      
+    </div>
+  </div>
 
-          <RouterLink class="card" to="/admin/extrait">
-            
-            <h1 class="text-center" > Extrait </h1>
-            <div class="text-center align-middle">
-              <img src="/imgs/video.svg" alt="Video logo" height="87" width="100">
-            </div>
-          </RouterLink>
-
-      </li>
-
-      <li>
-          <RouterLink class="card" to="/admin/interview">
-            <h1 class="text-center" > interview </h1>
-            <div class="text-center">
-              <img src="/imgs/playlist.svg" alt="playlist logo" height="87" width="100">
-            </div>
-          </RouterLink>
-
-      </li>
-
-      <li>
-        
-          <RouterLink class="card" to="/admin/user">
-
-            <h1 class="text-center" > User </h1>
-            <div class="text-center">
-              <img class="text-center" src="/imgs/adminlogo.svg" alt="admin logo" height="87" width="100">
-            </div>
-          </RouterLink>
-
-      </li>
-    </ul>
-  </nav>
 
 
 </template>
 
 <style scoped>
 
-body{
-    background-color: #0F0F0F;
+
+
+.carte{
+  padding: 5px;
+  margin: 5px;
 }
 
 
-h1 {
-  color: #ffffff;
-}
 
 .card{
-  background-color: #2C2D32;
-  filter: drop-shadow(20px 13px 4px #000000) ;
+  background-color: var(--gris-moyen);
+  filter: drop-shadow(20px 13px 4px var(--noir)) ;
 
  
 }
+
+
+
 
 li > .card{
     padding: 20px 50px 150px;
@@ -94,6 +83,22 @@ ul {
   
 }
 
+.scroller2 {
+
+  height: 80%;
+  overflow-y: scroll;
+  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-width: thin;
+}
+
+
+.aggrandir{
+  display: flex;
+  flex-wrap: nowrap;
+  list-style-type: none;
+  flex-grow: 1;
+
+}
 
 
 </style>
