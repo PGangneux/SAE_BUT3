@@ -6,8 +6,8 @@ export default {
 </script>
 
 <template>
-        <nav class="headeradmin text-white py-3">
-                <ul class="text-center">
+        <nav class="headeradmin text-white navadmin">
+                <ul class="text-center" style="padding:1em;">
 
                     <li class="nav-item text-white">
                         <RouterLink class="bt btn " to="/admin"> Accueil Admin </RouterLink>
@@ -40,14 +40,19 @@ export default {
 ul {
   display: flex;
   list-style-type: none;
-  justify-content: space-between;
+  justify-content: space-around;
 
-  
 }
 
 .headeradmin{
     background-color:var(--gris-moyen);
     margin: 10px 10px 10px 10px; 
+}
+
+.navadmin{
+    padding-top: 0.07em;
+    padding-top:  0.07em;
+    border-radius: 1em;
 }
 
 </style>

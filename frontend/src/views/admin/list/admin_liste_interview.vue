@@ -1,6 +1,6 @@
 <script>
 
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 export default {
   name: "page_admin_interview",
@@ -50,8 +50,7 @@ export default {
     </div>
 
     <div class="col-md-6 ">
-
-            <table class="scroller ultagger table table-bordered">
+            <table class="scroller ultagger table tables table-bordered">
                 <thead>
                     <tr>
                     <th scope="col">Nom interview</th>
@@ -60,11 +59,15 @@ export default {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="col" v-for="tag in tags">
-                        <td> {{ tag }} </td>
-                        <td> {{ tag }} </td>
-                        <td> {{ tag }} </td>
-                    </tr>
+                    
+                        <tr class="col" v-for="tag in tags">
+                            
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink> </td>
+                            
+                        </tr>
+                    
                 </tbody>
             </table>
         
@@ -106,6 +109,9 @@ export default {
 
 }
 
+.tables{
+    width: 100%;
+}
 
 .button-blanc{
     background-color: var(--blanc);
@@ -124,6 +130,7 @@ export default {
 .trie-tags{
     background-color: var(--gris-taupe);
 }
+
 
 
 .search-bar {

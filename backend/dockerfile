@@ -1,0 +1,9 @@
+FROM python:3.14-slim
+RUN mkdir /app
+WORKDIR /app
+COPY manage.py /app/
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r /app/requirements.txt
+COPY backend /app/
+COPY API /app/
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

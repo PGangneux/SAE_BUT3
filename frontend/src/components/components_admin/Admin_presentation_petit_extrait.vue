@@ -1,25 +1,21 @@
 <script>
 
 export default {
-    name: "comp_admin_presentation_extrait",
+    name: "comp_admin_presentation_petit_extrait",
     components: {
     },
 };
 </script>
 
 <template>
-    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
+    
+    <div class="container container_extrait col " >
         <div class="row base">
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite">Question Extrait</h1>
 
-                <div class="row text-center clairepart decallage_droite ">
-                    <p> description </p>
-                </div>
-
                 <div class="row decallage_droite">
                     <ul>
-
                         <li class="row vigniette">
                             <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
                             <p class="col" >date publication</p>
@@ -41,7 +37,7 @@ export default {
             </div>
 
         </div>
-    </RouterLink>
+    </div>
 
 
 

@@ -11,9 +11,9 @@ export default {
 <template>
   <h1 class="text-center"> Admin </h1>
   <nav>
-    <ul>
+    <ul style="padding-right:1em ; padding-left: 1em;">
       <li>
-        <RouterLink class="card" to="/admin/extrait">
+        <RouterLink class="card col" to="/admin/extrait">
           <h1 class="text-center">Extrait</h1>
           <div class="text-center align-middle">
             <img src="/imgs/video.svg" alt="Video logo" height="311" width="311">
@@ -21,7 +21,7 @@ export default {
         </RouterLink>
       </li>
       <li>
-        <RouterLink class="card" to="/admin/interview">
+        <RouterLink class="card col" to="/admin/interview">
           <h1 class="text-center">Interview</h1>
           <div class="text-center">
             <img src="/imgs/playlist.svg" alt="playlist logo" height="311" width="311">
@@ -29,7 +29,7 @@ export default {
         </RouterLink>
       </li>
       <li>
-        <RouterLink class="card" to="/admin/user">
+        <RouterLink class="card col" to="/admin/user">
           <h1 class="text-center">User</h1>
           <div class="text-center">
             <img class="text-center" src="/imgs/adminlogo.svg" alt="admin logo" height="311" width="311">

@@ -1,11 +1,13 @@
 :root {
     --vert-neon : #00FF86;
     --vert-pale : #26503C;
+    --vert-midel :#40ac40;
     --noir : #0f0f0f;
     --gris-moyen : #2C2D32;
     --gris-taupe : #4c4c4c;
     --gris-foncer : #323339;
     --gris-clair : #808184;
+    --gris-ultraclair :  #D9D9D9;
     --rouge : #F91119; 
     --blanc : #FFFFFF;
     --bleu : #00f;

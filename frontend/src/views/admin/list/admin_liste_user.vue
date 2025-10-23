@@ -1,5 +1,5 @@
 <script>
-import comp_baradmin from '../../components/components_admin/nav_admin.vue';
+import comp_baradmin from '../../../components/components_admin/nav_admin.vue';
 
 export default {
     name: "page_admin_listuser",
@@ -46,15 +46,15 @@ export default {
             <button scope="col" class="btgris btn" > État du compte</button>
         </div>
 
-        <table class="scroller ultagger table table-bordered">
+        <table class="scroller ultagger table tables table-bordered">
             <thead>
             </thead>
             <tbody>
                 <tr class="col" v-for="tag in tags">
-                    <td> {{ tag }} </td>
-                    <td> {{ tag }} </td>
-                    <td> {{ tag }} </td>
-                    <td> {{ tag }} </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
                 </tr>
             </tbody>
         </table>
@@ -98,6 +98,9 @@ ul {
   
 }
 
+.tables{
+    width: 100%;
+}
 
 .btgris{
     color:white;
