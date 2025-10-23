@@ -1,0 +1,31 @@
+services:
+    db:
+        image: neo4j:community
+        ports:
+            - "7687:7687"
+        volumes:
+            - neo4j_data:/data
+        env_file:
+            - .env
+
+    backend:
+        build: ./backend/
+        container_name: backend
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        env_file:
+            - .env
+    
+    frontend:
+        build: ./frontend/
+        container_name: frontend
+        ports:
+            - "5173:5173"
+        depends_on:
+            - backend
+        env_file:
+            - .env
+volumes:
+    neo4j_data:
