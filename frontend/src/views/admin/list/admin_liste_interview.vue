@@ -22,26 +22,30 @@ export default {
 
 <comp_baradmin/>
 
+<h1 class="text-center">Interview</h1>
 
-<div class="grisee row main-trie">
-    <div class="col-md-4 ">
+<div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;">
+    
+    <div class="col-md-4 main-trie">
         
-        <div class="container col">
+        <div class="container col recherche">
             <div class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                 </div>
             </div>
         </div>
 
-        <div class="row  trie-tags">
+        <div class="row  trie-tags centrer">
 
-            <p class="row ">Trier par tag</p>
+            <p class="row pcentrer">Trier par tag</p>
 
-            <ul class="scroller ultagger row">
+            <!--tagfully futur probleme-->
+
+            <ul class="scroller ultagger row tagsfully">
                 <li class="col" v-for="tag in tags">
                     <button class="btn btn-primary"> {{ tag }} </button>
                 </li>
@@ -49,13 +53,13 @@ export default {
         </div>
     </div>
 
-    <div class="col-md-6 ">
-            <table class="scroller ultagger table tables table-bordered">
+    <div class="col-md-6 recherche aggrandir">
+            <table class="scroller ultagger table tables  table-bordered">
                 <thead>
                     <tr>
-                    <th scope="col">Nom interview</th>
-                    <th scope="col">Nb video</th>
-                    <th scope="col">Tags</th>
+                        <th class="btgrisv2" scope=" col">Nom interview</th>
+                        <th class="btgrisv2" scope=" col">Nb video</th>
+                        <th class="btgrisv2" scope=" col">Tags</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -89,7 +93,11 @@ export default {
     scrollbar-width: thin;
 }
 
-
+.btgrisv2{
+    color:white;
+    background-color:var(--gris-moyen);
+    padding: 1em;
+}
 
 .allmighty {
   position: fixed;        
@@ -121,9 +129,29 @@ export default {
   background-color: var(--gris-moyen);
 }
 
+.centrer{
+justify-content: center
+}
+
+
+.recherche{
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.pcentrer{
+margin-top: 1em;
+margin-bottom: 1em;
+justify-content: center
+}
+
+.tagsfully{
+    width: 100%;
+    height:100%;
+}
 
 .main-trie{
-    padding-top: 10px;
+    padding: 2em;
     background-color: var(--gris-moyen);
 }
 
@@ -131,7 +159,19 @@ export default {
     background-color: var(--gris-taupe);
 }
 
+ul> li{
 
+    padding-bottom: 1em;
+
+}
+
+.aggrandir{
+  display: flex;
+  flex-wrap: nowrap;
+  list-style-type: none;
+  flex-grow: 1;
+
+}
 
 .search-bar {
     max-width: 500px;
@@ -154,4 +194,9 @@ export default {
     padding: 10px 20px;
 }
 
+.buttonsearch{
+    background-color: var(--vert-pale);
+}
 </style>
+
+

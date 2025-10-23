@@ -23,7 +23,7 @@ export default {
     <div class="main-trie col-md-3 ">
 
         <div class="row ">
-            <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add.svg" alt="add" class="col "> </button>
+            <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             
         </div>
 
@@ -32,8 +32,7 @@ export default {
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                     <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
-                        </button>
+                            <img src="/imgs/search.svg" alt="button search" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" > </button>
                 </div>
             </div>
         </div>
@@ -77,7 +76,8 @@ justify-content: center
 
 .tagsfully{
     width: 100%;
-    height: 100vh;
+    height: 100%;
+    flex-grow: 1;
 }
 
 

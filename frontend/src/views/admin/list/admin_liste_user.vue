@@ -18,7 +18,9 @@ export default {
 <template>
 
     <comp_baradmin/>
-    
+
+    <h1 class="text-center">User</h1>
+
     <div class="row"> 
         <button class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
 
@@ -27,7 +29,7 @@ export default {
             <div class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                 </div>
@@ -37,19 +39,19 @@ export default {
 
     </div>
 
-    <div class="raw">    
+    <div class="raw main-triev2">    
 
-        <div class="raw">
-            <button scope="col" class="btgris btn" > Pseudo</button>
-            <button scope="col" class="btgris btn" > Nom</button>
-            <button scope="col" class="btgris btn" > Prénom</button>
-            <button scope="col" class="btgris btn" > État du compte</button>
-        </div>
 
-        <table class="scroller ultagger table tables table-bordered">
+        <table class="scroller ultagger table tables table-striped ">
             <thead>
+                <tr>
+                    <th class="btgrisv2  col">Pseudo</th>
+                    <th class="btgrisv2  col">Nom</th>
+                    <th class="btgrisv2  col">Prénom</th>
+                    <th class="btgrisv2  col">État du compte</th>
+                </tr>
             </thead>
-            <tbody>
+            <tbody class="tobodd">
                 <tr class="col" v-for="tag in tags">
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
@@ -73,7 +75,9 @@ body{
 }
 
 
-
+.main-triev2{
+    padding: 2em;
+}
 
 .card{
   background-color: var(--gris-moyen);
@@ -86,6 +90,13 @@ li > .card{
     padding: 20px 50px 150px;
     margin: 10px 10px 10px 10px;
   
+}
+
+.table-striped {
+    --bs-table-bg: var();         
+    --bs-table-striped-bg: var(); 
+    --bs-table-color: #1a1a1a;      
+    --bs-table-striped-color: #1a1a1a; 
 }
 
 
@@ -112,6 +123,15 @@ ul {
 
 
 
+.btgrisv2{
+    color:white;
+    background-color:var(--gris-moyen);
+    padding: 1em;
+}
+
+.tobodd{
+    padding-top: 1em;
+}
 
 
 .search-bar {
@@ -135,4 +155,16 @@ ul {
     padding: 10px 20px;
 }
 
+.buttonsearch{
+    background-color: var(--vert-pale);
+}
+
+
+
+
+
+
 </style>
+
+
+
