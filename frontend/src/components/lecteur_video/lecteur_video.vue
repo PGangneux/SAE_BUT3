@@ -57,9 +57,6 @@ export default {
       // Mettre à jour la position du player
       this.pos_x_iframe = this.get_pos_x_iframe();
       this.pos_y_iframe = this.get_pos_y_iframe();
-      console.log("pos")
-      console.log(this.pos_x_iframe)
-      console.log(this.pos_y_iframe)
       window.addEventListener('resize', this.updatePopupPosition);
     },
 

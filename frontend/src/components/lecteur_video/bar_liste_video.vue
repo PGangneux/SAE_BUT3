@@ -4,8 +4,11 @@ import { prefetcher } from "../../model/prefetcher";
 
 export default {
   data() {
-    extraits: null
+    return {
+      extraits: null
+    };
   },
+
 
   async mounted() {
     this.extraits = markRaw(await prefetcher.extrait_all());
@@ -39,13 +42,10 @@ export default {
                 <img src="/imgs/Search.png" alt="loupe"/>
             </div>
             <div>
-                <ul>
+                <ul class="liste_video">
                     <li v-for="extrait in extraits">
-                        
-                        <!--
-                        <p>{{ extrait.url_miniature_yt }}</p>
                         <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
-                        -->
+                        
                         <div>
                             <h4>{{ extrait.titre }}</h4>
                             
@@ -60,16 +60,19 @@ export default {
 
 <style scoped>
 header, main{
-    background-color: var(--gris-moyen);
-    padding: 0 1rem;
-    
-    
+    background-color: var(--gris-foncer);
+    padding: 0 0.5rem;
 }
 
 header{
     border-bottom: 1px solid var(--blanc);
+    height: 5%;
 }
 
+main {
+  height: 95%; /* le reste de la page */
+  overflow-y: auto; /* permet le scroll vertical */
+}
 .header-nav {
   display: flex;
   justify-content: space-between; /* menu à gauche, bouton X à droite */
@@ -88,6 +91,8 @@ header{
 .menu li {
   cursor: pointer;
 }
+
+
 
 .close-btn {
   background: transparent;
@@ -114,6 +119,31 @@ header{
   width: 9%;
   cursor: pointer;
 }
+
+.liste_video {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.liste_video li {
+  list-style: none;
+  display: flex;
+  
+}
+
+.liste_video img {
+  display: block;
+  width: 55%;
+  height: 55%;
+  margin-right: 1em;
+  margin-bottom: 2em;
+  border-radius: 20px;
+  object-fit: cover;
+  background-color: var(--gris-moyen);
+}
+
+
 
 
 </style>
