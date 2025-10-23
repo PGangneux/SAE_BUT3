@@ -10,6 +10,8 @@ export default {
   },
 
 
+
+
   async mounted() {
     this.extraits = markRaw(await prefetcher.extrait_all());
     console.log("liste des extrait")
@@ -44,8 +46,9 @@ export default {
             <div>
                 <ul class="liste_video">
                     <li v-for="extrait in extraits">
-                        <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
-                        
+                        <router-link :to="`/lecteur_video/${extrait.uuid}`">
+                          <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
+                        </router-link>
                         <div>
                             <h4>{{ extrait.titre }}</h4>
                             
@@ -132,15 +135,21 @@ main {
   
 }
 
-.liste_video img {
+.liste_video img, .liste_video a{
   display: block;
-  width: 55%;
-  height: 55%;
-  margin-right: 1em;
-  margin-bottom: 2em;
+  width: 100%;
+  height: 100%;
+
   border-radius: 20px;
   object-fit: cover;
   background-color: var(--gris-moyen);
+}
+
+.liste_video a{
+    width: 55%;
+    height: 55%;
+    margin-right: 1em;
+    margin-bottom: 2em;
 }
 
 
