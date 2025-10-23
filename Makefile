@@ -18,7 +18,7 @@ run_front:
 
 install:
 	python3 -m venv venv
-	$(pip) install -r requirements.txt
+	$(pip) install -r backend/requirements.txt
 	$(npm) install
 
 # Pour le backend
