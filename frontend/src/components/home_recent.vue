@@ -1,6 +1,7 @@
 <script>
 import { markRaw } from 'vue';
 import prefetcher from '../model/prefetcher.js';
+import extrait_t from '../model/extrait.js';
 export default {
     name: "comp_recent",
     data() {
@@ -8,12 +9,20 @@ export default {
             failed : false,
             loading : true,
             interviews: [],
+            redirect : null,
         };
     },
     async mounted() {
         this.loading = true;
         try {
             this.interviews = markRaw(prefetcher.interview_all());
+            /// console.log("HERE");
+            /// console.log(prefetcher.fetch(extrait_t,this.interviews[0].extraits["url"],true));
+            try {
+                this.redirect = markRaw(prefetcher.fetch(extrait_t,this.interviews[0].extraits["url"],true)[0].uuid);
+            } catch (error) {
+                console.error(error);
+            }
             console.log("this.interviews");
             console.log(this.interviews);
         } catch (error) {
@@ -41,7 +50,7 @@ export default {
             :key="inter.uuid"
             class="local"
         >
-            <router-link to="/lecteur_video">
+            <router-link :to="`/lecteur_video/${this.redirect}`" >
                 <p>preview</p>
                 <iframe src="https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0"></iframe>
                 <h3>lieu {{ inter.lieu }}</h3>
