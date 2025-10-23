@@ -14,7 +14,14 @@ class QuestionViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
-        return Question.nodes.all()
+        questions = Question.nodes
+        search = self.request.query_params.get('search', '').strip()
+        if not search:
+            return questions.all()
+        for term in search.split():
+            if term:
+                questions = questions.filter(texte__icontains=term)
+        return questions.all()
 
     def get_object(self):
         try:

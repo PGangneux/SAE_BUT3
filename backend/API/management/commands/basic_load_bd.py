@@ -18,11 +18,12 @@ class Command(BaseCommand):
         nation = Nation(name="Test Nation").save()
         tag = Tag(name="Test Tag").save()
         utilisateur = Utilisateur(pseudo="Test Utilisateur", prenom="Jean", nom="Dupond", email="test@exemple.com", password=make_password("testmdp")).save()
+        admin = Utilisateur(pseudo="Test Admin", prenom="Ano", nom="Nyme", email="admin@exemple.com", password=make_password("adminmdp"), is_admin=True).save()
 
-        extrait1 = Extrait(titre="Extrait 1", description="Extrait 1 de l'interview 1", youtube_url="https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-", vimeo_url= "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479", uploaded_at=date.today()).save()
-        extrait2 = Extrait(titre="Extrait 2", description="Extrait 2 de l'interview 1", youtube_url="https://www.youtube.com/embed/ux6ZtL1o0R0?si=lH7-5QMdNo028Lrr", vimeo_url= "https://player.vimeo.com/video/1128763050?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479", uploaded_at=date.today()).save()
-        extrait3 = Extrait(titre="Extrait 3", description="Extrait 3 de l'interview 1", youtube_url="https://www.youtube.com/embed/WpFoiw2uP0w?si=bTHhoTddKjCwC5lL", vimeo_url= "https://player.vimeo.com/video/1128763155?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479", uploaded_at=date.today()).save()
-        extrait4 = Extrait(titre="Extrait 4", description="Extrait 4 de l'interview 1", youtube_url="https://www.youtube.com/embed/2PDvQ3P8c64?si=8k335KO41AROxbZu", vimeo_url= "https://player.vimeo.com/video/1128763765?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479", uploaded_at=date.today()).save()
+        extrait1 = Extrait(titre="Extrait 1", description="Extrait 1 de l'interview 1", youtube_url="1NYQ65FTEC8", vimeo_url= "1128762950", uploaded_at=date.today()).save()
+        extrait2 = Extrait(titre="Extrait 2", description="Extrait 2 de l'interview 1", youtube_url="ux6ZtL1o0R0", vimeo_url= "1128763050", uploaded_at=date.today()).save()
+        extrait3 = Extrait(titre="Extrait 3", description="Extrait 3 de l'interview 1", youtube_url="WpFoiw2uP0w", vimeo_url= "1128763155", uploaded_at=date.today()).save()
+        extrait4 = Extrait(titre="Extrait 4", description="Extrait 4 de l'interview 1", youtube_url="2PDvQ3P8c64", vimeo_url= "1128763765", uploaded_at=date.today()).save()
         
 
         question.theme.connect(theme)
