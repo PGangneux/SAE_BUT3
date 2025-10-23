@@ -12,5 +12,6 @@ export default class video {
         this.pos_y_iframe = 0
         this.lecteur = 'Viméo'
         this.url = "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+        thi
     }
 }

@@ -33,7 +33,8 @@ const routes = [
     { path: "/connection", component: page_connection },
     { path: "/inscription", component: page_inscription },
     { path: "/reset-password", component: page_reset_password },
-    { path: "/lecteur_video", component: lecteur_video },
+    { path: "/lecteur_video/:uuid", component: lecteur_video, props: true },// indispensable pour injecter le paramètre dans le composant
+
     
     
     { path: "/admin", component: page_admin },

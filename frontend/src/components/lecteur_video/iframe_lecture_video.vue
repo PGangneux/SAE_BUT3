@@ -1,6 +1,6 @@
 <script>
 import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
-import { videoStore } from "../../stores/videoStore";
+import { videoStore } from "../../model/videoStore";
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 
@@ -40,6 +40,23 @@ export default {
       return null;
     }
 
+    let intervalId = null;
+
+    function startTracking() {
+      intervalId = setInterval(() => {
+        if (player.value && typeof player.value.getCurrentTime === "function") {
+          videoStore.currentTime = player.value.getCurrentTime();
+        }
+      }, 1000);
+    }
+
+    function stopTracking() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
 
     async function initYouTube(videoId) {
       const YT = await loadYouTubeAPI();
@@ -64,11 +81,7 @@ export default {
       });
 
       // Synchronisation du temps de lecture
-      setInterval(() => {
-        if (player.value && typeof player.value.getCurrentTime === "function") {
-          videoStore.currentTime = player.value.getCurrentTime();
-        }
-      }, 1000);
+      startTracking()
     }
 
 
@@ -83,12 +96,14 @@ export default {
           document.body.appendChild(script);
         });
       }
+      
 
       // Créer l'iframe
       const container = document.getElementById("player");
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
+      
       iframe.src = props.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
@@ -131,11 +146,14 @@ export default {
       if (player.value && player.value.destroy) {
         console.log("🔁 Destruction ancien player");
         player.value.destroy();
+        stopTracking()
       }
 
       await nextTick();
+      console.log(props.url)
 
       if (props.url.includes("youtube")) {
+        
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
@@ -149,6 +167,7 @@ export default {
     onMounted(async () => {
       await nextTick();
       console.log("création")
+      console.log(props.url)
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);

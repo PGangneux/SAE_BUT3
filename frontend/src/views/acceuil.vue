@@ -1,5 +1,5 @@
 <script>
-import { videoStore } from "../stores/videoStore.js";
+import { videoStore } from "../model/videoStore.js";
 import comp_mindmap from "../components/mindmap.vue";
 import comp_recent from "../components/home_recent.vue";
 import iframe_lecture_video from "../components/lecteur_video/iframe_lecture_video.vue";
@@ -27,13 +27,15 @@ export default {
 
     picture_in_picture() {
       console.log("→ Désactivation du Picture in Picture");
-      videoStore.url = this.url;
-      videoStore.lecteur = this.lecteur;
-      console.log("le lecteur: "+this.lecteur)
+      
+      
+      //videoStore.lecteur = this.lecteur;
+      console.log("le lecteur: "+videoStore.lecteur)
       videoStore.isPictureInPicture = false;
 
       // Rediriger vers la page d’accueil
-      this.$router.push("/lecteur_video");
+      console.log(videoStore.uuid)
+      this.$router.push("/lecteur_video/"+videoStore.uuid);
     },
   
 
@@ -102,6 +104,7 @@ export default {
           alt="picture in picture" 
           @click.stop="picture_in_picture">
     </div>
+    
 
 
 </template>
