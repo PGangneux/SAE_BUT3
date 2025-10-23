@@ -8,13 +8,13 @@ from .views import (
     ArtisteViewSet, UtilisateurViewSet,
     ArtisteInterviewViewSet, QuestionExtraitViewSet,
     StyleMusicalViewSet, StyleMusicalArtisteViewSet,
-    ArtisteStyleMusicalViewSet, NationViewSet,
+    NationViewSet,
     NationArtisteViewSet, TagViewSet,
     TagInterviewViewSet, TagExtraitViewSet,
     InterviewTagViewSet, ExtraitTagViewSet,
     ArtisteStyleRelationShipViewSet,
-    UtilisateurArtisteViewSet, UtilisateurExtraitViewSet,
-    UtilisateurInterviewViewSet, UtilisateurQuestionViewSet,
+    RecherchesArtistesViewSet, RegarderExtraitsViewSet,
+    RegarderInterviewsViewSet, RecherchesQuestionsViewSet,
 )
 
 router = DefaultRouter()
@@ -39,7 +39,6 @@ router_interview.register(r'tags', InterviewTagViewSet, basename='tag')
 router.register(r'artistes', ArtisteViewSet, basename='artiste')
 router_artiste = NestedDefaultRouter(router, r'artistes', lookup='artiste')
 router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interview')
-router_artiste.register(r'styles-musicaux', ArtisteStyleMusicalViewSet, basename='style-musical')
 router_artiste.register(r'styles', ArtisteStyleRelationShipViewSet, basename='style')
 
 router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')
@@ -57,10 +56,10 @@ router_tag.register(r'interviews', TagInterviewViewSet, basename='interview')
 
 router.register(r'utilisateurs', UtilisateurViewSet, basename='utilisateur')
 router_utilisateur = NestedDefaultRouter(router, r'utilisateurs', lookup='utilisateur')
-router_utilisateur.register(r'artistes', UtilisateurArtisteViewSet, basename='artiste')
-router_utilisateur.register(r'interviews', UtilisateurInterviewViewSet, basename='interview')
-router_utilisateur.register(r'extraits', UtilisateurExtraitViewSet, basename='extrait')
-router_utilisateur.register(r'questions', UtilisateurQuestionViewSet, basename='question')
+router_utilisateur.register(r'artistes', RecherchesArtistesViewSet, basename='artiste')
+router_utilisateur.register(r'interviews', RegarderInterviewsViewSet, basename='interview')
+router_utilisateur.register(r'extraits', RegarderExtraitsViewSet, basename='extrait')
+router_utilisateur.register(r'questions', RecherchesQuestionsViewSet, basename='question')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -72,4 +71,5 @@ urlpatterns = [
     path('', include(router_style_musical.urls)),
     path('', include(router_nation.urls)),
     path('', include(router_tag.urls)),
+    path('', include(router_utilisateur.urls)),
 ]

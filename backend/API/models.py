@@ -9,7 +9,7 @@ class PositionExtraitRel(StructuredRel):
     position = IntegerProperty(required=True)
 
 class DateHeureRel(StructuredRel):
-    date_heure = DateTimeProperty(required=True)
+    date_heure = DateTimeProperty(default_now=True)
 
 class StyleMusical(StructuredNode):
     uuid = UniqueIdProperty()
