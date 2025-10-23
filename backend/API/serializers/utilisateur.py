@@ -1,4 +1,5 @@
 from django.contrib.auth.hashers import make_password
+from django.urls import reverse
 from rest_framework import serializers
 from ..models import Utilisateur
 
@@ -12,20 +13,31 @@ class UtilisateurSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=True)
     is_admin = serializers.BooleanField()
 
-    # # optional relationships creation via serializer (lists of dicts with uuid + date_heure)
-    # recherches_artistes = serializers.ListField(
-    #     child=serializers.DictField(), write_only=True, required=False,
-    #     help_text="Liste d'objets {'uuid': artiste_uuid, 'date_heure': ISO_datetime}"
-    # )
-    # watched_interviews = serializers.ListField(
-    #     child=serializers.DictField(), write_only=True, required=False
-    # )
-    # watched_extraits = serializers.ListField(
-    #     child=serializers.DictField(), write_only=True, required=False
-    # )
-    # searched_questions = serializers.ListField(
-    #     child=serializers.DictField(), write_only=True, required=False
-    # )
+    # Outputs
+    recherches_artistes = serializers.SerializerMethodField(read_only=True)
+    regarder_interviews = serializers.SerializerMethodField(read_only=True)
+    regarder_extraits = serializers.SerializerMethodField(read_only=True)
+    recherches_questions = serializers.SerializerMethodField(read_only=True)
+
+    def get_recherches_artistes(self, utilisateur):
+        return {
+            "url": self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        }
+
+    def get_regarder_interviews(self, utilisateur):
+        return {
+            "url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        }
+
+    def get_regarder_extraits(self, utilisateur):
+        return {
+            "url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        }
+
+    def get_recherches_questions(self, utilisateur):
+        return {
+            "url": self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        }
 
     def create(self, validated_data):
         # handle relations lists separately

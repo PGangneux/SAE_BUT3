@@ -3,6 +3,7 @@ from ..models import StyleMusical
 
 class StyleRelationShipSerializer(serializers.Serializer):
     uuid = serializers.CharField(required=True)
+    name = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
         """Connecte un style à un artiste"""

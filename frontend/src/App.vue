@@ -38,8 +38,7 @@ export default {
 <template>
     <comp_headerbar />
     <main>
-        <router-view>
-        </router-view>
+        <router-view :key="$route.fullPath"></router-view>
         <!--
             <router-view v-slot="lecteur_video">
             <keep-alive>

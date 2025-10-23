@@ -13,8 +13,8 @@ class ArtisteStyleRelationShipViewSet(
     viewsets.GenericViewSet
 ):
     serializer_class = StyleRelationShipSerializer
-    lookup_field = 'uuid'
     router_lookup_field = 'artiste_uuid'
+    lookup_field = 'uuid'
 
     def get_queryset(self):
         artiste = self.get_artiste()
