@@ -23,7 +23,11 @@ export default {
                 /// console.log(this.user_current);
                 this.apiMessage = "login bon";
                 await sleep(500);
-                router.push({ path: '/admin', replace: true });
+                if (window.history.length > 1){
+                    router.go(-1);
+                } else {
+                    router.replace('/');
+                }
             } catch (error) {
                 console.error(error);
                 this.apiMessage = error.message;
@@ -38,7 +42,7 @@ export default {
 <template>
     <div>
         <h1 class="vert-neon">Bienvenue</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="login" class="local">
             <label>
                 Username:
                 <input v-model="username" type="text" required />
@@ -52,11 +56,14 @@ export default {
             <button>Login</button>
         </form>
         <img v-if="this.loading" src="/imgs/spinner.gif" alt="loading image...">
-        <p>Erreur : {{ apiMessage }}</p>
+        <p v-if="apiMessage">{{ apiMessage }}</p>
     </div>
 </template>
 
 <style scoped>
+.local label {
+    color : var(--blanc);
+}
 .vert-neon { 
     color : var(--vert-neon);
     justify-self: center;

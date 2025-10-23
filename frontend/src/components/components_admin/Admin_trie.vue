@@ -27,7 +27,7 @@ export default {
             
         </div>
 
-        <div class="container recherche row">
+        <div class="recherche row">
             <div class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">

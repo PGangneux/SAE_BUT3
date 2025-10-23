@@ -6,7 +6,7 @@ export default {
 
 <template>
     <footer class="bg-dark text-white py-3 mt-auto">
-        <div class="container text-center mb-2">
+        <div class="text-center mb-2">
             <div class="d-flex justify-content-center gap-3 mb-2">
                 <a href="https://youtube.com" target="_blank">
                     <img src="/imgs/youtube.svg" alt="youtube" style="width:32px; height:32px;">
