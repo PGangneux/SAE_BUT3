@@ -37,4 +37,8 @@ class Command(BaseCommand):
         extrait1.question.connect(question)
         interview.tags_interview.connect(tag)
         extrait1.tags_extrait.connect(tag)
+        utilisateur.recherches_artistes.connect(artiste)
+        utilisateur.regarder_interviews.connect(interview)
+        utilisateur.regarder_extraits.connect(extrait1)
+        utilisateur.recherches_questions.connect(question)
         self.stdout.write(self.style.SUCCESS('Base de données chargé'))
