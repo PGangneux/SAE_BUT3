@@ -23,7 +23,11 @@ export default {
                 /// console.log(this.user_current);
                 this.apiMessage = "login bon";
                 await sleep(500);
-                router.push({ path: '/admin', replace: true });
+                if (window.history.length > 1){
+                    router.go(-1);
+                } else {
+                    router.replace('/');
+                }
             } catch (error) {
                 console.error(error);
                 this.apiMessage = error.message;
