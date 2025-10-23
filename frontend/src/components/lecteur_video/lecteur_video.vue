@@ -26,7 +26,7 @@ export default {
       extrait: null,
       url_yt: "",
       url_vimeo: "",
-      url:"",
+      url:null,
       lecteur: "",
     };
   },
@@ -42,14 +42,7 @@ export default {
     this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
     this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
     this.lecteur = (videoStore.lecteur != "")? videoStore.lecteur  : 'Viméo'
-    console.log(this.lecteur)
     this.set_url(this.lecteur)
-    console.log("fffffffffffff")
-    console.log(this.url)
-
-    console.log("Extrait chargé :", this.extrait);
-
-
 
     // Mettre à jour la position du player
     this.pos_x_iframe = this.get_pos_x_iframe();
@@ -127,7 +120,7 @@ export default {
     <main>
       
       <iframe_lecture_video
-        v-if="url != ''"
+        v-if="url"
         :url=this.url
         ref="iframe"
       />
@@ -144,7 +137,7 @@ export default {
         </div>
 
         <div id="description">
-          <p>Video description</p>
+          <p>{{extrait?.description || 'description vidéo'}}</p>
         </div>
       </div>
     </main>
