@@ -9,6 +9,7 @@ export default class extrait_t extends CRUD {
     #interview
     #question
     #tags
+    #url_miniature_yt
 
     validateString(value, fieldName) {
         if (value === null || value === undefined) {
@@ -39,6 +40,7 @@ tags,}
         this.#interview = interview;
         this.#question = question;
         this.#tags = tags;
+        this.#url_miniature_yt = `https://img.youtube.com/vi/${youtube_url}/maxresdefault.jpg`
     }
 
     get endpoint() { return "extraits" }
@@ -72,6 +74,11 @@ tags,}
     set tags(value) { 
         this.#tags = value; /// TODO : implement 
     }
+
+    get url_miniature_yt(){
+        return this.#url_miniature_yt 
+    }
+
 
     toJSON() {
         return {
