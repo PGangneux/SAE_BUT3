@@ -1,16 +1,18 @@
 <script>
+import { markRaw } from 'vue';
+import { prefetcher } from "../../model/prefetcher";
 
 export default {
   data() {
-    return {
-        videos : {
-            id: 1,
-            title: "Titre de la vidéo",
-            thumbnail: "lien_vers_la_miniature.jpg"
-        },
-        titreSideBar: "Question en cours",
-        placeholderRecherche: "Rechercher une vidéo"
-    }
+    extraits: null
+  },
+
+  async mounted() {
+    this.extraits = markRaw(await prefetcher.extrait_all());
+    console.log("liste des extrait")
+    console.log(this.extraits)
+
+    
   },
 
 };
@@ -38,10 +40,15 @@ export default {
             </div>
             <div>
                 <ul>
-                    <li v-for="video in videos" :key="video.id">
-                        <img :src="video.thumbnail" :alt="video.title"/>
+                    <li v-for="extrait in extraits">
+                        
+                        <!--
+                        <p>{{ extrait.url_miniature_yt }}</p>
+                        <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
+                        -->
                         <div>
-                            <h3>{{ video.title }}</h3>
+                            <h4>{{ extrait.titre }}</h4>
+                            
                         </div>
                     </li>
                 </ul>

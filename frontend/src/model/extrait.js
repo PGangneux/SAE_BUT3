@@ -73,6 +73,11 @@ tags,}
         this.#tags = value; /// TODO : implement 
     }
 
+    get url_miniature_yt(){
+        return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`
+    }
+
+
     toJSON() {
         return {
             uuid: this.uuid,

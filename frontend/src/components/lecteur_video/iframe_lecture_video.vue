@@ -1,5 +1,5 @@
 <script>
-import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick, } from "vue";
 import { videoStore } from "../../model/videoStore";
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
@@ -23,7 +23,7 @@ function loadYouTubeAPI() {
 export default {
   props: { url: String },
 
-  setup(props, { expose }) {
+  setup(props, { expose, emit }) {
     const player = ref(null);
 
     function get_YT_videoId(url) {
@@ -62,14 +62,11 @@ export default {
       const YT = await loadYouTubeAPI();
       await nextTick();
 
-      console.log("✅ Création du player YouTube...");
       player.value = new YT.Player("player", {
         videoId,
         events: {
           onReady: (event) => {
-            console.log("YouTube Player prêt !");
             if (videoStore.currentTime) event.target.seekTo(videoStore.currentTime);
-            console.log("en cours ?" +videoStore.isPlaying )
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
           },
@@ -144,13 +141,11 @@ export default {
 
     async function update_player() {
       if (player.value && player.value.destroy) {
-        console.log("🔁 Destruction ancien player");
         player.value.destroy();
         stopTracking()
       }
 
       await nextTick();
-      console.log(props.url)
 
       if (props.url.includes("youtube")) {
         
@@ -161,21 +156,15 @@ export default {
       }
     }
 
-
-
-
     onMounted(async () => {
       await nextTick();
-      console.log("création")
-      console.log(props.url)
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
-        console.log("test init vimeo")
         await initVimeo();
-        console.log("test fin init vimeo")
       }
+      emit('iframe_build')
 
 
     });

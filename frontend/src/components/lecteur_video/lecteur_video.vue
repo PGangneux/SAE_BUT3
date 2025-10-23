@@ -20,8 +20,8 @@ export default {
   data() {
     return {
       param_visible: false,
-      pos_x_iframe: 0,
-      pos_y_iframe: 0,
+      pos_x_iframe: null,
+      pos_y_iframe: null,
       aside_visible: true,
       extrait: null,
       url_yt: "",
@@ -44,10 +44,7 @@ export default {
     this.lecteur = (videoStore.lecteur != "")? videoStore.lecteur  : 'Viméo'
     this.set_url(this.lecteur)
 
-    // Mettre à jour la position du player
-    this.pos_x_iframe = this.get_pos_x_iframe();
-    this.pos_y_iframe = this.get_pos_y_iframe();
-    window.addEventListener('resize', this.updatePopupPosition);
+    
   },
 
   beforeUnmount() {
@@ -56,6 +53,16 @@ export default {
 
 
   methods: {
+    iframe_build(){
+      // Mettre à jour la position du player
+      this.pos_x_iframe = this.get_pos_x_iframe();
+      this.pos_y_iframe = this.get_pos_y_iframe();
+      console.log("pos")
+      console.log(this.pos_x_iframe)
+      console.log(this.pos_y_iframe)
+      window.addEventListener('resize', this.updatePopupPosition);
+    },
+
     toggle_parametres() {
       this.param_visible = !this.param_visible;
     },
@@ -73,12 +80,12 @@ export default {
 
     get_pos_x_iframe() {
       const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.right : 0;
+      return rect ? rect.right : null;
     },
 
     get_pos_y_iframe() {
       const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.bottom : 0;
+      return rect ? rect.bottom : null;
     },
 
     async toggle_aside() {
@@ -123,6 +130,7 @@ export default {
         v-if="url"
         :url=this.url
         ref="iframe"
+        @iframe_build = iframe_build
       />
 
       
