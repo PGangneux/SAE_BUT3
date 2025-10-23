@@ -1,4 +1,4 @@
-<script>
+n<script>
 
 export default {
     name: "comp_headerbaradmin",
@@ -41,7 +41,11 @@ ul {
   display: flex;
   list-style-type: none;
   justify-content: space-around;
+  flex-wrap: wrap;
+}
 
+li{
+      padding-bottom: 1em;
 }
 
 .headeradmin{
