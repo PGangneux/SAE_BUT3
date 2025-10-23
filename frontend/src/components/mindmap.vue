@@ -24,5 +24,12 @@ export default {
     <div>
         <h2>Mindmap Component</h2>
         <h2>{{ searchValue }}</h2>
+        <div class="local"></div>
     </div>
 </template>
+
+<style scoped>
+.local {
+    height: 300px;
+}
+</style>
