@@ -23,7 +23,7 @@ export default {
     <div class="main-trie col-md-3 ">
 
         <div class="row ">
-            <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add.svg" alt="add" class="col "> </button>
+            <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             
         </div>
 
