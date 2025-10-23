@@ -2,8 +2,8 @@ from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
 from rest_framework.exceptions import NotFound
-from ..models import Artiste, Nation
-from ..serializers import ArtisteSerializer, NationSerializer
+from ..models import Artiste
+from ..serializers import ArtisteSerializer
 
 
 class ArtisteViewSet(viewsets.ModelViewSet):

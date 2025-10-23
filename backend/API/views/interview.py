@@ -72,3 +72,4 @@ class TagInterviewViewSet(viewsets.ModelViewSet):
             return Interview.inflate(results[0][0])
         except:
             raise NotFound('Interview introuvable.', 404)
+
