@@ -4,7 +4,7 @@
     --vert-midel :#40ac40;
     --noir : #0f0f0f;
     --gris-moyen : #2C2D32;
-    --gris-taupe : #4C4C4C;
+    --gris-taupe : #4c4c4c;
     --gris-foncer : #323339;
     --gris-clair : #808184;
     --gris-ultraclair :  #D9D9D9;
@@ -17,11 +17,12 @@
 }
 
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%; /* s’étend au moins sur la hauteur de la fenêtre, mais peut grandir */
 }
+
 
 body {
   display: flex;

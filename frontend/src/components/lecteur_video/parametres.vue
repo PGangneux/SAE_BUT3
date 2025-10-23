@@ -24,8 +24,6 @@ export default {
         return {
             parametre_general: true,
             parametre_lecteur: false,
-            parametre_sous_titre: false,
-            sous_titres: 'Désactivés',
             pos_x : 0,
             pos_y : 0,
         };
@@ -71,7 +69,6 @@ export default {
       </ul>
       <ul class="popup-values">
         <li @click="toggle_parametre_lecteur">{{ lecteur }} > </li>
-        <li @click="">{{ sous_titres }} ></li>
       </ul>
     </div>
   </div>

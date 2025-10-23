@@ -1,6 +1,6 @@
 <script>
-import { onMounted, onBeforeUnmount, ref, nextTick } from "vue";
-import { videoStore } from "../../stores/videoStore";
+import { onMounted, onBeforeUnmount, ref, nextTick, } from "vue";
+import { videoStore } from "../../model/videoStore";
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 
@@ -23,7 +23,7 @@ function loadYouTubeAPI() {
 export default {
   props: { url: String },
 
-  setup(props, { expose }) {
+  setup(props, { expose, emit }) {
     const player = ref(null);
 
     function get_YT_videoId(url) {
@@ -40,19 +40,33 @@ export default {
       return null;
     }
 
+    let intervalId = null;
+
+    function startTracking() {
+      intervalId = setInterval(() => {
+        if (player.value && typeof player.value.getCurrentTime === "function") {
+          videoStore.currentTime = player.value.getCurrentTime();
+        }
+      }, 1000);
+    }
+
+    function stopTracking() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
 
     async function initYouTube(videoId) {
       const YT = await loadYouTubeAPI();
       await nextTick();
 
-      console.log("✅ Création du player YouTube...");
       player.value = new YT.Player("player", {
         videoId,
         events: {
           onReady: (event) => {
-            console.log("YouTube Player prêt !");
             if (videoStore.currentTime) event.target.seekTo(videoStore.currentTime);
-            console.log("en cours ?" +videoStore.isPlaying )
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
           },
@@ -64,11 +78,7 @@ export default {
       });
 
       // Synchronisation du temps de lecture
-      setInterval(() => {
-        if (player.value && typeof player.value.getCurrentTime === "function") {
-          videoStore.currentTime = player.value.getCurrentTime();
-        }
-      }, 1000);
+      startTracking()
     }
 
 
@@ -83,12 +93,14 @@ export default {
           document.body.appendChild(script);
         });
       }
+      
 
       // Créer l'iframe
       const container = document.getElementById("player");
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
+      
       iframe.src = props.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
@@ -129,13 +141,14 @@ export default {
 
     async function update_player() {
       if (player.value && player.value.destroy) {
-        console.log("🔁 Destruction ancien player");
         player.value.destroy();
+        stopTracking()
       }
 
       await nextTick();
 
       if (props.url.includes("youtube")) {
+        
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
@@ -143,20 +156,15 @@ export default {
       }
     }
 
-
-
-
     onMounted(async () => {
       await nextTick();
-      console.log("création")
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
-        console.log("test init vimeo")
         await initVimeo();
-        console.log("test fin init vimeo")
       }
+      emit('iframe_build')
 
 
     });
@@ -177,6 +185,19 @@ export default {
 </script>
 
 <template>
-  <div class="player" id="player"></div>
+  <div ref="rootElement" class="rootElement">
+    <div class="player" id="player"></div>
+  </div>
 </template>
+
+<style scoped>
+
+.rootElement {
+  width: 100%;
+  height: 100%;
+
+  background-color: #000;
+}
+
+</style>
 

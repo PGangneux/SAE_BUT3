@@ -1,107 +1,147 @@
 <script>
+import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import parametres from './parametres.vue';
-import { videoStore } from "../../stores/videoStore";
+import { videoStore } from "../../model/videoStore";
+import { prefetcher } from "../../model/prefetcher";
 
 export default {
   name: "page_lecteur_video",
   components: { iframe_lecture_video, bar_liste_video, parametres },
 
+  props: {
+    uuid: {
+      type: String,
+      required: true
+    },
+  },
+
   data() {
     return {
       param_visible: false,
-      pos_x_iframe: 0,
-      pos_y_iframe: 0,
+      pos_x_iframe: null,
+      pos_y_iframe: null,
       aside_visible: true,
-      lecteur: 'Viméo',
-
-      url: "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+      extrait: null,
+      url_yt: "",
+      url_vimeo: "",
+      url:null,
+      lecteur: "",
     };
   },
 
+  async mounted() {
+    this.extrait = markRaw(await prefetcher.extrait(this.uuid));
+
+    if (!this.extrait) {
+      console.error("Aucun extrait trouvé pour", this.uuid);
+      return;
+    }
+
+    this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
+    this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
+    this.lecteur = (videoStore.lecteur != "")? videoStore.lecteur  : 'Viméo'
+    this.set_url(this.lecteur)
+
+    
+  },
+
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updatePopupPosition);
+  },
+
+
   methods: {
+    iframe_build(){
+      // Mettre à jour la position du player
+      this.pos_x_iframe = this.get_pos_x_iframe();
+      this.pos_y_iframe = this.get_pos_y_iframe();
+      console.log("pos")
+      console.log(this.pos_x_iframe)
+      console.log(this.pos_y_iframe)
+      window.addEventListener('resize', this.updatePopupPosition);
+    },
+
     toggle_parametres() {
       this.param_visible = !this.param_visible;
     },
 
     picture_in_picture() {
       console.log("→ Activation du Picture in Picture");
-      videoStore.url = this.url;
+      videoStore.uuid = this.uuid;
+      videoStore.url_yt = this.url_yt;
+      videoStore.url_vimeo = this.url_vimeo;
       videoStore.lecteur = this.lecteur;
-      console.log("le lecteur: "+this.lecteur)
+      videoStore.url = this.url;
       videoStore.isPictureInPicture = true;
-
-      // Rediriger vers la page d’accueil
       this.$router.push("/");
     },
 
-
     get_pos_x_iframe() {
-      const rect = this.$refs.iframe.$el.getBoundingClientRect();
-      return rect.right;
+      if (this.lecteur == "YouTube"){
+        const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
+        console.log("iframe " + this.$refs.iframe?.$el)
+        return rect ? rect.right : null;
+      }
+      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
+      return rect ? rect.right : null;
     },
-
 
     get_pos_y_iframe() {
-      const rect = this.$refs.iframe.$el.getBoundingClientRect();
-      return rect.bottom; // position y
+      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
+      return rect ? rect.bottom : null;
     },
 
-    set_lecteur(new_lecteur){
-      this.lecteur = new_lecteur
-      console.log("update url")
-      this.set_url(this.lecteur)
-      this.$refs.iframe.update_player();
-    },
-
-    set_url(lecteur){
-      if (lecteur == "YouTube"){     
-        this.url = "https://www.youtube.com/embed/1NYQ65FTEC8?si=gwQlb9W4mPKm9Ri-"
-      }
-      else{
-        this.url = "https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
-      }
-    },
-
-    async toggle_aside(){
-      this.aside_visible = !this.aside_visible
-      await this.updatePopupPosition()
+    async toggle_aside() {
+      this.aside_visible = !this.aside_visible;
+      await this.updatePopupPosition();
     },
 
     async updatePopupPosition() {
       const before_visible = this.param_visible;
-      
       if (this.param_visible) this.param_visible = false;
       await new Promise(resolve => setTimeout(resolve, 100));
       this.pos_x_iframe = this.get_pos_x_iframe();
       this.pos_y_iframe = this.get_pos_y_iframe();
-      
-      if (before_visible) this.param_visible = true; 
+      if (before_visible) this.param_visible = true;
+    },
 
-    }
+    set_url(lecteur) {
+      this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
+    },
 
+
+    async set_lecteur(new_lecteur){
+      this.lecteur = new_lecteur
+      console.log("update url")
+      this.set_url(this.lecteur)
+      await this.$refs.iframe.update_player()
+    },
   },
 
-  mounted() {
-    this.pos_x_iframe = this.get_pos_x_iframe();
-    this.pos_y_iframe = this.get_pos_y_iframe();
-    window.addEventListener('resize', this.updatePopupPosition);
-  },
+    
 
-  beforeUnmount() {
-    window.removeEventListener('resize', this.updatePopupPosition);
-  }
+
 };
 </script>
+
 
 <template>
   <div class="layout">
     <main>
-      <iframe_lecture_video :url="url" ref="iframe"/>
+      
+      <iframe_lecture_video
+        v-if="url"
+        :url=this.url
+        ref="iframe"
+        @iframe_build = iframe_build
+      />
+
+      
       <div>
         <div id="bottom-iframe">
-          <h2>Title</h2>
+          <h2>{{ extrait?.titre || '' }}</h2>
           <div class="right-content">
             <a>Voir toute l’interview</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
@@ -110,7 +150,7 @@ export default {
         </div>
 
         <div id="description">
-          <p>Video description</p>
+          <p>{{extrait?.description || 'description vidéo'}}</p>
         </div>
       </div>
     </main>

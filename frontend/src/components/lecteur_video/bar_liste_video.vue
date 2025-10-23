@@ -1,16 +1,23 @@
 <script>
+import { markRaw } from 'vue';
+import { prefetcher } from "../../model/prefetcher";
 
 export default {
   data() {
     return {
-        videos : {
-            id: 1,
-            title: "Titre de la vidéo",
-            thumbnail: "lien_vers_la_miniature.jpg"
-        },
-        titreSideBar: "Question en cours",
-        placeholderRecherche: "Rechercher une vidéo"
-    }
+      extraits: null
+    };
+  },
+
+
+
+
+  async mounted() {
+    this.extraits = markRaw(await prefetcher.extrait_all());
+    console.log("liste des extrait")
+    console.log(this.extraits)
+
+    
   },
 
 };
@@ -37,11 +44,14 @@ export default {
                 <img src="/imgs/Search.png" alt="loupe"/>
             </div>
             <div>
-                <ul>
-                    <li v-for="video in videos" :key="video.id">
-                        <img :src="video.thumbnail" :alt="video.title"/>
+                <ul class="liste_video">
+                    <li v-for="extrait in extraits">
+                        <router-link :to="`/lecteur_video/${extrait.uuid}`">
+                          <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
+                        </router-link>
                         <div>
-                            <h3>{{ video.title }}</h3>
+                            <h4>{{ extrait.titre }}</h4>
+                            
                         </div>
                     </li>
                 </ul>
@@ -53,16 +63,19 @@ export default {
 
 <style scoped>
 header, main{
-    background-color: var(--gris-moyen);
-    padding: 0 1rem;
-    
-    
+    background-color: var(--gris-foncer);
+    padding: 0 0.5rem;
 }
 
 header{
     border-bottom: 1px solid var(--blanc);
+    height: 5%;
 }
 
+main {
+  height: 95%; /* le reste de la page */
+  overflow-y: auto; /* permet le scroll vertical */
+}
 .header-nav {
   display: flex;
   justify-content: space-between; /* menu à gauche, bouton X à droite */
@@ -81,6 +94,8 @@ header{
 .menu li {
   cursor: pointer;
 }
+
+
 
 .close-btn {
   background: transparent;
@@ -107,6 +122,37 @@ header{
   width: 9%;
   cursor: pointer;
 }
+
+.liste_video {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.liste_video li {
+  list-style: none;
+  display: flex;
+  
+}
+
+.liste_video img, .liste_video a{
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  border-radius: 20px;
+  object-fit: cover;
+  background-color: var(--gris-moyen);
+}
+
+.liste_video a{
+    width: 55%;
+    height: 55%;
+    margin-right: 1em;
+    margin-bottom: 2em;
+}
+
+
 
 
 </style>
