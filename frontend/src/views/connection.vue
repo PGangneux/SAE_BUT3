@@ -42,7 +42,7 @@ export default {
 <template>
     <div>
         <h1 class="vert-neon">Bienvenue</h1>
-        <form @submit.prevent="login">
+        <form @submit.prevent="login" class="local">
             <label>
                 Username:
                 <input v-model="username" type="text" required />
@@ -56,11 +56,14 @@ export default {
             <button>Login</button>
         </form>
         <img v-if="this.loading" src="/imgs/spinner.gif" alt="loading image...">
-        <p>Erreur : {{ apiMessage }}</p>
+        <p v-if="apiMessage">{{ apiMessage }}</p>
     </div>
 </template>
 
 <style scoped>
+.local label {
+    color : var(--blanc);
+}
 .vert-neon { 
     color : var(--vert-neon);
     justify-self: center;

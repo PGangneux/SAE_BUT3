@@ -38,34 +38,47 @@ export default {
 </script>
 
 <template>
-    <header class="bg-dark text-white py-3">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="btn local">
-                        <RouterLink class="nav-link" to="/">Accueil</RouterLink>
-                    </li>
-                    <comp_searchbar />
-                    <li class="btn local" v-if="isconnected && isadmin">
-                        <RouterLink class="nav-link" to="/admin">Admin</RouterLink>
-                    </li>
-                    <li class="btn local" v-if="isconnected">
-                        <RouterLink class="nav-link" to="/account">Compte</RouterLink>
-                    </li>
+    <header>
+        <nav>
+            <ul class="liste">
+                <li class="btn local">
+                    <RouterLink class="nav-link" to="/">Accueil</RouterLink>
+                </li>
+                <li style="flex-grow: 1;">
+                    <comp_searchbar class="flex-grow-1" />
+                </li>
+                <li class="btn local" v-if="isconnected && isadmin">
+                    <RouterLink class="nav-link" to="/admin">Admin</RouterLink>
+                </li>
+                <li class="btn local" v-if="isconnected">
+                    <RouterLink class="nav-link" to="/account">
+                        <img src="/imgs/compte.svg" style="max-height: 1.5em;" alt="">
+                    </RouterLink>
+                </li>
 
-                    <li class="btn local" v-if="!isconnected">
-                        <RouterLink class="nav-link" to="/inscription">Inscription</RouterLink>
-                    </li>
-                    <li class="btn local" v-if="!isconnected">
-                        <RouterLink class="nav-link" to="/connection">Connection</RouterLink>
-                    </li>
-                </ul>
-            </div>
+                <li class="btn local" v-if="!isconnected">
+                    <RouterLink class="nav-link" to="/inscription">S'inscrire</RouterLink>
+                </li>
+                <li class="btn local" v-if="!isconnected">
+                    <RouterLink class="nav-link" to="/connection">Se Connecter</RouterLink>
+                </li>
+            </ul>
         </nav>
     </header>
 </template>
 
 <style scoped>
+.liste {
+    gap: 2%;
+    padding: 0.5em 1em 0.5em 2em;
+    background-color: var(--gris-moyen);
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+}
 .local {
     background-color: var(--vert-pale) !important;
     color: var(--blanc);
@@ -74,7 +87,4 @@ export default {
 .local:hover {
     background-color: var(--vert-neon) !important;
 }
-
-
-
 </style>

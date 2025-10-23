@@ -14,7 +14,7 @@ export default {
 </script>
 
 <template>
-    <div class="container recherche row">
+    <div class="recherche">
             <div class="search-bar">
                 <div class="input-group">
                     <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
@@ -30,18 +30,19 @@ export default {
 
 
 <style>
+/*
 .recherche{
     padding-top: 1em;
     padding-bottom: 1em;
 }
-
+*/
 .buttonsearch{
     background-color: var(--vert-pale);
 }
 
 
 .search-bar {
-    max-width: 500px;
+    min-width: 200px;
     margin: auto auto;
 }
 
@@ -53,11 +54,10 @@ export default {
 
 .search-bar .form-control {
     border: none;
-    padding-left: 20px;
+    margin: 0.1em;
 }
 
 .search-bar .btn {
     border: none;
-    padding: 10px 20px;
 }
 </style>
