@@ -5,7 +5,7 @@ python = ${venv}/python
 pip = ${venv}/pip
 npm = npm --prefix ./frontend
 
-.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user
+.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
 
 run_back:
 	$(python) $(manage) runserver
@@ -44,3 +44,16 @@ default_admin_user:
 	DJANGO_SUPERUSER_USERNAME=admin \
 	DJANGO_SUPERUSER_PASSWORD=admin \
 	$(python) $(manage) createsuperuser --noinput --email ""
+
+clean:
+	set -e
+	@echo "python"
+	@echo "rm -rv ./venv  || true"
+	find ./backend/ -type d -name .mypy_cache | xargs rm -rv || true
+	find ./backend/ -type d -name .pytest_cache | xargs rm -rv || true
+	find ./backend/ -type d -name __pycache__ | xargs rm -rv || true
+	find ./backend/ -type f -name "*.pyc" | xargs rm -rv || true
+	@echo "vuejs"
+	find ./frontend/ -type d -name node_modules | xargs rm -rv || true
+	find ./frontend/ -type d -name dist | xargs rm -rv || true
+	find ./frontend/ -type d -name .lock | xargs rm -rv || true

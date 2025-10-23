@@ -1,0 +1,17 @@
+name: Docker CI
+
+on: [push]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Backend Docker image
+        run: |
+          docker build -t backend ./backend
+
+      - name: Build Frontend Docker image
+        run: |
+          docker build -t frontend ./frontend
