@@ -93,6 +93,7 @@ ul ,base{
     flex-grow: 0;
     padding: 10px;
     padding-left: 50px;
+    align-content: center;
 }
 
 .container_extrait{

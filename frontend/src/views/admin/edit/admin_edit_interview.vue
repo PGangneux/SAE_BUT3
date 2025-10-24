@@ -12,7 +12,7 @@ export default {
 
     },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            extraits: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
             extrait_actif: [ 'jip','jap','jop']
     };
   }
@@ -36,17 +36,17 @@ export default {
             <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
           </div>
         </div>
-
-        <div class="row pad"  style="--bs-gutter-x: 0em;">
-            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
-            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-            <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
-        </div>
 </div>
 
 <div class="row" >
-    <div class="col-md-5 aggrandir">
-        <div class="container row ">
+    <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel); margin: 1%;">
+        <div class="container row  pcentrer ">
+
+            <div class="row">
+              <h1> Question-Extrait existant</h1>
+              <h1> Total Question-Extrait : {{extraits.length}}</h1>
+            </div>
+
             <div class="search-bar grisee">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
@@ -57,15 +57,23 @@ export default {
             </div>
 
             <ul class="scroller2  row">
-                <li class="row carte" v-for="tag in tags">
+                <li class="row carte pcentrer" v-for="extrait in extraits">
                     <comp_petit_extrait/>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div class="col-md-5 aggrandir">
-        <div class="container row ">
+    <div  class="col" ></div>
+
+    <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale); margin: 1%;">
+        <div class="container row pcentrer  ">
+
+            <div class="row">
+              <h1> Question-Extrait dans Playlist</h1>
+              <h1> Total Question-Extrait : {{extrait_actif.length}}</h1>
+            </div>
+
             <div class="search-bar grisee">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
@@ -75,8 +83,8 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row">
-                <li class="row carte" v-for="extrait in extrait_actif">
+            <ul class="scroller2  row  ">
+                <li class="row carte pcentrer" v-for="extrait in extrait_actif">
                     <comp_petit_extrait/>
                 </li>
             </ul>
@@ -84,6 +92,11 @@ export default {
     </div>
 </div>
 
+<div class="row pad"  style="--bs-gutter-x: 0em;">
+            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
+            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+            <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+</div>
 
 
 </template>
@@ -115,6 +128,10 @@ export default {
  
 }
 
+.pcentrer{
+margin-top: 1em;
+justify-content: center
+}
 
 .button-blanc{
     background-color: var(--blanc);
@@ -127,6 +144,10 @@ export default {
     border-radius: 2em;
     
 }
+
+
+
+
 li > .card{
     padding: 20px 50px 150px;
     margin: 10px 10px 10px 10px;
@@ -153,8 +174,8 @@ ul {
 
 
 .aggrandir{
-  display: flex;
-  flex-wrap: nowrap;
+  /*! display: flex; */
+  /*! flex-wrap: nowrap; */
   list-style-type: none;
   flex-grow: 1;
 

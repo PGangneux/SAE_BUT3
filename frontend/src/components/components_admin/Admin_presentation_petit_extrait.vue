@@ -17,7 +17,9 @@ export default {
             </div>
 
             <div class="col-xl vigniette ">
-                <h1 class="row decallage_droite">Question Extrait</h1>
+                <RouterLink class="row decallage_droite" style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
+                    <h1 class="row decallage_droite">Question Extrait</h1>
+                </RouterLink>
 
                 <div class="row decallage_droite">
                     <ul>
@@ -38,7 +40,7 @@ export default {
             </div>
 
             <div class="col-sm reduction_image">
-                <img src="/imgs/width551.png" class="video" alt="Video logo" height="150" width="150">
+                <img src="/imgs/width551.png" class="video" alt="Video logo" height="100" width="100">
             </div>
 
         </div>
@@ -94,6 +96,7 @@ ul ,base{
     flex-grow: 0;
     padding: 10px;
     padding-left: 50px;
+    align-content: center;
 }
 
 .container_extrait{
