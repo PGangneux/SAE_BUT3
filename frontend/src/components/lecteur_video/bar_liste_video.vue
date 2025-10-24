@@ -32,12 +32,8 @@ export default {
     },
 
     reset_videoStore() {
-      console.log("avant reset:", JSON.parse(JSON.stringify(videoStore)))
-      
       videoStore.currentTime = 0
       videoStore.isPlaying = true
-      
-      console.log("après reset:", JSON.parse(JSON.stringify(videoStore)))
     }
   },
 
@@ -85,6 +81,7 @@ export default {
                           </router-link>
                           <div>
                               <h4>{{ video.titre }}</h4>
+                              <p>{{ video.description }}</p>
                               
                           </div>
                         </div>
