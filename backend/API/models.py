@@ -35,7 +35,6 @@ class Interview(StructuredNode):
     description = StringProperty()
     lieu = StringProperty()
 
-    interviewer = RelationshipTo('Artiste', 'PARTICIPER', ZeroOrMore)
     tags_interview = RelationshipTo('Tag', 'TAGS_INTERVIEW', ZeroOrMore)
 
 
@@ -48,6 +47,7 @@ class Extrait(StructuredNode):
     vimeo_url = StringProperty(unique_index=True)
     uploaded_at = DateProperty(default_now=True)
 
+    interviewer = RelationshipTo('Artiste', 'PARTICIPER', ZeroOrOne)
     interviews = RelationshipTo('Interview', 'APPARTIENT_A', ZeroOrMore, PositionExtraitRel)
     question = RelationshipTo('Question', 'POSE', ZeroOrOne)
     tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT', ZeroOrMore)

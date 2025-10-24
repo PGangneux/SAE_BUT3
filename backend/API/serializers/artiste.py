@@ -16,7 +16,7 @@ class ArtisteSerializer(serializers.Serializer):
     # Output
     styles = serializers.SerializerMethodField(read_only=True)
     nation = serializers.SerializerMethodField(read_only=True)
-    interviews = serializers.SerializerMethodField(read_only=True)
+    extraits = serializers.SerializerMethodField(read_only=True)
 
     def get_styles(self, artiste):
         return {"url": self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))}
@@ -26,8 +26,8 @@ class ArtisteSerializer(serializers.Serializer):
             return {"url": self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': artiste.nationalite.single().uuid}))}
         return None
 
-    def get_interviews(self, artiste):
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'artiste_uuid': artiste.uuid}))}
+    def get_extraits(self, artiste):
+        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))}
 
     def create(self, validated_data):
         nation_uuid = validated_data.pop('nation_uuid', None)

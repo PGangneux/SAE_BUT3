@@ -17,14 +17,8 @@ class InterviewsSerializer(serializers.Serializer):
     occasion = serializers.CharField(read_only=True)
     description = serializers.CharField(read_only=True)
     lieu = serializers.CharField(read_only=True)
-    artiste = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
-
-    def get_artiste(self, interview):
-        if interview.interviewer:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': interview.interviewer.single().uuid}))}
-        return None
 
     def get_extraits(self, interview):
         return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))}

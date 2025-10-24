@@ -6,7 +6,7 @@ from .views import (
     ThemeViewSet, QuestionViewSet,
     ThemeQuestionViewSet, InterviewExtraitViewSet,
     ArtisteViewSet, UtilisateurViewSet,
-    ArtisteInterviewViewSet, QuestionExtraitViewSet,
+    ArtisteExtraitViewSet, QuestionExtraitViewSet,
     StyleMusicalViewSet, StyleMusicalArtisteViewSet,
     NationViewSet, InterviewsViewSet,
     NationArtisteViewSet, TagViewSet,
@@ -39,7 +39,7 @@ router_interview.register(r'tags', InterviewTagViewSet, basename='tag')
 
 router.register(r'artistes', ArtisteViewSet, basename='artiste')
 router_artiste = NestedDefaultRouter(router, r'artistes', lookup='artiste')
-router_artiste.register(r'interviews', ArtisteInterviewViewSet, basename='interview')
+router_artiste.register(r'extraits', ArtisteExtraitViewSet, basename='extrait')
 router_artiste.register(r'styles', ArtisteStyleRelationShipViewSet, basename='style')
 
 router.register(r'styles-musicaux', StyleMusicalViewSet, basename='style-musical')

@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
-from ..models import Interview, Extrait, Question
+from ..models import Artiste, Extrait, Question
 
 
 class ExtraitSerializer(serializers.Serializer):
@@ -16,11 +16,18 @@ class ExtraitSerializer(serializers.Serializer):
 
     # Input:
     question_uuid = serializers.CharField(write_only=True, required=False)
+    artiste_uuid = serializers.CharField(write_only=True, required=False)
 
     # Output:
+    artiste = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
+
+    def get_artiste(self, extrait):
+        if extrait.interviewer:
+            return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': extrait.interviewer.single().uuid}))}
+        return None
 
     def get_interviews(self, extrait):
         return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'extrait_uuid': extrait.uuid}))}
@@ -35,9 +42,17 @@ class ExtraitSerializer(serializers.Serializer):
         return None
 
     def create(self, validated_data):
+        artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 
         extrait = Extrait(**validated_data).save()
+
+        if artiste_uuid:
+            try:
+                artiste = Artiste.nodes.get(uuid=artiste_uuid)
+                extrait.interviewer.connect(artiste)
+            except Artiste.DoesNotExist:
+                raise serializers.ValidationError({"artiste_uuid": "Artiste introuvable."}, 404)
 
         if question_uuid is not None:
             try:
@@ -49,6 +64,7 @@ class ExtraitSerializer(serializers.Serializer):
         return extrait
 
     def update(self, extrait, validated_data):
+        artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 
         # update props
@@ -67,5 +83,14 @@ class ExtraitSerializer(serializers.Serializer):
             except Exception:
                 pass
             extrait.question.connect(question)
+        
+        if artiste_uuid is not None:
+            try:
+                if extrait.interviewer:
+                    extrait.interviewer.disconnect(extrait.interviewer.single())
+                if artiste_uuid:
+                    extrait.interviewer.connect(Artiste.nodes.get(uuid=artiste_uuid))
+            except Artiste.DoesNotExist:
+                raise serializers.ValidationError({"artiste_uuid": "Artiste introuvable."}, 404)
 
         return extrait
