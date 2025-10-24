@@ -28,7 +28,6 @@ export default {
       url_yt: "",
       url_vimeo: "",
       url:null,
-      lecteur: "",
     };
   },
 
@@ -42,8 +41,7 @@ export default {
 
     this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
     this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
-    this.lecteur = (videoStore.lecteur != "")? videoStore.lecteur  : 'Viméo'
-    this.set_url(this.lecteur)
+    this.set_url(videoStore.lecteur)
 
     
   },
@@ -58,9 +56,6 @@ export default {
       // Mettre à jour la position du player
       this.pos_x_iframe = this.get_pos_x_iframe();
       this.pos_y_iframe = this.get_pos_y_iframe();
-      console.log("pos")
-      console.log(this.pos_x_iframe)
-      console.log(this.pos_y_iframe)
       window.addEventListener('resize', this.updatePopupPosition);
     },
 
@@ -73,16 +68,14 @@ export default {
       videoStore.uuid = this.uuid;
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
-      videoStore.lecteur = this.lecteur;
       videoStore.url = this.url;
       videoStore.isPictureInPicture = true;
       this.$router.push("/");
     },
 
     get_pos_x_iframe() {
-      if (this.lecteur == "YouTube"){
+      if (videoStore.lecteur == "YouTube"){
         const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-        console.log("iframe " + this.$refs.iframe?.$el)
         return rect ? rect.right : null;
       }
       const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
@@ -114,9 +107,10 @@ export default {
 
 
     async set_lecteur(new_lecteur){
-      this.lecteur = new_lecteur
+      videoStore.lecteur = new_lecteur
       console.log("update url")
-      this.set_url(this.lecteur)
+      this.set_url(videoStore.lecteur)
+      
       await this.$refs.iframe.update_player()
     },
   },

@@ -1,6 +1,7 @@
 <script>
 import { markRaw } from 'vue';
 import { prefetcher } from "../../model/prefetcher";
+import { videoStore } from "../../model/videoStore";
 
 export default {
   props: {
@@ -28,7 +29,16 @@ export default {
       console.log(this.current_extrait)
       this.selected = "questions"
       this.videos = markRaw(await prefetcher.extraits_question(this.current_extrait.question))
-    } 
+    },
+
+    reset_videoStore() {
+      console.log("avant reset:", JSON.parse(JSON.stringify(videoStore)))
+      
+      videoStore.currentTime = 0
+      videoStore.isPlaying = true
+      
+      console.log("après reset:", JSON.parse(JSON.stringify(videoStore)))
+    }
   },
 
 
@@ -70,7 +80,7 @@ export default {
                 <ul class="liste_video">
                     <li v-for="video in videos">
                         <div v-if="video.uuid != current_extrait.uuid">
-                          <router-link :to="`/lecteur_video/${video.uuid}`">
+                          <router-link @click="reset_videoStore" :to="`/lecteur_video/${video.uuid}`">
                             <img :src="video.url_miniature_yt" :alt="video.titre"/>
                           </router-link>
                           <div>

@@ -75,7 +75,6 @@ export default {
     v-if="parametre_lecteur"
     :pos_x="pos_x"
     :pos_y="pos_y" 
-    :lecteur_selected="this.lecteur"
     @set_lecteur="this.$emit('set_lecteur', $event)"
   />
 

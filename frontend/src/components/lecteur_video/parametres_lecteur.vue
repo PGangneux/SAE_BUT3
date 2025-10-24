@@ -1,15 +1,24 @@
 <script>
+import { videoStore } from "../../model/videoStore";
+
 export default {
   props: {
     pos_x: Number,
     pos_y: Number,
-    lecteur_selected: String
   },
   data() {
     return {
-      lecteurs: ["YouTube", "Viméo"]
+      lecteurs: ["YouTube", "Viméo"],
+      lecteur_selected: videoStore.lecteur
     }
   },
+
+  methods : {
+    set_lecteur(lecteur){
+      this.$emit('set_lecteur', lecteur),
+      this.lecteur_selected = videoStore.lecteur
+    }
+  }
 }
 </script>
 
@@ -19,7 +28,7 @@ export default {
     :style="{ top: pos_y + 'px', left: pos_x + 'px' }"
   >
     <ul class="popup-labels">
-      <li v-for="lecteur in lecteurs" :key="lecteur" @click="this.$emit('set_lecteur', lecteur)">
+      <li v-for="lecteur in lecteurs" :key="lecteur" @click="set_lecteur(lecteur)">
         {{ lecteur }}
         <span v-if="lecteur === lecteur_selected">✅</span>
       </li>
