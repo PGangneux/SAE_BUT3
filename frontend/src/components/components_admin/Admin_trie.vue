@@ -24,7 +24,6 @@ export default {
 
         <div class="row ">
             <button type="button" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
-            
         </div>
 
         <div class="recherche row">
@@ -35,6 +34,12 @@ export default {
                             <img src="/imgs/search.svg" alt="button search" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" > </button>
                 </div>
             </div>
+        </div>
+        
+        <div class="row">
+            <button class="bt btn col ">Date</button>
+            <button class="bt btn col ">Question</button>
+            <button class="bt btn col ">Playlist</button>
         </div>
 
         <div class="row  trie-tags centrer">
@@ -94,6 +99,13 @@ justify-content: center
 .ultagger {
     list-style-type: none;
 
+}
+
+.bt{
+    color: var(--blanc);
+    background-color:var(--vert-pale);
+    border-radius: 2em;
+    
 }
 
 

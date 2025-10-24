@@ -27,6 +27,11 @@ export default {
 <div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;">
     
     <div class="col-md-4 main-trie">
+
+        <div class="row ">
+            <button type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+        </div>
+
         
         <div class="container col recherche">
             <div class="search-bar">
@@ -37,6 +42,11 @@ export default {
                         </button>
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+            <button class="bt btn col ">Date</button>
+            <button class="bt btn col ">Name</button>
         </div>
 
         <div class="row  trie-tags centrer">
@@ -119,6 +129,13 @@ export default {
 
 .tables{
     width: 100%;
+}
+
+.bt{
+    color: var(--blanc);
+    background-color:var(--vert-pale);
+    border-radius: 2em;
+    
 }
 
 .button-blanc{
