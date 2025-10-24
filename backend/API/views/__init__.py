@@ -13,3 +13,4 @@ from .regarder_interviews import *
 from .regarder_extraits import *
 from .recherches_questions import *
 from .interviews import *
+from .tags_extrait import *

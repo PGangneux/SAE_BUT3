@@ -11,7 +11,7 @@ from .views import (
     NationViewSet, InterviewsViewSet,
     NationArtisteViewSet, TagViewSet,
     TagInterviewViewSet, TagExtraitViewSet,
-    InterviewTagViewSet, ExtraitTagViewSet,
+    InterviewTagViewSet, TagsExtraitRelationShipViewSet,
     ArtisteStyleRelationShipViewSet,
     RecherchesArtistesViewSet, RegarderExtraitsViewSet,
     RegarderInterviewsViewSet, RecherchesQuestionsViewSet,
@@ -30,7 +30,7 @@ router_question.register(r'extraits', QuestionExtraitViewSet, basename='extrait'
 router.register(r'extraits', ExtraitViewSet, basename='extrait')
 router_extrait = NestedDefaultRouter(router, r'extraits', lookup='extrait')
 router_extrait.register(r'interviews', InterviewsViewSet, basename='interview')
-router_extrait.register(r'tags', ExtraitTagViewSet, basename='tag')
+router_extrait.register(r'tags', TagsExtraitRelationShipViewSet, basename='tag')
 
 router.register(r'interviews', InterviewViewSet, basename='interview')
 router_interview = NestedDefaultRouter(router, r'interviews', lookup='interview')
