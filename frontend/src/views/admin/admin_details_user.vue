@@ -24,19 +24,34 @@ export default {
     <comp_baradmin/>
 
     <h1 class="text-center colorneon"> Details Utilisateur {{ pseudo }} </h1>
-        <div class="row">
-            <div class="row">
-                <div class="input-group mb-3 col">
+        <div class="row grisee" style=" margin-left: 0 !important; margin-right: 0 !important;">
+            <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <div class=" col">
                     <p> Nom:{{ nom }}</p>
                 </div>
 
-                <div class="input-group mb-3 col">
+                <div class="col">
                     <p> Prénom:{{ prenom }}</p>
                 </div>
             </div>
+
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
+                    <p class="row pcentrer">h1</p>
+
+
+                </div>
+
+                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
+                    <p class="row pcentrer">tags</p>
+
+                </div>
+            </div>
+
+
         </div>
 
-        <form class="row" action="">
+        <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" action="">
             <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
             <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Modifier Utilisateur </button>
         </form>
@@ -61,7 +76,9 @@ export default {
     
 }
 
-
+.grisee{
+  background-color: var(--gris-moyen);
+}
 
 label{
     color: var(--blanc);
@@ -69,6 +86,13 @@ label{
 
 .colorneon{
   color: var(--vert-neon);
+}
+
+
+.pcentrer{
+    margin-top: 1em;
+    margin-bottom: 1em;
+    justify-content: center
 }
 
 </style>

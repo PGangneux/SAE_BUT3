@@ -28,21 +28,21 @@ export default {
 
 <h1 class="text-center"> Edit Interview-Playlist </h1>
 
-<div class="row">
+<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
         <h1> Titre - Playlist </h1>
 
-        <div class="row"  style="--bs-gutter-x: 0em;">
+        <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
           <div class="form-group">
             <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
           </div>
         </div>
 </div>
 
-<div class="row" >
+<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" >
     <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel); margin: 1%;">
-        <div class="container row  pcentrer ">
+        <div class="container row  pcentrer " style=" margin-left: 0 !important; margin-right: 0 !important;">
 
-            <div class="row">
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait existant</h1>
               <h1> Total Question-Extrait : {{extraits.length}}</h1>
             </div>
@@ -56,8 +56,8 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row">
-                <li class="row carte pcentrer" v-for="extrait in extraits">
+            <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <li class="row carte pcentrer" v-for="extrait in extraits" style=" margin-left: 0 !important; margin-right: 0 !important;">
                     <comp_petit_extrait/>
                 </li>
             </ul>
@@ -67,9 +67,9 @@ export default {
     <div  class="col" ></div>
 
     <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale); margin: 1%;">
-        <div class="container row pcentrer  ">
+        <div class="container row pcentrer  " style=" margin-left: 0 !important; margin-right: 0 !important;">
 
-            <div class="row">
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait dans Playlist</h1>
               <h1> Total Question-Extrait : {{extrait_actif.length}}</h1>
             </div>
@@ -83,8 +83,8 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row  ">
-                <li class="row carte pcentrer" v-for="extrait in extrait_actif">
+            <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <li class="row carte pcentrer" v-for="extrait in extrait_actif" style=" margin-left: 0 !important; margin-right: 0 !important;">
                     <comp_petit_extrait/>
                 </li>
             </ul>
@@ -92,7 +92,7 @@ export default {
     </div>
 </div>
 
-<div class="row pad"  style="--bs-gutter-x: 0em;">
+<div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
             <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
             <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
             <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
