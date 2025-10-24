@@ -21,13 +21,21 @@ class InterviewsSerializer(serializers.Serializer):
     tags = serializers.SerializerMethodField(read_only=True)
 
     def get_extraits(self, interview):
+        """
+        Renvoie un lien propre vers les extraits :
+        """
         return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))}
 
     def get_tags(self, interview):
+        """
+        Renvoie un lien propre vers les tags :
+        """
         return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'interview_uuid': interview.uuid}))}
 
     def create(self, validated_data):
-        """Connecte une interview à un extrait"""
+        """
+        Connecte une interview à un extrait
+        """
         extrait = self.context.get('extrait')
         if not extrait:
             raise serializers.ValidationError("Extrait manquant dans le contexte.")
@@ -45,7 +53,9 @@ class InterviewsSerializer(serializers.Serializer):
         return interview
 
     def delete(self, interview_uuid):
-        """Déconnecte une inteview d’un extrait"""
+        """
+        Déconnecte une inteview d’un extrait
+        """
         extrait = self.context.get('extrait')
         if not extrait:
             raise serializers.ValidationError("Extrait manquant dans le contexte.")
@@ -59,4 +69,7 @@ class InterviewsSerializer(serializers.Serializer):
         return artiste
 
 class PositionInputSerializer(serializers.Serializer):
+    """
+    Sérializer RelationShip interviews (Extrait <-> Interview) update
+    """
     position = serializers.IntegerField(write_only=True, required=True)

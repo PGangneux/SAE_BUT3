@@ -1,12 +1,27 @@
+from django.urls import reverse
 from rest_framework import serializers
 from ..models import StyleMusical
 
 class StyleRelationShipSerializer(serializers.Serializer):
+    """
+    Sérializer RelationShip style (Artiste <-> Style)
+    """
     uuid = serializers.CharField(required=True)
     name = serializers.CharField(read_only=True)
 
+    # Output
+    artistes = serializers.SerializerMethodField(read_only=True)
+
+    def get_artistes(self, style_musical):
+        """
+        Renvoie un lien propre vers les artistes :
+        """
+        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'stylemusical_uuid': style_musical.uuid}))}
+
     def create(self, validated_data):
-        """Connecte un style à un artiste"""
+        """
+        Connecte un style musical à un artiste
+        """
         artiste = self.context.get('artiste')
         if not artiste:
             raise serializers.ValidationError("Artiste manquant dans le contexte.")
@@ -23,7 +38,9 @@ class StyleRelationShipSerializer(serializers.Serializer):
         return style
 
     def delete(self, style_uuid):
-        """Déconnecte un style d’un artiste"""
+        """
+        Déconnecte un style musical d’un artiste
+        """
         artiste = self.context.get('artiste')
         if not artiste:
             raise serializers.ValidationError("Artiste manquant dans le contexte.")

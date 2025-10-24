@@ -6,42 +6,56 @@ from ..models import Artiste, Extrait, Question
 
 
 class ExtraitSerializer(serializers.Serializer):
+    """
+    Sérializer du node Extrait
+    """
     uuid = serializers.CharField(read_only=True)
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-
     youtube_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     vimeo_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     uploaded_at = serializers.DateField(required=False, allow_null=True)
 
     # Input:
-    question_uuid = serializers.CharField(write_only=True, required=False)
     artiste_uuid = serializers.CharField(write_only=True, required=False)
+    question_uuid = serializers.CharField(write_only=True, required=False)
 
     # Output:
     artiste = serializers.SerializerMethodField(read_only=True)
-    interviews = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
+    interviews = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
 
     def get_artiste(self, extrait):
-        if extrait.interviewer:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': extrait.interviewer.single().uuid}))}
-        return None
+        """
+        Renvoie un lien propre vers l'artiste :
+        """
+        artiste = extrait.interviewer.single()
+        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': artiste.uuid}))} if artiste else None
+
+    def get_question(self, extrait):
+        """
+        Renvoie un lien propre vers la question :
+        """
+        question = extrait.question.single()
+        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'question_uuid': question.uuid}))} if question else None
 
     def get_interviews(self, extrait):
+        """
+        Renvoie un lien propre vers les interviews :
+        """
         return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'extrait_uuid': extrait.uuid}))}
 
     def get_tags(self, extrait):
+        """
+        Renvoie un lien propre vers les tags :
+        """
         return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))}
 
-    def get_question(self, extrait):
-        question = extrait.question.single()
-        if question:
-            return question.uuid
-        return None
-
     def create(self, validated_data):
+        """
+        Création d'un extrait
+        """
         artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 
@@ -64,6 +78,9 @@ class ExtraitSerializer(serializers.Serializer):
         return extrait
 
     def update(self, extrait, validated_data):
+        """
+        Modification d'un extrait
+        """
         artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 

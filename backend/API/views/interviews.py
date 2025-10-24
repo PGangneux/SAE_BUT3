@@ -22,11 +22,17 @@ class InterviewsViewSet(
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         query = "MATCH (q:Interview)<-[:APPARTIENT_A]-(t:Extrait {uuid: $uuid}) RETURN q"
         results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
         return [Interview.inflate(row[0]) for row in results]
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             query = "MATCH (q:Interview {uuid: $uuid})<-[:APPARTIENT_A]-(t:Extrait {uuid: $extrait}) RETURN q"
             results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
@@ -35,21 +41,33 @@ class InterviewsViewSet(
             raise NotFound('Interview introuvable.', 404)
 
     def get_extrait(self):
+        """
+        Récupération de l'extrait
+        """
         try:
             return Extrait.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
             raise NotFound('Extrait introuvable.')
 
     def get_serializer_context(self):
+        """
+        Modification du contexte du sérializer
+        """
         context = super().get_serializer_context()
         context['extrait'] = self.get_extrait()
         return context
 
     def perform_destroy(self, instance):
+        """
+        Suppression de la RelationShip
+        """
         serializer = self.get_serializer(context={'extrait': self.get_extrait()})
         serializer.delete(instance.uuid)
 
     def create(self, request, *args, **kwargs):
+        """
+        Création de la RelationShip
+        """
         serializer = self.get_serializer(data=request.data, context={'extrait': self.get_extrait()})
         serializer.is_valid(raise_exception=True)
         instance = serializer.create(serializer.validated_data)

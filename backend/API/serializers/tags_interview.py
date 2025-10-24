@@ -2,9 +2,9 @@ from django.urls import reverse
 from rest_framework import serializers
 from ..models import Tag
 
-class TagsExtraitRelationShipSerializer(serializers.Serializer):
+class TagsInterviewRelationShipSerializer(serializers.Serializer):
     """
-    Sérializer RelationShip tags_extrait (Extrait <-> Tag)
+    Sérializer RelationShip tags_interview (Interview <-> Tag)
     """
     uuid = serializers.CharField(required=True)
     name = serializers.CharField(read_only=True)
@@ -27,11 +27,11 @@ class TagsExtraitRelationShipSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """
-        Connecte un tag à un extrait
+        Connecte un tag à un interview
         """
-        extrait = self.context.get('extrait')
-        if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+        interview = self.context.get('interview')
+        if not interview:
+            raise serializers.ValidationError("Interview manquant dans le contexte.")
 
         tag_uuid = validated_data['uuid']
         try:
@@ -39,23 +39,23 @@ class TagsExtraitRelationShipSerializer(serializers.Serializer):
         except Tag.DoesNotExist:
             raise serializers.ValidationError({'uuid': 'Tag introuvable.'})
 
-        if not extrait.tags_extrait.is_connected(tag):
-            extrait.tags_extrait.connect(tag)
+        if not interview.tags_interview.is_connected(tag):
+            interview.tags_interview.connect(tag)
 
         return tag
 
     def delete(self, tag_uuid):
         """
-        Déconnecte un tag d’un extrait
+        Déconnecte un tag d’un interview
         """
-        extrait = self.context.get('extrait')
-        if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+        interview = self.context.get('interview')
+        if not interview:
+            raise serializers.ValidationError("Interview manquant dans le contexte.")
 
         try:
             tag = Tag.nodes.get(uuid=tag_uuid)
         except Tag.DoesNotExist:
             raise serializers.ValidationError({'uuid': 'Tag introuvable.'})
 
-        extrait.tags_extrait.disconnect(tag)
+        interview.tags_interview.disconnect(tag)
         return tag
