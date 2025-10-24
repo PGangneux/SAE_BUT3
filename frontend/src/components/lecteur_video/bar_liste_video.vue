@@ -3,19 +3,41 @@ import { markRaw } from 'vue';
 import { prefetcher } from "../../model/prefetcher";
 
 export default {
+  props: {
+    current_interview: {type: Object,},
+    current_extrait: {type: Object,},
+  },
+
   data() {
     return {
-      extraits: null
+      videos: null,
+      selected : ""
+
     };
+  },
+
+  methods : {
+    
+
+    async interview_current_extrait(){
+      this.selected = "extrait_in_playlists"
+      //this.videos = markRaw(await prefetcher.interview_extrait(this.current_extrait.uuid))    
+    },
+
+    async extraits_current_question(){
+      console.log(this.current_extrait)
+      this.selected = "questions"
+      this.videos = markRaw(await prefetcher.extraits_question(this.current_extrait.question))
+    } 
   },
 
 
 
 
   async mounted() {
-    this.extraits = markRaw(await prefetcher.extrait_all());
+    this.videos = markRaw(await prefetcher.extraits_all());
     console.log("liste des extrait")
-    console.log(this.extraits)
+    console.log(this.videos)
 
     
   },
@@ -28,9 +50,10 @@ export default {
     <header>
         <nav class="header-nav">
             <ul class="menu">
-            <li>questions</li>
-            <li>Auteurs</li>
-            <li>Thèmes</li>
+            <li @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
+            <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
+            <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
+            <li @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
             </ul>
             <img src="/imgs/close.png" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
@@ -45,13 +68,15 @@ export default {
             </div>
             <div>
                 <ul class="liste_video">
-                    <li v-for="extrait in extraits">
-                        <router-link :to="`/lecteur_video/${extrait.uuid}`">
-                          <img :src="extrait.url_miniature_yt" :alt="extrait.titre"/>
-                        </router-link>
-                        <div>
-                            <h4>{{ extrait.titre }}</h4>
-                            
+                    <li v-for="video in videos">
+                        <div v-if="video.uuid != current_extrait.uuid">
+                          <router-link :to="`/lecteur_video/${video.uuid}`">
+                            <img :src="video.url_miniature_yt" :alt="video.titre"/>
+                          </router-link>
+                          <div>
+                              <h4>{{ video.titre }}</h4>
+                              
+                          </div>
                         </div>
                     </li>
                 </ul>
@@ -95,6 +120,10 @@ main {
   cursor: pointer;
 }
 
+.selected {
+  color: var(--vert-neon);
+}
+
 
 
 .close-btn {
@@ -129,7 +158,7 @@ main {
   cursor: pointer;
 }
 
-.liste_video li {
+.liste_video li > div {
   list-style: none;
   display: flex;
   

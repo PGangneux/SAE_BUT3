@@ -15,7 +15,7 @@ export default {
     async mounted() {
         this.loading = true;
         try {
-            this.interviews = markRaw(prefetcher.interview_all());
+            this.interviews = markRaw(prefetcher.interviews_all());
             /// console.log("HERE");
             /// console.log(prefetcher.fetch(extrait_t,this.interviews[0].extraits["url"],true));
             try {

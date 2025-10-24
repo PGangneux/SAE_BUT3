@@ -49,7 +49,7 @@ class prefetcher {
         return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/${id}/`, false);
     }
 
-    static theme_all() {
+    static themes_all() {
         return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/`, true);
     }
 
@@ -57,7 +57,11 @@ class prefetcher {
         return prefetcher.fetch(question_t, `${BASE_URL}API/questions/${id}/`, false);
     }
 
-    static question_all() {
+    static questions_theme(id_theme) {
+        return prefetcher.fetch(question_t, `${BASE_URL}API/themes/${id_theme}/questions/`, false);
+    }
+
+    static questions_all() {
         return prefetcher.fetch(question_t, `${BASE_URL}API/questions/`, true);
     }
 
@@ -65,7 +69,12 @@ class prefetcher {
         return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/${id}/`, false);
     }
 
-    static extrait_all() {
+    static extraits_question(id_question) {
+        return prefetcher.fetch(extrait_t, `${BASE_URL}API/questions/${id_question}/extraits/`, true);
+    }
+    
+
+    static extraits_all() {
         return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/`, true);
     }
 
@@ -73,7 +82,11 @@ class prefetcher {
         return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/${id}/`, false);
     }
 
-    static interview_all() {
+    static interviews_extrait(id_extrait){
+        return prefetcher.fetch(interview_t, `${BASE_URL}API/extraits/${id_extrait}/interviews/`, true)
+    }
+
+    static interviews_all() {
         return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/`, true);
     }
 
@@ -81,7 +94,7 @@ class prefetcher {
         return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/${id}/`, false);
     }
 
-    static artiste_all() {
+    static artistes_all() {
         return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/`, true);
     }
 }

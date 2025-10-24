@@ -24,6 +24,7 @@ export default {
       pos_y_iframe: null,
       aside_visible: true,
       extrait: null,
+      interview: null,
       url_yt: "",
       url_vimeo: "",
       url:null,
@@ -143,7 +144,7 @@ export default {
         <div id="bottom-iframe">
           <h2>{{ extrait?.titre || '' }}</h2>
           <div class="right-content">
-            <a>Voir toute l’interview</a>
+            <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
             <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
           </div>
@@ -155,10 +156,14 @@ export default {
       </div>
     </main>
 
-    <aside v-if="aside_visible">
-      <bar_liste_video @toggle_aside="toggle_aside"/>
+    <aside v-show="aside_visible">
+      <bar_liste_video 
+        @toggle_aside="toggle_aside" 
+        :current_extrait="extrait"
+        :current_interview="interview"
+      />
     </aside>
-    <h2 v-else @click="toggle_aside"> < </h2>
+    <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
 
 
     <parametres
