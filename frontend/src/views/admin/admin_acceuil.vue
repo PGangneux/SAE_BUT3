@@ -14,7 +14,7 @@ export default {
     <ul style="padding-right:1em ; padding-left: 1em;">
       <li>
         <RouterLink class="card col" to="/admin/extrait">
-          <h1 class="text-center">Extrait</h1>
+          <h1 class="text-center">Question/Extrait</h1>
           <div class="text-center align-middle">
             <img src="/imgs/video.svg" alt="Video logo" height="311" width="311">
           </div>
@@ -22,7 +22,7 @@ export default {
       </li>
       <li>
         <RouterLink class="card col" to="/admin/interview">
-          <h1 class="text-center">Interview</h1>
+          <h1 class="text-center">Interview/Playlist</h1>
           <div class="text-center">
             <img src="/imgs/playlist.svg" alt="playlist logo" height="311" width="311">
           </div>

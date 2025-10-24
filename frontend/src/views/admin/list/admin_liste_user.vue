@@ -56,7 +56,7 @@ export default {
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/details/user"> <button class="bt"> Details </button> </RouterLink> </td>
                 </tr>
             </tbody>
         </table>

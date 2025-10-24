@@ -25,7 +25,7 @@ export default {
 
 <comp_baradmin/>
 
-<h1 class="text-center"> Admin </h1>
+<h1 class="text-center"> Edit Interview/Playlist </h1>
 
 <div class="row" >
     <div class="col-md-5 aggrandir">
