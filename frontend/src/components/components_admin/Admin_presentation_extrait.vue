@@ -11,7 +11,7 @@ export default {
     <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
         <div class="row base">
             <div class="col-xl vigniette ">
-                <h1 class="row decallage_droite">Question Extrait</h1>
+                <h1 class="row decallage_droite">Question-Extrait</h1>
 
                 <div class="row text-center clairepart decallage_droite ">
                     <p> description </p>

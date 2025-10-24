@@ -11,6 +11,11 @@ export default {
     
     <div class="container container_extrait col " >
         <div class="row base">
+
+            <div class="col-sm reduction_image">
+                <img src="/imgs/menu.svg" class="video" alt="Video logo" height="50" width="50">
+            </div>
+
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite">Question Extrait</h1>
 

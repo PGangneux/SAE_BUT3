@@ -27,7 +27,7 @@ export default {
 
   <comp_baradmin/>
 
-  <h1 class="text-center"> Question/Extrait </h1>
+  <h1 class="text-center"> Question-Extrait </h1>
 
   <div class="row" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" >
     <comp_admin_trie_extrait/>
