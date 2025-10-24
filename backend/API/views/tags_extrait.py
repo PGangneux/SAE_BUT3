@@ -20,16 +20,15 @@ class TagsExtraitRelationShipViewSet(
         extrait = self.get_extrait()
         query = "MATCH (s:Tag)<-[:TAGS_EXTRAIT]-(a:Extrait {uuid: $uuid}) RETURN s"
         results = db.cypher_query(query, {'uuid': extrait.uuid})[0]
+        print(results)
         return [Tag.inflate(row[0]) for row in results]
     
     def get_object(self):
         try:
-            print(self.kwargs)
             query = "MATCH (q:Tag {uuid: $uuid})<-[:TAGS_EXTRAIT]-(t:Extrait {uuid: $extrait}) RETURN q"
-            results = db.cypher_query(query, {'extrait': self.kwargs[self.lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            print(results)
+            results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
             return Tag.inflate(results[0][0])
-        except:
+        except DoesNotExist:
             raise NotFound('Tag introuvable.', 404)
 
     def get_extrait(self):
@@ -51,4 +50,4 @@ class TagsExtraitRelationShipViewSet(
         serializer = self.get_serializer(data=request.data, context={'extrait': self.get_extrait()})
         serializer.is_valid(raise_exception=True)
         tag = serializer.create(serializer.validated_data)
-        return Response(self.get_serializer(instance, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
+        return Response(self.get_serializer(tag, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
