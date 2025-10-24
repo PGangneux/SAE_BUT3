@@ -1,10 +1,9 @@
 <script>
 import parametres_lecteur from './parametres_lecteur.vue';
-import parametres_sous_titre from './parametres_sous_titre.vue';
 
 
 export default {
-    components : {parametres_lecteur, parametres_sous_titre},
+    components : {parametres_lecteur},
     props: {
         pos_x_iframe: {
             type: Number,
@@ -65,7 +64,6 @@ export default {
     <div class="popup-content">
       <ul class="popup-labels">
         <li>Lecteur vidéo</li>
-        <li>Sous-titres</li>
       </ul>
       <ul class="popup-values">
         <li @click="toggle_parametre_lecteur">{{ lecteur }} > </li>
@@ -77,7 +75,6 @@ export default {
     v-if="parametre_lecteur"
     :pos_x="pos_x"
     :pos_y="pos_y" 
-    :lecteur_selected="this.lecteur"
     @set_lecteur="this.$emit('set_lecteur', $event)"
   />
 

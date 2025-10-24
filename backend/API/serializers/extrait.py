@@ -44,7 +44,7 @@ class ExtraitSerializer(serializers.Serializer):
     def get_question(self, extrait):
         qn = extrait.question.single()
         if qn:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': qn.uuid}))}
+            return qn.uuid
         return None
 
     def validate(self, data):

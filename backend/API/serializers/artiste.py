@@ -23,7 +23,7 @@ class ArtisteSerializer(serializers.Serializer):
     
     def get_nation(self, artiste):
         if artiste.nationalite:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': artiste.nationalite.single().uuid}))}
+            return artiste.nationalite.uuid
         return None
 
     def get_interviews(self, artiste):

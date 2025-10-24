@@ -20,10 +20,11 @@ class Command(BaseCommand):
         utilisateur = Utilisateur(pseudo="Test Utilisateur", prenom="Jean", nom="Dupond", email="test@exemple.com", password=make_password("testmdp")).save()
         admin = Utilisateur(pseudo="Test Admin", prenom="Ano", nom="Nyme", email="admin@exemple.com", password=make_password("adminmdp"), is_admin=True).save()
 
-        extrait1 = Extrait(titre="Extrait 1", description="Extrait 1 de l'interview 1", youtube_url="1NYQ65FTEC8", vimeo_url= "1128762950", uploaded_at=date.today()).save()
+        extrait1 = Extrait(uuid=1,titre="Extrait 1", description="Extrait 1 de l'interview 1", youtube_url="1NYQ65FTEC8", vimeo_url= "1128762950", uploaded_at=date.today()).save()
         extrait2 = Extrait(titre="Extrait 2", description="Extrait 2 de l'interview 1", youtube_url="ux6ZtL1o0R0", vimeo_url= "1128763050", uploaded_at=date.today()).save()
         extrait3 = Extrait(titre="Extrait 3", description="Extrait 3 de l'interview 1", youtube_url="WpFoiw2uP0w", vimeo_url= "1128763155", uploaded_at=date.today()).save()
         extrait4 = Extrait(titre="Extrait 4", description="Extrait 4 de l'interview 1", youtube_url="2PDvQ3P8c64", vimeo_url= "1128763765", uploaded_at=date.today()).save()
+    
         
 
         question.theme.connect(theme)
@@ -35,6 +36,7 @@ class Command(BaseCommand):
         extrait3.interview.connect(interview, {'position': 3})
         extrait4.interview.connect(interview, {'position': 4})
         extrait1.question.connect(question)
+        extrait2.question.connect(question)
         interview.tags_interview.connect(tag)
         extrait1.tags_extrait.connect(tag)
         utilisateur.recherches_artistes.connect(artiste)
