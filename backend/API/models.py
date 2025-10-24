@@ -44,12 +44,11 @@ class Extrait(StructuredNode):
     uuid = UniqueIdProperty()
     titre = StringProperty(db_property='name')
     description = StringProperty()
-
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)
     uploaded_at = DateProperty(default_now=True)
 
-    interview = RelationshipTo('Interview', 'APPARTIENT_A', ZeroOrOne, PositionExtraitRel)
+    interviews = RelationshipTo('Interview', 'APPARTIENT_A', ZeroOrMore, PositionExtraitRel)
     question = RelationshipTo('Question', 'POSE', ZeroOrOne)
     tags_extrait = RelationshipTo('Tag', 'TAGS_EXTRAIT', ZeroOrMore)
 
