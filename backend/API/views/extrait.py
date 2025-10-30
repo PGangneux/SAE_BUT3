@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from neomodel import db
 from neomodel.exceptions import DoesNotExist
 from rest_framework.exceptions import NotFound
-from ..models import Extrait
+from ..models import Extrait, Interview
 from ..serializers import ExtraitSerializer
 
 
@@ -77,6 +77,23 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
             return Extrait.inflate(results[0][0])
         except:
             raise NotFound('Extrait introuvable.', 404)
+
+    def get_interview(self):
+        """
+        Récupération de l'interview
+        """
+        try:
+            return Interview.nodes.get(uuid=self.kwargs[self.router_lookup_field])
+        except DoesNotExist:
+            raise NotFound('Interview introuvable.')
+
+    def get_serializer_context(self):
+        """
+        Modification du contexte du sérializer
+        """
+        context = super().get_serializer_context()
+        context['interview'] = self.get_interview()
+        return context
 
 
 class TagExtraitViewSet(viewsets.ModelViewSet):

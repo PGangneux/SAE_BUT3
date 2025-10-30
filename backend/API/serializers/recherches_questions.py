@@ -24,7 +24,7 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
-        query = "MATCH (i:Question {uuid:$artiste})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
+        query = "MATCH (i:Question {uuid:$question})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'question': question.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
 

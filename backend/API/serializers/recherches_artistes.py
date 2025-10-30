@@ -17,7 +17,7 @@ class RecherchesArtistesSerializer(serializers.Serializer):
     info = serializers.CharField(read_only=True)
     nation = serializers.SerializerMethodField(read_only=True)
     styles = serializers.SerializerMethodField(read_only=True)
-    interviews = serializers.SerializerMethodField(read_only=True)
+    extraits = serializers.SerializerMethodField(read_only=True)
 
     def get_date_heure(self, artiste):
         """
@@ -43,11 +43,11 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         """
         return {"url": self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))}
 
-    def get_interviews(self, artiste):
+    def get_extraits(self, artiste):
         """
-        Renvoie un lien propre vers les interviews :
+        Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'artiste_uuid': artiste.uuid}))}
+        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))}
 
     def create(self, validated_data):
         """

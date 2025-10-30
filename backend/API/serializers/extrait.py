@@ -25,6 +25,13 @@ class ExtraitSerializer(serializers.Serializer):
     question = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
+    position = serializers.SerializerMethodField(read_only=True)
+
+    def __init__(self, *args, **kwargs):
+        """Retire le champ `position` si aucune interview n'est dans le contexte."""
+        super().__init__(*args, **kwargs)
+        if not self.context.get("interview"):
+            self.fields.pop("position", None)
 
     def get_artiste(self, extrait):
         """
@@ -38,7 +45,7 @@ class ExtraitSerializer(serializers.Serializer):
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'question_uuid': question.uuid}))} if question else None
+        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': question.uuid}))} if question else None
 
     def get_interviews(self, extrait):
         """
@@ -51,6 +58,15 @@ class ExtraitSerializer(serializers.Serializer):
         Renvoie un lien propre vers les tags :
         """
         return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))}
+    
+    def get_position(self, extrait):
+        interview = self.context.get('interview')
+        if not interview:
+            return None
+        return int(db.cypher_query(
+            "MATCH (e:Extrait {uuid:$extrait_uuid})-[r:APPARTIENT_A]->(i:Interview {uuid:$interview_uuid}) RETURN r.position AS pos",
+            {'extrait_uuid': extrait.uuid, 'interview_uuid': interview.uuid}
+        )[0][0][0])
 
     def create(self, validated_data):
         """
@@ -100,7 +116,7 @@ class ExtraitSerializer(serializers.Serializer):
             except Exception:
                 pass
             extrait.question.connect(question)
-        
+
         if artiste_uuid is not None:
             try:
                 if extrait.interviewer:

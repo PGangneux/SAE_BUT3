@@ -46,7 +46,7 @@ class RegarderExtraitsSerializer(serializers.Serializer):
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'question_uuid': question.uuid}))} if question else None
+        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': question.uuid}))} if question else None
 
     def get_interviews(self, extrait):
         """
