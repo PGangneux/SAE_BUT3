@@ -14,9 +14,15 @@ class NationViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         return Nation.nodes.all()
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Nation.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:

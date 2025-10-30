@@ -13,9 +13,15 @@ class ThemeViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         return Theme.nodes.all()
 
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Theme.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:

@@ -6,17 +6,23 @@ from ..models import Artiste
 
 
 class RecherchesArtistesSerializer(serializers.Serializer):
+    """
+    Sérializer RelationShip recherches_artistes (Utilisateur <-> Artiste)
+    """
     uuid = serializers.CharField(required=True)
 
     # Outputs
     date_heure = serializers.SerializerMethodField(read_only=True)
     name = serializers.CharField(read_only=True)
     info = serializers.CharField(read_only=True)
-    styles = serializers.SerializerMethodField(read_only=True)
     nation = serializers.SerializerMethodField(read_only=True)
-    interviews = serializers.SerializerMethodField(read_only=True)
+    styles = serializers.SerializerMethodField(read_only=True)
+    extraits = serializers.SerializerMethodField(read_only=True)
 
     def get_date_heure(self, artiste):
+        """
+        Renvoie la date et l'heure :
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
@@ -24,19 +30,29 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         res = db.cypher_query(query, {'artiste': artiste.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
 
-    def get_styles(self, artiste):
-        return {"url": self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))}
-    
     def get_nation(self, artiste):
-        if artiste.nationalite:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': artiste.nationalite.single().uuid}))}
-        return None
+        """
+        Renvoie un lien propre vers la nation :
+        """
+        nation = artiste.nationalite.single()
+        return {"url": self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': nation.uuid}))} if nation else None 
 
-    def get_interviews(self, artiste):
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'artiste_uuid': artiste.uuid}))}
+    def get_styles(self, artiste):
+        """
+        Renvoie un lien propre vers les styles :
+        """
+        return {"url": self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))}
+
+    def get_extraits(self, artiste):
+        """
+        Renvoie un lien propre vers les extraits :
+        """
+        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))}
 
     def create(self, validated_data):
-        """Connecte un artiste à un utilisateur"""
+        """
+        Connecte un artiste à un utilisateur
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
@@ -53,7 +69,9 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         return artiste
 
     def delete(self, artiste_uuid):
-        """Déconnecte un artiste d’un utilisateur"""
+        """
+        Déconnecte un artiste d’un utilisateur
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")

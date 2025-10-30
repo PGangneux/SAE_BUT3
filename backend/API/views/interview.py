@@ -14,6 +14,9 @@ class InterviewViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         interviews = Interview.nodes
         search = self.request.query_params.get('search', '').strip()
         if not search:
@@ -24,31 +27,12 @@ class InterviewViewSet(viewsets.ModelViewSet):
         return interviews.all()
 
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Interview.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Interview introuvable.', 404)
-
-
-class ArtisteInterviewViewSet(viewsets.ModelViewSet):
-    """
-    Renvoie les interviews d'un artiste
-    """
-    serializer_class = InterviewSerializer
-    router_lookup_field = 'artiste_uuid'
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        query = "MATCH (q:Interview)-[:PARTICIPER]->(t:Artiste {uuid: $uuid}) RETURN q"
-        results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})
-        return [Interview.inflate(row[0]) for row in results]
-
-    def get_object(self):
-        try:
-            query = "MATCH (q:Interview {uuid: $uuid})-[:PARTICIPER]->(t:Artiste {uuid: $artiste}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'artiste': self.kwargs[self.router_lookup_field]})[0]
-            return Interview.inflate(results[0][0])
-        except:
             raise NotFound('Interview introuvable.', 404)
 
 
@@ -61,11 +45,17 @@ class TagInterviewViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         query = "MATCH (q:Interview)-[:TAGS_INTERVIEW]->(t:Tag {uuid: $uuid}) RETURN q"
         results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})
         return [Interview.inflate(row[0]) for row in results]
 
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             query = "MATCH (q:Interview {uuid: $uuid})-[:TAGS_INTERVIEW]->(t:Tag {uuid: $tag}) RETURN q"
             results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]

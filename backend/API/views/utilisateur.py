@@ -13,9 +13,15 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         return Utilisateur.nodes.all()
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Utilisateur.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:

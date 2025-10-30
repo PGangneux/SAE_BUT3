@@ -1,18 +1,17 @@
-from datetime import datetime
 from django.urls import reverse
 from rest_framework import serializers
 from neomodel import db
 from ..models import Interview
 
 
-class RegarderInterviewsSerializer(serializers.Serializer):
+class InterviewsSerializer(serializers.Serializer):
     """
-    Sérializer RelationShip regarder_interviews (Utilisateur <-> Interview)
+    Sérializer RelationShip interviews (Extrait <-> Interview)
     """
     uuid = serializers.CharField(required=True)
+    position = serializers.IntegerField(write_only=True, required=True)
 
     # Outputs
-    date_heure = serializers.SerializerMethodField(read_only=True)
     titre = serializers.CharField(read_only=True)
     date = serializers.DateField(read_only=True)
     occasion = serializers.CharField(read_only=True)
@@ -20,17 +19,6 @@ class RegarderInterviewsSerializer(serializers.Serializer):
     lieu = serializers.CharField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
-
-    def get_date_heure(self, interview):
-        """
-        Renvoie la date et l'heure :
-        """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
-        query = "MATCH (i:Interview {uuid:$interview})<-[r:REGARDER_INTERVIEWS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
-        res = db.cypher_query(query, {'interview': interview.uuid, 'utilisateur': utilisateur.uuid})[0][0]
-        return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
 
     def get_extraits(self, interview):
         """
@@ -46,35 +34,42 @@ class RegarderInterviewsSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         """
-        Connecte une interview à un utilisateur
+        Connecte une interview à un extrait
         """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+        extrait = self.context.get('extrait')
+        if not extrait:
+            raise serializers.ValidationError("Extrait manquant dans le contexte.")
 
         interview_uuid = validated_data['uuid']
+        position = validated_data['position']
         try:
             interview = Interview.nodes.get(uuid=interview_uuid)
         except Interview.DoesNotExist:
             raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
 
-        if not utilisateur.regarder_interviews.is_connected(interview):
-            utilisateur.regarder_interviews.connect(interview)
+        if not extrait.interviews.is_connected(interview):
+            extrait.interviews.connect(interview, {'position': position})
 
         return interview
 
     def delete(self, interview_uuid):
         """
-        Déconnecte une inteview d’un utilisateur
+        Déconnecte une inteview d’un extrait
         """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+        extrait = self.context.get('extrait')
+        if not extrait:
+            raise serializers.ValidationError("Extrait manquant dans le contexte.")
 
         try:
             artiste = Interview.nodes.get(uuid=interview_uuid)
         except Interview.DoesNotExist:
             raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
 
-        utilisateur.regarder_interviews.disconnect(artiste)
+        extrait.interviews.disconnect(artiste)
         return artiste
+
+class PositionInputSerializer(serializers.Serializer):
+    """
+    Sérializer RelationShip interviews (Extrait <-> Interview) update
+    """
+    position = serializers.IntegerField(write_only=True, required=True)
