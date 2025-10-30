@@ -24,7 +24,7 @@ class Command(BaseCommand):
         extrait2 = Extrait(uuid=2, titre="Extrait 2", description="Extrait 2 de l'interview 1", youtube_url="ux6ZtL1o0R0", vimeo_url= "1128763050", uploaded_at=date.today()).save()
         extrait3 = Extrait(uuid=3, titre="Extrait 3", description="Extrait 3 de l'interview 1", youtube_url="WpFoiw2uP0w", vimeo_url= "1128763155", uploaded_at=date.today()).save()
         extrait4 = Extrait(uuid=4, titre="Extrait 4", description="Extrait 4 de l'interview 1", youtube_url="2PDvQ3P8c64", vimeo_url= "1128763765", uploaded_at=date.today()).save()
-        
+
 
         question.theme.connect(theme)
         artiste.style.connect(style)

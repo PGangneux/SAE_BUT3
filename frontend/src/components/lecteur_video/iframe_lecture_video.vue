@@ -43,6 +43,7 @@ export default {
     let intervalId = null;
 
     function startTracking() {
+      console.log("lancement compte seconde:", JSON.parse(JSON.stringify(videoStore)))
       intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
           videoStore.currentTime = player.value.getCurrentTime();
@@ -57,16 +58,36 @@ export default {
       }
     }
 
+    function reset_old_lecteur(){
+      // ✅ Nettoyer l'ancien player
+      if (player.value) {
+        if (typeof player.value.destroy === 'function') {
+          player.value.destroy();
+        }
+        player.value = null;
+      }
+    }
+
 
     async function initYouTube(videoId) {
+      stopTracking()
+      reset_old_lecteur()
+      const current_time = videoStore.currentTime
       const YT = await loadYouTubeAPI();
       await nextTick();
-
       player.value = new YT.Player("player", {
         videoId,
+        playerVars: {
+          start: 0  // Force le démarrage à 0
+        },
         events: {
           onReady: (event) => {
-            if (videoStore.currentTime) event.target.seekTo(videoStore.currentTime);
+            if (videoStore.currentTime) {
+              event.target.seekTo(current_time);
+              videoStore.currentTime = current_time
+              // Synchronisation du temps de lecture
+              startTracking()
+            }
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
           },
@@ -77,13 +98,16 @@ export default {
         },
       });
 
-      // Synchronisation du temps de lecture
-      startTracking()
+      
     }
 
 
 
     async function initVimeo() {
+      stopTracking()
+      reset_old_lecteur()
+      const current_time = videoStore.currentTime
+      console.log("changement lecteur 1: ", JSON.parse(JSON.stringify(videoStore)))
       // Charger Vimeo API si pas encore là
       if (!window.Vimeo || !window.Vimeo.Player) {
         await new Promise((resolve) => {
@@ -94,7 +118,7 @@ export default {
         });
       }
       
-
+      console.log("changement lecteur 2: ", JSON.parse(JSON.stringify(videoStore)))
       // Créer l'iframe
       const container = document.getElementById("player");
       container.innerHTML = "";
@@ -108,6 +132,8 @@ export default {
       iframe.style.height = "100%";
       container.appendChild(iframe);
 
+      console.log("changement lecteur 3: ", JSON.parse(JSON.stringify(videoStore)))
+
       // Créer le player
       const vimeoPlayer = new window.Vimeo.Player(iframe);
 
@@ -118,11 +144,13 @@ export default {
         console.error("Vimeo jamais prêt :", e);
         return;
       }
-
+      console.log("changement lecteur 4: ", JSON.parse(JSON.stringify(videoStore)))
       // Synchroniser l'état
+      console.log("changement lecteur 60: ", JSON.parse(JSON.stringify(videoStore)))
       if (videoStore.currentTime) {
         try {
-          await vimeoPlayer.setCurrentTime(videoStore.currentTime);
+          await vimeoPlayer.setCurrentTime(current_time);
+          videoStore.currentTime = current_time
         } catch (err) {
           console.warn("Impossible de définir le temps :", err);
         }
@@ -140,10 +168,9 @@ export default {
     }
 
     async function update_player() {
-      if (player.value && player.value.destroy) {
-        player.value.destroy();
-        stopTracking()
-      }
+      console.log("AV changement lecteur 0: ", JSON.parse(JSON.stringify(videoStore)))
+      
+      
 
       await nextTick();
 
@@ -152,6 +179,7 @@ export default {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
+        console.log("AV changement lecteur: ", JSON.parse(JSON.stringify(videoStore)))
         await initVimeo();
       }
     }
@@ -162,6 +190,7 @@ export default {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
+        
         await initVimeo();
       }
       emit('iframe_build')
