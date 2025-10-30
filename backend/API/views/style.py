@@ -67,4 +67,4 @@ class ArtisteStyleRelationShipViewSet(
         serializer = self.get_serializer(data=request.data, context={'artiste': self.get_artiste()})
         serializer.is_valid(raise_exception=True)
         style = serializer.create(serializer.validated_data)
-        return Response(self.get_serializer(tag, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
+        return Response(self.get_serializer(style, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
