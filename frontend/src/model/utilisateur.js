@@ -80,6 +80,16 @@ export default class Utilisateur extends Model {
             is_admin: this.#is_admin
         }
     }
+
+    static connect(pseudo_email, password) {
+        /** 
+         * Connecte un utilisateur avec son pseudo ou son e-mail et son password
+         * (non implémenté)
+        */
+        data = {} // Résultat de la connexion à l'API
+        // Au lieu de simplement le return, pourquoi pas avoir un attribut static current_user ?
+        return new this(data)
+    }
 }
 
 // import prefetcher from "./prefetcher.js";
