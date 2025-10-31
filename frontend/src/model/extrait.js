@@ -1,49 +1,39 @@
 import CRUD from "./crud.js";
+import Artiste from "./artiste.js";
+import Question from "./question.js";
+import Interview from "./interview.js";
 
-export default class extrait_t extends CRUD {
+export default class Extrait extends CRUD {
     #titre
     #description
     #youtube_url
     #vimeo_url
     #uploaded_at
-    #interview
+    #artiste
     #question
+    #interviews
     #tags
-    #url_miniature_yt
+    #position
+    #artiste_uuid
+    #question_uuid
 
-    validateString(value, fieldName) {
-        if (value === null || value === undefined) {
-            throw new Error(`${fieldName} cannot be null or undefined`)
-        }
-        if (typeof value !== "string") {
-            throw new Error(`${fieldName} must be a string, got ${typeof value}`)
-        }
-        return value
-    }
-
-    constructor({uuid,
-titre,
-description,
-youtube_url,
-vimeo_url,
-uploaded_at,
-interview,
-question,
-tags,}
-    ){
+    constructor({ uuid, titre, description, youtube_url, vimeo_url, uploaded_at, artiste, question, interviews, tags, position }) {
         super(uuid);
         this.#titre = titre;
         this.#description = description;
         this.#youtube_url = youtube_url;
         this.#vimeo_url = vimeo_url;
         this.#uploaded_at = uploaded_at;
-        this.#interview = interview;
+        this.#artiste = artiste;
         this.#question = question;
+        this.#interviews = interviews;
         this.#tags = tags;
-        this.#url_miniature_yt = `https://img.youtube.com/vi/${youtube_url}/maxresdefault.jpg`
+        this.#position = position;
+        this.#artiste_uuid = null;
+        this.#question_uuid = null;
     }
 
-    get endpoint() { return "extraits" }
+    static get endpoint() { return "extraits" }
 
     get titre() { return this.#titre }
     set titre(value) { this.#titre = this.validateString(value, "titre") }
@@ -58,27 +48,19 @@ tags,}
     set vimeo_url(value) { this.#vimeo_url = this.validateString(value, "vimeo_url") }
 
     get uploaded_at() { return this.#uploaded_at }
-    set uploaded_at(value) { this.#uploaded_at = this.validateString(value, "uploaded_at") }
+    set uploaded_at(value) { this.#uploaded_at = value }
 
-    get interview() { return this.#interview }
-    set interview(value) { 
-        this.#interview = value; /// TODO : implement 
-    }
+    get artiste() { return this.fetchDetail(this.#artiste, Artiste) }
+    set artiste(value) { this.#artiste_uuid = this.validateString(value, "artiste_uuid") }
 
-    get question() { return this.#question }
-    set question(value) { 
-        this.#question = value; /// TODO : implement 
-    }
+    get question() { return this.fetchDetail(this.#question, Question) }
+    set question(value) { this.#question_uuid = this.validateString(value, "question_uuid") }
 
-    get tags() { return this.#tags }
-    set tags(value) { 
-        this.#tags = value; /// TODO : implement 
-    }
+    get interviews() { return this.fetchList(this.#interviews, Interview) }
 
-    get url_miniature_yt(){
-        return this.#url_miniature_yt 
-    }
+    get tags() { return this.fetchList(this.#tags, null) }
 
+    get position() { return this.#position }
 
     toJSON() {
         return {
@@ -88,9 +70,8 @@ tags,}
             youtube_url: this.#youtube_url,
             vimeo_url: this.#vimeo_url,
             uploaded_at: this.#uploaded_at,
-            interview: this.#interview,
-            question: this.#question,
-            tags: this.#tags
+            artiste_uuid: this.#artiste_uuid,
+            question_uuid: this.#question_uuid
         }
     }
 }

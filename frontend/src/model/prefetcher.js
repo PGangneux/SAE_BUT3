@@ -1,103 +1,104 @@
-const BASE_URL = 'http://localhost:8000/';
+export default class prefetcher {
+    static BASE_URL = 'http://localhost:8000/';
+    static #endpoints = null;
 
-import artiste_t from "./artiste.js";
-import extrait_t from "./extrait.js";
-import interview_t from "./interview.js";
-import question_t from "./question.js";
-import theme_t from "./theme.js";
-
-class prefetcher {
-    // Class-level cache (shared across all instances)
-    static #cache = new Map();
-
-    // Clear cache (call this when user connects)
-    static clearCache() {
-        prefetcher.#cache.clear();
-    }
-
-    // Generic fetch method with cache and object building
-    static fetch(Class, url, returnsList = false) {
-        if (prefetcher.#cache.has(url)) {
-            return prefetcher.#cache.get(url);
+    static async endpoints() {
+        /** 
+         * Récupère les endpoints de l'API
+        */
+        if (!this.#endpoints) {
+            this.#endpoints = await this.get(`${this.BASE_URL}API/`);
         }
+        // console.log(this.#endpoints);
+        return this.#endpoints;
+    }
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("GET", url, false);
-        xhr.send();
+    static url_uuid(url, uuid) {
+        /** 
+         * Construction de l'url detail
+         * url: url list
+         * uuid: uuid de l'élément visé
+        */
+        return uuid ? `${url}${uuid}/` : url;
+    }
 
-        if (xhr.status !== 200) {
-            throw new Error(`HTTP error! status: ${xhr.status}`);
+    static url_query(url, args) {
+        /**
+         * Construction de l'url complète
+         * url: endpoint visé
+         * args: paramètres d'url, {champ: [valeur1, valeur2]}
+        */
+        return args ? url + `?${new URLSearchParams(args)}` : url;
+    }
+
+    static get_headers(admin=false) {
+        /**
+         * Récupère le header, ajoute le token si connecter (non implémenter)
+        */
+        let headers = {};
+        headers['Content-Type'] = 'application/json';
+        if (admin) {
+
         }
-
-        const data = JSON.parse(xhr.responseText);
-
-        // Build objects using the class constructor
-        let result;
-        /// console.log("prefetcher data return");
-        /// console.log(data);
-        if (returnsList) {
-            result = data.map(item => new Class(item));
-        } else {
-            result = new Class(data);
-        }
-
-        prefetcher.#cache.set(url, result);
-        return result;
+        return headers;
     }
 
-    static theme(id) {
-        return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/${id}/`, false);
+    static get_token() {
+        /**
+         * Récupère le token d'authentification (non implémenter)
+        */
+        return null;
     }
 
-    static themes_all() {
-        return prefetcher.fetch(theme_t, `${BASE_URL}API/themes/`, true);
+    static async fetch(methode, url, args=null, data=null, admin=false) {
+        /** 
+         * Fetch par défaut 
+         * methode: Méthode de la requête (GET, POST, PATCH, DELETE)
+         * url: endpoint visé
+         * args: paramètres d'url, {champ: [valeur1, valeur2]}
+         * data: données à envoyer, json
+         * admin: Si besoin d'être connecter (non implémenter)
+        */
+        if (args) url = this.url_query(url, args)
+
+        const opts = {
+            method: methode.toUpperCase(),
+            headers: this.get_headers(admin),
+        };
+        if (data) opts["body"] = data;
+
+        return await fetch(url, opts)
+        .then(response => {
+            if (!response.ok) throw new Error(response.status);
+            return response.json();
+        });
     }
 
-    static question(id) {
-        return prefetcher.fetch(question_t, `${BASE_URL}API/questions/${id}/`, false);
+    static async get(url, args=null, admin=false) {
+        /** 
+         * Fetch GET
+        */
+        return await this.fetch("GET", url, args, null, admin);
     }
 
-    static questions_theme(id_theme) {
-        return prefetcher.fetch(question_t, `${BASE_URL}API/themes/${id_theme}/questions/`, false);
+    static async post(url, data, admin=true) {
+        /** 
+         * Fetch POST
+        */
+        return await this.fetch("POST", url, null, data, admin);
     }
 
-    static questions_all() {
-        return prefetcher.fetch(question_t, `${BASE_URL}API/questions/`, true);
+    static async put(url, data, admin=true) {
+        /** 
+         * Fetch PATCH
+        */
+        return await this.fetch("PATCH", url, null, data, admin);
     }
 
-    static extrait(id) {
-        return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/${id}/`, false);
-    }
-
-    static extraits_question(id_question) {
-        return prefetcher.fetch(extrait_t, `${BASE_URL}API/questions/${id_question}/extraits/`, true);
-    }
-    
-
-    static extraits_all() {
-        return prefetcher.fetch(extrait_t, `${BASE_URL}API/extraits/`, true);
-    }
-
-    static interview(id) {
-        return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/${id}/`, false);
-    }
-
-    static interviews_extrait(id_extrait){
-        return prefetcher.fetch(interview_t, `${BASE_URL}API/extraits/${id_extrait}/interviews/`, true)
-    }
-
-    static interviews_all() {
-        return prefetcher.fetch(interview_t, `${BASE_URL}API/interviews/`, true);
-    }
-
-    static artiste(id) {
-        return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/${id}/`, false);
-    }
-
-    static artistes_all() {
-        return prefetcher.fetch(artiste_t, `${BASE_URL}API/artistes/`, true);
+    static async delete(url, admin=true) {
+        /** 
+         * Fetch DELETE
+        */
+        return await this.fetch("DELETE", url, null, null, admin);
     }
 }
-
-export { BASE_URL, prefetcher };
-export default prefetcher;

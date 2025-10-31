@@ -1,28 +1,19 @@
 import CRUD from "./crud.js";
+import Question from "./question.js";
 
-export default class theme_t extends CRUD {
+export default class Theme extends CRUD {
     #name
     #description
     #questions
 
-    validateString(value, fieldName) {
-        if (value === null || value === undefined) {
-            throw new Error(`${fieldName} cannot be null or undefined`)
-        }
-        if (typeof value !== "string") {
-            throw new Error(`${fieldName} must be a string, got ${typeof value}`)
-        }
-        return value
-    }
-
-    constructor({uuid,name,description,questions}){
+    constructor({ uuid, name, description, questions }) {
         super(uuid);
         this.#name = name;
         this.#description = description;
         this.#questions = questions;
     }
 
-    get endpoint() { return "themes" }
+    static get endpoint() { return "themes" }
 
     get name() { return this.#name }
     set name(value) { this.#name = this.validateString(value, "name") }
@@ -30,17 +21,13 @@ export default class theme_t extends CRUD {
     get description() { return this.#description }
     set description(value) { this.#description = this.validateString(value, "description") }
 
-    get questions() { return this.#questions }
-    set questions(value) { 
-        this.#questions = value; /// TODO : implement
-    }
+    get questions() { return this.fetchList(this.#questions, Question) }
 
     toJSON() {
         return {
             uuid: this.uuid,
             name: this.#name,
-            description: this.#description,
-            questions: this.#questions
+            description: this.#description
         }
     }
 }

@@ -3,7 +3,7 @@ import { markRaw } from 'vue';
 import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Lecteur_video from './components/lecteur_video/lecteur_video.vue';
-import user_t from './model/user';
+import Utilisateur from './model/utilisateur';
 
 export default {
     name: "page_router",
@@ -14,7 +14,7 @@ export default {
     data() {
         return {
             user_current: {
-                type: user_t,
+                type: Utilisateur,
                 value: null,
             },
             searchterm: "", // text de recherche

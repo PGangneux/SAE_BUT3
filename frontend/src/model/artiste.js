@@ -1,23 +1,24 @@
 import CRUD from "./crud.js";
+import Nation from "./nation.js";
+import StyleMusical from "./style_musical.js";
+import Extrait from "./extrait.js";
 
-export default class artiste_t extends CRUD {
+export default class Artiste extends CRUD {
     #name
     #info
+    #nation
+    #styles
+    #extraits
+    #nation_uuid
 
-    validateString(value, fieldName) {
-        if (value === null || value === undefined) {
-            throw new Error(`${fieldName} cannot be null or undefined`)
-        }
-        if (typeof value !== "string") {
-            throw new Error(`${fieldName} must be a string, got ${typeof value}`)
-        }
-        return value
-    }
-
-    constructor({uuid,name,info}){
+    constructor({uuid,name,info, nation, styles, extraits}){
         super(uuid);
         this.#name = name;
         this.#info = info;
+        this.#nation = nation;
+        this.#styles = styles;
+        this.#extraits = extraits;
+        this.#nation_uuid = null;
     }
 
     get endpoint() { return "artistes" }
@@ -28,11 +29,19 @@ export default class artiste_t extends CRUD {
     get info() { return this.#info }
     set info(value) { this.#info = this.validateString(value, "info") }
 
+    get nation() { return this.fetchDetail(this.#nation, Nation); }
+    set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid") }
+
+    get styles() { return this.fetchList(this.#styles, StyleMusical) }
+
+    get extraits() { return this.fetchList(this.#extraits, Extrait) }
+
     toJSON() {
         return {
             uuid: this.uuid,
             name: this.#name,
-            info: this.#info
+            info: this.#info,
+            nation_uuid: this.#nation_uuid,
         }
     }
 }
