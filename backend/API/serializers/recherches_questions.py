@@ -33,13 +33,13 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         Renvoie un lien propre vers le theme :
         """
         theme = question.theme.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': theme.uuid}))} if theme else None
+        return self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': theme.uuid})) if theme else None
 
     def get_extraits(self, question):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))
 
     def create(self, validated_data):
         """

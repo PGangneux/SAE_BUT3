@@ -19,7 +19,7 @@ class ThemeSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les questions :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'theme_uuid': theme.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'theme_uuid': theme.uuid}))
 
     def create(self, validated_data):
         """

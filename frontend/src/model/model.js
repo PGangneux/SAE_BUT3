@@ -93,8 +93,8 @@ export default class Model {
      * @param {Class} Class 
      * @returns {Promise<Model>}
      */
-    async fetchDetail(elem, Class) {
-        if (elem) return new Class(await clientAPI.get(elem.url));
+    async fetchDetail(url, Class) {
+        if (url) return new Class(await clientAPI.get(url));
         else return null;
     }
 
@@ -104,8 +104,8 @@ export default class Model {
      * @param {Class} Class 
      * @returns {Promise<Model>}
      */
-    async fetchList(elem, Class) {
-        return await clientAPI.get(elem.url)
+    async fetchList(url, Class) {
+        return await clientAPI.get(url)
         .then(data => { return data.map(row => { return new Class(row); }); });
     }
 
