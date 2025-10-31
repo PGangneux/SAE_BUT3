@@ -46,8 +46,8 @@ export default class Model {
         return await clientAPI.get(elem.url).then(data => { return data.map(row => { return new Class(row) }) });
     }
 
-    static async list() {
-        return await clientAPI.get(await clientAPI.endpoints().then(res => { return res[this.endpoint] }))
+    static async list(args=null) {
+        return await clientAPI.get(await clientAPI.endpoints().then(res => { return res[this.endpoint] }), args)
         .then(data => { return data.map(row => { return new this(row) }) })
     }
 
