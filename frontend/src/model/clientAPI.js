@@ -1,4 +1,4 @@
-export default class prefetcher {
+export default class clientAPI {
     static BASE_URL = 'http://localhost:8000/';
     static #endpoints = null;
 
@@ -9,7 +9,6 @@ export default class prefetcher {
         if (!this.#endpoints) {
             this.#endpoints = await this.get(`${this.BASE_URL}API/`);
         }
-        // console.log(this.#endpoints);
         return this.#endpoints;
     }
 

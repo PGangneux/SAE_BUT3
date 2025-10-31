@@ -1,7 +1,5 @@
 <script>
 import { markRaw } from 'vue';
-import prefetcher from '../model/prefetcher.js';
-import Extrait from '../model/extrait.js';
 import Interview from '../model/interview.js';
 
 export default {

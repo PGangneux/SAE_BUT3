@@ -1,9 +1,9 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
 import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
 
-export default class Extrait extends CRUD {
+export default class Extrait extends Model {
     #titre
     #description
     #youtube_url

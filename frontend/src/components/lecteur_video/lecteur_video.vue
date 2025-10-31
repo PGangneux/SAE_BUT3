@@ -4,7 +4,6 @@ import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
-import prefetcher from "../../model/prefetcher";
 import Extrait from '../../model/extrait';
 
 export default {

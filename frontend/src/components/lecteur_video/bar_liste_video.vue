@@ -1,6 +1,5 @@
 <script>
 import { markRaw } from 'vue';
-import prefetcher from "../../model/prefetcher";
 import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
 

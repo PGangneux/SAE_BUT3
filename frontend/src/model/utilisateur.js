@@ -1,6 +1,6 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
 
-export default class Utilisateur extends CRUD {
+export default class Utilisateur extends Model {
     #pseudo
     #prenom
     #nom

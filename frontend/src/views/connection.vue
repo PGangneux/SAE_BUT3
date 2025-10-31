@@ -20,7 +20,7 @@ export default {
                 await sleep(500);
                 this.user_current.set(new Utilisateur(this.username, this.password));
                 /// console.log("current_user");
-                /// console.log(this.user_current);
+                console.log(this.user_current);
                 this.apiMessage = "login bon";
                 await sleep(500);
                 if (window.history.length > 1){

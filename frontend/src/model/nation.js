@@ -1,7 +1,7 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
 import Artiste from "./artiste.js";
 
-export default class Nation extends CRUD {
+export default class Nation extends Model {
     #name
     #artistes
 

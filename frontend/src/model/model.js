@@ -1,6 +1,6 @@
-import prefetcher from "./prefetcher";
+import clientAPI from "./clientAPI.js";
 
-export default class CRUD {
+export default class Model {
     #uuid
 
     constructor(uuid){
@@ -38,21 +38,21 @@ export default class CRUD {
     }
 
     async fetchDetail(elem, Class) {
-        if (elem) return new Class(await prefetcher.get(elem.url));
+        if (elem) return new Class(await clientAPI.get(elem.url));
         else return null;
     }
 
     async fetchList(elem, Class) {
-        return await prefetcher.get(elem.url).then(data => { return data.map(row => { return new Class(row) }) });
+        return await clientAPI.get(elem.url).then(data => { return data.map(row => { return new Class(row) }) });
     }
 
     static async list() {
-        return await prefetcher.get(await prefetcher.endpoints().then(res => { return res[this.endpoint] }))
+        return await clientAPI.get(await clientAPI.endpoints().then(res => { return res[this.endpoint] }))
         .then(data => { return data.map(row => { return new this(row) }) })
     }
 
     static async detail(uuid) {
-        return await prefetcher.get(prefetcher.url_uuid(await prefetcher.endpoints().then(res => { return res[this.endpoint] }), uuid))
+        return await clientAPI.get(clientAPI.url_uuid(await clientAPI.endpoints().then(res => { return res[this.endpoint] }), uuid))
         .then(data => { return new this(data); })
     }
 
@@ -60,8 +60,8 @@ export default class CRUD {
         if (this.#uuid) {
             throw new Error(`Cannot create ${this.constructor.name} that already has a UUID`);
         }
-        return await prefetcher.post(
-            prefetcher.endpoints().then(res => { return res[this.endpoint] }),
+        return await clientAPI.post(
+            clientAPI.endpoints().then(res => { return res[this.endpoint] }),
             JSON.stringify(this.toJSON())
         )
         .then(result => {
@@ -74,8 +74,8 @@ export default class CRUD {
         if (!this.#uuid) {
             throw new Error(`Cannot update ${this.constructor.name} without a UUID`);
         }
-        return await prefetcher.put(
-            prefetcher.url_uuid(prefetcher.endpoints().then(res => { return res[this.endpoint] }), this.#uuid),
+        return await clientAPI.put(
+            clientAPI.url_uuid(clientAPI.endpoints().then(res => { return res[this.endpoint] }), this.#uuid),
             JSON.stringify(this.toJSON())
         )
         .then(result => {
@@ -88,8 +88,8 @@ export default class CRUD {
         if (!this.#uuid) {
             throw new Error(`Cannot delete ${this.constructor.name} without a UUID`);
         }
-        return await prefetcher.delete(
-            prefetcher.url_uuid(prefetcher.endpoints().then(res => { return res[this.endpoint] }), this.#uuid),
+        return await clientAPI.delete(
+            clientAPI.url_uuid(clientAPI.endpoints().then(res => { return res[this.endpoint] }), this.#uuid),
         )
         .then(result => {
             // Charger les nouvelles données dans l'instance

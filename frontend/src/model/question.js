@@ -1,8 +1,8 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
 import Theme from "./theme.js";
 import Extrait from "./extrait.js";
 
-export default class Question extends CRUD {
+export default class Question extends Model {
     #texte
     #theme
     #extraits

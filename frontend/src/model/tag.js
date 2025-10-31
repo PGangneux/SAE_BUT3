@@ -1,8 +1,8 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
 import Interview from "./interview.js";
 import Extrait from "./extrait.js";
 
-export default class Tag extends CRUD {
+export default class Tag extends Model {
     #name
     #interviews
     #extraits
