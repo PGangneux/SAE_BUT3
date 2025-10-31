@@ -63,6 +63,10 @@ export default class Extrait extends Model {
 
     get position() { return this.#position; }
 
+    get url_miniature_yt(){
+        return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
+    }
+
     fromJSON(json) {
         super.fromJSON(json);
         this.#titre = json.titre;
