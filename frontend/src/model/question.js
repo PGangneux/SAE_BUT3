@@ -3,10 +3,10 @@ import Theme from "./theme.js";
 import Extrait from "./extrait.js";
 
 export default class Question extends Model {
-    #texte
-    #theme
-    #extraits
-    #theme_uuid
+    #texte;
+    #theme;
+    #extraits;
+    #theme_uuid;
 
     constructor({ uuid, texte, theme, extraits }) {
         super(uuid);
@@ -16,22 +16,22 @@ export default class Question extends Model {
         this.#theme_uuid = null;
     }
 
-    static get endpoint() { return "questions" }
+    static get endpoint() { return "questions"; }
 
-    get texte() { return this.#texte }
-    set texte(value) { this.#texte = this.validateString(value, "texte") }
+    get texte() { return this.#texte; }
+    set texte(value) { this.#texte = this.validateString(value, "texte"); }
 
-    get theme() { return this.fetchDetail(this.#theme, Theme) }
-    set theme(value) { this.#theme_uuid = this.validateString(value, "theme_uuid") }
+    get theme() { return this.fetchDetail(this.#theme, Theme); }
+    set theme(value) { this.#theme_uuid = this.validateString(value, "theme_uuid"); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait) }
+    get extraits() { return this.fetchList(this.#extraits, Extrait); }
 
     fromJSON(json) {
         super.fromJSON(json);
         this.#texte = json.texte;
         this.#theme = json.theme;
         this.#extraits = json.extraits;
-        return this
+        return this;
     }
 
     toJSON() {
@@ -39,6 +39,6 @@ export default class Question extends Model {
             uuid: this.uuid,
             texte: this.#texte,
             theme_uuid: this.#theme_uuid
-        }
+        };
     }
 }

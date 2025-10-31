@@ -4,12 +4,12 @@ import StyleMusical from "./style_musical.js";
 import Extrait from "./extrait.js";
 
 export default class Artiste extends Model {
-    #name
-    #info
-    #nation
-    #styles
-    #extraits
-    #nation_uuid
+    #name;
+    #info;
+    #nation;
+    #styles;
+    #extraits;
+    #nation_uuid;
 
     constructor({uuid,name,info, nation, styles, extraits}){
         super(uuid);
@@ -21,20 +21,20 @@ export default class Artiste extends Model {
         this.#nation_uuid = null;
     }
 
-    get endpoint() { return "artistes" }
+    get endpoint() { return "artistes"; }
 
-    get name() { return this.#name }
-    set name(value) { this.#name = this.validateString(value, "name") }
+    get name() { return this.#name; }
+    set name(value) { this.#name = this.validateString(value, "name"); }
 
-    get info() { return this.#info }
-    set info(value) { this.#info = this.validateString(value, "info") }
+    get info() { return this.#info; }
+    set info(value) { this.#info = this.validateString(value, "info"); }
 
     get nation() { return this.fetchDetail(this.#nation, Nation); }
-    set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid") }
+    set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
 
-    get styles() { return this.fetchList(this.#styles, StyleMusical) }
+    get styles() { return this.fetchList(this.#styles, StyleMusical); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait) }
+    get extraits() { return this.fetchList(this.#extraits, Extrait); }
 
     fromJSON(json) {
         super.fromJSON(json);
@@ -43,7 +43,7 @@ export default class Artiste extends Model {
         this.#nation = json.nation;
         this.#styles = json.styles;
         this.#extraits = json.extraits;
-        return this
+        return this;
     }
 
     toJSON() {
@@ -52,6 +52,6 @@ export default class Artiste extends Model {
             name: this.#name,
             info: this.#info,
             nation_uuid: this.#nation_uuid,
-        }
+        };
     }
 }

@@ -3,13 +3,13 @@ import Extrait from "./extrait.js";
 import Tag from "./tag.js";
 
 export default class Interview extends Model {
-    #titre
-    #date
-    #occasion
-    #description
-    #lieu
-    #extraits
-    #tags
+    #titre;
+    #date;
+    #occasion;
+    #description;
+    #lieu;
+    #extraits;
+    #tags;
 
     constructor({ uuid, titre, date, occasion, description, lieu, extraits, tags }) {
         super(uuid);
@@ -22,26 +22,26 @@ export default class Interview extends Model {
         this.#tags = tags;
     }
 
-    static get endpoint() { return "interviews" }
+    static get endpoint() { return "interviews"; }
 
-    get titre() { return this.#titre }
-    set titre(value) { this.#titre = this.validateString(value, "titre") }
+    get titre() { return this.#titre; }
+    set titre(value) { this.#titre = this.validateString(value, "titre"); }
 
-    get date() { return this.#date }
-    set date(value) { this.#date = value }
+    get date() { return this.#date; }
+    set date(value) { this.#date = value; }
 
-    get occasion() { return this.#occasion }
-    set occasion(value) { this.#occasion = this.validateString(value, "occasion") }
+    get occasion() { return this.#occasion; }
+    set occasion(value) { this.#occasion = this.validateString(value, "occasion"); }
 
-    get description() { return this.#description }
-    set description(value) { this.#description = this.validateString(value, "description") }
+    get description() { return this.#description; }
+    set description(value) { this.#description = this.validateString(value, "description"); }
 
-    get lieu() { return this.#lieu }
-    set lieu(value) { this.#lieu = this.validateString(value, "lieu") }
+    get lieu() { return this.#lieu; }
+    set lieu(value) { this.#lieu = this.validateString(value, "lieu"); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait) }
+    get extraits() { return this.fetchList(this.#extraits, Extrait); }
 
-    get tags() { return this.fetchList(this.#tags, Tag) }
+    get tags() { return this.fetchList(this.#tags, Tag); }
 
     fromJSON(json) {
         super.fromJSON(json);
@@ -52,7 +52,7 @@ export default class Interview extends Model {
         this.#lieu = json.lieu;
         this.#extraits = json.extraits;
         this.#tags = json.tags;
-        return this
+        return this;
     }
 
     toJSON() {
@@ -63,6 +63,6 @@ export default class Interview extends Model {
             occasion: this.#occasion,
             description: this.#description,
             lieu: this.#lieu,
-        }
+        };
     }
 }

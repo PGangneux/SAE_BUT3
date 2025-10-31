@@ -2,8 +2,8 @@ import Model from "./model.js";
 import Artiste from "./artiste.js";
 
 export default class StyleMusical extends Model {
-    #name
-    #artistes
+    #name;
+    #artistes;
 
     constructor({uuid, name, artistes}) {
         super(uuid);
@@ -11,24 +11,24 @@ export default class StyleMusical extends Model {
         this.#artistes = artistes;
     }
 
-    static get endpoint() { return "styles-musicaux" }
+    static get endpoint() { return "styles-musicaux"; }
 
-    get name() { return this.#name }
-    set name(value) { this.#name = this.validateString(value, "name") }
+    get name() { return this.#name; }
+    set name(value) { this.#name = this.validateString(value, "name"); }
 
-    get artistes() { return this.fetchList(this.#artistes, Artiste) }
+    get artistes() { return this.fetchList(this.#artistes, Artiste); }
 
     fromJSON(json) {
         super.fromJSON(json);
         this.#name = json.name;
         this.#artistes = json.artistes;
-        return this
+        return this;
     }
 
     toJSON() {
         return {
             uuid: this.uuid,
             name: this.#name,
-        }
+        };
     }
 }

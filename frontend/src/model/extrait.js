@@ -2,20 +2,21 @@ import Model from "./model.js";
 import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
+import Tag from "./tag.js";
 
 export default class Extrait extends Model {
-    #titre
-    #description
-    #youtube_url
-    #vimeo_url
-    #uploaded_at
-    #artiste
-    #question
-    #interviews
-    #tags
-    #position
-    #artiste_uuid
-    #question_uuid
+    #titre;
+    #description;
+    #youtube_url;
+    #vimeo_url;
+    #uploaded_at;
+    #artiste;
+    #question;
+    #interviews;
+    #tags;
+    #position;
+    #artiste_uuid;
+    #question_uuid;
 
     constructor({ uuid, titre, description, youtube_url, vimeo_url, uploaded_at, artiste, question, interviews, tags, position }) {
         super(uuid);
@@ -33,34 +34,34 @@ export default class Extrait extends Model {
         this.#question_uuid = null;
     }
 
-    static get endpoint() { return "extraits" }
+    static get endpoint() { return "extraits"; }
 
-    get titre() { return this.#titre }
-    set titre(value) { this.#titre = this.validateString(value, "titre") }
+    get titre() { return this.#titre; }
+    set titre(value) { this.#titre = this.validateString(value, "titre"); }
 
-    get description() { return this.#description }
-    set description(value) { this.#description = this.validateString(value, "description") }
+    get description() { return this.#description; }
+    set description(value) { this.#description = this.validateString(value, "description"); }
 
-    get youtube_url() { return this.#youtube_url }
-    set youtube_url(value) { this.#youtube_url = this.validateString(value, "youtube_url") }
+    get youtube_url() { return this.#youtube_url; }
+    set youtube_url(value) { this.#youtube_url = this.validateString(value, "youtube_url"); }
 
-    get vimeo_url() { return this.#vimeo_url }
-    set vimeo_url(value) { this.#vimeo_url = this.validateString(value, "vimeo_url") }
+    get vimeo_url() { return this.#vimeo_url; }
+    set vimeo_url(value) { this.#vimeo_url = this.validateString(value, "vimeo_url"); }
 
-    get uploaded_at() { return this.#uploaded_at }
-    set uploaded_at(value) { this.#uploaded_at = value }
+    get uploaded_at() { return this.#uploaded_at; }
+    set uploaded_at(value) { this.#uploaded_at = value; }
 
-    get artiste() { return this.fetchDetail(this.#artiste, Artiste) }
-    set artiste(value) { this.#artiste_uuid = this.validateString(value, "artiste_uuid") }
+    get artiste() { return this.fetchDetail(this.#artiste, Artiste); }
+    set artiste(value) { this.#artiste_uuid = this.validateString(value, "artiste_uuid"); }
 
-    get question() { return this.fetchDetail(this.#question, Question) }
-    set question(value) { this.#question_uuid = this.validateString(value, "question_uuid") }
+    get question() { return this.fetchDetail(this.#question, Question); }
+    set question(value) { this.#question_uuid = this.validateString(value, "question_uuid"); }
 
-    get interviews() { return this.fetchList(this.#interviews, Interview) }
+    get interviews() { return this.fetchList(this.#interviews, Interview); }
 
-    get tags() { return this.fetchList(this.#tags, null) }
+    get tags() { return this.fetchList(this.#tags, Tag); }
 
-    get position() { return this.#position }
+    get position() { return this.#position; }
 
     fromJSON(json) {
         super.fromJSON(json);
@@ -74,7 +75,7 @@ export default class Extrait extends Model {
         this.#interviews = json.interviews;
         this.#tags = json.tags;
         this.#position = json.position;
-        return this
+        return this;
     }
 
     toJSON() {
@@ -87,6 +88,6 @@ export default class Extrait extends Model {
             uploaded_at: this.#uploaded_at,
             artiste_uuid: this.#artiste_uuid,
             question_uuid: this.#question_uuid
-        }
+        };
     }
 }

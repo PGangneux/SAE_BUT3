@@ -2,9 +2,9 @@ import Model from "./model.js";
 import Question from "./question.js";
 
 export default class Theme extends Model {
-    #name
-    #description
-    #questions
+    #name;
+    #description;
+    #questions;
 
     constructor({ uuid, name, description, questions }) {
         super(uuid);
@@ -13,22 +13,22 @@ export default class Theme extends Model {
         this.#questions = questions;
     }
 
-    static get endpoint() { return "themes" }
+    static get endpoint() { return "themes"; }
 
-    get name() { return this.#name }
-    set name(value) { this.#name = this.validateString(value, "name") }
+    get name() { return this.#name; }
+    set name(value) { this.#name = this.validateString(value, "name"); }
 
-    get description() { return this.#description }
-    set description(value) { this.#description = this.validateString(value, "description") }
+    get description() { return this.#description; }
+    set description(value) { this.#description = this.validateString(value, "description"); }
 
-    get questions() { return this.fetchList(this.#questions, Question) }
+    get questions() { return this.fetchList(this.#questions, Question); }
 
     fromJSON(json) {
         super.fromJSON(json);
         this.#name = json.name;
         this.#description = json.description;
         this.#questions = json.questions;
-        return this
+        return this;
     }
 
     toJSON() {
@@ -36,6 +36,6 @@ export default class Theme extends Model {
             uuid: this.uuid,
             name: this.#name,
             description: this.#description
-        }
+        };
     }
 }
