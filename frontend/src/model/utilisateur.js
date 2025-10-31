@@ -54,6 +54,21 @@ export default class Utilisateur extends Model {
 
     get recherches_questions() { return this.fetchList(this.#recherches_questions, null) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#pseudo = json.pseudo;
+        this.#prenom = json.prenom;
+        this.#nom = json.nom;
+        this.#email = json.email;
+        this.#password = json.password;
+        this.#is_admin = json.is_admin;
+        this.#recherches_artistes = json.recherches_artistes;
+        this.#regarder_interviews = json.regarder_interviews;
+        this.#regarder_extraits = json.regarder_extraits;
+        this.#recherches_questions = json.recherches_questions;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

@@ -9,6 +9,16 @@ export default class Model {
 
     get uuid() { return this.#uuid }
 
+    fromJSON(json) {
+        /** 
+         * À surcharger dans les classes enfants avec les bonnes données
+        */
+        if (json && json.uuid !== undefined && json.uuid !== null) {
+            this.#uuid = json.uuid;
+        }
+        return this;
+    }
+
     toJSON() {
         throw new Error('toJSON must be implemented by child class');
     }
@@ -64,9 +74,9 @@ export default class Model {
             clientAPI.endpoints().then(res => { return res[this.endpoint] }),
             JSON.stringify(this.toJSON())
         )
-        .then(result => {
+        .then(json => {
             // Charger les nouvelles données dans l'instance
-            this.constructor(result);
+            return this.fromJSON(json);
         });
     }
 
@@ -78,9 +88,9 @@ export default class Model {
             clientAPI.url_uuid(clientAPI.endpoints().then(res => { return res[this.endpoint] }), this.#uuid),
             JSON.stringify(this.toJSON())
         )
-        .then(result => {
+        .then(json => {
             // Charger les nouvelles données dans l'instance
-            this.constructor(result);
+            return this.fromJSON(json);
         });
     }
 

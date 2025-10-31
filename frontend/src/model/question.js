@@ -26,6 +26,14 @@ export default class Question extends Model {
 
     get extraits() { return this.fetchList(this.#extraits, Extrait) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#texte = json.texte;
+        this.#theme = json.theme;
+        this.#extraits = json.extraits;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

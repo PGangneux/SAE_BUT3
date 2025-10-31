@@ -18,6 +18,13 @@ export default class Nation extends Model {
 
     get artistes() { return this.fetchList(this.#artistes, Artiste) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#name = json.name;
+        this.#artistes = json.artistes;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

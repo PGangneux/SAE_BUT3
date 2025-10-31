@@ -36,6 +36,16 @@ export default class Artiste extends Model {
 
     get extraits() { return this.fetchList(this.#extraits, Extrait) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#name = json.name;
+        this.#info = json.info;
+        this.#nation = json.nation;
+        this.#styles = json.styles;
+        this.#extraits = json.extraits;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

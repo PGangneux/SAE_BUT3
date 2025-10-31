@@ -62,6 +62,21 @@ export default class Extrait extends Model {
 
     get position() { return this.#position }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#titre = json.titre;
+        this.#description = json.description;
+        this.#youtube_url = json.youtube_url;
+        this.#vimeo_url = json.vimeo_url;
+        this.#uploaded_at = json.uploaded_at;
+        this.#artiste = json.artiste;
+        this.#question = json.question;
+        this.#interviews = json.interviews;
+        this.#tags = json.tags;
+        this.#position = json.position;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

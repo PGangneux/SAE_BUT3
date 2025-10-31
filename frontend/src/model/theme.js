@@ -23,6 +23,14 @@ export default class Theme extends Model {
 
     get questions() { return this.fetchList(this.#questions, Question) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#name = json.name;
+        this.#description = json.description;
+        this.#questions = json.questions;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,

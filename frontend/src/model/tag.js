@@ -23,6 +23,14 @@ export default class Tag extends Model {
 
     get extraits() { return this.fetchList(this.#extraits, Extrait) }
 
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#name = json.name;
+        this.#interviews = json.interviews;
+        this.#extraits = json.extraits;
+        return this
+    }
+
     toJSON() {
         return {
             uuid: this.uuid,
