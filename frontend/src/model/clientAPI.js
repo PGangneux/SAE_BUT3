@@ -9,7 +9,7 @@ export default class clientAPI {
      * Récupère le dictionnaire des endpoints de l'API
      * Si nom de endpoint renseigner, renvoie url du endpoint
      * @param {string} endpoint 
-     * @returns {Record<string, string>|string}
+     * @returns {Promise<Record<string, string>|string>}
      */
     static async endpoints(endpoint) {
         if (!this.#endpoints) {
@@ -67,7 +67,7 @@ export default class clientAPI {
      * @param {Record<string, string|string[]>} args 
      * @param {Object} data 
      * @param {boolean} admin Si besoin d'être administrateur (non implémenter)
-     * @returns {Promise}
+     * @returns {Promise<Object>}
      */
     static async fetch(methode, url, args=null, data=null, admin=false) {
         if (args) url = this.url_query(url, args);
@@ -90,7 +90,7 @@ export default class clientAPI {
      * @param {string} url
      * @param {Record<string, string|string[]>} args
      * @param {boolean} admin
-     * @returns {Promise}
+     * @returns {Promise<Object>}
      */
     static async get(url, args=null, admin=false) {
         return await this.fetch("GET", url, args, null, admin);
@@ -101,7 +101,7 @@ export default class clientAPI {
      * @param {string} url
      * @param {Object} data
      * @param {boolean} admin
-     * @returns {Promise}
+     * @returns {Promise<Object>}
      */
     static async post(url, data, admin=true) {
         return await this.fetch("POST", url, null, data, admin);
@@ -112,7 +112,7 @@ export default class clientAPI {
      * @param {string} url
      * @param {Object} data
      * @param {boolean} admin
-     * @returns {Promise}
+     * @returns {Promise<Object>}
      */
     static async put(url, data, admin=true) {
         return await this.fetch("PATCH", url, null, data, admin);
@@ -122,7 +122,7 @@ export default class clientAPI {
      * Fetch DELETE
      * @param {string} url
      * @param {boolean} admin
-     * @returns {Promise}
+     * @returns {Promise<Object>}
      */
     static async delete(url, admin=true) {
         return await this.fetch("DELETE", url, null, null, admin);

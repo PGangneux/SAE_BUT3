@@ -21,7 +21,7 @@ export default class Model {
      * Utiliser pour surcharger les données de l'instance
      * À surcharger dans les classes enfants avec les bonnes données
      * @param {Object} json
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     fromJSON(json) {
         if (json && json.uuid !== undefined && json.uuid !== null) {
@@ -91,7 +91,7 @@ export default class Model {
      * Récupère l'instance de Class 
      * @param {*} elem 
      * @param {Class} Class 
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     async fetchDetail(elem, Class) {
         if (elem) return new Class(await clientAPI.get(elem.url));
@@ -102,7 +102,7 @@ export default class Model {
      * Récupère la liste d'instances de Class 
      * @param {*} elem 
      * @param {Class} Class 
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     async fetchList(elem, Class) {
         return await clientAPI.get(elem.url)
@@ -112,7 +112,7 @@ export default class Model {
     /**
      * Récupère la liste des éléments de this
      * @param {Record<string, string|string[]>} args
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     static async list(args=null) {
         return await clientAPI.get(await clientAPI.endpoints(this.endpoint), args)
@@ -122,7 +122,7 @@ export default class Model {
     /**
      * Récupère l'élément de this appartir de son uuid
      * @param {string} uuid 
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     static async detail(uuid) {
         return await clientAPI.get(clientAPI.url_uuid(await clientAPI.endpoints(this.endpoint), uuid))
@@ -131,7 +131,7 @@ export default class Model {
 
     /**
      * Créé une instance de classe this
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     async create() {
         if (this.#uuid) {
@@ -147,7 +147,7 @@ export default class Model {
 
     /**
      * Modifie une instance de classe this
-     * @returns {Model}
+     * @returns {Promise<Model>}
      */
     async update() {
         if (!this.#uuid) {
