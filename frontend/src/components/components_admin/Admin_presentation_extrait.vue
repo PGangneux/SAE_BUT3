@@ -13,10 +13,17 @@ export default {
             required: true
         },
     },
-
-    methods : {
-        
+    data() {
+        return {
+            thumbnail: '/imgs/width551.png', // vignette par défaut
+        };
     },
+
+    async mounted() {
+        this.thumbnail = await this.current_extrait.url_miniature_vi();
+    },
+
+
 
 
 };
@@ -36,7 +43,7 @@ export default {
                     <ul>
 
                         <li class="row vigniette">
-                            <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
+                            <img src="/imgs/date.svg" alt="date logo" class="col" height="32" width="32">
                             <p class="col" > {{current_extrait.uploaded_at}} </p>
                         </li>
 
@@ -58,8 +65,12 @@ export default {
                     </ul>
                 </div>
             </div>
-
-            <div class="col-sm reduction_image">
+            
+            <div class="col-sm reduction_image" v-if="thumbnail != '/imgs/width551.png'" >
+                <img :src="thumbnail" class="video" alt="Video logo vimeo" height="150" width="150">
+            </div>
+            
+            <div class="col-sm reduction_image" v-else>
                 <img :src=current_extrait.url_miniature_yt class="video" alt="Video logo" height="150" width="150">
             </div>
 

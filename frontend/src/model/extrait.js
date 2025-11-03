@@ -4,6 +4,9 @@ import Question from "./question.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
 
+
+
+
 export default class Extrait extends Model {
     #titre;
     #description;
@@ -66,6 +69,24 @@ export default class Extrait extends Model {
     get url_miniature_yt(){
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
+
+    async url_miniature_vi() {
+    const api_url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.vimeo_url}`;
+    try {
+
+        const response = await fetch(api_url);
+        if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+        const data = await response.json();
+        console.log(data.thumbnail_url);
+        return `${data.thumbnail_url}`;
+
+    } catch (error) {
+        console.error("Impossible de récupérer la vignette :", error);
+        return '/imgs/width551.png';
+    }
+    }
+
+
 
     fromJSON(json) {
         super.fromJSON(json);
