@@ -90,7 +90,7 @@ export default class Utilisateur extends Model {
          * Connecte un utilisateur avec son pseudo ou son e-mail et son password
          * (non implémenté)
         */
-        data = {}; // Résultat de la connexion à l'API
+        let data = {}; // Résultat de la connexion à l'API
         // Au lieu de simplement le return, pourquoi pas avoir un attribut static current_user ?
         return new this(data);
     }
