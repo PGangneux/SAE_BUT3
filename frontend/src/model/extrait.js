@@ -3,6 +3,7 @@ import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
+import clientAPI from "./clientAPI.js";
 
 export default class Extrait extends Model {
     #titre;
@@ -90,6 +91,18 @@ export default class Extrait extends Model {
      */
     async connect_interview(interview, position) {
         await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': this.validateInt(position)});
+    }
+
+    /**
+     * Modifie la position d'un extrait dans une interview
+     * @param {Interview} interview 
+     * @param {int} position 
+     */
+    async update_position(interview, position) {
+        await clientAPI.put(
+            clientAPI.url_uuid(this.#interviews, interview.uuid),
+            {'position': this.validateInt(position)}
+        );
     }
 
     /**
