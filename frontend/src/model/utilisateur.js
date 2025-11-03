@@ -58,6 +58,70 @@ export default class Utilisateur extends Model {
 
     get recherches_questions() { return this.fetchList(this.#recherches_questions, Question); }
 
+    /**
+     * Connecte un utilisateur à un artiste
+     * @param {Artiste} artiste 
+     */
+    connect_artiste(artiste) {
+        this.connect(this.#recherches_artistes, {'uuid': artiste.uuid});
+    }
+
+    /**
+     * Déconnecte un utilisateur d'un artiste
+     * @param {Artiste} artiste 
+     */
+    disconnect_artiste(artiste) {
+        this.disconnect(this.#recherches_artistes, artiste);
+    }
+
+    /**
+     * Connecte un utilisateur à une interview
+     * @param {Interview} interview 
+     */
+    connect_interview(interview) {
+        this.connect(this.#regarder_interviews, {'uuid': interview.uuid});
+    }
+
+    /**
+     * Déconnecte un utilisateur d'une interview
+     * @param {Interview} interview 
+     */
+    disconnect_interview(interview) {
+        this.disconnect(this.#regarder_interviews, interview);
+    }
+
+    /**
+     * Connecte un utilisateur à un extrait
+     * @param {Extrait} extrait 
+     */
+    connect_extrait(extrait) {
+        this.connect(this.#regarder_extraits, {'uuid': extrait.uuid});
+    }
+
+    /**
+     * Déconnecte un utilisateur d'un extrait
+     * @param {Extrait} extrait 
+     */
+    disconnect_artiste(extrait) {
+        this.disconnect(this.#regarder_extraits, extrait);
+    }
+
+    /**
+     * Connecte un utilisateur à une question
+     * @param {Question} question 
+     */
+    connect_artiste(question) {
+        this.connect(this.#recherches_questions, {'uuid': question.uuid});
+    }
+
+    /**
+     * Déconnecte un utilisateur d'une question
+     * @param {Question} question 
+     */
+    disconnect_artiste(question) {
+        this.disconnect(this.#recherches_questions, question);
+    }
+
     fromJSON(json) {
         super.fromJSON(json);
         this.#pseudo = json.pseudo;

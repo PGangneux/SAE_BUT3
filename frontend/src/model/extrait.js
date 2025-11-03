@@ -97,7 +97,7 @@ export default class Extrait extends Model {
      * @param {Interview} interview 
      */
     async disconnect_interview(interview) {
-        await this.disconnect(this.#interviews, interview)
+        await this.disconnect(this.#interviews, interview);
     }
 
     fromJSON(json) {
