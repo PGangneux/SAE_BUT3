@@ -67,12 +67,37 @@ export default class Extrait extends Model {
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
 
-    connect_tag(tag) {
-        this.connect(this.#tags, {'uuid': tag.uuid});
+    /**
+     * Connecte un extrait à un tag
+     * @param {Tag} tag 
+     */
+    async connect_tag(tag) {
+        await this.connect(this.#tags, {'uuid': tag.uuid});
     }
 
-    disconnect_tag(tag) {
-        this.disconnect(this.#tags, tag);
+    /**
+     * Déconnecte un extrait d'un tag
+     * @param {Tag} tag 
+     */
+    async disconnect_tag(tag) {
+        await this.disconnect(this.#tags, tag);
+    }
+
+    /**
+     * Connecte un extrait à une interview
+     * @param {Interview} interview 
+     * @param {int} position 
+     */
+    async connect_interview(interview, position) {
+        await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': this.validateInt(position)});
+    }
+
+    /**
+     * Déconnecte un extrait d'une interview
+     * @param {Interview} interview 
+     */
+    async disconnect_interview(interview) {
+        await this.disconnect(this.#interviews, interview)
     }
 
     fromJSON(json) {

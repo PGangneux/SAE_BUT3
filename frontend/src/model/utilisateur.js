@@ -85,7 +85,7 @@ export default class Utilisateur extends Model {
         };
     }
 
-    static connect(pseudo_email, password) {
+    static connectAPI(pseudo_email, password) {
         /** 
          * Connecte un utilisateur avec son pseudo ou son e-mail et son password
          * (non implémenté)

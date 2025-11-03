@@ -44,7 +44,7 @@ export default class Model {
      * À surcharger dans les classes enfants avec les bonnes données
      * @returns {string}
      */
-    get endpoint() {
+    static get endpoint() {
         throw new Error('endpoint must be implemented by child class');
     }
 

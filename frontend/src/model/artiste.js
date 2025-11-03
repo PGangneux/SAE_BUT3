@@ -22,7 +22,7 @@ export default class Artiste extends Model {
         this.#nation_uuid = null;
     }
 
-    get endpoint() { return "artistes"; }
+    static get endpoint() { return "artistes"; }
 
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
