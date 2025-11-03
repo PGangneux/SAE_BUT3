@@ -175,4 +175,22 @@ export default class Model {
         // Charger les nouvelles données dans l'instance
         .then(result => { return true; });
     }
+
+    /**
+     * Connecte une instance à une autre instance
+     * @param {string} url 
+     * @param {Object} data 
+     */
+    async connect(url, data) {
+        await clientAPI.post(url, data);
+    }
+
+    /**
+     * Déconnecte une instance d'une autre instance
+     * @param {string} url 
+     * @param {Model} instance 
+     */
+    async disconnect(url, instance) {
+        await clientAPI.delete(clientAPI.url_uuid(url, instance.uuid));
+    }
 }
