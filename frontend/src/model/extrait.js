@@ -3,6 +3,7 @@ import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
+import clientAPI from "./clientAPI.js";
 
 
 
@@ -70,6 +71,7 @@ export default class Extrait extends Model {
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
 
+
     async url_miniature_vi() {
     const api_url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.vimeo_url}`;
     try {
@@ -86,6 +88,52 @@ export default class Extrait extends Model {
     }
     }
 
+
+
+    /**
+     * Connecte un extrait à un tag
+     * @param {Tag} tag 
+     */
+    async connect_tag(tag) {
+        await this.connect(this.#tags, {'uuid': tag.uuid});
+    }
+
+    /**
+     * Déconnecte un extrait d'un tag
+     * @param {Tag} tag 
+     */
+    async disconnect_tag(tag) {
+        await this.disconnect(this.#tags, tag);
+    }
+
+    /**
+     * Connecte un extrait à une interview
+     * @param {Interview} interview 
+     * @param {int} position 
+     */
+    async connect_interview(interview, position) {
+        await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': this.validateInt(position)});
+    }
+
+    /**
+     * Modifie la position d'un extrait dans une interview
+     * @param {Interview} interview 
+     * @param {int} position 
+     */
+    async update_position(interview, position) {
+        await clientAPI.put(
+            clientAPI.url_uuid(this.#interviews, interview.uuid),
+            {'position': this.validateInt(position)}
+        );
+    }
+
+    /**
+     * Déconnecte un extrait d'une interview
+     * @param {Interview} interview 
+     */
+    async disconnect_interview(interview) {
+        await this.disconnect(this.#interviews, interview);
+    }
 
 
     fromJSON(json) {

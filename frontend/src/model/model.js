@@ -44,7 +44,7 @@ export default class Model {
      * À surcharger dans les classes enfants avec les bonnes données
      * @returns {string}
      */
-    get endpoint() {
+    static get endpoint() {
         throw new Error('endpoint must be implemented by child class');
     }
 
@@ -174,5 +174,23 @@ export default class Model {
         )
         // Charger les nouvelles données dans l'instance
         .then(result => { return true; });
+    }
+
+    /**
+     * Connecte une instance à une autre instance
+     * @param {string} url 
+     * @param {Object} data 
+     */
+    async connect(url, data) {
+        await clientAPI.post(url, data);
+    }
+
+    /**
+     * Déconnecte une instance d'une autre instance
+     * @param {string} url 
+     * @param {Model} instance 
+     */
+    async disconnect(url, instance) {
+        await clientAPI.delete(clientAPI.url_uuid(url, instance.uuid));
     }
 }
