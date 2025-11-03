@@ -26,25 +26,25 @@ class UtilisateurSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
 
     def get_regarder_interviews(self, utilisateur):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
 
     def get_regarder_extraits(self, utilisateur):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
 
     def get_recherches_questions(self, utilisateur):
         """
         Renvoie un lien propre vers les questions :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
 
     def create(self, validated_data):
         """

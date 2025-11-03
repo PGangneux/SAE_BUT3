@@ -16,7 +16,7 @@ class StyleRelationShipSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'stylemusical_uuid': style_musical.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'stylemusical_uuid': style_musical.uuid}))
 
     def create(self, validated_data):
         """

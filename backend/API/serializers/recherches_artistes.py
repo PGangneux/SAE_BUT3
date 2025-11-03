@@ -35,19 +35,19 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         Renvoie un lien propre vers la nation :
         """
         nation = artiste.nationalite.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': nation.uuid}))} if nation else None 
+        return self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': nation.uuid})) if nation else None 
 
     def get_styles(self, artiste):
         """
         Renvoie un lien propre vers les styles :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))
 
     def get_extraits(self, artiste):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))
 
     def create(self, validated_data):
         """

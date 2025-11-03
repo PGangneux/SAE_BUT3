@@ -17,13 +17,13 @@ class TagsExtraitRelationShipSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'tag_uuid': tag.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'tag_uuid': tag.uuid}))
 
     def get_extraits(self, tag):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'tag_uuid': tag.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'tag_uuid': tag.uuid}))
 
     def create(self, validated_data):
         """

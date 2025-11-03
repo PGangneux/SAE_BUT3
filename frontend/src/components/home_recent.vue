@@ -1,7 +1,7 @@
 <script>
 import { markRaw } from 'vue';
-import prefetcher from '../model/prefetcher.js';
-import extrait_t from '../model/extrait.js';
+import Interview from '../model/interview.js';
+
 export default {
     name: "comp_recent",
     data() {
@@ -15,16 +15,14 @@ export default {
     async mounted() {
         this.loading = true;
         try {
-            this.interviews = markRaw(prefetcher.interviews_all());
-            /// console.log("HERE");
-            /// console.log(prefetcher.fetch(extrait_t,this.interviews[0].extraits["url"],true));
+            this.interviews = markRaw(await Interview.list());
             try {
-                this.redirect = markRaw(prefetcher.fetch(extrait_t,this.interviews[0].extraits["url"],true)[0].uuid);
+                // Nécessite la définition d'un algorithme de recommandation plus complet
+                // Récupère l'uuid, du premier extrait de la liste des extraits, de la première interview de la liste des interviews
+                this.redirect = markRaw(await this.interviews[0].extraits.then(extraits => { return extraits[0].uuid}));
             } catch (error) {
                 console.error(error);
             }
-            console.log("this.interviews");
-            console.log(this.interviews);
         } catch (error) {
             this.failed = true;
             console.log(error);

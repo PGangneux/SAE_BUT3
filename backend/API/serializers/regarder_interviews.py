@@ -36,13 +36,13 @@ class RegarderInterviewsSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))
 
     def get_tags(self, interview):
         """
         Renvoie un lien propre vers les tags :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'interview_uuid': interview.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'interview_uuid': interview.uuid}))
 
     def create(self, validated_data):
         """

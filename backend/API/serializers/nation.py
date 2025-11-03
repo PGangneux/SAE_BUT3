@@ -17,7 +17,7 @@ class NationSerializer(serializers.Serializer):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'nation_uuid': nation.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'nation_uuid': nation.uuid}))
 
     def create(self, validated_data):
         """
