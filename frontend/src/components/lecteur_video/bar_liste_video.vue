@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { prefetcher } from "../../model/prefetcher";
+import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
 
 export default {
@@ -22,13 +22,13 @@ export default {
 
     async interview_current_extrait(){
       this.selected = "extrait_in_playlists"
-      //this.videos = markRaw(await prefetcher.interview_extrait(this.current_extrait.uuid))    
+      this.videos = markRaw(await this.current_extrait.interviews)
     },
 
     async extraits_current_question(){
       console.log(this.current_extrait)
       this.selected = "questions"
-      this.videos = markRaw(await prefetcher.extraits_question(this.current_extrait.question))
+      this.videos = markRaw(await current_extrait.question.then(question => { return question.extraits}))
     },
 
     reset_videoStore() {
@@ -41,7 +41,7 @@ export default {
 
 
   async mounted() {
-    this.videos = markRaw(await prefetcher.extraits_all());
+    this.videos = markRaw(await Extrait.list());
     console.log("liste des extrait")
     console.log(this.videos)
 

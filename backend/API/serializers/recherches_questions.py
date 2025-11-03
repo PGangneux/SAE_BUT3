@@ -6,35 +6,45 @@ from ..models import Question
 
 
 class RecherchesQuestionsSerializer(serializers.Serializer):
+    """
+    Sérializer RelationShip recherches_questions (Utilisateur <-> Question)
+    """
     uuid = serializers.CharField(required=True)
 
     # Outputs
     date_heure = serializers.SerializerMethodField(read_only=True)
     texte = serializers.CharField(read_only=True)
-    extraits = serializers.SerializerMethodField(read_only=True)
     theme = serializers.SerializerMethodField(read_only=True)
+    extraits = serializers.SerializerMethodField(read_only=True)
 
     def get_date_heure(self, question):
+        """
+        Renvoie la date et l'heure :
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
-        query = "MATCH (i:Question {uuid:$artiste})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
+        query = "MATCH (i:Question {uuid:$question})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'question': question.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
 
-    def get_extraits(self, question):
-        return {"url": self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))}
-
     def get_theme(self, question):
         """
-        Renvoie un lien vers le thème
+        Renvoie un lien propre vers le theme :
         """
-        if question.theme:
-            return {"url": self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': question.theme.single().uuid}))}
-        return None
+        theme = question.theme.single()
+        return self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': theme.uuid})) if theme else None
+
+    def get_extraits(self, question):
+        """
+        Renvoie un lien propre vers les extraits :
+        """
+        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))
 
     def create(self, validated_data):
-        """Connecte une question à un utilisateur"""
+        """
+        Connecte une question à un utilisateur
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
@@ -51,7 +61,9 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         return question
 
     def delete(self, question_uuid):
-        """Déconnecte une question d’un utilisateur"""
+        """
+        Déconnecte une question d’un utilisateur
+        """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
             raise serializers.ValidationError("Utilisateur manquant dans le contexte.")

@@ -14,6 +14,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         questions = Question.nodes
         search = self.request.query_params.get('search', '').strip()
         if not search:
@@ -24,6 +27,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return questions.all()
 
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Question.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
@@ -39,11 +45,17 @@ class ThemeQuestionViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         query = "MATCH (q:Question)-[:A_THEME]->(t:Theme {uuid: $uuid}) RETURN q"
         results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
         return [Question.inflate(row[0]) for row in results]
 
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             query = "MATCH (q:Question {uuid: $uuid})-[:A_THEME]->(t:Theme {uuid: $theme}) RETURN q"
             results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs[self.router_lookup_field]})[0]
