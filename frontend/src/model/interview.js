@@ -43,6 +43,22 @@ export default class Interview extends Model {
 
     get tags() { return this.fetchList(this.#tags, Tag); }
 
+    /**
+     * Connecte une interview à un tag
+     * @param {Tag} tag 
+     */
+    async connect_tag(tag) {
+        await this.connect(this.#tags, {'uuid': tag.uuid});
+    }
+
+    /**
+     * Déconnecte une interview d'un tag
+     * @param {Tag} tag 
+     */
+    async disconnect_tag(tag) {
+        await this.disconnect(this.#tags, tag);
+    }
+
     fromJSON(json) {
         super.fromJSON(json);
         this.#titre = json.titre;

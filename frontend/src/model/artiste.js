@@ -2,6 +2,7 @@ import Model from "./model.js";
 import Nation from "./nation.js";
 import StyleMusical from "./style_musical.js";
 import Extrait from "./extrait.js";
+import clientAPI from "./clientAPI.js";
 
 export default class Artiste extends Model {
     #name;
@@ -21,7 +22,7 @@ export default class Artiste extends Model {
         this.#nation_uuid = null;
     }
 
-    get endpoint() { return "artistes"; }
+    static get endpoint() { return "artistes"; }
 
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
@@ -35,6 +36,22 @@ export default class Artiste extends Model {
     get styles() { return this.fetchList(this.#styles, StyleMusical); }
 
     get extraits() { return this.fetchList(this.#extraits, Extrait); }
+
+    /**
+     * Connecte un artiste à un style musical
+     * @param {StyleMusical} style_musical 
+     */
+    async connect_styles(style_musical) {
+        await this.connect(this.#styles, {'uuid': style_musical.uuid});
+    }
+
+    /**
+     * Déconnecte un artiste d'un style musical
+     * @param {StyleMusical} style_musical 
+     */
+    async disconnect_styles(style_musical) {
+        await this.disconnect(this.#styles, style_musical.uuid);
+    }
 
     fromJSON(json) {
         super.fromJSON(json);
