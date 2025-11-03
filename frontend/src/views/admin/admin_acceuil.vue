@@ -1,8 +1,7 @@
 <script>
 export default {
   name: "page_admin_acceuil",
-  components: {
-  },
+  
 };
 
 
