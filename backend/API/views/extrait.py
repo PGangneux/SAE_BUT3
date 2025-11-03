@@ -66,7 +66,7 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
         """
         Récupération du QuerySet
         """
-        query = "MATCH (q:Extrait)-[:APPARTIENT_A]->(t:Interview {uuid: $uuid}) RETURN q"
+        query = "MATCH (q:Extrait)-[r:APPARTIENT_A]->(t:Interview {uuid: $uuid}) RETURN q order by r.position"
         results, _ = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})
         return [Extrait.inflate(row[0]) for row in results]
 
