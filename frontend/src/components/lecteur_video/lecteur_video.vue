@@ -24,10 +24,10 @@ export default {
       pos_y_iframe: null,
       aside_visible: true,
       extrait: null,
+      interview: null,
       url_yt: "",
       url_vimeo: "",
       url:null,
-      lecteur: "",
     };
   },
 
@@ -41,8 +41,7 @@ export default {
 
     this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
     this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
-    this.lecteur = (videoStore.lecteur != "")? videoStore.lecteur  : 'Viméo'
-    this.set_url(this.lecteur)
+    this.set_url(videoStore.lecteur)
 
     
   },
@@ -57,9 +56,6 @@ export default {
       // Mettre à jour la position du player
       this.pos_x_iframe = this.get_pos_x_iframe();
       this.pos_y_iframe = this.get_pos_y_iframe();
-      console.log("pos")
-      console.log(this.pos_x_iframe)
-      console.log(this.pos_y_iframe)
       window.addEventListener('resize', this.updatePopupPosition);
     },
 
@@ -72,16 +68,14 @@ export default {
       videoStore.uuid = this.uuid;
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
-      videoStore.lecteur = this.lecteur;
       videoStore.url = this.url;
       videoStore.isPictureInPicture = true;
       this.$router.push("/");
     },
 
     get_pos_x_iframe() {
-      if (this.lecteur == "YouTube"){
+      if (videoStore.lecteur == "YouTube"){
         const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-        console.log("iframe " + this.$refs.iframe?.$el)
         return rect ? rect.right : null;
       }
       const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
@@ -113,9 +107,10 @@ export default {
 
 
     async set_lecteur(new_lecteur){
-      this.lecteur = new_lecteur
+      videoStore.lecteur = new_lecteur
       console.log("update url")
-      this.set_url(this.lecteur)
+      this.set_url(videoStore.lecteur)
+      
       await this.$refs.iframe.update_player()
     },
   },
@@ -143,7 +138,7 @@ export default {
         <div id="bottom-iframe">
           <h2>{{ extrait?.titre || '' }}</h2>
           <div class="right-content">
-            <a>Voir toute l’interview</a>
+            <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
             <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
           </div>
@@ -155,10 +150,14 @@ export default {
       </div>
     </main>
 
-    <aside v-if="aside_visible">
-      <bar_liste_video @toggle_aside="toggle_aside"/>
+    <aside v-show="aside_visible">
+      <bar_liste_video 
+        @toggle_aside="toggle_aside" 
+        :current_extrait="extrait"
+        :current_interview="interview"
+      />
     </aside>
-    <h2 v-else @click="toggle_aside"> < </h2>
+    <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
 
 
     <parametres

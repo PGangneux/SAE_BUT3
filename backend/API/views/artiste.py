@@ -14,6 +14,9 @@ class ArtisteViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         artistes = Artiste.nodes
         search = self.request.query_params.get('search', '').strip()
         if not search:
@@ -24,6 +27,9 @@ class ArtisteViewSet(viewsets.ModelViewSet):
         return artistes.all()
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             return Artiste.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
@@ -39,11 +45,17 @@ class StyleMusicalArtisteViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         query = "MATCH (q:Artiste)-[:STYLE]->(t:StyleMusical {uuid: $uuid}) RETURN q"
         results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
         return [Artiste.inflate(row[0]) for row in results]
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             query = "MATCH (q:Artiste {uuid: $uuid})-[:STYLE]->(t:StyleMusical {uuid: $stylemusical}) RETURN q"
             results = db.cypher_query(query, {'stylemusical': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
@@ -61,11 +73,17 @@ class NationArtisteViewSet(viewsets.ModelViewSet):
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         query = "MATCH (q:Artiste)-[:NATIONALITE]->(t:Nation {uuid: $uuid}) RETURN q"
         results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
         return [Artiste.inflate(row[0]) for row in results]
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try:
             query = "MATCH (q:Artiste {uuid: $uuid})-[:NATIONALITE]->(t:Nation {uuid: $nation}) RETURN q"
             results = db.cypher_query(query, {'nation': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]

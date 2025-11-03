@@ -17,12 +17,18 @@ class ArtisteStyleRelationShipViewSet(
     lookup_field = 'uuid'
 
     def get_queryset(self):
+        """
+        Récupération du QuerySet
+        """
         artiste = self.get_artiste()
         query = "MATCH (s:StyleMusical)<-[:STYLE]-(a:Artiste {uuid: $uuid}) RETURN s"
         results = db.cypher_query(query, {'uuid': artiste.uuid})[0]
         return [StyleMusical.inflate(row[0]) for row in results]
     
     def get_object(self):
+        """
+        Récupération de l'Objet
+        """
         try: 
             query = "MATCH (q:StyleMusical {uuid: $uuid})<-[:STYLE]-(t:Artiste {uuid: $artiste}) RETURN q"
             results = db.cypher_query(query, {'artiste': self.kwargs['artiste_uuid'], 'uuid': self.kwargs[self.lookup_field]})[0]
@@ -31,25 +37,34 @@ class ArtisteStyleRelationShipViewSet(
             raise NotFound('Style Musical introuvable.', 404)
 
     def get_artiste(self):
+        """
+        Récupération de l'artiste
+        """
         try:
             return Artiste.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
             raise NotFound('Artiste introuvable.')
 
     def get_serializer_context(self):
+        """
+        Modification du contexte du sérializer
+        """
         context = super().get_serializer_context()
         context['artiste'] = self.get_artiste()
         return context
 
     def perform_destroy(self, instance):
+        """
+        Suppression de la RelationShip
+        """
         serializer = self.get_serializer(context={'artiste': self.get_artiste()})
         serializer.delete(instance.uuid)
 
     def create(self, request, *args, **kwargs):
+        """
+        Création de la RelationShip
+        """
         serializer = self.get_serializer(data=request.data, context={'artiste': self.get_artiste()})
         serializer.is_valid(raise_exception=True)
         style = serializer.create(serializer.validated_data)
-        return Response({
-            'uuid': style.uuid,
-            'name': style.name
-        }, status=status.HTTP_201_CREATED)
+        return Response(self.get_serializer(style, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
