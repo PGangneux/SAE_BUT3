@@ -29,6 +29,8 @@ export default {
       extrait: null,
       interview: null,
       liste_extraits: null,
+      base_url_yt: "https://www.youtube.com/embed/",
+      base_url_vimeo: "https://player.vimeo.com/video/",
       url_yt: "",
       url_vimeo: "",
       url:null,
@@ -42,15 +44,11 @@ export default {
       this.liste_extraits = markRaw( await this.interview.extraits);
     }
 
-    this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
-    this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
-    
-    // Définir un lecteur par défaut si vide
-    if (!videoStore.lecteur) {
-      videoStore.lecteur = 'YouTube';
-    }
+    this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+    this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
     
     this.set_url(videoStore.lecteur)
+
   },
 
   beforeUnmount() {
@@ -116,8 +114,9 @@ export default {
       this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
     },
 
-
     async set_lecteur(new_lecteur){
+      console.log("videoStore av set_lecteur: ")
+      console.log(JSON.parse(JSON.stringify(videoStore)))
       videoStore.lecteur = new_lecteur
       this.set_url(videoStore.lecteur)
       
@@ -125,52 +124,46 @@ export default {
     },
 
     async lunch_next_video() {
-      console.log("lunch next video");
       
       if (!this.interview?.uuid) {
-        console.log("Pas d'interview");
         return;
       }
       
-      console.log("interview");
-      let index = this.liste_extraits.indexOf(e => e.uuid === this.extrait.uuid);
+      let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position; // recupère la position de l'extrait courant dans this.liste_extraits
       console.log("Index actuel:", index);  
       console.log("Longueur liste extraits:", this.liste_extraits.length);
       
-      if (index < this.liste_extraits.length - 1) {
-        const nextExtrait = this.liste_extraits[index + 1];
-        console.log("Changement d'extrait vers:", nextExtrait.uuid);
+      if (index < this.liste_extraits.length-1) {
         
-        // ✅ Mettre à jour l'extrait local
-        this.extrait = markRaw(nextExtrait);
+        // Mettre à jour l'extrait local
+        this.extrait = markRaw(this.liste_extraits[index+1]);
+        console.log("Extrait suivant UUID:", this.extrait.uuid);
+        console.log(this.extrait);
         
-        // ✅ Mettre à jour les URLs
-        this.url_yt = nextExtrait.youtube_url 
-          ? "https://www.youtube.com/embed/" + nextExtrait.youtube_url 
-          : "";
-        this.url_vimeo = nextExtrait.vimeo_url 
-          ? "https://player.vimeo.com/video/" + nextExtrait.vimeo_url 
-          : "";
+        // Mettre à jour les URLs
+        this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+        this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
         
-        // ✅ Réinitialiser le store
+        // Réinitialiser le store
         videoStore.currentTime = 0;
         videoStore.isPlaying = true;
         
-        this.set_url(videoStore.lecteur);
+        //this.set_url(videoStore.lecteur);
         
-        // ✅ Attendre le prochain tick puis mettre à jour le player
-        await this.$nextTick();
-        if (this.$refs.iframe) {
-          await this.$refs.iframe.update_player();
-        }
+        // Attendre le prochain tick puis mettre à jour le player
+        //await this.$nextTick();
+        //if (this.$refs.iframe) {
+        //  await this.$refs.iframe.update_player();
+        //}
         
-        // ✅ Mettre à jour l'URL sans recharger (optionnel)
+        // Mettre à jour l'URL sans recharger (optionnel)
         this.$router.replace({
-          path: `/lecteur_video/${this.Iuuid}/${nextExtrait.uuid}`
+          path: `/lecteur_video/${this.Iuuid}/${this.extrait.uuid}`
         });
 
-        // Mettre à jour le store UUID
-        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
+        console.log("Lecture de l'extrait suivant lancée.");
+        console.log(this.Euuid);
+
       } else {
         console.log("Fin de la liste des extraits de l'interview");
       }
@@ -197,6 +190,8 @@ export default {
         @lunch_next_video="lunch_next_video"
    
       />
+
+      <div v-else class="player"></div>
 
       
       <div>
@@ -316,13 +311,6 @@ main {
   color: var(--vert-neon);
 }
 
-.player {
-  width: 100%;
-  height: 100%;
-  border: 3px solid var(--blanc);
-  border-radius: 20px;
-  background-color: #000;
-}
 
 iframe{
   width: 100%;
