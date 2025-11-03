@@ -3,6 +3,9 @@
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
+import Extrait from "../../../model/extrait";
+
+import { markRaw } from 'vue';
 
 export default {
   name: "page_admin_detail_video",
@@ -12,10 +15,50 @@ export default {
 
   },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            current_extrait : {type:Extrait},
+            tags:[],
+            artiste:null,
             popup: false
         };
     }
+    
+    ,computed: {
+      youtubeUrl: {
+        get() {
+          return this.current_extrait?.youtube_url ? 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url : 'Chargement...';
+        },
+        set(value) {
+          const id = value.split('v=')[1];
+          if (id) this.current_extrait.youtube_url = id;
+        }
+      },
+      vimeoUrl: {
+        get() {
+          
+          return this.current_extrait?.vimeo_url ? 'https://vimeo.com/' + this.current_extrait.vimeo_url : 'Chargement...';
+        },
+        set(value) {
+          const id = value.split('/').pop();
+          if (id) this.current_extrait.vimeo_url = id;
+        }
+      }
+  },
+
+
+ async mounted() {
+    //reccuperation de l'id en parametre
+    const ExtraitId = this.$route.params.id;
+    console.log("ID de l'Extraits' :", ExtraitId);
+
+    //reccuperation de l'Extrait via l'id
+    this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+    console.log(this.current_extrait);
+
+    this.artiste = await this.current_extrait.artiste;
+
+  },
+
+
 };
 
 
@@ -37,13 +80,13 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" aria-label="Question" aria-describedby="basic-addon3" />
+                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.current_extrait.question"  />
             </div>
           </div>
 
           <div class="input-group mb-3" >
             <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" placeholder="Artiste" aria-label="Artiste" />
+            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.artiste" />
 
             <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
               <!-- utiliser js TODO -->
@@ -56,15 +99,15 @@ export default {
             <div class="form-control colovert">
               <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
               <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" />
+              <input class="col" type="date" lang="fr" id="name4" name="name4" v-model="this.current_extrait.date"/>
               <!-- rendre jolie TODO -->
             </div>
           </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
-              <span class="input-group-text colovert" id="basic-addon1">youtube_url :</span>
-              <input type="text" class="form-control textfield" placeholder="youtube_url" aria-label="youtube_url" aria-describedby="basic-addon1">
+              <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
+              <input type="text" class="form-control textfield" placeholder="youtube_url" v-model="youtubeUrl">
             </div>
           </div>
             
@@ -72,7 +115,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" placeholder="vimeo_url" aria-label="vimeo_url" aria-describedby="basic-addon2">
+                <input type="text" class="form-control textfield" placeholder="vimeo_url" v-model="vimeoUrl">
               </div>
           </div>
           

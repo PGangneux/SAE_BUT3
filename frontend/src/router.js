@@ -45,15 +45,15 @@ const routes = [
     
     { path: "/admin/user", component: page_admin_listuser },
     { path: "/admin/user/edit", component: page_admin_edit_client },
-    { path: "/admin/details/user", component: page_admin_details_client },
+    { path: "/admin/user/:id", component: page_admin_details_client },
 
     
     
     { path: "/admin/interview", component: page_admin_interview },
-    { path: "/admin/interview/edit", component: page_admin_edit_interview },
+    { path: "/admin/interview/:id", component: page_admin_edit_interview },
     
     { path: "/admin/extrait", component: page_admin_listextrait },
-    { path: "/admin/details/extrait", component: page_admin_edit_video },
+    { path: "/admin/extrait/:id", component: page_admin_edit_video },
 
 
     

@@ -4,6 +4,7 @@ import Extrait from '../../model/extrait.js';
 
 
 
+
 export default {
     name: "comp_admin_presentation_extrait",
 
@@ -20,6 +21,7 @@ export default {
     },
 
     async mounted() {
+
         if (this.current_extrait.url_miniature_yt != null) {
             this.thumbnail = this.current_extrait.url_miniature_yt
         }else{
@@ -35,7 +37,7 @@ export default {
 </script>
 
 <template>
-    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
+    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/' + current_extrait.uuid }">
         <div class="row base">
             <div class="col-xl vigniette ">
                 <h1 class="row decallage_droite"> {{current_extrait.titre}}</h1>
