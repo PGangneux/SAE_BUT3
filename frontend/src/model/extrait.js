@@ -67,6 +67,14 @@ export default class Extrait extends Model {
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
 
+    connect_tag(tag) {
+        this.connect(this.#tags, {'uuid': tag.uuid});
+    }
+
+    disconnect_tag(tag) {
+        this.disconnect(this.#tags, tag);
+    }
+
     fromJSON(json) {
         super.fromJSON(json);
         this.#titre = json.titre;
