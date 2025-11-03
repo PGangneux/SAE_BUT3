@@ -44,8 +44,23 @@ class QuestionExtraitViewSet(viewsets.ModelViewSet):
         """
         Récupération du QuerySet
         """
-        query = "MATCH (q:Extrait)-[:POSE]->(t:Question {uuid: $uuid}) RETURN q"
-        results = db.cypher_query(query, {'uuid': self.kwargs[self.router_lookup_field]})[0]
+        search = self.request.query_params.get('search', '').strip()
+        params = {'uuid': self.kwargs[self.router_lookup_field]}
+
+        query = "MATCH (q:Extrait)-[:POSE]->(t:Question {uuid: $uuid})"
+        if search:
+            terms = [term for term in search.split() if term]
+            where_clauses = []
+            for idx, term in enumerate(terms):
+                key = f"term{idx}"
+                params[key] = term.lower()
+                # Titre dans la bd Neo4j est enregistré en temps que name
+                where_clauses.append(f"q.name CONTAINS ${key}")
+            query += " WHERE " + " AND ".join(where_clauses)
+        query += " RETURN q"
+        print('query', query)
+        print('params', params)
+        results = db.cypher_query(query, params)[0]
         return [Extrait.inflate(row[0]) for row in results]
 
     def get_object(self):
@@ -150,4 +165,3 @@ class ArtisteExtraitViewSet(viewsets.ModelViewSet):
             return Extrait.inflate(results[0][0])
         except:
             raise NotFound('Extrait introuvable.', 404)
-
