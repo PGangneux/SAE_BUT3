@@ -1,40 +1,44 @@
-import CRUD from "./crud.js";
+import Model from "./model.js";
+import Theme from "./theme.js";
+import Extrait from "./extrait.js";
 
-export default class question_t extends CRUD {
-    #texte
-    #theme
+export default class Question extends Model {
+    #texte;
+    #theme;
+    #extraits;
+    #theme_uuid;
 
-    validateString(value, fieldName) {
-        if (value === null || value === undefined) {
-            throw new Error(`${fieldName} cannot be null or undefined`)
-        }
-        if (typeof value !== "string") {
-            throw new Error(`${fieldName} must be a string, got ${typeof value}`)
-        }
-        return value
-    }
-
-    constructor({uuid,texte,theme}){
+    constructor({ uuid, texte, theme, extraits }) {
         super(uuid);
         this.#texte = texte;
         this.#theme = theme;
+        this.#extraits = extraits;
+        this.#theme_uuid = null;
     }
 
-    get endpoint() { return "questions" }
+    static get endpoint() { return "questions"; }
 
-    get texte() { return this.#texte }
-    set texte(value) { this.#texte = this.validateString(value, "texte") }
+    get texte() { return this.#texte; }
+    set texte(value) { this.#texte = this.validateString(value, "texte"); }
 
-    get theme() { return this.#theme }
-    set theme(value) { 
-        this.#theme = value; /// TODO : implement 
+    get theme() { return this.fetchDetail(this.#theme, Theme); }
+    set theme(value) { this.#theme_uuid = this.validateString(value, "theme_uuid"); }
+
+    get extraits() { return this.fetchList(this.#extraits, Extrait); }
+
+    fromJSON(json) {
+        super.fromJSON(json);
+        this.#texte = json.texte;
+        this.#theme = json.theme;
+        this.#extraits = json.extraits;
+        return this;
     }
 
     toJSON() {
         return {
             uuid: this.uuid,
             texte: this.#texte,
-            theme: this.#theme
-        }
+            theme_uuid: this.#theme_uuid
+        };
     }
 }

@@ -38,26 +38,26 @@ class ExtraitSerializer(serializers.Serializer):
         Renvoie un lien propre vers l'artiste :
         """
         artiste = extrait.interviewer.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': artiste.uuid}))} if artiste else None
+        return self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': artiste.uuid})) if artiste else None
 
     def get_question(self, extrait):
         """
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return {"url": self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': question.uuid}))} if question else None
+        return self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': question.uuid})) if question else None
 
     def get_interviews(self, extrait):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'extrait_uuid': extrait.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'extrait_uuid': extrait.uuid}))
 
     def get_tags(self, extrait):
         """
         Renvoie un lien propre vers les tags :
         """
-        return {"url": self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))}
+        return self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))
     
     def get_position(self, extrait):
         interview = self.context.get('interview')

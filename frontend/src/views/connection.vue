@@ -1,5 +1,5 @@
 <script>
-import user_t from "../model/user.js";
+import Utilisateur from "../model/utilisateur.js";
 import router from "../router.js";
 export default {
     name: "page_connection",
@@ -18,9 +18,9 @@ export default {
             try {
                 const sleep = ms => new Promise(r => setTimeout(r, ms));
                 await sleep(500);
-                this.user_current.set(new user_t(this.username, this.password));
+                this.user_current.set(Utilisateur.connect(this.username, this.password));
                 /// console.log("current_user");
-                /// console.log(this.user_current);
+                console.log(this.user_current);
                 this.apiMessage = "login bon";
                 await sleep(500);
                 if (window.history.length > 1){
