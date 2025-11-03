@@ -20,7 +20,12 @@ export default {
     },
 
     async mounted() {
-        this.thumbnail = await this.current_extrait.url_miniature_vi();
+        if (this.current_extrait.url_miniature_yt != null) {
+            this.thumbnail = this.current_extrait.url_miniature_yt
+        }else{
+            this.thumbnail = await this.current_extrait.url_miniature_vi()
+        }
+        
     },
 
 
@@ -66,13 +71,10 @@ export default {
                 </div>
             </div>
             
-            <div class="col-sm reduction_image" v-if="thumbnail != '/imgs/width551.png'" >
+            <div class="col-sm reduction_image" >
                 <img :src="thumbnail" class="video" alt="Video logo vimeo" height="150" width="150">
             </div>
-            
-            <div class="col-sm reduction_image" v-else>
-                <img :src=current_extrait.url_miniature_yt class="video" alt="Video logo" height="150" width="150">
-            </div>
+ 
 
         </div>
     </RouterLink>
