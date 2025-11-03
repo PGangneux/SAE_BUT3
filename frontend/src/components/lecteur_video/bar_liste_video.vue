@@ -75,7 +75,7 @@ export default {
             <div>
                 <ul class="liste_video">
                     <li v-for="video in videos">
-                        <div v-if="video.uuid != current_extrait.uuid">
+                        <div v-if="video.uuid != current_extrait?.uuid">
                           <router-link @click="reset_videoStore" :to="`/lecteur_video/${video.uuid}`">
                             <img :src="video.url_miniature_yt" :alt="video.titre"/>
                           </router-link>

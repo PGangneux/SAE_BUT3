@@ -5,15 +5,18 @@ import bar_liste_video from "./bar_liste_video.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
 import Extrait from '../../model/extrait';
+import Interview from '../../model/interview';
 
 export default {
   name: "page_lecteur_video",
   components: { iframe_lecture_video, bar_liste_video, parametres },
 
   props: {
-    uuid: {
+    Iuuid: {
       type: String,
-      required: true
+    },
+    Euuid: {
+      type: String,
     },
   },
 
@@ -25,6 +28,7 @@ export default {
       aside_visible: true,
       extrait: null,
       interview: null,
+      liste_extraits: null,
       url_yt: "",
       url_vimeo: "",
       url:null,
@@ -32,18 +36,21 @@ export default {
   },
 
   async mounted() {
-    this.extrait = markRaw(await Extrait.detail(this.uuid));
-
-    if (!this.extrait) {
-      console.error("Aucun extrait trouvé pour", this.uuid);
-      return;
+    this.extrait = markRaw(await Extrait.detail(this.Euuid));
+    this.interview = markRaw(await Interview.detail(this.Iuuid));
+    if (this.interview.uuid) {
+      this.liste_extraits = markRaw( await this.interview.extraits);
     }
 
     this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
     this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
-    this.set_url(videoStore.lecteur)
-
     
+    // Définir un lecteur par défaut si vide
+    if (!videoStore.lecteur) {
+      videoStore.lecteur = 'YouTube';
+    }
+    
+    this.set_url(videoStore.lecteur)
   },
 
   beforeUnmount() {
@@ -64,8 +71,12 @@ export default {
     },
 
     picture_in_picture() {
-      console.log("→ Activation du Picture in Picture");
-      videoStore.uuid = this.uuid;
+      if (this.interview.uuid) {
+        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
+      }
+      else{
+        videoStore.uuid = this.Euuid;
+      }
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
       videoStore.url = this.url;
@@ -108,11 +119,63 @@ export default {
 
     async set_lecteur(new_lecteur){
       videoStore.lecteur = new_lecteur
-      console.log("update url")
       this.set_url(videoStore.lecteur)
       
       await this.$refs.iframe.update_player()
     },
+
+    async lunch_next_video() {
+      console.log("lunch next video");
+      
+      if (!this.interview?.uuid) {
+        console.log("Pas d'interview");
+        return;
+      }
+      
+      console.log("interview");
+      let index = this.liste_extraits.indexOf(e => e.uuid === this.extrait.uuid);
+      console.log("Index actuel:", index);  
+      console.log("Longueur liste extraits:", this.liste_extraits.length);
+      
+      if (index < this.liste_extraits.length - 1) {
+        const nextExtrait = this.liste_extraits[index + 1];
+        console.log("Changement d'extrait vers:", nextExtrait.uuid);
+        
+        // ✅ Mettre à jour l'extrait local
+        this.extrait = markRaw(nextExtrait);
+        
+        // ✅ Mettre à jour les URLs
+        this.url_yt = nextExtrait.youtube_url 
+          ? "https://www.youtube.com/embed/" + nextExtrait.youtube_url 
+          : "";
+        this.url_vimeo = nextExtrait.vimeo_url 
+          ? "https://player.vimeo.com/video/" + nextExtrait.vimeo_url 
+          : "";
+        
+        // ✅ Réinitialiser le store
+        videoStore.currentTime = 0;
+        videoStore.isPlaying = true;
+        
+        this.set_url(videoStore.lecteur);
+        
+        // ✅ Attendre le prochain tick puis mettre à jour le player
+        await this.$nextTick();
+        if (this.$refs.iframe) {
+          await this.$refs.iframe.update_player();
+        }
+        
+        // ✅ Mettre à jour l'URL sans recharger (optionnel)
+        this.$router.replace({
+          path: `/lecteur_video/${this.Iuuid}/${nextExtrait.uuid}`
+        });
+
+        // Mettre à jour le store UUID
+        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
+      } else {
+        console.log("Fin de la liste des extraits de l'interview");
+      }
+    }
+
   },
 
     
@@ -128,15 +191,17 @@ export default {
       
       <iframe_lecture_video
         v-if="url"
-        :url=this.url
+        :url='this.url'
         ref="iframe"
-        @iframe_build = iframe_build
+        @iframe_build ="iframe_build"
+        @lunch_next_video="lunch_next_video"
+   
       />
 
       
       <div>
         <div id="bottom-iframe">
-          <h2>{{ extrait?.titre || '' }}</h2>
+          <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
             <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">

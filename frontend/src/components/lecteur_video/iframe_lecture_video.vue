@@ -59,7 +59,7 @@ export default {
     }
 
     function reset_old_lecteur(){
-      // ✅ Nettoyer l'ancien player
+      //  Nettoyer l'ancien player
       if (player.value) {
         if (typeof player.value.destroy === 'function') {
           player.value.destroy();
@@ -94,6 +94,7 @@ export default {
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.PLAYING) videoStore.isPlaying = true;
             if (event.data === YT.PlayerState.PAUSED) videoStore.isPlaying = false;
+            if (event.data === YT.PlayerState.ENDED) emit('lunch_next_video');
           },
         },
       });
@@ -163,6 +164,7 @@ export default {
       vimeoPlayer.on("timeupdate", ({ seconds }) => (videoStore.currentTime = seconds));
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
+      vimeoPlayer.on("ended", () => (emit('lunch_next_video')));
 
       player.value = vimeoPlayer;
     }
@@ -185,6 +187,8 @@ export default {
     }
 
     onMounted(async () => {
+      console.log("videoStore dans iframe: ")
+      console.log(JSON.parse(JSON.stringify(videoStore)))
       await nextTick();
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
@@ -193,8 +197,12 @@ export default {
         
         await initVimeo();
       }
+      
       emit('iframe_build')
 
+      console.log("videoStore dans iframe: ")
+      console.log(JSON.parse(JSON.stringify(videoStore)))
+      console.log("mounted iframe");
 
     });
 
