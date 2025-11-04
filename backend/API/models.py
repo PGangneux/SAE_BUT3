@@ -2,7 +2,7 @@ from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
     DateTimeProperty, ZeroOrMore, BooleanProperty,
-    ZeroOrOne,
+    ZeroOrOne, DateTimeFormatProperty
 )
 
 
@@ -64,6 +64,7 @@ class Extrait(StructuredNode):
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)
     uploaded_at = DateProperty(default_now=True)
+    duree = IntegerProperty(required=True) # Nombre de seconde
 
     interviewer = RelationshipTo('Artiste', 'PARTICIPER', ZeroOrOne)
     interviews = RelationshipTo('Interview', 'APPARTIENT_A', ZeroOrMore, PositionExtraitRel)

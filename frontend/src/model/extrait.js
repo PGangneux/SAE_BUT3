@@ -21,8 +21,9 @@ export default class Extrait extends Model {
     #position;
     #artiste_uuid;
     #question_uuid;
+    #duree;
 
-    constructor({ uuid, titre, description, youtube_url, vimeo_url, uploaded_at, artiste, question, interviews, tags, position }) {
+    constructor({ uuid, titre, description, youtube_url, vimeo_url, uploaded_at, artiste, question, interviews, tags, position, duree }) {
         super(uuid);
         this.#titre = titre;
         this.#description = description;
@@ -36,6 +37,7 @@ export default class Extrait extends Model {
         this.#position = position;
         this.#artiste_uuid = null;
         this.#question_uuid = null;
+        this.#duree = duree;
     }
 
     static get endpoint() { return "extraits"; }
@@ -70,25 +72,6 @@ export default class Extrait extends Model {
     get url_miniature_yt(){
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
-
-
-    async url_miniature_vi() {
-    const api_url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.vimeo_url}`;
-    try {
-
-        const response = await fetch(api_url);
-        if (!response.ok) throw new Error("Erreur HTTP " + response.status);
-        const data = await response.json();
-        console.log(data.thumbnail_url);
-        return `${data.thumbnail_url}`;
-
-    } catch (error) {
-        console.error("Impossible de récupérer la vignette :", error);
-        return '/imgs/width551.png';
-    }
-    }
-
-
 
     /**
      * Connecte un extrait à un tag
@@ -148,6 +131,7 @@ export default class Extrait extends Model {
         this.#interviews = json.interviews;
         this.#tags = json.tags;
         this.#position = json.position;
+        this.#duree = json.duree;
         return this;
     }
 
@@ -160,7 +144,8 @@ export default class Extrait extends Model {
             vimeo_url: this.#vimeo_url,
             uploaded_at: this.#uploaded_at,
             artiste_uuid: this.#artiste_uuid,
-            question_uuid: this.#question_uuid
+            question_uuid: this.#question_uuid,
+            duree: this.#duree,
         };
     }
 }

@@ -27,7 +27,8 @@ export default {
 
     picture_in_picture() {
       console.log("→ Désactivation du Picture in Picture");
-      
+      console.log("videoStore: ")
+      console.log(JSON.parse(JSON.stringify(videoStore)))
       
       //videoStore.lecteur = this.lecteur;
       console.log("le lecteur: "+videoStore.lecteur)

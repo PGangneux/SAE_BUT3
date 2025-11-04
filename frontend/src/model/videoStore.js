@@ -6,7 +6,7 @@ export const videoStore = reactive({
   url_yt: "",
   url_vimeo: "",
   url:"",
-  lecteur: "Viméo",
+  lecteur: "YouTube",
   isPictureInPicture: false,
   currentTime: 0,   // <-- position actuelle en secondes
   isPlaying: true, // <-- statut lecture/pause

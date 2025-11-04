@@ -37,7 +37,9 @@ const routes = [
     { path: "/connection", component: page_connection },
     { path: "/inscription", component: page_inscription },
     { path: "/reset-password", component: page_reset_password },
-    { path: "/lecteur_video/:uuid", component: lecteur_video, props: true },// indispensable pour injecter le paramètre dans le composant
+    { path: "/lecteur_video/:Euuid", component: lecteur_video, props: true },// Euuid pour l'extrait
+    { path: "/lecteur_video/:Iuuid/:Euuid", component: lecteur_video, props: true },// Iuuid pour l'interview
+
 
     
     

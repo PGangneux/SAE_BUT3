@@ -5,14 +5,15 @@ import { videoStore } from "../../model/videoStore";
 
 export default {
   props: {
-    current_interview: {type: Object,},
     current_extrait: {type: Object,},
+    current_interview: {type: Object,},
   },
 
   data() {
     return {
       videos: null,
-      selected : ""
+      selected : "",
+      img_close: true,
 
     };
   },
@@ -26,7 +27,6 @@ export default {
     },
 
     async extraits_current_question(){
-      console.log(this.current_extrait)
       this.selected = "questions"
       this.videos = markRaw(await current_extrait.question.then(question => { return question.extraits}))
     },
@@ -42,10 +42,8 @@ export default {
 
   async mounted() {
     this.videos = markRaw(await Extrait.list());
-    console.log("liste des extrait")
-    console.log(this.videos)
+    if (this.current_interview.uuid) this.img_close = false;
 
-    
   },
 
 };
@@ -56,12 +54,12 @@ export default {
     <header>
         <nav class="header-nav">
             <ul class="menu">
-            <li @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
-            <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
-            <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
-            <li @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              <li @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
+              <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
+              <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
+              <li @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
             </ul>
-            <img src="/imgs/close.png" alt="close" @click="this.$emit('toggle_aside')">
+            <img v-if="img_close" src="/imgs/close.svg" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
 
     </header>
@@ -75,7 +73,7 @@ export default {
             <div>
                 <ul class="liste_video">
                     <li v-for="video in videos">
-                        <div v-if="video.uuid != current_extrait.uuid">
+                        <div v-if="video.uuid != current_extrait?.uuid">
                           <router-link @click="reset_videoStore" :to="`/lecteur_video/${video.uuid}`">
                             <img :src="video.url_miniature_yt" :alt="video.titre"/>
                           </router-link>
@@ -102,18 +100,33 @@ header, main{
 header{
     border-bottom: 1px solid var(--blanc);
     height: 5%;
+    display: flex;
+    align-items: center;     /* centre verticalement */
 }
 
 main {
-  height: 95%; /* le reste de la page */
+  height: 64%; /* 100-5(header)-30(timecode)-1 */
+  flex-grow: 1; /* permet à main de prendre tout l'espace restant */
   overflow-y: auto; /* permet le scroll vertical */
 }
 .header-nav {
+  width: 100%;
   display: flex;
   justify-content: space-between; /* menu à gauche, bouton X à droite */
   align-items: center;            /* centre verticalement */
   
 }
+
+.header-nav > img {
+  width: 6%;
+  height: 6%;
+
+
+  cursor: pointer;
+  
+}
+
+
 
 .menu {
   display: flex;       /* aligne les <li> horizontalement */
@@ -154,10 +167,7 @@ main {
   margin-right: 2%;
 }
 
-.search-bar img {
-  width: 9%;
-  cursor: pointer;
-}
+
 
 .liste_video {
   margin: 0;
@@ -187,6 +197,7 @@ main {
     margin-right: 1em;
     margin-bottom: 2em;
 }
+
 
 
 
