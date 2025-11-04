@@ -17,7 +17,7 @@ export default {
         return {
             current_extrait : {type:Extrait},
             tags:[],
-            artiste:null,
+            question : null,
             popup: false
         };
     }
@@ -32,6 +32,7 @@ export default {
           if (id) this.current_extrait.youtube_url = id;
         }
       },
+
       vimeoUrl: {
         get() {
           
@@ -41,7 +42,20 @@ export default {
           const id = value.split('/').pop();
           if (id) this.current_extrait.vimeo_url = id;
         }
+      },
+      description : {
+         get() {
+          return this.current_extrait?.description ? this.current_extrait.description : 'Chargement...';
+        },
+      },
+
+      question : {
+         get() {
+          return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
+        },
       }
+
+
   },
 
 
@@ -54,7 +68,12 @@ export default {
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
     console.log(this.current_extrait);
 
-    this.artiste = await this.current_extrait.artiste;
+    
+    await this.current_extrait.artiste;
+    await this.current_extrait.question;
+    this.question = 'Chargement...';
+
+      
 
   },
 
@@ -68,7 +87,6 @@ export default {
 <template>
     <comp_baradmin/>
 
-
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
@@ -80,13 +98,13 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.current_extrait.question"  />
+                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="question"  />
             </div>
           </div>
 
           <div class="input-group mb-3" >
             <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.artiste" />
+            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="test" />
 
             <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
               <!-- utiliser js TODO -->
@@ -122,7 +140,7 @@ export default {
 
             <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="description"></textarea>
               </div>
             </div>
 
