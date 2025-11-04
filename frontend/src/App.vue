@@ -47,12 +47,21 @@ export default {
                         console.log(this.interview_current)
                         /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
                         if (this.interview_current.value){
-                            /// console.log("APP VUE interview_current exists:", this.interview_current);
+                            console.log("APP VUE interview_current exists:", this.interview_current);
                             return this.interview_current;
                         } else {
-                            let tmp =  markRaw(await Interview.detail(sessionStorage.getItem('interview_current')));
-                            /// console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
-                            return tmp;
+                            const uuid = sessionStorage.getItem('interview_current');
+                            if (uuid != "null"){
+                                console.log("avec uuid", uuid)
+                                let tmp =  markRaw(await Interview.detail(uuid));
+                                console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
+                                return tmp;
+                            }
+                            else{
+                                console.log("pas d'uuid", uuid)
+                                return null;
+                            }
+                            
                         }
                     }
                     else{

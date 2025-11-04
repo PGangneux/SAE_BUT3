@@ -172,7 +172,13 @@ export default {
 
         //update le player
         this.set_url(videoStore.lecteur)
-        await this.$refs.iframe.update_player();
+        try{
+          await this.$refs.iframe.update_player();
+        }
+        catch(e){
+          console.log(e)
+        }
+        
         
     },
 
