@@ -1,70 +1,91 @@
 <script>
 import { markRaw } from 'vue';
 import Interview from '../model/interview.js';
+import miniature_video from './lecteur_video/miniature_video.vue';
 
 export default {
     name: "comp_recent",
+    inject: ["interview_current", "extrait_current"],
+    components: {
+        miniature_video,
+    },
     data() {
         return {
-            failed : false,
-            loading : true,
+            failed: false,
+            loading: true,
             interviews: [],
-            redirect : null,
+            redirect: null,
         };
     },
     async mounted() {
         this.loading = true;
         try {
             this.interviews = markRaw(await Interview.list());
-            try {
-                // Nécessite la définition d'un algorithme de recommandation plus complet
-                // Récupère l'uuid, du premier extrait de la liste des extraits, de la première interview de la liste des interviews
-                this.redirect = markRaw(await this.interviews[0].extraits.then(extraits => { return extraits[0].uuid}));
-            } catch (error) {
-                console.error(error);
+            let l = [];
+            let i = 0;
+            while (l.length < 3 && i < this.interviews.length) {
+                l.push(markRaw(this.interviews[i]));
+                i += 1;
             }
+            this.redirect = markRaw(l);
         } catch (error) {
             this.failed = true;
-            console.log(error);
+            console.error(error);
         } finally {
             this.loading = false;
         }
+    },
+    methods: {
+        async gotoInter(inter) {
+            this.interview_current.set(inter);
+            let ext = await inter.extraits
+            /// console.log("extraits dans gotoInter: HERER", ext);
+            this.extrait_current.set(markRaw(ext[0]));
+            /// console.log("interview current dans gotoInter:", await this.interview_current.get())
+            /// console.log("extrait current dans gotoInter:", await this.extrait_current.get())
+            this.$router.push(`/lecteur_video/`);
+        },
     },
 };
 </script>
 
 <template>
     <div class="local-flex">
-        <div v-if="loading" v-for="i in [1,2,3]" :key="i" class="local">
+        <div v-if="loading" v-for="i in [1, 2, 3]" :key="i" class="local">
             <img src="/imgs/spinner.gif" alt="loading image...">
             <p>loading ...</p>
         </div>
-        <div v-else-if="failed" v-for="k in [1,2,3]" :key="k" class="local">
+        <div v-else-if="failed" v-for="k in [1, 2, 3]" :key="k" class="local">
             <img src="/imgs/close.svg" alt="erreur image">
             <p>erreur</p>
         </div>
-        <div v-else
-            v-for="inter in interviews"
-            :key="inter.uuid"
-            class="local"
-        >
-            <router-link :to="`/lecteur_video/${this.redirect}`" >
+        <div v-else v-for="inter in redirect" :key="inter.uuid" class="local">
+
+            <div @click="gotoInter(inter)">
                 <p>preview</p>
-                <iframe src="https://player.vimeo.com/video/1128762950?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0"></iframe>
+                <miniature_video :video="inter" class="mini"/>
                 <h3>lieu {{ inter.lieu }}</h3>
                 <p>lieu {{ inter.description }}</p>
-            </router-link>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+.mini {
+    width: 90%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
 .local-flex {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: space-evenly
 }
+
 .local {
     background: var(--gris-moyen);
 
@@ -78,6 +99,7 @@ export default {
     max-width: 400px;
     flex: 1 1 200px;
 }
+
 .local h3 {
     margin: 0 0 8px 0;
 }
