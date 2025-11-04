@@ -99,10 +99,15 @@ export default class Extrait extends Model {
      * @param {int} position 
      */
     async update_position(interview, position) {
-        await clientAPI.put(
-            clientAPI.url_uuid(this.#interviews, interview.uuid),
-            {'position': this.validateInt(position)}
-        );
+        try {
+            return await clientAPI.put(
+                clientAPI.url_uuid(this.#interviews, interview.uuid),
+                {'position': this.validateInt(position)}
+            );
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
