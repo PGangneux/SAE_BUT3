@@ -44,7 +44,7 @@ export default class Model {
      * À surcharger dans les classes enfants avec les bonnes données
      * @returns {string}
      */
-    get endpoint() {
+    static get endpoint() {
         throw new Error('endpoint must be implemented by child class');
     }
 
@@ -89,7 +89,7 @@ export default class Model {
 
     /**
      * Récupère l'instance de Class 
-     * @param {*} elem 
+     * @param {string} url 
      * @param {Class} Class 
      * @returns {Promise<Model>}
      */
@@ -100,9 +100,9 @@ export default class Model {
 
     /**
      * Récupère la liste d'instances de Class 
-     * @param {*} elem 
+     * @param {string} url 
      * @param {Class} Class 
-     * @returns {Promise<Model>}
+     * @returns {Promise<Array<Model>>}
      */
     async fetchList(url, Class) {
         return await clientAPI.get(url)
@@ -112,7 +112,7 @@ export default class Model {
     /**
      * Récupère la liste des éléments de this
      * @param {Record<string, string|string[]>} args
-     * @returns {Promise<Model>}
+     * @returns {Promise<Array<Model>>}
      */
     static async list(args=null) {
         return await clientAPI.get(await clientAPI.endpoints(this.endpoint), args)
@@ -120,7 +120,18 @@ export default class Model {
     }
 
     /**
-     * Récupère l'élément de this appartir de son uuid
+     * Permet de chercher dans la liste d'éléments
+     * @param {string} search 
+     * @param {Record<string, string|string[]>} args 
+     * @returns {Promise<Array<Model>>}
+     */
+    static async search(search, args=null) {
+        args ? args['search'] = search : args = {'search': search};
+        return await this.list(args);
+    }
+
+    /**
+     * Récupère l'élément de this à partir de son uuid
      * @param {string} uuid 
      * @returns {Promise<Model>}
      */
@@ -175,5 +186,23 @@ export default class Model {
         )
         // Charger les nouvelles données dans l'instance
         .then(result => { return true; });
+    }
+
+    /**
+     * Connecte une instance à une autre instance
+     * @param {string} url 
+     * @param {Object} data 
+     */
+    async connect(url, data) {
+        await clientAPI.post(url, data);
+    }
+
+    /**
+     * Déconnecte une instance d'une autre instance
+     * @param {string} url 
+     * @param {Model} instance 
+     */
+    async disconnect(url, instance) {
+        await clientAPI.delete(clientAPI.url_uuid(url, instance.uuid));
     }
 }
