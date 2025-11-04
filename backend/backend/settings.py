@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'corsheaders',
+    'rest_framework_simplejwt.token_blacklist',
     'API',
 ]
 
@@ -101,10 +102,9 @@ SIMPLE_JWT = {
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
     "AUTH_HEADER_TYPES": ("Bearer",),
-
-    # IMPORTANT: use uuid field from your neomodel Utilisateur
-    "USER_ID_FIELD": "uuid",        # <-- utiliser la propriété 'uuid' au lieu de 'id'
-    "USER_ID_CLAIM": "user_id",     # champ dans le payload (la valeur par défaut convient)
+    "USER_ID_FIELD": "uuid",
+    "USER_ID_CLAIM": "user_id",
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 

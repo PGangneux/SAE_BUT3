@@ -235,12 +235,24 @@ export default class clientAPI {
                     {'identifiant': pseudo_email, 'password': password}
                 )
             );
-            console.log(res)
             this.save_tokens(res.access, res.refresh)
             return new Utilisateur(await this.get(res.utilisateur));
         } catch (error) {
             console.error(`Erreur HTTP ${error.message}`);
             return null;
         }
+    }
+
+    static async disconnectAPI() {
+        const refresh = this.get_refresh_token();
+        if (refresh) {
+            this.clear_tokens();
+            try {
+                const res = await this.post(`${this.BASE_URL}API/logout/`, {'refresh': refresh});
+            } catch (error) {
+                console.error(`Erreur HTTP ${error.message}`);
+            }
+        }
+        return null;
     }
 }

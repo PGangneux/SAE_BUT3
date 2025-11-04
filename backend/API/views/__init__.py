@@ -16,3 +16,4 @@ from .interviews import *
 from .tags_extrait import *
 from .tags_interview import *
 from .login import *
+from .logout import *

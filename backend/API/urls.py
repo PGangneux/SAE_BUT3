@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import LoginView
+from .views import LoginView, LogoutView
 
 router = DefaultRouter()
 
@@ -92,8 +92,6 @@ router_utilisateur.register(r'interviews', RegarderInterviewsViewSet, basename='
 router_utilisateur.register(r'extraits', RegarderExtraitsViewSet, basename='extrait')
 router_utilisateur.register(r'questions', RecherchesQuestionsViewSet, basename='question')
 
-# router.register(r'login', LoginView, 'login')
-
 urlpatterns = [
     path('', include(router.urls)),
     path('', include(router_theme.urls)),
@@ -105,6 +103,7 @@ urlpatterns = [
     path('', include(router_nation.urls)),
     path('', include(router_tag.urls)),
     path('', include(router_utilisateur.urls)),
-    path("login/", LoginView.as_view(), name="token_obtain_custom"),
+    path("login/", LoginView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("logout/", LogoutView.as_view(), name="logout"),
 ]

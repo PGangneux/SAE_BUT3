@@ -165,9 +165,10 @@ export default class Utilisateur extends Model {
 
     /**
      * Déconnecte un utilisateur de l'application
+     * @returns {Promise<null>}
      */
     static async disconnectAPI() {
-        // Déconnection de l'API
-        this.current_user = null;
+        this.current_user = await clientAPI.disconnectAPI();
+        return this.current_user;
     }
 }
