@@ -49,6 +49,7 @@ export default {
             this.dico_timecode[extrait.titre] = this.format_duree(current_time);
             current_time += extrait.duree;
         }
+        this.dico_timecode["duree"] = this.format_duree(current_time);
         console.log("les extraits: ", this.liste_extrait);
         console.log("dico_timecode: ", toRaw(this.dico_timecode));
     },
@@ -71,12 +72,19 @@ export default {
 
 <template>
 <div>
-    <h2>{{ interview.titre }}</h2>
-    <ul>
-        <li v-for="extrait in liste_extrait" @click="this.$emit('redirect_extrait', extrait)">
-            <span>{{ this.dico_timecode[extrait.titre] }}</span>&nbsp;{{extrait.titre}} <!-- &nbsp; espace insécable -->
-        </li>
-    </ul>
+    <head>
+        
+        <h2>{{ interview.titre }}</h2>
+        <img src="/imgs/close2.svg" alt="close" @click="this.$emit('toggle_aside')">
+    </head>
+    <p>Duree de l'interview : {{ this.dico_timecode["duree"] }}</p>
+        
+        <ul>
+            <li v-for="extrait in liste_extrait" @click="this.$emit('redirect_extrait', extrait)">
+                <span>{{ this.dico_timecode[extrait.titre] }}</span>&nbsp;{{extrait.titre}} <!-- &nbsp; espace insécable -->
+            </li>
+        </ul>
+
 </div>
 
 
@@ -85,10 +93,22 @@ export default {
 <style scoped>
 div {
     background-color: var(--vert-pale);
+    padding-left: 3%;
+    padding-top: 1%;
+    height:30%;
+    overflow-y: auto;
+    border-bottom: 3px solid var(--gris-taupe);
+    
 }
 ul {
     list-style-type: none;
+    padding-left: 3%;
     margin: 0;
+    padding-bottom: 0;
+    padding-bottom: 1%;
+    max-height: 100%;
+    
+    
 }
 
 span {
@@ -98,6 +118,27 @@ span {
 
 li {
     cursor: pointer;
+    margin-bottom: 1%;
 }   
+p {
+    margin: 0;
+}
+
+head {
+  display: flex;
+}
+
+h2 {
+  flex: 4;
+  margin: 0;
+}
+
+img {
+  width: 6%;
+  height: 6%;
+  cursor: pointer;
+  margin-right: 2%;
+
+}
 
 </style>

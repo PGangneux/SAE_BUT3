@@ -87,4 +87,9 @@ export default {
 .local:hover {
     background-color: var(--vert-neon) !important;
 }
+
+ul{
+    margin: 0;
+    border-bottom: 3px solid var(--gris-taupe);
+}
 </style>

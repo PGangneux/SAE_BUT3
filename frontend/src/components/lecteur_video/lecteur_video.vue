@@ -210,6 +210,7 @@ export default {
       :interview="interview"
       :liste_extrait="liste_extraits"
       @redirect_extrait="redirect_extrait"
+      @toggle_aside="toggle_aside"
     />
 
 
@@ -217,6 +218,7 @@ export default {
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         :current_extrait="extrait"
+        :current_interview="interview"
       />
     </aside>
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
@@ -306,6 +308,8 @@ main {
   flex: 2.2;
   background-color: var(--gris-moyen);
   border-left: 3px solid var(--gris-taupe);
+  display: flex;
+  flex-direction: column;
 }
 
 .layout h2{
