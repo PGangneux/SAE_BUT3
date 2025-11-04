@@ -1,0 +1,91 @@
+<script>
+import { toRaw, markRaw } from "vue";
+
+import Extrait from '../../model/extrait';
+import { videoStore } from "../../model/videoStore";
+
+export default {
+  props: {
+    interview: {type: Object,},
+    liste_extrait: {type: Array,},
+    
+
+
+  },
+
+  data() {
+    return {
+        dico_timecode : {},
+    };
+
+  },
+
+  methods : {
+    // Covertir durrée en heures:minutes:secondes (actuellment un int en secondes)
+    format_duree(duree_seconds) {
+        const hours = Math.floor(duree_seconds / 3600);
+        const minutes = Math.floor((duree_seconds % 3600) / 60);
+        const seconds = duree_seconds % 60;
+
+        let formatted_hours = hours > 0 ? String(hours).padStart(2, '0') + ':' : '';
+        let formatted_minutes = String(minutes).padStart(2, '0') + ':';
+        let formatted_seconds = String(seconds).padStart(2, '0');
+
+        // si pas d'heures, ne pas afficher les heures
+        formatted_hours = hours > 0 ? formatted_hours : '';
+        // si pas de minutes, afficher 00:
+        formatted_minutes = (hours > 0 || minutes > 0) ? formatted_minutes : '00:';
+        return formatted_hours + formatted_minutes + formatted_seconds;
+    },
+
+    set_dico_timecode() {
+        let current_time = 0;
+        for (let extrait in this.liste_extrait) {
+            console.log(extrait.duree);
+            this.dico_timecode[extrait] = current_time;
+            let duree = this.format_duree(extrait.duree);
+            current_time += duree;
+        }
+        console.log("les extraits: ", this.liste_extrait);
+        console.log("dico_timecode: ", toRaw(this.dico_timecode));
+    },
+
+  },
+
+  async mounted() {
+      this.set_dico_timecode();
+      console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));
+  },
+
+
+
+
+
+
+};
+
+</script>
+
+<template>
+<div>
+    <h2>{{ interview.titre }}</h2>
+    <ul>
+        <li v-for="extrait in liste_extrait">
+            <span>{{ this.dico_timecode[extrait.titre] }} </span>{{extrait.titre}}
+        </li>
+    </ul>
+</div>
+
+
+</template>
+
+<style scoped>
+div {
+    background-color: var(--vert-pale);
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+}
+
+</style>

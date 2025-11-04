@@ -5,7 +5,6 @@ import { videoStore } from "../../model/videoStore";
 
 export default {
   props: {
-    current_interview: {type: Object,},
     current_extrait: {type: Object,},
   },
 

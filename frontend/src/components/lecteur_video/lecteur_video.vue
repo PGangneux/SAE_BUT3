@@ -2,6 +2,7 @@
 import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
+import timecode from "./timecode.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
 import Extrait from '../../model/extrait';
@@ -9,7 +10,7 @@ import Interview from '../../model/interview';
 
 export default {
   name: "page_lecteur_video",
-  components: { iframe_lecture_video, bar_liste_video, parametres },
+  components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
 
   props: {
     Iuuid: {
@@ -148,14 +149,7 @@ export default {
         videoStore.currentTime = 0;
         videoStore.isPlaying = true;
         
-        //this.set_url(videoStore.lecteur);
-        
-        // Attendre le prochain tick puis mettre à jour le player
-        //await this.$nextTick();
-        //if (this.$refs.iframe) {
-        //  await this.$refs.iframe.update_player();
-        //}
-        
+
         // Mettre à jour l'URL sans recharger (optionnel)
         this.$router.replace({
           path: `/lecteur_video/${this.Iuuid}/${this.extrait.uuid}`
@@ -211,10 +205,16 @@ export default {
     </main>
 
     <aside v-show="aside_visible">
+      <timecode
+        v-if="this.liste_extraits"
+        :interview="this.interview"
+        :liste_extrait="this.liste_extraits"
+      />
+
+      
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         :current_extrait="extrait"
-        :current_interview="interview"
       />
     </aside>
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
@@ -316,6 +316,8 @@ iframe{
   width: 100%;
   height: 100%;
 }
+
+
 
 
 </style>
