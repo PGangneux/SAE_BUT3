@@ -146,7 +146,7 @@ export default {
         console.log(this.Euuid);
     },
 
-    async lunch_next_video() {
+    async lancement_prochaine_video() {
       
       if (!this.interview?.uuid) {
         return;
@@ -181,7 +181,7 @@ export default {
         :url='this.url'
         ref="iframe"
         @iframe_build ="iframe_build"
-        @lunch_next_video="lunch_next_video"
+        @lancement_prochaine_video="lancement_prochaine_video"
    
       />
 

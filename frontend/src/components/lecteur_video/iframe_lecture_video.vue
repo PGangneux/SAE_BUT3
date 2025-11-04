@@ -93,7 +93,7 @@ export default {
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.PLAYING) videoStore.isPlaying = true;
             if (event.data === YT.PlayerState.PAUSED) videoStore.isPlaying = false;
-            if (event.data === YT.PlayerState.ENDED) emit('lunch_next_video');
+            if (event.data === YT.PlayerState.ENDED) emit('lancement_prochaine_video');
           },
         },
       });
@@ -158,7 +158,7 @@ export default {
       vimeoPlayer.on("timeupdate", ({ seconds }) => (videoStore.currentTime = seconds));
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
-      vimeoPlayer.on("ended", () => (emit('lunch_next_video')));
+      vimeoPlayer.on("ended", () => (emit('lancement_prochaine_video')));
 
       player.value = vimeoPlayer;
     }
