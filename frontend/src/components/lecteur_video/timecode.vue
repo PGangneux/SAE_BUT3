@@ -3,6 +3,7 @@ import { toRaw, markRaw } from "vue";
 
 
 export default {
+  emits: ["toggle_aside", "redirect_extrait"],
   props: {
     interview: {type: Object,},
     liste_extraits: {type: Array,},
@@ -53,10 +54,19 @@ export default {
         console.log("dico_timecode: ", toRaw(this.dico_timecode));
     },
 
+    async onClick(extrait) {
+      // ici tu déclenches l'event
+      this.$emit('redirect_extrait', extrait);
+    }
+
+
+
   },
 
   async mounted() {
-    
+      console.log("les extraoit")
+      console.log(this.liste_extraits)
+
       this.set_dico_timecode();
       console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));
   },
@@ -80,9 +90,10 @@ export default {
     <p>Duree de l'interview : {{ this.dico_timecode["duree"] }}</p>
         
         <ul>
-            <li v-for="extrait in liste_extraits" @click="this.$emit('redirect_extrait', extrait)">
-                <span>{{ this.dico_timecode[extrait.titre] }}</span>&nbsp;{{extrait.titre}} <!-- &nbsp; espace insécable -->
-            </li>
+          <li v-for="extrait in liste_extraits" @click="onClick(extrait)">
+            <span>{{ dico_timecode[extrait.titre] }}</span>&nbsp;{{ extrait.titre }}
+          </li>
+
         </ul>
 
 </div>
