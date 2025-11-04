@@ -1,9 +1,31 @@
 <script>
-
+import Extrait from '../../model/extrait.js';
 export default {
     name: "comp_admin_presentation_petit_extrait",
-    components: {
+
+    props: {
+        current_extrait: {
+            type: Extrait,
+            required: true
+        },
     },
+    data() {
+        return {
+            thumbnail: '/imgs/width551.png', // vignette par défaut
+        };
+    },
+
+
+    async mounted() {
+
+        if (this.current_extrait.url_miniature_yt != null) {
+            this.thumbnail = this.current_extrait.url_miniature_yt
+        }else{
+            this.thumbnail = await this.current_extrait.url_miniature_vi()
+        }
+        console.log(this.current_extrait)
+        
+    }, 
 };
 </script>
 
@@ -11,20 +33,57 @@ export default {
     
     <div class="container container_extrait col " >
         <div class="row base">
+
+            <div class="col-sm reduction_image">
+                <img src="/imgs/menu.svg" class="video" alt="Video logo" height="50" width="50">
+            </div>
+
             <div class="col-xl vigniette ">
-                <h1 class="row decallage_droite">Question Extrait</h1>
+
+                    <RouterLink v-if="current_extrait && current_extrait.uuid" class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/' + current_extrait.uuid} ">
+                        <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
+                        
+                        <h1 v-else class="row decallage_droite">
+                            Chargement des informations...
+                        </h1>
+
+                    </RouterLink>
+
+                    <RouterLink v-else class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/1'} ">
+                        <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
+                        
+                        <h1 v-else class="row decallage_droite">
+                            Chargement des informations...
+                        </h1>
+
+                    </RouterLink>
+
 
                 <div class="row decallage_droite">
                     <ul>
                         <li class="row vigniette">
                             <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
-                            <p class="col" >date publication</p>
+                            <p v-if="current_extrait && current_extrait.uploaded_at" class="col">
+                                {{ current_extrait.uploaded_at }}
+                            </p>
+                            <p v-else class="col">
+                                Chargement des informations...
+                            </p>
                         </li>
 
                         <li class="row vigniette">
                             <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
-                            <p class="col">tags</p>
-                            <!-- faire get des tags TODO-->
+                            <div class="col">
+                                <p class="col">tags :</p>
+                                 <ul v-if="current_extrait && current_extrait.tags">
+                                    <li v-for="tag in current_extrait.tags">
+                                        <p class="col">{{ tag }}</p>
+                                    </li>
+                                </ul>
+                                <p v-else>
+                                    Chargement des informations...
+                                </p>
+                            </div>
                         </li>
 
 
@@ -33,7 +92,8 @@ export default {
             </div>
 
             <div class="col-sm reduction_image">
-                <img src="/imgs/width551.png" class="video" alt="Video logo" height="150" width="150">
+                <img v-if="thumbnail" :src="thumbnail" class="video" alt="Video logo" height="100" width="100"> 
+                <img v-else src='/imgs/width551.png' class="video" alt="Video logo" height="100" width="100"> 
             </div>
 
         </div>
@@ -89,6 +149,7 @@ ul ,base{
     flex-grow: 0;
     padding: 10px;
     padding-left: 50px;
+    align-content: center;
 }
 
 .container_extrait{

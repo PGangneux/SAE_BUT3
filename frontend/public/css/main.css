@@ -16,11 +16,16 @@
 @media (prefers-color-scheme: light) {
 }
 
+html{
+  display: flex;
+}
+
 html, body {
   margin: 0;
   padding: 0;
   width: 100%;
   min-height: 100%; /* s’étend au moins sur la hauteur de la fenêtre, mais peut grandir */
+    
 }
 
 
