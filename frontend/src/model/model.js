@@ -136,8 +136,9 @@ export default class Model {
      * @returns {Promise<Model>}
      */
     static async detail(uuid) {
+        console.log("details "+uuid);
         return await clientAPI.get(clientAPI.url_uuid(await clientAPI.endpoints(this.endpoint), uuid))
-        .then(data => { return new this(data); });
+        .then(data => {return new this(data); });
     }
 
     /**
