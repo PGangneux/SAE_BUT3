@@ -1,5 +1,8 @@
 <script>
+import { markRaw } from 'vue';
 import comp_baradmin from '../../../components/components_admin/nav_admin.vue';
+
+import User from "../../../model/utilisateur.js";
 
 export default {
     name: "page_admin_listuser",
@@ -7,9 +10,15 @@ export default {
         comp_baradmin,
     },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            utilisateurs:{type:User},
         };
-    }
+    },
+
+    async mounted() {
+        this.utilisateurs = markRaw(await User.list());
+        console.log("liste des utilisateurs")
+        console.log(this.utilisateurs)
+    },
 };
 
 
@@ -52,11 +61,11 @@ export default {
                 </tr>
             </thead>
             <tbody class="tobodd">
-                <tr class="col" v-for="tag in tags">
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ tag }} </RouterLink> </td>
+                <tr class="col" v-for="utilisateur in this.utilisateurs">
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.pseudo }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.nom }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.prenom }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> <button class="bt"> Details </button> </RouterLink> </td>
                 </tr>
             </tbody>
         </table>
