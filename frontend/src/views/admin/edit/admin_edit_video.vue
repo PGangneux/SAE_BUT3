@@ -7,6 +7,7 @@ import Extrait from "../../../model/extrait";
 
 
 
+
 export default {
   name: "page_admin_detail_video",
   components: {
@@ -18,6 +19,7 @@ export default {
             current_extrait : {type:Extrait},
             tags:[],
             thumbnail: '/imgs/width551.png',
+            dico_extrait:{},
             question : null,
             popup: false
         };
@@ -63,23 +65,40 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    console.log("ID de l'Extraits' :", ExtraitId);
+    //console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+
+
     console.log(this.current_extrait);
 
-    
-    await this.current_extrait.artiste;
-    await this.current_extrait.question;
+    console.log("dico complet en cours");
+    this.dico_extrait = {
+      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
+      "question":   (markRaw(await this.current_extrait.titre)).name,
+      "interviews": (markRaw(await this.current_extrait.interviews))
+    };
+
+   
+
+  //  console.log(this.dico_extrait['artiste']);
+  //  console.log(this.dico_extrait['question']);
+  //  console.log(this.dico_extrait['interviews']);
+  //  console.log(await this.current_extrait.interviews);
+
     this.question = 'Chargement...';
 
-
-    if (this.current_extrait.url_miniature_yt != null) {
-        this.thumbnail = this.current_extrait.url_miniature_yt
+    
+    if (this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
+        
+      this.thumbnail = await this.current_extrait.url_miniature_yt
+        
     }else{
         this.thumbnail = await this.current_extrait.url_miniature_vi()
+        
     }
+
 
   },
 
@@ -104,17 +123,17 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="question"  />
+                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.dico_extrait['question']"  />
             </div>
           </div>
 
           <div class="input-group mb-3" >
             <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="test" />
+            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.dico_extrait['artiste']" />
 
             <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
               <!-- utiliser js TODO -->
-                <option value=""> > </option>
+              <option value=""> > </option>
               <option value="option1"> Artiste 1</option> 
               <option value="option2"> Artiste 2</option>
               <option value="option3"> Artiste 3</option>
@@ -123,7 +142,7 @@ export default {
             <div class="form-control colovert">
               <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
               <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" v-model="this.current_extrait.date"/>
+              <input class="col" type="date" lang="fr" id="name4" name="name4" :value="this.current_extrait.uploaded_at"/>
               <!-- rendre jolie TODO -->
             </div>
           </div>
@@ -160,9 +179,9 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd scroller">
-                      <tr class="col" v-for="tag in tags">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> <button class="bt col"> update </button> <button class="bt col"> supprimer </button> </RouterLink> </td>
+                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
+                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
                       </tr>
                   </tbody>
               </table>
