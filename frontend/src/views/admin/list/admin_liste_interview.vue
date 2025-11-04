@@ -13,7 +13,6 @@ export default {
   },data() {
         return {
             interviews:{type:Interview},
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
         };
     },
 
@@ -25,9 +24,9 @@ export default {
 
     try {
         for (let interview of this.interviews) {
-
-        interview.realiserextraits = await interview.extraits;
-    }
+            interview.realiserextraits = await interview.extraits;
+            console.log(interview.realiserextraits.length)
+        }
 
 
 
@@ -104,10 +103,10 @@ export default {
                 </thead>
                 <tbody>
                     
-                        <tr class="col" v-for="interview in this.interviews">
+                        <tr class="col"  v-for="interview in this.interviews">
                             
                                 <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ extraitsLength(interview.realiserextraits) }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.realiserextraits ? interview.realiserextraits.length :0}} </RouterLink></td>
                                 <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.tags }} </RouterLink> </td>
                             
                         </tr>

@@ -1,6 +1,8 @@
 <script>
 
+import { markRaw } from 'vue';
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import User from "../../model/utilisateur.js";
 
 
 export default {
@@ -9,11 +11,15 @@ export default {
     comp_baradmin,
   },data() {
         return {
-            pseudo:"kilemonnar",
-            nom:"crap",
-            prenom:"timeo",
+            current_utilisateur : {type:User},
     };
-  },
+  },    
+  async mounted() {
+        const utilisateurId = this.$route.params.id;
+        this.current_utilisateur = markRaw(await User.detail(utilisateurId));
+        console.log("utilisateur ",current_utilisateur.name)
+        console.log(this.current_utilisateur)
+    },
 };
 
 
