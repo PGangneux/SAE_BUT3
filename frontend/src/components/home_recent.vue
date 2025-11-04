@@ -40,7 +40,7 @@ export default {
             <p>loading ...</p>
         </div>
         <div v-else-if="failed" v-for="k in [1,2,3]" :key="k" class="local">
-            <img src="/imgs/close.png" alt="erreur image">
+            <img src="/imgs/close.svg" alt="erreur image">
             <p>erreur</p>
         </div>
         <div v-else
