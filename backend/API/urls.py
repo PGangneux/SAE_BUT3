@@ -2,7 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import LoginView, LogoutView
+from .views import LoginView
 
 router = DefaultRouter()
 
@@ -105,5 +105,4 @@ urlpatterns = [
     path('', include(router_utilisateur.urls)),
     path("login/", LoginView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("logout/", LogoutView.as_view(), name="logout"),
 ]

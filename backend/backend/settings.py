@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'corsheaders',
-    'rest_framework_simplejwt.token_blacklist',
     'API',
 ]
 
@@ -104,7 +103,6 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
     "USER_ID_FIELD": "uuid",
     "USER_ID_CLAIM": "user_id",
-    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 

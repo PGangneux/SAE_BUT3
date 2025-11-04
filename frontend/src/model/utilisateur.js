@@ -167,8 +167,8 @@ export default class Utilisateur extends Model {
      * Déconnecte un utilisateur de l'application
      * @returns {Promise<null>}
      */
-    static async disconnectAPI() {
-        this.current_user = await clientAPI.disconnectAPI();
+    static disconnectAPI() {
+        this.current_user = clientAPI.disconnectAPI();
         return this.current_user;
     }
 }

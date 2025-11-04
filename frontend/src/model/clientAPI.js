@@ -243,16 +243,9 @@ export default class clientAPI {
         }
     }
 
-    static async disconnectAPI() {
+    static disconnectAPI() {
         const refresh = this.get_refresh_token();
-        if (refresh) {
-            this.clear_tokens();
-            try {
-                const res = await this.post(`${this.BASE_URL}API/logout/`, {'refresh': refresh});
-            } catch (error) {
-                console.error(`Erreur HTTP ${error.message}`);
-            }
-        }
+        if (refresh) { this.clear_tokens(); }
         return null;
     }
 }
