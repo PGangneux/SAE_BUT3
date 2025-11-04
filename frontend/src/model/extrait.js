@@ -73,22 +73,10 @@ export default class Extrait extends Model {
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
 
-
-
-    async url_miniature_vi() {
-    const api_url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.vimeo_url}`;
-    try {
-
-        const response = await fetch(api_url);
-        if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+    async get_url_miniature_vimeo() {
+        const response = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.#vimeo_url}`);
         const data = await response.json();
-        console.log(data.thumbnail_url);
-        return `${data.thumbnail_url}`;
-
-    } catch (error) {
-        console.error("Impossible de récupérer la vignette :", error);
-        return '/imgs/width551.png';
-    }
+        return data.thumbnail_url;
     }
 
 

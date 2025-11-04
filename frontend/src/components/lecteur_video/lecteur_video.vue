@@ -39,6 +39,7 @@ export default {
   },
 
   async mounted() {
+    
     this.extrait = markRaw(await Extrait.detail(this.Euuid));
     this.interview = markRaw(await Interview.detail(this.Iuuid));
     if (this.interview.uuid) {

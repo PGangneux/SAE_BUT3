@@ -2,8 +2,10 @@
 import { markRaw } from 'vue';
 import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
+import miniature_video from "./miniature_video.vue";
 
 export default {
+  components: { miniature_video, },
   props: {
     current_extrait: {type: Object,},
     current_interview: {type: Object,},
@@ -28,13 +30,17 @@ export default {
 
     async extraits_current_question(){
       this.selected = "questions"
-      this.videos = markRaw(await current_extrait.question.then(question => { return question.extraits}))
+      console.log("current extrait:", this.current_extrait)
+      console.log(await this.current_extrait.question.then(question => { return question.extraits}))
+      this.videos = markRaw(await this.current_extrait.question.then(question => { return question.extraits}))
     },
 
     reset_videoStore() {
       videoStore.currentTime = 0
       videoStore.isPlaying = true
-    }
+    },
+
+
   },
 
 
@@ -57,8 +63,11 @@ export default {
               <li @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
-              <li @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              <li>{{ this.current_interview }}</li>
+              <!--si la video est un extrait-->
+              <li v-if="this.current_interview != {}" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
             </ul>
+            
             <img v-if="img_close" src="/imgs/close.svg" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
 
@@ -75,7 +84,8 @@ export default {
                     <li v-for="video in videos">
                         <div v-if="video.uuid != current_extrait?.uuid">
                           <router-link @click="reset_videoStore" :to="`/lecteur_video/${video.uuid}`">
-                            <img :src="video.url_miniature_yt" :alt="video.titre"/>
+                            <miniature_video :video="video" />
+                            
                           </router-link>
                           <div>
                               <h4>{{ video.titre }}</h4>
