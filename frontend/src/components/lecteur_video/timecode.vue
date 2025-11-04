@@ -72,11 +72,11 @@ export default {
 
 <template>
 <div>
-    <head>
+    <header>
         
         <h2>{{ interview.titre }}</h2>
         <img src="/imgs/close2.svg" alt="close" @click="this.$emit('toggle_aside')">
-    </head>
+    </header>
     <p>Duree de l'interview : {{ this.dico_timecode["duree"] }}</p>
         
         <ul>
@@ -124,7 +124,7 @@ p {
     margin: 0;
 }
 
-head {
+header {
   display: flex;
 }
 
