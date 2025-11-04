@@ -35,16 +35,19 @@ export default {
         formatted_hours = hours > 0 ? formatted_hours : '';
         // si pas de minutes, afficher 00:
         formatted_minutes = (hours > 0 || minutes > 0) ? formatted_minutes : '00:';
-        return formatted_hours + formatted_minutes + formatted_seconds;
+        // si pas de secondes, afficher 00
+        formatted_seconds = (hours > 0 || minutes > 0 || seconds > 0) ? formatted_seconds : '00';
+        // Retourner la chaîne formatée
+        let duree = formatted_hours + formatted_minutes + formatted_seconds;
+        console.log("duree: ", duree);
+        return duree;
     },
 
     set_dico_timecode() {
         let current_time = 0;
-        for (let extrait in this.liste_extrait) {
-            console.log(extrait.duree);
-            this.dico_timecode[extrait] = current_time;
-            let duree = this.format_duree(extrait.duree);
-            current_time += duree;
+        for (let extrait of this.liste_extrait) {
+            this.dico_timecode[extrait.titre] = this.format_duree(current_time);
+            current_time += extrait.duree;
         }
         console.log("les extraits: ", this.liste_extrait);
         console.log("dico_timecode: ", toRaw(this.dico_timecode));
@@ -70,8 +73,8 @@ export default {
 <div>
     <h2>{{ interview.titre }}</h2>
     <ul>
-        <li v-for="extrait in liste_extrait">
-            <span>{{ this.dico_timecode[extrait.titre] }} </span>{{extrait.titre}}
+        <li v-for="extrait in liste_extrait" @click="this.$emit('redirect_extrait', extrait)">
+            <span>{{ this.dico_timecode[extrait.titre] }}</span>&nbsp;{{extrait.titre}} <!-- &nbsp; espace insécable -->
         </li>
     </ul>
 </div>
@@ -87,5 +90,14 @@ ul {
     list-style-type: none;
     margin: 0;
 }
+
+span {
+
+    color: var(--bleu);
+}
+
+li {
+    cursor: pointer;
+}   
 
 </style>

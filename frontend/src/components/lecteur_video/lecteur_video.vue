@@ -116,28 +116,15 @@ export default {
     },
 
     async set_lecteur(new_lecteur){
-      console.log("videoStore av set_lecteur: ")
-      console.log(JSON.parse(JSON.stringify(videoStore)))
       videoStore.lecteur = new_lecteur
       this.set_url(videoStore.lecteur)
       
       await this.$refs.iframe.update_player()
     },
 
-    async lunch_next_video() {
-      
-      if (!this.interview?.uuid) {
-        return;
-      }
-      
-      let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position; // recupère la position de l'extrait courant dans this.liste_extraits
-      console.log("Index actuel:", index);  
-      console.log("Longueur liste extraits:", this.liste_extraits.length);
-      
-      if (index < this.liste_extraits.length-1) {
-        
+    redirect_extrait(extrait){
         // Mettre à jour l'extrait local
-        this.extrait = markRaw(this.liste_extraits[index+1]);
+        this.extrait = markRaw(extrait);
         console.log("Extrait suivant UUID:", this.extrait.uuid);
         console.log(this.extrait);
         
@@ -157,6 +144,19 @@ export default {
 
         console.log("Lecture de l'extrait suivant lancée.");
         console.log(this.Euuid);
+    },
+
+    async lunch_next_video() {
+      
+      if (!this.interview?.uuid) {
+        return;
+      }
+      
+      let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position; // recupère la position de l'extrait courant dans this.liste_extraits
+      
+      if (index < this.liste_extraits.length-1) {
+        let next_extrait = this.liste_extraits[index + 1];
+        this.redirect_extrait(next_extrait);
 
       } else {
         console.log("Fin de la liste des extraits de l'interview");
@@ -205,11 +205,13 @@ export default {
     </main>
 
     <aside v-show="aside_visible">
-      <timecode
-        v-if="this.liste_extraits"
-        :interview="this.interview"
-        :liste_extrait="this.liste_extraits"
-      />
+    <timecode
+      v-if="liste_extraits"
+      :interview="interview"
+      :liste_extrait="liste_extraits"
+      @redirect_extrait="redirect_extrait"
+    />
+
 
       
       <bar_liste_video 

@@ -25,7 +25,6 @@ export default {
     },
 
     async extraits_current_question(){
-      console.log(this.current_extrait)
       this.selected = "questions"
       this.videos = markRaw(await current_extrait.question.then(question => { return question.extraits}))
     },
@@ -41,10 +40,6 @@ export default {
 
   async mounted() {
     this.videos = markRaw(await Extrait.list());
-    console.log("liste des extrait")
-    console.log(this.videos)
-
-    
   },
 
 };
