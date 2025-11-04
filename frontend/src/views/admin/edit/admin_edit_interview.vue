@@ -19,6 +19,13 @@ export default {
             extrait_actif: [ 'jip','jap','jop']
     };
   },
+  computed: {
+      description: {
+        get() {
+          return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
+        },
+      },
+  },
 
  async mounted() {
     //reccuperation de l'id en parametre
@@ -56,7 +63,7 @@ export default {
 
         <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
           <div class="form-group">
-            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
           </div>
         </div>
 </div>
@@ -94,7 +101,7 @@ export default {
 
             <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait dans Playlist</h1>
-              <h1> Total Question-Extrait : {{extrait_actif.length}}</h1>
+              <h1> Total Question-Extrait : {{ 8 }}</h1>
             </div>
 
             <div class="search-bar grisee">

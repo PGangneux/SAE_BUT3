@@ -43,7 +43,16 @@ export default {
                     <RouterLink v-if="current_extrait && current_extrait.uuid" class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/' + current_extrait.uuid} ">
                         <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
                         
-                        <h1 v-else>
+                        <h1 v-else class="row decallage_droite">
+                            Chargement des informations...
+                        </h1>
+
+                    </RouterLink>
+
+                    <RouterLink v-else class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/1'} ">
+                        <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
+                        
+                        <h1 v-else class="row decallage_droite">
                             Chargement des informations...
                         </h1>
 
