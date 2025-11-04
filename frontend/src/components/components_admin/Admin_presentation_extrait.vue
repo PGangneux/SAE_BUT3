@@ -1,33 +1,70 @@
 <script>
 
+import Extrait from '../../model/extrait.js';
+
+
+
+
 export default {
     name: "comp_admin_presentation_extrait",
-    components: {
+
+    props: {
+        current_extrait: {
+            type: Extrait,
+            required: true
+        },
     },
+    data() {
+        return {
+            thumbnail: '/imgs/width551.png', // vignette par défaut
+        };
+    },
+
+    async mounted() {
+
+        if (this.current_extrait.url_miniature_yt != null) {
+            this.thumbnail = this.current_extrait.url_miniature_yt
+        }else{
+            this.thumbnail = await this.current_extrait.url_miniature_vi()
+        }
+        
+    },
+
+
+
+
 };
 </script>
 
 <template>
-    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" to="/admin/details/extrait">
+    <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/' + current_extrait.uuid }">
         <div class="row base">
             <div class="col-xl vigniette ">
-                <h1 class="row decallage_droite">Question Extrait</h1>
+                <h1 class="row decallage_droite"> {{current_extrait.titre}}</h1>
 
                 <div class="row text-center clairepart decallage_droite ">
-                    <p> description </p>
+                    <p> {{current_extrait.description}} </p>
                 </div>
 
                 <div class="row decallage_droite">
                     <ul>
 
                         <li class="row vigniette">
-                            <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
-                            <p class="col" >date publication</p>
+                            <img src="/imgs/date.svg" alt="date logo" class="col" height="32" width="32">
+                            <p class="col" > {{current_extrait.uploaded_at}} </p>
                         </li>
 
                         <li class="row vigniette">
                             <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
-                            <p class="col">tags</p>
+                            <div class="col">
+                                <p class="col">tags :</p>
+                                 <ul>
+                                    <li v-for="tag in current_extrait.tags">
+                                        <p class="col">{{ tag }}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                            
                             <!-- faire get des tags TODO-->
                         </li>
 
@@ -35,10 +72,11 @@ export default {
                     </ul>
                 </div>
             </div>
-
-            <div class="col-sm reduction_image">
-                <img src="/imgs/width551.png" class="video" alt="Video logo" height="150" width="150">
+            
+            <div class="col-sm reduction_image" >
+                <img :src="thumbnail" class="video" alt="Video logo vimeo" height="150" width="150">
             </div>
+ 
 
         </div>
     </RouterLink>
@@ -93,6 +131,7 @@ ul ,base{
     flex-grow: 0;
     padding: 10px;
     padding-left: 50px;
+    align-content: center;
 }
 
 .container_extrait{

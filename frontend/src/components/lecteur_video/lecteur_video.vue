@@ -2,18 +2,22 @@
 import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
+import timecode from "./timecode.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
 import Extrait from '../../model/extrait';
+import Interview from '../../model/interview';
 
 export default {
   name: "page_lecteur_video",
-  components: { iframe_lecture_video, bar_liste_video, parametres },
+  components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
 
   props: {
-    uuid: {
+    Iuuid: {
       type: String,
-      required: true
+    },
+    Euuid: {
+      type: String,
     },
   },
 
@@ -25,6 +29,9 @@ export default {
       aside_visible: true,
       extrait: null,
       interview: null,
+      liste_extraits: null,
+      base_url_yt: "https://www.youtube.com/embed/",
+      base_url_vimeo: "https://player.vimeo.com/video/",
       url_yt: "",
       url_vimeo: "",
       url:null,
@@ -32,18 +39,17 @@ export default {
   },
 
   async mounted() {
-    this.extrait = markRaw(await Extrait.detail(this.uuid));
-
-    if (!this.extrait) {
-      console.error("Aucun extrait trouvé pour", this.uuid);
-      return;
+    this.extrait = markRaw(await Extrait.detail(this.Euuid));
+    this.interview = markRaw(await Interview.detail(this.Iuuid));
+    if (this.interview.uuid) {
+      this.liste_extraits = markRaw( await this.interview.extraits);
     }
 
-    this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
-    this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
+    this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+    this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+    
     this.set_url(videoStore.lecteur)
 
-    
   },
 
   beforeUnmount() {
@@ -64,8 +70,12 @@ export default {
     },
 
     picture_in_picture() {
-      console.log("→ Activation du Picture in Picture");
-      videoStore.uuid = this.uuid;
+      if (this.interview.uuid) {
+        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
+      }
+      else{
+        videoStore.uuid = this.Euuid;
+      }
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
       videoStore.url = this.url;
@@ -105,14 +115,54 @@ export default {
       this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
     },
 
-
     async set_lecteur(new_lecteur){
       videoStore.lecteur = new_lecteur
-      console.log("update url")
       this.set_url(videoStore.lecteur)
       
       await this.$refs.iframe.update_player()
     },
+
+    redirect_extrait(extrait){
+        // Mettre à jour l'extrait local
+        this.extrait = markRaw(extrait);
+        console.log("Extrait suivant UUID:", this.extrait.uuid);
+        console.log(this.extrait);
+        
+        // Mettre à jour les URLs
+        this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+        this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+        
+        // Réinitialiser le store
+        videoStore.currentTime = 0;
+        videoStore.isPlaying = true;
+        
+
+        // Mettre à jour l'URL sans recharger (optionnel)
+        this.$router.replace({
+          path: `/lecteur_video/${this.Iuuid}/${this.extrait.uuid}`
+        });
+
+        console.log("Lecture de l'extrait suivant lancée.");
+        console.log(this.Euuid);
+    },
+
+    async lunch_next_video() {
+      
+      if (!this.interview?.uuid) {
+        return;
+      }
+      
+      let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position; // recupère la position de l'extrait courant dans this.liste_extraits
+      
+      if (index < this.liste_extraits.length-1) {
+        let next_extrait = this.liste_extraits[index + 1];
+        this.redirect_extrait(next_extrait);
+
+      } else {
+        console.log("Fin de la liste des extraits de l'interview");
+      }
+    }
+
   },
 
     
@@ -128,15 +178,19 @@ export default {
       
       <iframe_lecture_video
         v-if="url"
-        :url=this.url
+        :url='this.url'
         ref="iframe"
-        @iframe_build = iframe_build
+        @iframe_build ="iframe_build"
+        @lunch_next_video="lunch_next_video"
+   
       />
+
+      <div v-else class="player"></div>
 
       
       <div>
         <div id="bottom-iframe">
-          <h2>{{ extrait?.titre || '' }}</h2>
+          <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
             <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
@@ -151,6 +205,16 @@ export default {
     </main>
 
     <aside v-show="aside_visible">
+    <timecode
+      v-if="liste_extraits"
+      :interview="interview"
+      :liste_extrait="liste_extraits"
+      @redirect_extrait="redirect_extrait"
+      @toggle_aside="toggle_aside"
+    />
+
+
+      
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         :current_extrait="extrait"
@@ -244,6 +308,8 @@ main {
   flex: 2.2;
   background-color: var(--gris-moyen);
   border-left: 3px solid var(--gris-taupe);
+  display: flex;
+  flex-direction: column;
 }
 
 .layout h2{
@@ -251,18 +317,13 @@ main {
   color: var(--vert-neon);
 }
 
-.player {
-  width: 100%;
-  height: 100%;
-  border: 3px solid var(--blanc);
-  border-radius: 20px;
-  background-color: #000;
-}
 
 iframe{
   width: 100%;
   height: 100%;
 }
+
+
 
 
 </style>
