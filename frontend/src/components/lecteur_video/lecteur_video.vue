@@ -39,7 +39,7 @@ export default {
     if (this.interview != null){ 
       console.log("Interview trouvée :", this.interview);
 
-      /// this.liste_extraits = markRaw( await this.interview.extraits);
+      this.liste_extraits = markRaw( await this.interview.extraits);
       if (!this.extrait){
         this.extrait = markRaw(this.liste_extraits[0]);
         this.extrait_current.set(this.liste_extraits[0]);
@@ -206,9 +206,9 @@ export default {
 
     <aside v-show="aside_visible">
     <timecode
-      v-if="liste_extraits"
+      v-if="this.interview"
       :interview="interview"
-      :liste_extrait="liste_extraits"
+      :liste_extraits="liste_extraits"
       @redirect_extrait="redirect_extrait"
       @toggle_aside="toggle_aside"
     />

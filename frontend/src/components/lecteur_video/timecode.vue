@@ -1,13 +1,11 @@
 <script>
 import { toRaw, markRaw } from "vue";
 
-import Extrait from '../../model/extrait';
-import { videoStore } from "../../model/videoStore";
 
 export default {
   props: {
     interview: {type: Object,},
-    liste_extrait: {type: Array,},
+    liste_extraits: {type: Array,},
     
 
 
@@ -45,18 +43,20 @@ export default {
 
     set_dico_timecode() {
         let current_time = 0;
-        for (let extrait of this.liste_extrait) {
+        console.log("liste_extraits dans set_dico_timecode: ", this.liste_extraits);
+        for (let extrait of this.liste_extraits) {
             this.dico_timecode[extrait.titre] = this.format_duree(current_time);
             current_time += extrait.duree;
         }
         this.dico_timecode["duree"] = this.format_duree(current_time);
-        console.log("les extraits: ", this.liste_extrait);
+        console.log("les extraits: ", this.liste_extraits);
         console.log("dico_timecode: ", toRaw(this.dico_timecode));
     },
 
   },
 
   async mounted() {
+    
       this.set_dico_timecode();
       console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));
   },
@@ -80,7 +80,7 @@ export default {
     <p>Duree de l'interview : {{ this.dico_timecode["duree"] }}</p>
         
         <ul>
-            <li v-for="extrait in liste_extrait" @click="this.$emit('redirect_extrait', extrait)">
+            <li v-for="extrait in liste_extraits" @click="this.$emit('redirect_extrait', extrait)">
                 <span>{{ this.dico_timecode[extrait.titre] }}</span>&nbsp;{{extrait.titre}} <!-- &nbsp; espace insécable -->
             </li>
         </ul>
