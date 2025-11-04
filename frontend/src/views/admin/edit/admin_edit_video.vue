@@ -17,6 +17,7 @@ export default {
         return {
             current_extrait : {type:Extrait},
             tags:[],
+            thumbnail: '/imgs/width551.png',
             question : null,
             popup: false
         };
@@ -73,7 +74,12 @@ export default {
     await this.current_extrait.question;
     this.question = 'Chargement...';
 
-      
+
+    if (this.current_extrait.url_miniature_yt != null) {
+        this.thumbnail = this.current_extrait.url_miniature_yt
+    }else{
+        this.thumbnail = await this.current_extrait.url_miniature_vi()
+    }
 
   },
 
@@ -90,9 +96,9 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <div class="col-md-4">
-          <img src="/imgs/width551.png" class="migniature" alt="migniature">
-        </div>
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+          <img :src="thumbnail" class="migniature" alt="migniature">
+        </RouterLink>
 
         <div class="col-md-6">
           <div class="row"  style="--bs-gutter-x: 0em;">
@@ -195,6 +201,11 @@ export default {
     </template>
 
 <style scoped>
+.migniature{
+  height: 90%;
+  width: 90%;
+}
+
 .card {
   background-color: var(--gris-moyen);
   filter: drop-shadow(20px 13px 4px var(--noir));
