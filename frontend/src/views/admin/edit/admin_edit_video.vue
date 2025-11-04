@@ -1,11 +1,11 @@
 <script>
-
+import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
-import { markRaw } from 'vue';
+
 
 export default {
   name: "page_admin_detail_video",

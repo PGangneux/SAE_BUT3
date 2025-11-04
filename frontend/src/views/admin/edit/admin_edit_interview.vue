@@ -1,8 +1,10 @@
 <script>
-
+import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
 
+import Interview from '../../../model/interview.js';
+import Extrait from "../../../model/extrait";
 
 export default {
     name: "page_admin_edit_interview",
@@ -12,10 +14,31 @@ export default {
 
     },data() {
         return {
-            extraits: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            Extraitlist : [],
+            current_interview:{type:Interview},
             extrait_actif: [ 'jip','jap','jop']
     };
-  }
+  },
+
+ async mounted() {
+    //reccuperation de l'id en parametre
+    const InterviewId = this.$route.params.id;
+    console.log("ID de l'Interview' :", InterviewId);
+
+    //reccuperation de l'Extrait via l'id
+    this.current_interview =  markRaw(await Interview.detail(InterviewId));
+    this.Extraitlist = markRaw(await Extrait.list());
+
+    console.log(this.current_interview);
+
+    
+    await this.current_interview.artiste;
+    await this.current_interview.question;
+    this.question = 'Chargement...';
+
+      
+
+  },
 
 };
 
@@ -29,7 +52,7 @@ export default {
 <h1 class="text-center"> Edit Interview-Playlist </h1>
 
 <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-        <h1> Titre - Playlist </h1>
+        <h1> {{ this.current_interview.titre }} - Playlist </h1>
 
         <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
           <div class="form-group">
@@ -44,7 +67,7 @@ export default {
 
             <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait existant</h1>
-              <h1> Total Question-Extrait : {{extraits.length}}</h1>
+              <h1> Total Question-Extrait : {{5}}</h1>
             </div>
 
             <div class="search-bar grisee">
@@ -57,8 +80,8 @@ export default {
             </div>
 
             <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <li class="row carte pcentrer" v-for="extrait in extraits" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                    <comp_petit_extrait/>
+                <li class="row carte pcentrer" v-for="extrait in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <comp_petit_extrait :current_extrait=extrait />
                 </li>
             </ul>
         </div>

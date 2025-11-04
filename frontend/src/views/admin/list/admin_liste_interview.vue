@@ -1,6 +1,9 @@
 <script>
+import { markRaw } from 'vue';
+import Interview from '../../../model/interview.js';
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+
 
 export default {
   name: "page_admin_interview",
@@ -9,10 +12,37 @@ export default {
 
   },data() {
         return {
+            interviews:{type:Interview},
             tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
         };
+    },
+
+
+  async mounted() {
+    this.interviews = markRaw(await Interview.list());
+    console.log("liste des interviews")
+    console.log(this.interviews)
+
+    try {
+        for (let interview of this.interviews) {
+
+        interview.realiserextraits = await interview.extraits;
     }
+
+
+
+    } catch (error) {
+      console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
+    }
+  },
+  methods: {
+    
+    extraitsLength(extraits) {
+      return extraits ? extraits.length : 0;
+  },
+},
 };
+
 
 
 
@@ -74,11 +104,11 @@ export default {
                 </thead>
                 <tbody>
                     
-                        <tr class="col" v-for="tag in tags">
+                        <tr class="col" v-for="interview in this.interviews">
                             
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink> </td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ extraitsLength(interview.realiserextraits) }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.tags }} </RouterLink> </td>
                             
                         </tr>
                     

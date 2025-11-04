@@ -10,8 +10,7 @@ export default {
         comp_baradmin,
     },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
-            utilisateurs:null,
+            utilisateurs:{type:User},
         };
     },
 
@@ -63,9 +62,9 @@ export default {
             </thead>
             <tbody class="tobodd">
                 <tr class="col" v-for="utilisateur in this.utilisateurs">
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ utilisateur.pseudo }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ utilisateur.nom }} </RouterLink> </td>
-                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/user/edit"> {{ utilisateur.prenom }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.pseudo }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.nom }} </RouterLink> </td>
+                    <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> {{ utilisateur.prenom }} </RouterLink> </td>
                     <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/user/'+ utilisateur.uuid}"> <button class="bt"> Details </button> </RouterLink> </td>
                 </tr>
             </tbody>
