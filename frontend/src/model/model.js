@@ -89,7 +89,7 @@ export default class Model {
 
     /**
      * Récupère l'instance de Class 
-     * @param {*} elem 
+     * @param {string} url 
      * @param {Class} Class 
      * @returns {Promise<Model>}
      */
@@ -100,9 +100,9 @@ export default class Model {
 
     /**
      * Récupère la liste d'instances de Class 
-     * @param {*} elem 
+     * @param {string} url 
      * @param {Class} Class 
-     * @returns {Promise<Model>}
+     * @returns {Promise<Array<Model>>}
      */
     async fetchList(url, Class) {
         return await clientAPI.get(url)
@@ -112,7 +112,7 @@ export default class Model {
     /**
      * Récupère la liste des éléments de this
      * @param {Record<string, string|string[]>} args
-     * @returns {Promise<Model>}
+     * @returns {Promise<Array<Model>>}
      */
     static async list(args=null) {
         return await clientAPI.get(await clientAPI.endpoints(this.endpoint), args)
@@ -120,13 +120,24 @@ export default class Model {
     }
 
     /**
-     * Récupère l'élément de this appartir de son uuid
+     * Permet de chercher dans la liste d'éléments
+     * @param {string} search 
+     * @param {Record<string, string|string[]>} args 
+     * @returns {Promise<Array<Model>>}
+     */
+    static async search(search, args=null) {
+        args ? args['search'] = search : args = {'search': search};
+        return await this.list(args);
+    }
+
+    /**
+     * Récupère l'élément de this à partir de son uuid
      * @param {string} uuid 
      * @returns {Promise<Model>}
      */
     static async detail(uuid) {
         return await clientAPI.get(clientAPI.url_uuid(await clientAPI.endpoints(this.endpoint), uuid))
-        .then(data => { return new this(data); });
+        .then(data => {return new this(data); });
     }
 
     /**

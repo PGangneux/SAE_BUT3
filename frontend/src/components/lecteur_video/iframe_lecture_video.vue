@@ -4,27 +4,27 @@ import { videoStore } from "../../model/videoStore";
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 
-// Charger l’API YouTube une seule fois globalement
-function loadYouTubeAPI() {
-  if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
-
-  if (!window._ytApiPromise) {
-    window._ytApiPromise = new Promise((resolve) => {
-      const tag = document.createElement("script");
-      tag.src = YT_API_URL;
-      window.onYouTubeIframeAPIReady = () => resolve(window.YT);
-      document.head.appendChild(tag);
-    });
-  }
-
-  return window._ytApiPromise;
-}
-
 export default {
   props: { url: String },
 
   setup(props, { expose, emit }) {
     const player = ref(null);
+
+    // Charger l’API YouTube une seule fois globalement
+    function loadYouTubeAPI() {
+      if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
+
+      if (!window._ytApiPromise) {
+        window._ytApiPromise = new Promise((resolve) => {
+          const tag = document.createElement("script");
+          tag.src = YT_API_URL;
+          window.onYouTubeIframeAPIReady = () => resolve(window.YT);
+          document.head.appendChild(tag);
+        });
+      }
+
+      return window._ytApiPromise;
+    }
 
     function get_YT_videoId(url) {
       try {
@@ -43,9 +43,9 @@ export default {
     let intervalId = null;
 
     function startTracking() {
-      console.log("lancement compte seconde:", JSON.parse(JSON.stringify(videoStore)))
       intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
+          /// console.log("YouTube current time :", player.value.getCurrentTime());
           videoStore.currentTime = player.value.getCurrentTime();
         }
       }, 1000);
@@ -58,8 +58,8 @@ export default {
       }
     }
 
-    function reset_old_lecteur(){
-      // ✅ Nettoyer l'ancien player
+    function reset_old_lecteur() {
+      //  Nettoyer l'ancien player
       if (player.value) {
         if (typeof player.value.destroy === 'function') {
           player.value.destroy();
@@ -67,7 +67,6 @@ export default {
         player.value = null;
       }
     }
-
 
     async function initYouTube(videoId) {
       stopTracking()
@@ -84,30 +83,33 @@ export default {
           onReady: (event) => {
             if (videoStore.currentTime) {
               event.target.seekTo(current_time);
-              videoStore.currentTime = current_time
+              videoStore.currentTime = current_time;
               // Synchronisation du temps de lecture
-              startTracking()
             }
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
           },
           onStateChange: (event) => {
-            if (event.data === YT.PlayerState.PLAYING) videoStore.isPlaying = true;
-            if (event.data === YT.PlayerState.PAUSED) videoStore.isPlaying = false;
+            if (event.data === YT.PlayerState.PLAYING) {
+              videoStore.isPlaying = true;
+              startTracking();
+            }
+            if (event.data === YT.PlayerState.PAUSED) {
+              videoStore.isPlaying = false;
+              stopTracking();
+            }
+            if (event.data === YT.PlayerState.ENDED) emit('lancement_prochaine_video');
           },
         },
       });
 
-      
+
     }
-
-
 
     async function initVimeo() {
       stopTracking()
       reset_old_lecteur()
       const current_time = videoStore.currentTime
-      console.log("changement lecteur 1: ", JSON.parse(JSON.stringify(videoStore)))
       // Charger Vimeo API si pas encore là
       if (!window.Vimeo || !window.Vimeo.Player) {
         await new Promise((resolve) => {
@@ -117,14 +119,13 @@ export default {
           document.body.appendChild(script);
         });
       }
-      
-      console.log("changement lecteur 2: ", JSON.parse(JSON.stringify(videoStore)))
+
       // Créer l'iframe
       const container = document.getElementById("player");
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
-      
+
       iframe.src = props.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
@@ -132,7 +133,6 @@ export default {
       iframe.style.height = "100%";
       container.appendChild(iframe);
 
-      console.log("changement lecteur 3: ", JSON.parse(JSON.stringify(videoStore)))
 
       // Créer le player
       const vimeoPlayer = new window.Vimeo.Player(iframe);
@@ -144,9 +144,7 @@ export default {
         console.error("Vimeo jamais prêt :", e);
         return;
       }
-      console.log("changement lecteur 4: ", JSON.parse(JSON.stringify(videoStore)))
       // Synchroniser l'état
-      console.log("changement lecteur 60: ", JSON.parse(JSON.stringify(videoStore)))
       if (videoStore.currentTime) {
         try {
           await vimeoPlayer.setCurrentTime(current_time);
@@ -160,39 +158,42 @@ export default {
       else await vimeoPlayer.pause();
 
       // Écoute des événements
-      vimeoPlayer.on("timeupdate", ({ seconds }) => (videoStore.currentTime = seconds));
+      vimeoPlayer.on("timeupdate", ({ seconds }) => {
+         /// console.log("Vimeo timeupdate :", seconds);
+        videoStore.currentTime = seconds; 
+      });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
+      vimeoPlayer.on("ended", () => (emit('lancement_prochaine_video')));
 
       player.value = vimeoPlayer;
     }
 
     async function update_player() {
-      console.log("AV changement lecteur 0: ", JSON.parse(JSON.stringify(videoStore)))
-      
-      
-
       await nextTick();
 
       if (props.url.includes("youtube")) {
-        
+
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
-        console.log("AV changement lecteur: ", JSON.parse(JSON.stringify(videoStore)))
         await initVimeo();
       }
     }
 
     onMounted(async () => {
+      /// console.log("Initialisation du lecteur iframe vidéo");
+      /// console.log("URL vidéo :", props.url);
+      /// console.log("Temps courant :", videoStore);
       await nextTick();
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
       } else {
-        
+
         await initVimeo();
       }
+
       emit('iframe_build')
 
 
@@ -220,13 +221,10 @@ export default {
 </template>
 
 <style scoped>
-
 .rootElement {
   width: 100%;
   height: 100%;
 
   background-color: #000;
 }
-
 </style>
-

@@ -1,8 +1,10 @@
 <script>
-
+import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
 
+import Interview from '../../../model/interview.js';
+import Extrait from "../../../model/extrait";
 
 export default {
     name: "page_admin_edit_interview",
@@ -12,9 +14,38 @@ export default {
 
     },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB']
+            Extraitlist : [],
+            current_interview:{type:Interview},
+            extrait_actif: [ 'jip','jap','jop']
     };
-  }
+  },
+  computed: {
+      description: {
+        get() {
+          return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
+        },
+      },
+  },
+
+ async mounted() {
+    //reccuperation de l'id en parametre
+    const InterviewId = this.$route.params.id;
+    console.log("ID de l'Interview' :", InterviewId);
+
+    //reccuperation de l'Extrait via l'id
+    this.current_interview =  markRaw(await Interview.detail(InterviewId));
+    this.Extraitlist = markRaw(await Extrait.list());
+
+    console.log(this.current_interview);
+
+    
+    await this.current_interview.artiste;
+    await this.current_interview.question;
+    this.question = 'Chargement...';
+
+      
+
+  },
 
 };
 
@@ -25,11 +56,27 @@ export default {
 
 <comp_baradmin/>
 
-<h1 class="text-center"> Admin </h1>
+<h1 class="text-center"> Edit Interview-Playlist </h1>
 
-<div class="row" >
-    <div class="col-md-5 aggrandir">
-        <div class="container row ">
+<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+        <h1> {{ this.current_interview.titre }} - Playlist </h1>
+
+        <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
+          <div class="form-group">
+            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
+          </div>
+        </div>
+</div>
+
+<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" >
+    <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel); margin: 1%;">
+        <div class="container row  pcentrer " style=" margin-left: 0 !important; margin-right: 0 !important;">
+
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+              <h1> Question-Extrait existant</h1>
+              <h1> Total Question-Extrait : {{5}}</h1>
+            </div>
+
             <div class="search-bar grisee">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
@@ -39,37 +86,47 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row">
-                <li class="row carte" v-for="tag in tags">
+            <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <li class="row carte pcentrer" v-for="extrait in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <comp_petit_extrait :current_extrait=extrait />
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div  class="col" ></div>
+
+    <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale); margin: 1%;">
+        <div class="container row pcentrer  " style=" margin-left: 0 !important; margin-right: 0 !important;">
+
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+              <h1> Question-Extrait dans Playlist</h1>
+              <h1> Total Question-Extrait : {{ 8 }}</h1>
+            </div>
+
+            <div class="search-bar grisee">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                    </button>
+                </div>
+            </div>
+
+            <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <li class="row carte pcentrer" v-for="extrait in extrait_actif" style=" margin-left: 0 !important; margin-right: 0 !important;">
                     <comp_petit_extrait/>
                 </li>
             </ul>
         </div>
-
-
-    </div>
-
-    <div class="col-md-5">
-        <h1> Titre - Playlist </h1>
-
-
-        <div class="row"  style="--bs-gutter-x: 0em;">
-          <div class="form-group">
-            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
-          </div>
-        </div>
-
-        <div class="row pad"  style="--bs-gutter-x: 0em;">
-            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
-            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-            <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
-
-
-          </div>
-
     </div>
 </div>
 
+<div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
+            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
+            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+            <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+</div>
 
 
 </template>
@@ -101,6 +158,10 @@ export default {
  
 }
 
+.pcentrer{
+margin-top: 1em;
+justify-content: center
+}
 
 .button-blanc{
     background-color: var(--blanc);
@@ -113,6 +174,10 @@ export default {
     border-radius: 2em;
     
 }
+
+
+
+
 li > .card{
     padding: 20px 50px 150px;
     margin: 10px 10px 10px 10px;
@@ -139,8 +204,8 @@ ul {
 
 
 .aggrandir{
-  display: flex;
-  flex-wrap: nowrap;
+  /*! display: flex; */
+  /*! flex-wrap: nowrap; */
   list-style-type: none;
   flex-grow: 1;
 

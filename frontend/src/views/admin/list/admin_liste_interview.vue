@@ -1,6 +1,9 @@
 <script>
+import { markRaw } from 'vue';
+import Interview from '../../../model/interview.js';
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+
 
 export default {
   name: "page_admin_interview",
@@ -9,10 +12,36 @@ export default {
 
   },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2','GAB','GAB'],
+            interviews:{type:Interview},
         };
+    },
+
+
+  async mounted() {
+    this.interviews = markRaw(await Interview.list());
+    console.log("liste des interviews")
+    console.log(this.interviews)
+
+    try {
+        for (let interview of this.interviews) {
+            interview.realiserextraits = await interview.extraits;
+            console.log(interview.realiserextraits.length)
+        }
+
+
+
+    } catch (error) {
+      console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
     }
+  },
+  methods: {
+    
+    extraitsLength(extraits) {
+      return extraits ? extraits.length : 0;
+  },
+},
 };
+
 
 
 
@@ -22,11 +51,16 @@ export default {
 
 <comp_baradmin/>
 
-<h1 class="text-center">Interview</h1>
+<h1 class="text-center">Interview-Playlist</h1>
 
 <div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;">
     
     <div class="col-md-4 main-trie">
+
+        <div class="row ">
+            <button type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+        </div>
+
         
         <div class="container col recherche">
             <div class="search-bar">
@@ -37,6 +71,11 @@ export default {
                         </button>
                 </div>
             </div>
+        </div>
+
+        <div class="row">
+            <button class="bt btn col ">Date</button>
+            <button class="bt btn col ">Name</button>
         </div>
 
         <div class="row  trie-tags centrer">
@@ -64,11 +103,11 @@ export default {
                 </thead>
                 <tbody>
                     
-                        <tr class="col" v-for="tag in tags">
+                        <tr class="col"  v-for="interview in this.interviews">
                             
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink> </td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.realiserextraits ? interview.realiserextraits.length :0}} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.tags }} </RouterLink> </td>
                             
                         </tr>
                     
@@ -119,6 +158,13 @@ export default {
 
 .tables{
     width: 100%;
+}
+
+.bt{
+    color: var(--blanc);
+    background-color:var(--vert-pale);
+    border-radius: 2em;
+    
 }
 
 .button-blanc{

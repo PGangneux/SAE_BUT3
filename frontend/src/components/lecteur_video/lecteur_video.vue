@@ -2,20 +2,15 @@
 import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
+import timecode from "./timecode.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
-import Extrait from '../../model/extrait';
+
 
 export default {
   name: "page_lecteur_video",
-  components: { iframe_lecture_video, bar_liste_video, parametres },
-
-  props: {
-    uuid: {
-      type: String,
-      required: true
-    },
-  },
+  inject : ["extrait_current", "interview_current"],
+  components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
 
   data() {
     return {
@@ -23,8 +18,11 @@ export default {
       pos_x_iframe: null,
       pos_y_iframe: null,
       aside_visible: true,
-      extrait: null,
       interview: null,
+      extrait: null,
+      liste_extraits: null,
+      base_url_yt: "https://www.youtube.com/embed/",
+      base_url_vimeo: "https://player.vimeo.com/video/",
       url_yt: "",
       url_vimeo: "",
       url:null,
@@ -32,18 +30,41 @@ export default {
   },
 
   async mounted() {
-    this.extrait = markRaw(await Extrait.detail(this.uuid));
+    /// console.log("Mounted lecteur_video.vue");
+    this.interview = markRaw(await this.interview_current.get());
+    this.extrait = markRaw(await this.extrait_current.get());
+    console.log("interview current:", this.interview);
+    console.log("extrait current:", this.extrait);
 
-    if (!this.extrait) {
-      console.error("Aucun extrait trouvé pour", this.uuid);
-      return;
+    if (this.interview != null){ 
+      console.log("Interview trouvée :", this.interview);
+
+      /// this.liste_extraits = markRaw( await this.interview.extraits);
+      if (!this.extrait){
+        this.extrait = markRaw(this.liste_extraits[0]);
+        this.extrait_current.set(this.liste_extraits[0]);
+      }
+      else {
+        console.log("extrait current déjà défini :", this.extrait);
+      }
+    }
+    else {
+      if (this.extrait){
+        console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait);
+      }
+      else {
+        console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
+      }
+      this.liste_extraits = null;
     }
 
-    this.url_yt = "https://www.youtube.com/embed/" + this.extrait.youtube_url;
-    this.url_vimeo = "https://player.vimeo.com/video/" + this.extrait.vimeo_url;
+    this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+    this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+
+    console.log("etxerait current dans lecteur video:", this.extrait)
+    
     this.set_url(videoStore.lecteur)
 
-    
   },
 
   beforeUnmount() {
@@ -64,8 +85,7 @@ export default {
     },
 
     picture_in_picture() {
-      console.log("→ Activation du Picture in Picture");
-      videoStore.uuid = this.uuid;
+      videoStore.uuid = this.extrait.uuid;
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
       videoStore.url = this.url;
@@ -105,18 +125,48 @@ export default {
       this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
     },
 
-
     async set_lecteur(new_lecteur){
       videoStore.lecteur = new_lecteur
-      console.log("update url")
       this.set_url(videoStore.lecteur)
       
       await this.$refs.iframe.update_player()
     },
+
+    redirect_extrait(extrait){
+        // Mettre à jour l'extrait local
+        this.extrait_current.set(markRaw(extrait)) ;
+        this.extrait = markRaw(extrait);
+
+        // Mettre à jour les URLs
+        this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+        this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+        
+        // Réinitialiser le store
+        videoStore.currentTime = 0;
+        videoStore.isPlaying = true;
+        
+    },
+
+    async lancement_prochaine_video() {
+      
+      if (!this.interview) {
+        return;
+      }
+      
+      let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position; // recupère la position de l'extrait courant dans this.liste_extraits
+      
+      if (index < this.liste_extraits.length-1) {
+        let next_extrait = this.liste_extraits[index + 1];
+        this.redirect_extrait(next_extrait);
+
+      } else {
+        console.log("Fin de la liste des extraits de l'interview");
+      }
+    }
+
   },
 
-    
-
+  
 
 };
 </script>
@@ -128,15 +178,19 @@ export default {
       
       <iframe_lecture_video
         v-if="url"
-        :url=this.url
+        :url='this.url'
         ref="iframe"
-        @iframe_build = iframe_build
+        @iframe_build ="iframe_build"
+        @lancement_prochaine_video="lancement_prochaine_video"
+   
       />
+
+      <div v-else class="player"></div>
 
       
       <div>
         <div id="bottom-iframe">
-          <h2>{{ extrait?.titre || '' }}</h2>
+          <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
             <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
@@ -151,6 +205,16 @@ export default {
     </main>
 
     <aside v-show="aside_visible">
+    <timecode
+      v-if="liste_extraits"
+      :interview="interview"
+      :liste_extrait="liste_extraits"
+      @redirect_extrait="redirect_extrait"
+      @toggle_aside="toggle_aside"
+    />
+
+
+      
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         :current_extrait="extrait"
@@ -244,6 +308,8 @@ main {
   flex: 2.2;
   background-color: var(--gris-moyen);
   border-left: 3px solid var(--gris-taupe);
+  display: flex;
+  flex-direction: column;
 }
 
 .layout h2{
@@ -251,18 +317,13 @@ main {
   color: var(--vert-neon);
 }
 
-.player {
-  width: 100%;
-  height: 100%;
-  border: 3px solid var(--blanc);
-  border-radius: 20px;
-  background-color: #000;
-}
 
 iframe{
   width: 100%;
   height: 100%;
 }
+
+
 
 
 </style>

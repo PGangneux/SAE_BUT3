@@ -1,4 +1,5 @@
 <script>
+import { videoStore } from '../../model/videoStore';
 import parametres_lecteur from './parametres_lecteur.vue';
 
 
@@ -44,6 +45,8 @@ export default {
 
     },
     mounted() {
+        console.log("videoStore dans param")
+        console.log(JSON.parse(JSON.stringify(videoStore)))
         this.$nextTick(() => {
             const rect = this.$refs.popup_parametres.getBoundingClientRect();
             this.pos_x= this.get_pos_x(rect);
@@ -63,7 +66,7 @@ export default {
   >
     <div class="popup-content">
       <ul class="popup-labels">
-        <li>Lecteur vidéo</li>
+        <li @click="toggle_parametre_lecteur">Lecteur vidéo</li>
       </ul>
       <ul class="popup-values">
         <li @click="toggle_parametre_lecteur">{{ lecteur }} > </li>

@@ -10,10 +10,14 @@
     --gris-ultraclair :  #D9D9D9;
     --rouge : #F91119; 
     --blanc : #FFFFFF;
-    --bleu : #00f;
+    --bleu : #00A1F2;
     --jaune : #FFD500;
 }
 @media (prefers-color-scheme: light) {
+}
+
+html{
+  display: flex;
 }
 
 html, body {
@@ -21,6 +25,7 @@ html, body {
   padding: 0;
   width: 100%;
   min-height: 100%; /* s’étend au moins sur la hauteur de la fenêtre, mais peut grandir */
+    
 }
 
 
@@ -56,6 +61,7 @@ p, h1, h2, h3, h4, h5, h6, li{
   border: 3px solid var(--blanc);
   border-radius: 20px;
   background-color: #000;
+  
 }
 
 iframe{
