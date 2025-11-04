@@ -5,21 +5,12 @@ import bar_liste_video from "./bar_liste_video.vue";
 import timecode from "./timecode.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
-import Extrait from '../../model/extrait';
-import Interview from '../../model/interview';
+
 
 export default {
   name: "page_lecteur_video",
+  inject : ["extrait_current", "interview_current"],
   components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
-
-  props: {
-    Iuuid: {
-      type: String,
-    },
-    Euuid: {
-      type: String,
-    },
-  },
 
   data() {
     return {
@@ -27,8 +18,8 @@ export default {
       pos_x_iframe: null,
       pos_y_iframe: null,
       aside_visible: true,
-      extrait: null,
       interview: null,
+      extrait: null,
       liste_extraits: null,
       base_url_yt: "https://www.youtube.com/embed/",
       base_url_vimeo: "https://player.vimeo.com/video/",
@@ -39,15 +30,38 @@ export default {
   },
 
   async mounted() {
-    
-    this.extrait = markRaw(await Extrait.detail(this.Euuid));
-    this.interview = markRaw(await Interview.detail(this.Iuuid));
-    if (this.interview.uuid) {
-      this.liste_extraits = markRaw( await this.interview.extraits);
+    /// console.log("Mounted lecteur_video.vue");
+    this.interview = markRaw(await this.interview_current.get());
+    this.extrait = markRaw(await this.extrait_current.get());
+    console.log("interview current:", this.interview);
+    console.log("extrait current:", this.extrait);
+
+    if (this.interview != null){ 
+      console.log("Interview trouvée :", this.interview);
+
+      /// this.liste_extraits = markRaw( await this.interview.extraits);
+      if (!this.extrait){
+        this.extrait = markRaw(this.liste_extraits[0]);
+        this.extrait_current.set(this.liste_extraits[0]);
+      }
+      else {
+        console.log("extrait current déjà défini :", this.extrait);
+      }
+    }
+    else {
+      if (this.extrait){
+        console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait);
+      }
+      else {
+        console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
+      }
+      this.liste_extraits = null;
     }
 
     this.url_yt = this.base_url_yt + this.extrait.youtube_url;
     this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+
+    console.log("etxerait current dans lecteur video:", this.extrait)
     
     this.set_url(videoStore.lecteur)
 
@@ -71,12 +85,7 @@ export default {
     },
 
     picture_in_picture() {
-      if (this.interview.uuid) {
-        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
-      }
-      else{
-        videoStore.uuid = this.Euuid;
-      }
+      videoStore.uuid = this.extrait.uuid;
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
       videoStore.url = this.url;
@@ -125,10 +134,9 @@ export default {
 
     redirect_extrait(extrait){
         // Mettre à jour l'extrait local
+        this.extrait_current.set(markRaw(extrait)) ;
         this.extrait = markRaw(extrait);
-        console.log("Extrait suivant UUID:", this.extrait.uuid);
-        console.log(this.extrait);
-        
+
         // Mettre à jour les URLs
         this.url_yt = this.base_url_yt + this.extrait.youtube_url;
         this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
@@ -137,19 +145,11 @@ export default {
         videoStore.currentTime = 0;
         videoStore.isPlaying = true;
         
-
-        // Mettre à jour l'URL sans recharger (optionnel)
-        this.$router.replace({
-          path: `/lecteur_video/${this.Iuuid}/${this.extrait.uuid}`
-        });
-
-        console.log("Lecture de l'extrait suivant lancée.");
-        console.log(this.Euuid);
     },
 
     async lancement_prochaine_video() {
       
-      if (!this.interview?.uuid) {
+      if (!this.interview) {
         return;
       }
       
@@ -166,8 +166,7 @@ export default {
 
   },
 
-    
-
+  
 
 };
 </script>

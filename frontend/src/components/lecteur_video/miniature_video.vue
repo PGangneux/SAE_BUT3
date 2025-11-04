@@ -9,9 +9,9 @@ export default {
     return { url: null };
   },
   async mounted() {
-    console.log("Mounted miniature_video for video:", this.video.uuid);
+    /// console.log("Mounted miniature_video for video:", this.video.uuid);
     this.url = await this.get_miniature(this.video);
-    console.log("Miniature URL:", this.url);
+    /// console.log("Miniature URL:", this.url);
   },
   methods: {
     async get_miniature(video) {
