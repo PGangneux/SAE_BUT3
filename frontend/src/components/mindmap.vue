@@ -1,5 +1,5 @@
 <script>
-import { LegendColorMap, mmget , mmget_all} from './mindmap_func.js';
+import { LegendColorMap, mmget , mmget_all} from '../model/mindmap_func.js';
 
 export default {
     name: "comp_mindmap",
