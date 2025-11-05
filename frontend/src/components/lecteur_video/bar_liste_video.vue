@@ -1,13 +1,19 @@
 <script>
-import { markRaw } from 'vue';
+import { markRaw, toRaw } from 'vue';
 import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
 import miniature_video from "./miniature_video.vue";
+import Artiste from '../../model/artiste';
 
 export default {
   components: { miniature_video, },
   emits: ["toggle_aside", 'update'],
   inject : ["extrait_current", "interview_current"],
+  props: {
+    liste_extraits_current_interview: {
+      type: Object,
+    }
+  },
   data() {
     return {
       videos: null,
@@ -19,6 +25,8 @@ export default {
     };
   },
   methods : {
+
+
     async interview_current_extrait(){
       this.selected = "extrait_in_playlists"
       this.videos = markRaw(await this.extrait.interviews)
@@ -30,18 +38,74 @@ export default {
       console.log(this.extrait)
       this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits}))
     },
-    async reset_videoStore(extrait) {
-      ///console.log("reset")
-      this.extrait_current.set(extrait);
-      this.interview_current.set(null);
+
+    async extraits_interviews_current_artiste() {
+      this.selected = "artiste";
+
+      const artistes_current_video = [];
+
+      if (this.interview) {
+        for (const extrait of this.liste_extraits_current_interview) {
+          const artiste = await extrait.artiste;
+          if (artiste && !artistes_current_video.includes(artiste)) {
+            artistes_current_video.push(artiste);
+          }
+        }
+      } else {
+        const artiste = await this.extrait.artiste;
+        if (artiste) artistes_current_video.push(artiste);
+      }
+
+      const extraits_artiste = new Map();
+      const interviews_artiste = new Map();
+
+      for (const artiste of artistes_current_video) {
+        const extraits_artiste_all = await artiste.extraits;
+
+        for (const un_extrait of extraits_artiste_all) {
+          extraits_artiste.set(un_extrait.uuid, un_extrait);
+
+          const interviews_extrait_all = await un_extrait.interviews;
+          for (const un_interview of interviews_extrait_all || []) {
+            interviews_artiste.set(un_interview.uuid, un_interview);
+          }
+        }
+      }
+
+      const artiste_videos = [
+        ...extraits_artiste.values(),
+        ...interviews_artiste.values()
+      ];
+
+      this.videos = markRaw(artiste_videos);
+    },
+
+
+
+    async update_liste_video(video) {
+      // maj du extrait_current ou interview_current selon le type de video
+
+      if (video.extraits) {
+        // c'est une interview
+        this.interview_current.set(video);
+        this.extrait_current.set(null);
+      } else {
+        // c'est un extrait
+        this.extrait_current.set(video);
+        this.interview_current.set(null);
+      }
+
+      // recupération des nouveau extrait et interview
+      this.extrait = await this.extrait_current.get();
+      this.interview = await this.interview_current.get();
       
-      videoStore.currentTime = 0;
+      // reset du videoStore
+      // videoStore.currentTime = 0;
       videoStore.isPlaying = true;
-      ///console.log("videostore dans reset_videoStore avant clearInterval", videoStore.currentTime, videoStore.intervalId)
       clearInterval(videoStore.intervalId);
-      ///console.log("videostore dans reset_videoStore après clearInterval", videoStore.currentTime, videoStore.intervalId)
       videoStore.intervalId = null;
       videoStore.currentTime = 0;
+
       ///console.log("videostore dans reset_videoStore", videoStore.currentTime, videoStore.intervalId)
 
       this.$emit('update');
@@ -51,8 +115,8 @@ export default {
 
   },
   async mounted() {
-    this.interview = await this.interview_current.get()
-    this.extrait = await this.extrait_current.get()
+    this.interview = toRaw(await this.interview_current.get());
+    this.extrait = toRaw(await this.extrait_current.get());
     this.videos = markRaw(await Extrait.list());
     console.log("interview", this.interview)
     if (this.interview) this.img_close = false;
@@ -67,11 +131,11 @@ export default {
     <header>
         <nav class="header-nav">
             <ul class="menu">
-              <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
+              <li @click="extraits_interviews_current_artiste" :class="{selected: selected === 'artiste'}">Artiste</li>
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
+              <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <!--si la video est un extrait-->
-              <li v-if="this.interview != {}" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
-              <li v-if="this.interview != {}" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists</li>
               
             </ul>
             
@@ -90,8 +154,8 @@ export default {
                     <li v-for="video in videos">
                         <div v-if="video.uuid != current_extrait?.uuid">
                             
-                            <miniature_video v-if="this.interview" @click="reset_videoStore(video)" :video="video" />
-                            <miniature_video v-else @click="reset_videoStore(video)" :video="video" />
+                            <miniature_video v-if="this.interview" @click="update_liste_video(video)" :video="video" />
+                            <miniature_video v-else @click="update_liste_video(video)" :video="video" />
                           <div>
                               <h4>{{ video.titre }}</h4>
                               <p>{{ video.description }}</p>

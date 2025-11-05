@@ -248,8 +248,7 @@ export default {
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         @update="update"
-        :current_extrait="extrait"
-        :current_interview="interview"
+        :liste_extraits_current_interview="this.liste_extraits"
       />
     </aside>
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
