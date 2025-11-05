@@ -42,19 +42,37 @@ export default {
             },
             interview_current: {
                 get: async () => {
-                    /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
-                    if (this.interview_current.value){
-                        /// console.log("APP VUE interview_current exists:", this.interview_current);
-                        return this.interview_current;
-                    } else {
-                        let tmp =  markRaw(await Interview.detail(sessionStorage.getItem('interview_current')));
-                        /// console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
-                        return tmp;
+                    if (this.interview_current != null){
+                        console.log("icicicicici")
+                        console.log(this.interview_current)
+                        /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
+                        if (this.interview_current.value){
+                            console.log("APP VUE interview_current exists:", this.interview_current);
+                            return this.interview_current;
+                        } else {
+                            const uuid = sessionStorage.getItem('interview_current');
+                            if (uuid != "null"){
+                                console.log("avec uuid", uuid)
+                                let tmp =  markRaw(await Interview.detail(uuid));
+                                console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
+                                return tmp;
+                            }
+                            else{
+                                console.log("pas d'uuid", uuid)
+                                return null;
+                            }
+                            
+                        }
                     }
+                    else{
+                        console.log("qkdqodqodqoz")
+                        return null
+                    }
+                    
                 },
                 set: (value) => {
                     this.interview_current = value ? markRaw(value) : null;
-                    sessionStorage.setItem('interview_current', this.interview_current.uuid);
+                    sessionStorage.setItem('interview_current', this.interview_current ? this.interview_current.uuid: null);
                 }
             },
             extrait_current: {
