@@ -41,7 +41,8 @@ export default {
     this.current_list_extraits = markRaw(await this.current_interview.extraits);
 
     console.log(this.current_list_extraits);
-
+    console.log(this.Extraitlist);
+    
     this.taillelist1 = this.Extraitlist.length
     this.taillelist2 =this.current_list_extraits.length
 
