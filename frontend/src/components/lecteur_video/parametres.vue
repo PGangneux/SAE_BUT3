@@ -45,8 +45,8 @@ export default {
 
     },
     mounted() {
-        console.log("videoStore dans param")
-        console.log(JSON.parse(JSON.stringify(videoStore)))
+        ///console.log("videoStore dans param")
+        ///console.log(JSON.parse(JSON.stringify(videoStore)))
         this.$nextTick(() => {
             const rect = this.$refs.popup_parametres.getBoundingClientRect();
             this.pos_x= this.get_pos_x(rect);
