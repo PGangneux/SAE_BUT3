@@ -1,5 +1,4 @@
 import Artiste from "./artiste.js";
-import ClientAPI from "./clientAPI.js";
 import Extrait from "./extrait.js";
 import Interview from "./interview.js";
 import Model from "./model.js";
@@ -32,9 +31,7 @@ export default class Utilisateur extends Model {
 
     static get endpoint() { return "utilisateurs"; }
 
-    get pseudo() { 
-        return this.#pseudo; 
-    }
+    get pseudo() { return this.#pseudo; }
     set pseudo(value) { this.#pseudo = this.validateString(value, "pseudo"); }
 
     get prenom() { return this.#prenom; }
