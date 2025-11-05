@@ -5,21 +5,12 @@ import bar_liste_video from "./bar_liste_video.vue";
 import timecode from "./timecode.vue";
 import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
-import Extrait from '../../model/extrait';
-import Interview from '../../model/interview';
+
 
 export default {
   name: "page_lecteur_video",
+  inject : ["extrait_current", "interview_current"],
   components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
-
-  props: {
-    Iuuid: {
-      type: String,
-    },
-    Euuid: {
-      type: String,
-    },
-  },
 
   data() {
     return {
@@ -27,8 +18,8 @@ export default {
       pos_x_iframe: null,
       pos_y_iframe: null,
       aside_visible: true,
-      extrait: null,
       interview: null,
+      extrait: null,
       liste_extraits: null,
       base_url_yt: "https://www.youtube.com/embed/",
       base_url_vimeo: "https://player.vimeo.com/video/",
@@ -39,16 +30,8 @@ export default {
   },
 
   async mounted() {
-    this.extrait = markRaw(await Extrait.detail(this.Euuid));
-    this.interview = markRaw(await Interview.detail(this.Iuuid));
-    if (this.interview.uuid) {
-      this.liste_extraits = markRaw( await this.interview.extraits);
-    }
-
-    this.url_yt = this.base_url_yt + this.extrait.youtube_url;
-    this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
-    
-    this.set_url(videoStore.lecteur)
+    /// console.log("Mounted lecteur_video.vue");
+    await this.update()
 
   },
 
@@ -58,6 +41,59 @@ export default {
 
 
   methods: {
+    async update(){
+      console.log("1")
+      const interviewData = await this.interview_current.get();
+      const extraitData = await this.extrait_current.get();
+
+      if (interviewData) {
+        this.interview = markRaw(interviewData);
+      } else {
+        console.log("⚠️ Aucun interview trouvé");
+        this.interview = null;
+      }
+
+      if (extraitData) {
+        this.extrait = markRaw(extraitData);
+      } else {
+        console.log("⚠️ Aucun extrait trouvé");
+        this.extrait = null;
+      }
+
+
+      if (this.interview != null){ 
+        console.log("Interview trouvée :", this.interview);
+
+        this.liste_extraits = markRaw( await this.interview.extraits);
+        console.log("les extrait dans mounted")
+        console.log(this.liste_extraits)
+        if (!this.extrait){
+          this.extrait = markRaw(this.liste_extraits[0]);
+          this.extrait_current.set(this.liste_extraits[0]);
+        }
+        else {
+          console.log("extrait current déjà défini :", this.extrait);
+        }
+      }
+      else {
+        if (this.extrait){
+          console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait, await this.extrait_current.get());
+          this.redirect_extrait(this.extrait)
+        }
+        else {
+          console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
+        }
+        this.liste_extraits = null;
+      }
+
+      this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+      this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+
+      console.log("etxerait current dans lecteur video:", this.extrait)
+      
+      this.set_url(videoStore.lecteur)
+    },
+
     iframe_build(){
       // Mettre à jour la position du player
       this.pos_x_iframe = this.get_pos_x_iframe();
@@ -70,12 +106,7 @@ export default {
     },
 
     picture_in_picture() {
-      if (this.interview.uuid) {
-        videoStore.uuid = this.Iuuid+"/"+this.Euuid;
-      }
-      else{
-        videoStore.uuid = this.Euuid;
-      }
+      videoStore.uuid = this.extrait.uuid;
       videoStore.url_yt = this.url_yt;
       videoStore.url_vimeo = this.url_vimeo;
       videoStore.url = this.url;
@@ -122,12 +153,11 @@ export default {
       await this.$refs.iframe.update_player()
     },
 
-    redirect_extrait(extrait){
+    async redirect_extrait(extrait){
         // Mettre à jour l'extrait local
+        this.extrait_current.set(markRaw(extrait)) ;
         this.extrait = markRaw(extrait);
-        console.log("Extrait suivant UUID:", this.extrait.uuid);
-        console.log(this.extrait);
-        
+
         // Mettre à jour les URLs
         this.url_yt = this.base_url_yt + this.extrait.youtube_url;
         this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
@@ -137,18 +167,24 @@ export default {
         videoStore.isPlaying = true;
         
 
-        // Mettre à jour l'URL sans recharger (optionnel)
-        this.$router.replace({
-          path: `/lecteur_video/${this.Iuuid}/${this.extrait.uuid}`
-        });
+        console.log("videostore", videoStore.isPlaying)
+        console.log("extrait", this.extrait)
 
-        console.log("Lecture de l'extrait suivant lancée.");
-        console.log(this.Euuid);
+        //update le player
+        this.set_url(videoStore.lecteur)
+        try{
+          await this.$refs.iframe.update_player();
+        }
+        catch(e){
+          console.log(e)
+        }
+        
+        
     },
 
-    async lunch_next_video() {
+    async lancement_prochaine_video() {
       
-      if (!this.interview?.uuid) {
+      if (!this.interview) {
         return;
       }
       
@@ -156,7 +192,7 @@ export default {
       
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
-        this.redirect_extrait(next_extrait);
+        await this.redirect_extrait(next_extrait);
 
       } else {
         console.log("Fin de la liste des extraits de l'interview");
@@ -165,8 +201,7 @@ export default {
 
   },
 
-    
-
+  
 
 };
 </script>
@@ -181,7 +216,7 @@ export default {
         :url='this.url'
         ref="iframe"
         @iframe_build ="iframe_build"
-        @lunch_next_video="lunch_next_video"
+        @lancement_prochaine_video="lancement_prochaine_video"
    
       />
 
@@ -206,9 +241,9 @@ export default {
 
     <aside v-show="aside_visible">
     <timecode
-      v-if="liste_extraits"
+      v-if="this.liste_extraits && this.interview"
       :interview="interview"
-      :liste_extrait="liste_extraits"
+      :liste_extraits="liste_extraits"
       @redirect_extrait="redirect_extrait"
       @toggle_aside="toggle_aside"
     />
@@ -217,6 +252,7 @@ export default {
       
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
+        @update="update"
         :current_extrait="extrait"
         :current_interview="interview"
       />

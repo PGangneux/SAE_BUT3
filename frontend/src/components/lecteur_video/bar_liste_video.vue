@@ -2,47 +2,52 @@
 import { markRaw } from 'vue';
 import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
+import miniature_video from "./miniature_video.vue";
 
 export default {
-  props: {
-    current_extrait: {type: Object,},
-    current_interview: {type: Object,},
-  },
-
+  components: { miniature_video, },
+  emits: ["toggle_aside", 'update'],
+  inject : ["extrait_current", "interview_current"],
   data() {
     return {
       videos: null,
       selected : "",
       img_close: true,
+      extrait: null,
+      interview: null,
 
     };
   },
-
   methods : {
-    
-
     async interview_current_extrait(){
       this.selected = "extrait_in_playlists"
-      this.videos = markRaw(await this.current_extrait.interviews)
+      this.videos = markRaw(await this.extrait.interviews)
     },
 
     async extraits_current_question(){
       this.selected = "questions"
-      this.videos = markRaw(await current_extrait.question.then(question => { return question.extraits}))
+      /// console.log("current extrait:", this.extrait)
+      /// console.log(await this.extrait.question.then(question => { return question.extraits}))
+      this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits}))
     },
-
-    reset_videoStore() {
+    async reset_videoStore(extrait) {
+      console.log("reset")
+      this.extrait_current.set(extrait);
+      this.interview_current.set(null);
+      
       videoStore.currentTime = 0
       videoStore.isPlaying = true
-    }
+
+      this.$emit('update');
+    },
+
+
   },
-
-
-
-
   async mounted() {
+    this.interview = this.interview_current.get()
+    this.extrait = this.extrait_current.get()
     this.videos = markRaw(await Extrait.list());
-    if (this.current_interview.uuid) this.img_close = false;
+    if (this.interview.uuid) this.img_close = false;
 
   },
 
@@ -54,29 +59,31 @@ export default {
     <header>
         <nav class="header-nav">
             <ul class="menu">
-              <li @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
-              <li @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              <!--si la video est un extrait-->
+              <li v-if="this.interview != {}" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
+              <li v-if="this.interview != {}" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              
             </ul>
+            
             <img v-if="img_close" src="/imgs/close.svg" alt="close" @click="this.$emit('toggle_aside')">
         </nav>
 
     </header>
     <main>
         <div>
-            <h2>{{ titreSideBar }}</h2>
             <div class="search-bar">
-                <input type="text" :placeholder=" placeholderRecherche "/>
+                <input type="text" placeholder="placeholderRecherche"/>
                 <img src="/imgs/Search.png" alt="loupe"/>
             </div>
             <div>
                 <ul class="liste_video">
                     <li v-for="video in videos">
                         <div v-if="video.uuid != current_extrait?.uuid">
-                          <router-link @click="reset_videoStore" :to="`/lecteur_video/${video.uuid}`">
-                            <img :src="video.url_miniature_yt" :alt="video.titre"/>
-                          </router-link>
+                            
+                            <miniature_video v-if="this.interview" @click="reset_videoStore(video)" :video="video" />
+                            <miniature_video v-else @click="reset_videoStore(video)" :video="video" />
                           <div>
                               <h4>{{ video.titre }}</h4>
                               <p>{{ video.description }}</p>
@@ -173,18 +180,20 @@ main {
   margin: 0;
   padding: 0;
   cursor: pointer;
+  display: flex;
+  gap : 10px;
+  flex-direction: column;
 }
 
 .liste_video li > div {
   list-style: none;
-  display: flex;
-  
+  display: flex;  
 }
 
 .liste_video img, .liste_video a{
   display: block;
-  width: 100%;
-  height: 100%;
+  width: 30%;
+  height: 30%;
 
   border-radius: 20px;
   object-fit: cover;

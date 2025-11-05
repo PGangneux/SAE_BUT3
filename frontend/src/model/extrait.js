@@ -3,7 +3,7 @@ import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
-import clientAPI from "./clientAPI.js";
+import ClientAPI from "./clientAPI.js";
 
 
 
@@ -73,22 +73,10 @@ export default class Extrait extends Model {
         return `https://img.youtube.com/vi/${this.youtube_url}/maxresdefault.jpg`;
     }
 
-
-
-    async url_miniature_vi() {
-    const api_url = `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.vimeo_url}`;
-    try {
-
-        const response = await fetch(api_url);
-        if (!response.ok) throw new Error("Erreur HTTP " + response.status);
+    async get_url_miniature_vimeo() {
+        const response = await fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.#vimeo_url}`);
         const data = await response.json();
-        console.log(data.thumbnail_url);
-        return `${data.thumbnail_url}`;
-
-    } catch (error) {
-        console.error("Impossible de récupérer la vignette :", error);
-        return '/imgs/width551.png';
-    }
+        return data.thumbnail_url;
     }
 
 
@@ -127,10 +115,15 @@ export default class Extrait extends Model {
      * @param {int} position 
      */
     async update_position(interview, position) {
-        await clientAPI.put(
-            clientAPI.url_uuid(this.#interviews, interview.uuid),
-            {'position': this.validateInt(position)}
-        );
+        try {
+            return await ClientAPI.put(
+                ClientAPI.url_uuid(this.#interviews, interview.uuid),
+                {'position': this.validateInt(position)}
+            );
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**

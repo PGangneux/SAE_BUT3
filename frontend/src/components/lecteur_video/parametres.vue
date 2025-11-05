@@ -66,7 +66,7 @@ export default {
   >
     <div class="popup-content">
       <ul class="popup-labels">
-        <li>Lecteur vidéo</li>
+        <li @click="toggle_parametre_lecteur">Lecteur vidéo</li>
       </ul>
       <ul class="popup-values">
         <li @click="toggle_parametre_lecteur">{{ lecteur }} > </li>

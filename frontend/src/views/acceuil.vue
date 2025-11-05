@@ -31,12 +31,12 @@ export default {
       console.log(JSON.parse(JSON.stringify(videoStore)))
       
       //videoStore.lecteur = this.lecteur;
-      console.log("le lecteur: "+videoStore.lecteur)
+      console.log("le lecteur: ")
       videoStore.isPictureInPicture = false;
 
       // Rediriger vers la page d’accueil
       console.log(videoStore.uuid)
-      this.$router.push("/lecteur_video/"+videoStore.uuid);
+      this.$router.push("/lecteur_video/");
     },
   
 

@@ -1,37 +1,34 @@
 <script>
 import comp_searchbar from './searchbar.vue';
+import ClientAPI from "../model/clientAPI.js";
 
 export default {
     name: "comp_headerbar",
     components: {
         comp_searchbar,
     },
-    inject: ['user_current'],
     data() {
         return {
-            userKey: 0
+            u : ClientAPI.current_user
         }
     },
     watch: {
-        'user_current.get()': {
-            handler() {
-                /// console.log("current_user headerbar");
+        u(old,qsdqsd) {
+               /// console.log("current_user headerbar");
                 /// console.log(this.user_current.get());
                 this.userKey++; // Force re-render
-            },
-            deep: true
-        }
+                console.log("RERENDER HEADERBAR");
+           
+        },
     },
     computed: {
         isconnected() {
             // console.log("current_user headerbar");
             // console.log(this.user_current.get());
-            this.userKey;
-            return this.user_current.get()?.pseudo || false;
+            return this.u?.pseudo || false;
         },
         isadmin() {
-            this.userKey;
-            return this.user_current.get()?.admin || false;
+            return this.u?.admin || false;
         }
     }
 };
