@@ -1,6 +1,7 @@
 <script>
 import comp_searchbar from './searchbar.vue';
 import ClientAPI from "../model/clientAPI.js";
+import { markRaw } from 'vue';
 
 export default {
     name: "comp_headerbar",
@@ -9,27 +10,26 @@ export default {
     },
     data() {
         return {
-            u : ClientAPI.current_user
-        }
+            current_user: null,
+            unsubscribe_current_user: null,
+        };
     },
-    watch: {
-        u(old,qsdqsd) {
-               /// //console.log("current_user headerbar");
-                /// //console.log(this.user_current.get());
-                this.userKey++; // Force re-render
-                //console.log("RERENDER HEADERBAR");
-           
-        },
-    },
+
     computed: {
         isconnected() {
-            // //console.log("current_user headerbar");
-            // //console.log(this.user_current.get());
-            return this.u?.pseudo || false;
+            return !!(this.current_user && this.current_user.pseudo);
         },
         isadmin() {
-            return this.u?.admin || false;
+            return !!(this.current_user && this.current_user.is_admin);
         }
+    },
+
+    mounted() {
+        this.unsubscribe_current_user = ClientAPI.subscribe((u) => { this.current_user = u ? markRaw(u) : u; });
+    },
+
+    beforeUnmount() {
+        if (this.unsubscribe_current_user) { this.unsubscribe_current_user = this.unsubscribe_current_user(); };
     }
 };
 </script>

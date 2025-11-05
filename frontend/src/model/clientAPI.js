@@ -7,9 +7,40 @@ export default class ClientAPI {
     static BASE_URL = 'http://localhost:8000/';
     static #endpoints = null;
     static #current_user;
+    static #listeners = new Set();
 
     static get current_user() { return this.#current_user; }
-    static set current_user(utilisateur) { this.#current_user = utilisateur; }
+    static set current_user(utilisateur) {
+        this.#current_user = utilisateur;
+        for (const callback of this.#listeners) {
+            try {
+                callback(this.#current_user);
+            } catch (error) {
+                console.error('ClientAPI listener error', error);
+            }
+        }
+    }
+
+    /**
+     * S'abonner aux changements de current_user.
+     * callback(current_user) sera appelé immédiatement avec la valeur courante
+     * Returns: une fonction unsubscribe
+     * @param {function} callback
+     * @returns {function}
+     */
+    static subscribe(callback) {
+        if (typeof callback !== 'function') throw new Error('callback must be a function');
+        this.#listeners.add(callback);
+        try {
+            callback(this.#current_user);
+        } catch (e) {
+            console.error('ClientAPI subscribe initial callback error', e);
+        }
+        return () => {
+            this.#listeners.delete(callback);
+            return null;
+        }
+    }
 
     /**
      * Récupère le dictionnaire des endpoints de l'API
