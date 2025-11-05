@@ -35,29 +35,29 @@ export default {
             interview_current: {
                 get: async () => {
                     if (this.interview_current != null){
-                        ///console.log("icicicicici")
-                        ///console.log(this.interview_current)
-                        /// ///console.log("APP VUE Getting interview_current from provider...",this.interview_current);
+                        // console.log("icicicicici")
+                        // console.log(this.interview_current)
+                        /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
                         if (this.interview_current.value){
-                            ///console.log("APP VUE interview_current exists:", this.interview_current);
+                            // console.log("APP VUE interview_current exists:", this.interview_current);
                             return this.interview_current;
                         } else {
                             const uuid = sessionStorage.getItem('interview_current');
                             if (uuid != "null"){
-                                ///console.log("avec uuid", uuid)
+                                // console.log("avec uuid", uuid)
                                 let tmp =  markRaw(await Interview.detail(uuid));
-                                ///console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
+                                // console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
                                 return tmp;
                             }
                             else{
-                                ///console.log("pas d'uuid", uuid)
+                                // console.log("pas d'uuid", uuid)
                                 return null;
                             }
                             
                         }
                     }
                     else{
-                        ///console.log("qkdqodqodqoz")
+                        // console.log("qkdqodqodqoz")
                         return null
                     }
                     
@@ -69,15 +69,15 @@ export default {
             },
             extrait_current: {
                 get: async () => {
-                    ///console.log("APP VUE Getting extrait from provider...",videoStore.currentTime);
+                    /// console.log("APP VUE Getting extrait from provider...",this.extrait_current);
 
                     if (this.extrait_current.value) {
-                        ///console.log("APP VUE extrait_current exists:", videoStore.currentTime);
+                        /// console.log("APP VUE extrait_current exists:", this.extrait_current);
                         return this.extrait_current;
                     } else {
                         ///console.log("APP VUE before Fetched extrait_current from sessionStorage:", videoStore.currentTime, videoStore.intervalId);
                         let tmp = markRaw(await Extrait.detail(sessionStorage.getItem('extrait_current')));
-                        ///console.log("APP VUE Fetched extrait_current from sessionStorage:", videoStore.currentTime, videoStore.intervalId);
+                        //// console.log("APP VUE Fetched extrait_current from sessionStorage:", tmp);
                         return tmp;
                     } 
                 },

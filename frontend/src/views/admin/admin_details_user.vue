@@ -17,8 +17,8 @@ export default {
   async mounted() {
         const utilisateurId = this.$route.params.id;
         this.current_utilisateur = markRaw(await User.detail(utilisateurId));
-        console.log("utilisateur ",current_utilisateur.name)
-        console.log(this.current_utilisateur)
+        // console.log("utilisateur ",current_utilisateur.name)
+        // console.log(this.current_utilisateur)
     },
 };
 

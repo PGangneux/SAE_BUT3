@@ -22,8 +22,8 @@ export default {
 
   async mounted() {
     this.extraits = markRaw(await Extrait.list());
-    console.log("liste des extrait")
-    console.log(this.extraits)
+    // console.log("liste des extrait")
+    // console.log(this.extraits)
   },
 }
 
