@@ -222,9 +222,8 @@ export default {
         <div id="bottom-iframe">
           <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
-            <a>Voir toute les playlists</a>
             <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
-            <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
+            <img src="/imgs/reduire.svg" alt="picture in picture" @click="picture_in_picture">
           </div>
         </div>
 

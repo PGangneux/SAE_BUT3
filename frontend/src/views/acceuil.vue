@@ -101,7 +101,7 @@ export default {
       ref="pip"
     >
       <iframe_lecture_video :url="videoStore.url" />
-      <img src="/imgs/affichage_lecteur_réduit_2.svg" 
+      <img src="/imgs/agrandir.svg" 
           alt="picture in picture" 
           @click.stop="picture_in_picture">
     </div>
