@@ -73,6 +73,16 @@ export default {
           return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
         },
       }
+  },
+
+
+  methods: {
+
+
+    popupchange(){
+      this.popup = !this.popup
+      console.log(this.popup)
+    }
 
 
   },
@@ -211,7 +221,7 @@ export default {
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <div class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
+        <div class="bt btn col"  @click="popup = !popup,console.log(popup)" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 
@@ -252,7 +262,7 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup/> </div>
+    <div v-if="popup === true">  <comp_popup v-on:eventName="popupchange" /> </div>
 
     </template>
 

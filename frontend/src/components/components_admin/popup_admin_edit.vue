@@ -2,12 +2,17 @@
 
 export default {
     name: "comp_admin_edit_popup",
-    components: {
+    props: {
+        popup: Boolean
+
     },data() {
         return {
             tags: ['Foo', 'Bar', 'Bsq', 'Bar2'],
-            popup: true
         };
+    },methods: {
+        sendData () {
+            this.$emit('eventName', !this.popup)
+        }
     }
     
 };
@@ -70,7 +75,7 @@ export default {
         </div>
         <div class="col-md-1 ">
             <div class="row">
-                <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="popup = !popup"></button>
+                <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
             </div>
         </div>
     </div>
