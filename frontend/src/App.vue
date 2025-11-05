@@ -25,7 +25,6 @@ export default {
             }),
         }
     },
-    watch : {},
     provide() {
         return {
             searchterm: {
