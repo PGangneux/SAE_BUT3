@@ -64,22 +64,8 @@ jobs:
             exit 1
           fi
 
-      - name: Initialize Neo4j test DB (cleanup)
-        # nettoie la DB avant la suite de tests
-        run: |
-          python - <<'PY'
-            import os
-            from neomodel import db
-            bolt = os.environ.get("TEST_NEO4J_BOLT_URL")
-            db.set_connection(bolt)
-            # cleanup
-            db.cypher_query("MATCH (n) DETACH DELETE n")
-            print("Neo4j test DB cleaned.")
-            PY
-
       - name: Run Django tests
         run: |
           # Optionnel: export DJANGO_SETTINGS_MODULE si tu as un settings_test
           # export DJANGO_SETTINGS_MODULE=API.settings_test
-          echo "Using TEST_NEO4J_BOLT_URL=$TEST_NEO4J_BOLT_URL"
           python ./backend/manage.py test API
