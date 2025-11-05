@@ -215,13 +215,13 @@ export default {
                       </tr>
                   </tbody>
               </table>
+              <div class="bt btn row"  @click="popup = !popup,console.log(popup)" style="width: 8%; height: 10%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
             </div>
         </div>
       </div>
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <div class="bt btn col"  @click="popup = !popup,console.log(popup)" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 
