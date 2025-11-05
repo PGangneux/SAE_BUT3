@@ -114,6 +114,7 @@ export default {
       ///console.log("videostore dans reset_videoStore", videoStore.currentTime, videoStore.intervalId)
 
       this.$emit('update');
+      this.videos = markRaw(await Extrait.list());
       ///console.log("videostore dans reset_videoStore après emit", videoStore.currentTime, videoStore.intervalId)
     },
 
