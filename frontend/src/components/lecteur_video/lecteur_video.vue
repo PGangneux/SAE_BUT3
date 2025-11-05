@@ -31,39 +31,7 @@ export default {
 
   async mounted() {
     /// console.log("Mounted lecteur_video.vue");
-    this.interview = markRaw(await this.interview_current.get());
-    this.extrait = markRaw(await this.extrait_current.get());
-    console.log("interview current:", this.interview);
-    console.log("extrait current:", this.extrait);
-
-    if (this.interview != null){ 
-      console.log("Interview trouvée :", this.interview);
-
-      /// this.liste_extraits = markRaw( await this.interview.extraits);
-      if (!this.extrait){
-        this.extrait = markRaw(this.liste_extraits[0]);
-        this.extrait_current.set(this.liste_extraits[0]);
-      }
-      else {
-        console.log("extrait current déjà défini :", this.extrait);
-      }
-    }
-    else {
-      if (this.extrait){
-        console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait);
-      }
-      else {
-        console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
-      }
-      this.liste_extraits = null;
-    }
-
-    this.url_yt = this.base_url_yt + this.extrait.youtube_url;
-    this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
-
-    console.log("etxerait current dans lecteur video:", this.extrait)
-    
-    this.set_url(videoStore.lecteur)
+    await this.update()
 
   },
 
@@ -73,6 +41,60 @@ export default {
 
 
   methods: {
+    async update(){
+      // console.log("1")
+      const interviewData = await this.interview_current.get();
+      const extraitData = await this.extrait_current.get();
+      ///console.log("après get intervew/extrait data update lecteur video.vue", videoStore.currentTime);
+
+      if (interviewData) {
+        this.interview = markRaw(interviewData);
+      } else {
+        // console.log("⚠️ Aucun interview trouvé");
+        this.interview = null;
+      }
+
+      if (extraitData) {
+        this.extrait = markRaw(extraitData);
+      } else {
+        // console.log("⚠️ Aucun extrait trouvé");
+        this.extrait = null;
+      }
+
+
+      if (this.interview != null){ 
+        // console.log("Interview trouvée :", this.interview);
+
+        this.liste_extraits = markRaw( await this.interview.extraits);
+        // console.log("les extrait dans mounted")
+        // console.log(this.liste_extraits)
+        if (!this.extrait){
+          this.extrait = markRaw(this.liste_extraits[0]);
+          this.extrait_current.set(this.liste_extraits[0]);
+        }
+        else {
+          // console.log("extrait current déjà défini :", this.extrait);
+        }
+      }
+      else {
+        if (this.extrait){
+          // console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait, await this.extrait_current.get());
+          this.redirect_extrait(this.extrait)
+        }
+        else {
+          // console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
+        }
+        this.liste_extraits = null;
+      }
+
+      this.url_yt = this.base_url_yt + this.extrait.youtube_url;
+      this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
+
+      // console.log("etxerait current dans lecteur video:", this.extrait)
+      
+      this.set_url(videoStore.lecteur)
+    },
+
     iframe_build(){
       // Mettre à jour la position du player
       this.pos_x_iframe = this.get_pos_x_iframe();
@@ -132,7 +154,7 @@ export default {
       await this.$refs.iframe.update_player()
     },
 
-    redirect_extrait(extrait){
+    async redirect_extrait(extrait){
         // Mettre à jour l'extrait local
         this.extrait_current.set(markRaw(extrait)) ;
         this.extrait = markRaw(extrait);
@@ -142,8 +164,22 @@ export default {
         this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
         
         // Réinitialiser le store
-        videoStore.currentTime = 0;
         videoStore.isPlaying = true;
+        
+
+        // console.log("videostore", videoStore.isPlaying)
+        // console.log("extrait", this.extrait)
+
+        this.set_url(videoStore.lecteur)
+        //update le player si il est présent
+        if (!this.$refs.iframe) {
+          ///console.log("iframe non trouvé, impossible de mettre à jour le player");
+          return;
+        }
+        else{
+          await this.$refs.iframe.update_player();
+        }
+
         
     },
 
@@ -157,10 +193,13 @@ export default {
       
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
-        this.redirect_extrait(next_extrait);
+        // réinitialiser le temps de la vidéo
+        videoStore.currentTime = 0;
+        // lancer la prochaine vidéo
+        await this.redirect_extrait(next_extrait);
 
       } else {
-        console.log("Fin de la liste des extraits de l'interview");
+        // console.log("Fin de la liste des extraits de l'interview");
       }
     }
 
@@ -206,9 +245,9 @@ export default {
 
     <aside v-show="aside_visible">
     <timecode
-      v-if="liste_extraits"
+      v-if="this.liste_extraits && this.interview"
       :interview="interview"
-      :liste_extrait="liste_extraits"
+      :liste_extraits="liste_extraits"
       @redirect_extrait="redirect_extrait"
       @toggle_aside="toggle_aside"
     />
@@ -217,6 +256,7 @@ export default {
       
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
+        @update="update"
         :current_extrait="extrait"
         :current_interview="interview"
       />

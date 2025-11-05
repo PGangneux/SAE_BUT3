@@ -1,9 +1,8 @@
 <script>
-import Utilisateur from "../model/utilisateur.js";
+import ClientAPI from "../model/clientAPI.js";
 import router from "../router.js";
 export default {
     name: "page_connection",
-    inject : ["user_current"],
     data() {
         return {
             loading : false,
@@ -14,26 +13,18 @@ export default {
     },
     methods: {
         async login() {
+            // Refaire pour plus beau et intuitif (Messages d'erreurs, etc...)
             this.loading = true;
-            try {
-                const sleep = ms => new Promise(r => setTimeout(r, ms));
-                await sleep(500);
-                this.user_current.set(Utilisateur.connectAPI(this.username, this.password));
-                /// console.log("current_user");
-                console.log(this.user_current);
-                this.apiMessage = "login bon";
-                await sleep(500);
+            await ClientAPI.connectAPI(this.username, this.password);
+            this.apiMessage = ClientAPI.current_user ? "login bon" : "login pas bon";
+            if (ClientAPI.current_user) {
                 if (window.history.length > 1){
                     router.go(-1);
                 } else {
                     router.replace('/');
                 }
-            } catch (error) {
-                console.error(error);
-                this.apiMessage = error.message;
-            } finally {
-                this.loading = false;
             }
+            this.loading = false;
         },
     },
 };

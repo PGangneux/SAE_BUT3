@@ -6,43 +6,56 @@ import miniature_video from "./miniature_video.vue";
 
 export default {
   components: { miniature_video, },
-  props: {
-    current_extrait: {type: Object,},
-    current_interview: {type: Object,},
-  },
+  emits: ["toggle_aside", 'update'],
   inject : ["extrait_current", "interview_current"],
   data() {
     return {
       videos: null,
       selected : "",
       img_close: true,
+      extrait: null,
+      interview: null,
 
     };
   },
   methods : {
     async interview_current_extrait(){
       this.selected = "extrait_in_playlists"
-      this.videos = markRaw(await this.current_extrait.interviews)
+      this.videos = markRaw(await this.extrait.interviews)
     },
 
     async extraits_current_question(){
       this.selected = "questions"
-      /// console.log("current extrait:", this.current_extrait)
-      /// console.log(await this.current_extrait.question.then(question => { return question.extraits}))
-      this.videos = markRaw(await this.current_extrait.question.then(question => { return question.extraits}))
+      /// console.log("current extrait:", this.extrait)
+      /// console.log(await this.extrait.question.then(question => { return question.extraits}))
+      this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits}))
     },
     async reset_videoStore(extrait) {
+      // console.log("reset")
       this.extrait_current.set(extrait);
-      this.interview_current.set(await extrait.interview[0]);
-      videoStore.currentTime = 0
-      videoStore.isPlaying = true
+      this.interview_current.set(null);
+      
+      videoStore.currentTime = 0;
+      videoStore.isPlaying = true;
+      ///console.log("videostore dans reset_videoStore avant clearInterval", videoStore.currentTime, videoStore.intervalId)
+      clearInterval(videoStore.intervalId);
+      ///console.log("videostore dans reset_videoStore après clearInterval", videoStore.currentTime, videoStore.intervalId)
+      videoStore.intervalId = null;
+      videoStore.currentTime = 0;
+      ///console.log("videostore dans reset_videoStore", videoStore.currentTime, videoStore.intervalId)
+
+      this.$emit('update');
+      ///console.log("videostore dans reset_videoStore après emit", videoStore.currentTime, videoStore.intervalId)
     },
 
 
   },
   async mounted() {
+    this.interview = await this.interview_current.get()
+    this.extrait = await this.extrait_current.get()
     this.videos = markRaw(await Extrait.list());
-    if (this.current_interview.uuid) this.img_close = false;
+    console.log("interview", this.interview)
+    if (this.interview) this.img_close = false;
 
   },
 
@@ -57,8 +70,8 @@ export default {
               <li @click="" :class="{selected: selected === 'auteurs'}">Auteurs</li>
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <!--si la video est un extrait-->
-              <li v-if="this.current_interview != {}" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
-              <li v-if="this.current_interview != {}" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
+              <li v-if="this.interview != {}" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
+              <li v-if="this.interview != {}" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists contenant l'extrait</li>
               
             </ul>
             
@@ -76,8 +89,8 @@ export default {
                 <ul class="liste_video">
                     <li v-for="video in videos">
                         <div v-if="video.uuid != current_extrait?.uuid">
-
-                            <miniature_video v-if="this.current_interview" @click="reset_videoStore(video)" :video="video" />
+                            
+                            <miniature_video v-if="this.interview" @click="reset_videoStore(video)" :video="video" />
                             <miniature_video v-else @click="reset_videoStore(video)" :video="video" />
                           <div>
                               <h4>{{ video.titre }}</h4>
@@ -97,7 +110,7 @@ export default {
 header, main{
     background-color: var(--gris-foncer);
     padding: 0 0.5rem;
-}100
+}
 
 header{
     border-bottom: 1px solid var(--blanc);

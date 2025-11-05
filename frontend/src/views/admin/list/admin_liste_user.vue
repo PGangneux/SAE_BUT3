@@ -16,8 +16,8 @@ export default {
 
     async mounted() {
         this.utilisateurs = markRaw(await User.list());
-        console.log("liste des utilisateurs")
-        console.log(this.utilisateurs)
+        // console.log("liste des utilisateurs")
+        // console.log(this.utilisateurs)
     },
 };
 

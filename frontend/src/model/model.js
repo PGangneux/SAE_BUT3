@@ -1,4 +1,4 @@
-import clientAPI from "./clientAPI.js";
+import ClientAPI from "./clientAPI.js";
 
 /** 
  * Classe par parent du Model
@@ -94,8 +94,12 @@ export default class Model {
      * @returns {Promise<Model>}
      */
     async fetchDetail(url, Class) {
-        if (url) return new Class(await clientAPI.get(url));
-        else return null;
+        try{
+            return new Class(await ClientAPI.get(url));
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
@@ -105,8 +109,13 @@ export default class Model {
      * @returns {Promise<Array<Model>>}
      */
     async fetchList(url, Class) {
-        return await clientAPI.get(url)
-        .then(data => { return data.map(row => { return new Class(row); }); });
+        try {
+            return await ClientAPI.get(url)
+            .then(data => { return data.map(row => { return new Class(row); }); });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return [];
+        }
     }
 
     /**
@@ -115,8 +124,13 @@ export default class Model {
      * @returns {Promise<Array<Model>>}
      */
     static async list(args=null) {
-        return await clientAPI.get(await clientAPI.endpoints(this.endpoint), args)
-        .then(data => { return data.map(row => { return new this(row); }); });
+        try {
+            return await ClientAPI.get(await ClientAPI.endpoints(this.endpoint), args)
+            .then(data => { return data.map(row => { return new this(row); }); });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return [];
+        }
     }
 
     /**
@@ -136,8 +150,13 @@ export default class Model {
      * @returns {Promise<Model>}
      */
     static async detail(uuid) {
-        return await clientAPI.get(clientAPI.url_uuid(await clientAPI.endpoints(this.endpoint), uuid))
-        .then(data => {return new this(data); });
+        try {
+            return await ClientAPI.get(ClientAPI.url_uuid(await ClientAPI.endpoints(this.endpoint), uuid))
+            .then(data => { return new this(data); });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
@@ -148,12 +167,17 @@ export default class Model {
         if (this.#uuid) {
             throw new Error(`Cannot create ${this.constructor.name} that already has a UUID`);
         }
-        return await clientAPI.post(
-            clientAPI.endpoints(this.endpoint),
-            JSON.stringify(this.toJSON())
-        )
-        // Charger les nouvelles données dans l'instance
-        .then(json => { return this.fromJSON(json); });
+        try {
+            return await ClientAPI.post(
+                ClientAPI.endpoints(this.endpoint),
+                JSON.stringify(this.toJSON())
+            )
+            // Charger les nouvelles données dans l'instance
+            .then(json => { return this.fromJSON(json); });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
@@ -164,12 +188,17 @@ export default class Model {
         if (!this.#uuid) {
             throw new Error(`Cannot update ${this.constructor.name} without a UUID`);
         }
-        return await clientAPI.put(
-            clientAPI.url_uuid(clientAPI.endpoints(this.endpoint), this.#uuid),
-            JSON.stringify(this.toJSON())
-        )
-        // Charger les nouvelles données dans l'instance
-        .then(json => { return this.fromJSON(json); });
+        try {
+            return await ClientAPI.put(
+                ClientAPI.url_uuid(ClientAPI.endpoints(this.endpoint), this.#uuid),
+                JSON.stringify(this.toJSON())
+            )
+            // Charger les nouvelles données dans l'instance
+            .then(json => { return this.fromJSON(json); });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
@@ -180,28 +209,45 @@ export default class Model {
         if (!this.#uuid) {
             throw new Error(`Cannot delete ${this.constructor.name} without a UUID`);
         }
-        return await clientAPI.delete(
-            clientAPI.url_uuid(clientAPI.endpoints(this.endpoint), this.#uuid),
-        )
-        // Charger les nouvelles données dans l'instance
-        .then(result => { return true; });
+        try {
+            return await ClientAPI.delete(
+                ClientAPI.url_uuid(ClientAPI.endpoints(this.endpoint), this.#uuid),
+            )
+            // Charger les nouvelles données dans l'instance
+            .then(result => { return true; });
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return false;
+        }
     }
 
     /**
      * Connecte une instance à une autre instance
      * @param {string} url 
      * @param {Object} data 
+     * @returns {Promise<Object>}
      */
     async connect(url, data) {
-        await clientAPI.post(url, data);
+        try {
+            return await ClientAPI.post(url, data);
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return null;
+        }
     }
 
     /**
      * Déconnecte une instance d'une autre instance
      * @param {string} url 
      * @param {Model} instance 
+     * @returns {Promise<Object>}
      */
     async disconnect(url, instance) {
-        await clientAPI.delete(clientAPI.url_uuid(url, instance.uuid));
+        try {
+            return await ClientAPI.delete(ClientAPI.url_uuid(url, instance.uuid));
+        } catch (error) {
+            console.error(`Erreur HTTP ${error.message}`);
+            return false;
+        }
     }
 }

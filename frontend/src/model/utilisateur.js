@@ -16,13 +16,12 @@ export default class Utilisateur extends Model {
     #regarder_extraits;
     #recherches_questions;
 
-    constructor({ uuid, pseudo, prenom, nom, email, password, is_admin, recherches_artistes, regarder_interviews, regarder_extraits, recherches_questions }) {
+    constructor({ uuid, pseudo, prenom, nom, email, is_admin, recherches_artistes, regarder_interviews, regarder_extraits, recherches_questions }) {
         super(uuid);
         this.#pseudo = pseudo;
         this.#prenom = prenom;
         this.#nom = nom;
         this.#email = email;
-        this.#password = password;
         this.#is_admin = is_admin;
         this.#recherches_artistes = recherches_artistes;
         this.#regarder_interviews = regarder_interviews;
@@ -128,7 +127,6 @@ export default class Utilisateur extends Model {
         this.#prenom = json.prenom;
         this.#nom = json.nom;
         this.#email = json.email;
-        this.#password = json.password;
         this.#is_admin = json.is_admin;
         this.#recherches_artistes = json.recherches_artistes;
         this.#regarder_interviews = json.regarder_interviews;
@@ -147,15 +145,5 @@ export default class Utilisateur extends Model {
             password: this.#password,
             is_admin: this.#is_admin
         };
-    }
-
-    static connectAPI(pseudo_email, password) {
-        /** 
-         * Connecte un utilisateur avec son pseudo ou son e-mail et son password
-         * (non implémenté)
-        */
-        let data = {}; // Résultat de la connexion à l'API
-        // Au lieu de simplement le return, pourquoi pas avoir un attribut static current_user ?
-        return new this(data);
     }
 }
