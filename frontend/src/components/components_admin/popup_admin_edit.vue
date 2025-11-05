@@ -1,4 +1,9 @@
 <script>
+import { markRaw } from 'vue';
+import Tags from '../../model/tag.js';
+
+
+import Interview from '../../model/interview.js';
 
 export default {
     name: "comp_admin_edit_popup",
@@ -7,13 +12,38 @@ export default {
 
     },data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2'],
+            interviews:{type:Interview},
+            dico_interviews:{},
+            tags: {type:Tags},
         };
     },methods: {
         sendData () {
             this.$emit('eventName', !this.popup)
+        },
+        tags_to_string(tags_array) {
+            let string_tags = "";
+            for (let tag of tags_array){
+                string_tags += tag.name + " ";
+            }
+            return string_tags.trim();
+        },
+    },    
+    async mounted() {
+    this.interviews = markRaw(await Interview.list());
+    this.tags = markRaw(await Tags.list())
+
+    try {
+        for (let interview of this.interviews) {
+            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits).length, "tags": markRaw(await interview.tags)};
+            // console.log(markRaw(this.dico_interviews));
         }
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
     }
+    
+
+    },
     
 };
 
@@ -25,60 +55,61 @@ export default {
 
 
 <template>
+<div class="allmightygris" @click="sendData"></div>
 
-    <div class="grisee allmighty row">
-        <div class="col-md-3 ">
-           
-            <div class="container row">
-                <div class="search-bar">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                                <img src="/imgs/search.svg" alt="button search">
-                            </button>
-                    </div>
+<div class="grisee allmighty trie-tagsfoncer row">
+    <div class="col collumpopu ">
+        
+        <div class="container row fullwith" style="max-height: 4em;">
+            <div class="search-bar">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
                 </div>
             </div>
-
-
-            <div class="row  trie-tags">
-
-                <p class="row ">Trier par tag</p>
-
-                <ul class="scroller ultagger row">
-                    <li class="col" v-for="tag in tags">
-                        <button class="btn btn-primary"> {{ tag }} </button>
-                    </li>
-                </ul>
-            </div>
         </div>
 
-        <div class="col-md-6 ">
 
-                <table class="scroller ultagger table tables table-bordered">
-                    <thead>
-                        <tr>
-                        <th scope="col">Nom interview</th>
-                        <th scope="col">Nb video</th>
-                        <th scope="col">Tags</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="col" v-for="tag in tags">
-                            <td> {{ tag }} </td>
-                            <td> {{ tag }} </td>
-                            <td> {{ tag }} </td>
-                        </tr>
-                    </tbody>
-                </table>
-            
-        </div>
-        <div class="col-md-1 ">
-            <div class="row">
-                <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
-            </div>
+        <div class="row  trie-tags fullwith">
+
+            <p class="row pcentrer ">Trier par tag</p>
+
+            <ul class="scroller ultagger  tagsfully row">
+                <li class="col" v-for="tag in this.tags">
+                    <button class="btn btn-primary"> {{ tag.name }} </button>
+                </li>
+            </ul>
         </div>
     </div>
+
+    <div class="col collumpopu ">
+
+            <table class="scroller ultagger tableheight table tables table-bordered">
+                <thead>
+                    <tr>
+                    <th scope="col">Nom interview</th>
+                    <th scope="col">Nb video</th>
+                    <th scope="col">Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="col" v-for="interview in this.interviews">
+                        <td> {{ interview.titre }} </td>
+                        <td> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </td>
+                        <td> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </td>
+                    </tr>
+                </tbody>
+            </table>
+        
+    </div>
+    <div class="col collx">
+        <div class="row">
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -100,17 +131,60 @@ export default {
     width: 100%;
 }
 
+.collumpopu{
+    display: flex;
+    flex-wrap: wrap;
+    flex-grow: 1;
+}
+
+.collx{
+    flex-grow: 0;
+}
+
+.tableheight{
+    height: 100%;
+}
+
+.fullwith{
+    width: 100%;
+}
+
+thead{
+    height: 10%;
+}
+
+.tagsfully {
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+}
+
+
 .allmighty {
+  display: flex;
   position: fixed;        
   top: 50%;
   left: 50%;
+  height: 50%;
   transform: translate(-50%, -50%); 
   z-index: 9999;          
-  padding: 1em 2em;
+  padding: 1em ;
   border: 1em solid;
   border-color: var(--vert-neon);
   border-radius: 6px;
-  cursor: pointer;
+  width: 80%;
+}
+
+.allmightygris{
+    position: fixed;        
+    top: 0%;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    z-index: 9998;          
+    padding: 1em ;
+    background-color: rgba(188, 212, 221, 0.521);
+    cursor: pointer;
 }
 
 .ultagger {
@@ -124,6 +198,9 @@ export default {
 }
 
 
+.trie-tagsfoncer{
+    background-color: var(--gris-moyen);
+}
 
 
 .trie-tags{
@@ -132,7 +209,11 @@ export default {
 
 
 
-
+.pcentrer {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  justify-content: center;
+}
 
 .search-bar {
     max-width: 500px;

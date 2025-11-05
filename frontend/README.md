@@ -14,7 +14,7 @@ ajouter interview (modif rooter et pages avec meme templates)
 ajouter utilisateur (modif rooter et pages avec meme templates)
 
 page details user a realiser
-page details interview a finir ( nb video et partie extrait dans interview)
+page details interview a finir ( probleme vigniette vimeo et youtube)
 
 
 fonction trie
