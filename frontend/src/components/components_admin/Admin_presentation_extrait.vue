@@ -1,5 +1,5 @@
 <script>
-
+import { markRaw } from 'vue';
 import Extrait from '../../model/extrait.js';
 
 
@@ -13,10 +13,14 @@ export default {
             type: Extrait,
             required: true
         },
+        
     },
     data() {
         return {
-            thumbnail: '/imgs/width551.png', // vignette par défaut
+            // vignette par défaut
+            thumbnail: '/imgs/width551.png', 
+            dico_extrait:{},
+            taillelist:0,
         };
     },
 
@@ -27,9 +31,14 @@ export default {
         }else{
             this.thumbnail = await this.current_extrait.url_miniature_vi()
         }
-        
-    },
 
+
+        this.dico_extrait.tags =markRaw(await this.current_extrait.tags);
+
+        this.taillelist = this.dico_extrait.tags.length
+        console.log(markRaw(this.dico_extrait["tags"]));
+       
+    }
 
 
 
@@ -58,9 +67,22 @@ export default {
                             <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
                             <div class="col">
                                 <p class="col">tags :</p>
-                                 <ul>
-                                    <li v-for="tag in current_extrait.tags">
-                                        <p class="col">{{ tag }}</p>
+                                 
+                                <ul v-if="this.taillelist != 0" >
+                                    <li v-for="tag in dico_extrait.tags ">
+                                        <p  class="col">{{ tag.name }}</p>
+                                    </li>
+                                </ul>
+
+                                <ul v-else-if="this.taillelist == 0 ">
+                                    <li> 
+                                        <p  class="col">vide</p>
+                                    </li>
+                                </ul>
+
+                                <ul v-else>
+                                    <li> 
+                                        <p  class="col">erreur de Chargement</p>
                                     </li>
                                 </ul>
                             </div>

@@ -22,6 +22,7 @@ export default {
     console.log("mounted admin interview list");
     this.interviews = markRaw(await Interview.list());
 
+    
 
     try {
         for (let interview of this.interviews) {
