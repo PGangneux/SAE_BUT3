@@ -3,9 +3,13 @@ import Utilisateur from "./utilisateur";
 /**
  * Classe client faisant le lien avec l'API
  */
-export default class clientAPI {
+export default class ClientAPI {
     static BASE_URL = 'http://localhost:8000/';
     static #endpoints = null;
+    static #current_user;
+
+    static get current_user() { return this.#current_user; }
+    static set current_user(utilisateur) { this.#current_user = utilisateur; }
 
     /**
      * Récupère le dictionnaire des endpoints de l'API
@@ -222,7 +226,7 @@ export default class clientAPI {
     }
 
     /**
-     * Connecte un utilisateur à l'API
+     * Connecte un utilisateur avec son pseudo ou son e-mail et son password à l'API
      * @param {string} pseudo_email 
      * @param {string} password 
      * @returns {Promise<Utilisateur>}
@@ -236,16 +240,22 @@ export default class clientAPI {
                 )
             );
             this.save_tokens(res.access, res.refresh)
-            return new Utilisateur(await this.get(res.utilisateur));
+            this.current_user = new Utilisateur(await this.get(res.utilisateur));
+            return this.current_user;
         } catch (error) {
             console.error(`Erreur HTTP ${error.message}`);
             return null;
         }
     }
 
+    /**
+     * Déconnecte un utilisateur de l'application
+     * @returns {null}
+     */
     static disconnectAPI() {
         const refresh = this.get_refresh_token();
         if (refresh) { this.clear_tokens(); }
-        return null;
+        this.current_user = null;
+        return this.current_user;
     }
 }

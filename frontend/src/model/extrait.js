@@ -3,7 +3,7 @@ import Artiste from "./artiste.js";
 import Question from "./question.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
-import clientAPI from "./clientAPI.js";
+import ClientAPI from "./clientAPI.js";
 
 
 
@@ -116,8 +116,8 @@ export default class Extrait extends Model {
      */
     async update_position(interview, position) {
         try {
-            return await clientAPI.put(
-                clientAPI.url_uuid(this.#interviews, interview.uuid),
+            return await ClientAPI.put(
+                ClientAPI.url_uuid(this.#interviews, interview.uuid),
                 {'position': this.validateInt(position)}
             );
         } catch (error) {

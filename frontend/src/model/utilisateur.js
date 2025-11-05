@@ -1,5 +1,5 @@
 import Artiste from "./artiste.js";
-import clientAPI from "./clientAPI.js";
+import ClientAPI from "./clientAPI.js";
 import Extrait from "./extrait.js";
 import Interview from "./interview.js";
 import Model from "./model.js";
@@ -16,9 +16,8 @@ export default class Utilisateur extends Model {
     #regarder_interviews;
     #regarder_extraits;
     #recherches_questions;
-    static #current_user;
 
-    constructor({ uuid, pseudo, prenom, nom, email, password, is_admin, recherches_artistes, regarder_interviews, regarder_extraits, recherches_questions }) {
+    constructor({ uuid, pseudo, prenom, nom, email, is_admin, recherches_artistes, regarder_interviews, regarder_extraits, recherches_questions }) {
         super(uuid);
         this.#pseudo = pseudo;
         this.#prenom = prenom;
@@ -58,9 +57,6 @@ export default class Utilisateur extends Model {
     get regarder_extraits() { return this.fetchList(this.#regarder_extraits, Extrait); }
 
     get recherches_questions() { return this.fetchList(this.#recherches_questions, Question); }
-
-    static get current_user() { return this.#current_user; }
-    static set current_user(utilisateur) { this.#current_user = utilisateur; }
 
     /**
      * Connecte un utilisateur à un artiste
@@ -150,25 +146,5 @@ export default class Utilisateur extends Model {
             password: this.#password,
             is_admin: this.#is_admin
         };
-    }
-
-    /**
-     * Connecte un utilisateur avec son pseudo ou son e-mail et son password
-     * @param {string} pseudo_email 
-     * @param {string} password 
-     * @returns {Promise<Utilisateur>}
-     */
-    static async connectAPI(pseudo_email, password) {
-        this.current_user = await clientAPI.connectAPI(pseudo_email, password);
-        return this.current_user;
-    }
-
-    /**
-     * Déconnecte un utilisateur de l'application
-     * @returns {Promise<null>}
-     */
-    static disconnectAPI() {
-        this.current_user = clientAPI.disconnectAPI();
-        return this.current_user;
     }
 }

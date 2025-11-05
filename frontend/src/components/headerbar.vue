@@ -1,6 +1,6 @@
 <script>
 import comp_searchbar from './searchbar.vue';
-import Utilisateur from "../model/utilisateur.js";
+import ClientAPI from "../model/clientAPI.js";
 
 export default {
     name: "comp_headerbar",
@@ -9,7 +9,7 @@ export default {
     },
     data() {
         return {
-            u : Utilisateur.current_user
+            u : ClientAPI.current_user
         }
     },
     watch: {

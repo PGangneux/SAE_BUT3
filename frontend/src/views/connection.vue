@@ -1,5 +1,5 @@
 <script>
-import Utilisateur from "../model/utilisateur.js";
+import ClientAPI from "../model/clientAPI.js";
 import router from "../router.js";
 export default {
     name: "page_connection",
@@ -15,9 +15,9 @@ export default {
         async login() {
             // Refaire pour plus beau et intuitif (Messages d'erreurs, etc...)
             this.loading = true;
-            await Utilisateur.connectAPI(this.username, this.password);
-            this.apiMessage = Utilisateur.current_user ? "login bon" : "login pas bon";
-            if (Utilisateur.current_user) {
+            await ClientAPI.connectAPI(this.username, this.password);
+            this.apiMessage = ClientAPI.current_user ? "login bon" : "login pas bon";
+            if (ClientAPI.current_user) {
                 if (window.history.length > 1){
                     router.go(-1);
                 } else {
