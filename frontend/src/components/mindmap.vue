@@ -25,9 +25,9 @@ export default {
         mmget(this);
     },
     computed: {
-        searchValue() {
-            return this.searchterm;
-        },
+        searchValue: {
+            get() { return this.searchterm.get(); },
+        }
     },
     watch: {
         searchValue(newVal) {
@@ -100,7 +100,7 @@ export default {
 <template>
     <div>
         <h2 class="vert-neon">Mindmap Component</h2>
-        <div>Search: {{ searchValue }}</div>
+        <div class="vert-neon">Search: {{ searchValue }}</div>
         <div>
             <p v-for="chem in chemin" :key="chem.name">{{ chem.name }}</p>
         </div>
