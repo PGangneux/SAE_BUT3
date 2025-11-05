@@ -8,7 +8,6 @@ const YT_API_URL = "https://www.youtube.com/iframe_api";
 
 
 export default {
-  props: { url: String },
 
   
 
@@ -16,7 +15,8 @@ export default {
 
     //const instance = getCurrentInstance(); // récupère l'intance du iframe
     const player = ref(null);
-    const current_url = ref(props.url);
+    console.log(videoStore.url, "videostore")
+    console.log(videoStore, "videostore")
     
     // Charger l’API YouTube une seule fois globalement
     function loadYouTubeAPI() {
@@ -136,12 +136,11 @@ export default {
 
       // Créer l'iframe
       const container = document.getElementById("player");
-      console.log(container)
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
-      console.log(current_url.value)
-      iframe.src = current_url.value;
+      console.log(videoStore.url)
+      iframe.src = videoStore.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
       iframe.style.width = "100%";
@@ -191,9 +190,9 @@ export default {
     async function update_player() {
       await nextTick();
       ///console.log("videostore", videoStore.isPlaying)
-      if (current_url.value.includes("youtube")) {
+      if (videoStore.url.includes("youtube")) {
 
-        const id = get_YT_videoId(current_url.value);
+        const id = get_YT_videoId(videoStore.url);
         await initYouTube(id);
       } else {
         await initVimeo();
@@ -203,22 +202,26 @@ export default {
     function set_url(lecteur) {
       console.log("lecteur dans iframe", lecteur)
       console.log((lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo)
-      current_url.value = (lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
-      videoStore.url = current_url
-      console.log("current_url.value", current_url.value)
+      videoStore.url = (lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
+      //console.log("videoStore.url", videoStore.url)
       this.update_player()
     }
 
     onMounted(async () => {
+      console.log("cc")
+      console.log("url courrent", videoStore.url)
+      console.log(videoStore.url, "videostore")
+      console.log(videoStore, "videostore")
       /// ///console.log("Initialisation du lecteur iframe vidéo");
       /// ///console.log("URL vidéo :", url);
       /// ///console.log("Temps courant :", videoStore);
       ///console.log("videostore au montage iframe", videoStore.currentTime)
       await nextTick();
       ///console.log("après next tick montage iframe", videoStore.currentTime)
-      if (current_url.value.includes("youtube")) {
-        console.log(current_url.value)
-        const id = get_YT_videoId(current_url.value);
+      console.log("url value", videoStore.url)
+      if (videoStore.url.includes("youtube")) {
+        console.log(videoStore.url)
+        const id = get_YT_videoId(videoStore.url);
         await initYouTube(id);
       } else {
 

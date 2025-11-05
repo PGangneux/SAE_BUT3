@@ -38,7 +38,7 @@ export default {
       // stocke l'instance complète dans videoStore
       videoStore.iframeComponent = this.$refs.iframe;
       console.log("iframeComponent stocké :", videoStore.iframeComponent);
-      await this.$refs.iframe.update_player();
+      //await this.$refs.iframe.update_player();
     }
     console.log("videoStore iframe lecteru", videoStore.lecteur)
     
@@ -110,11 +110,13 @@ export default {
     },
 
     picture_in_picture() {
-      videoStore.uuid = this.extrait.uuid;
-      videoStore.url_yt = this.url_yt;
-      videoStore.url_vimeo = this.url_vimeo;
-      videoStore.url = this.url;
+      //videoStore.uuid = this.extrait.uuid;
+      //videoStore.url_yt = this.url_yt;
+      //videoStore.url_vimeo = this.url_vimeo;
+      console.log("lecteur", videoStore.lecteur)
+      console.log("url", videoStore.url)
       videoStore.isPictureInPicture = true;
+      videoStore.iframeComponent.set_url(videoStore.lecteur) 
       this.$router.push("/");
     },
 
@@ -179,7 +181,7 @@ export default {
           return;
         }
         else{
-          await this.$refs.iframe.update_player();
+          //await this.$refs.iframe.update_player();
         }
         
         
