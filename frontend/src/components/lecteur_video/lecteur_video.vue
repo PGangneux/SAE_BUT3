@@ -148,9 +148,6 @@ export default {
       if (before_visible) this.param_visible = true;
     },
 
-    set_url(lecteur) {
-      this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
-    },
 
 
     async redirect_extrait(extrait){
@@ -174,6 +171,7 @@ export default {
         videoStore.url_vimeo = this.url_vimeo
         videoStore.url =  (videoStore.lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
         this.url = videoStore.url
+        
 
         //update le player si il est présent
         if (!this.$refs.iframe) {
@@ -181,7 +179,7 @@ export default {
           return;
         }
         else{
-          //await this.$refs.iframe.update_player();
+          await this.$refs.iframe.update_player();
         }
         
         

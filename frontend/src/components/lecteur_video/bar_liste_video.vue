@@ -87,8 +87,13 @@ export default {
 
       if (video.extraits) {
         // c'est une interview
+        console.log(video)
+
         this.interview_current.set(video);
-        this.extrait_current.set(null);
+        
+        console.log("tdtdtdtdtdtdtt", this.interview_current.get())
+        console.log((await video.extraits)[0])
+        this.extrait_current.set((await video.extraits)[0]);
       } else {
         // c'est un extrait
         this.extrait_current.set(video);
