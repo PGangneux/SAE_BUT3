@@ -32,7 +32,9 @@ export default class Utilisateur extends Model {
 
     static get endpoint() { return "utilisateurs"; }
 
-    get pseudo() { return this.#pseudo; }
+    get pseudo() { 
+        return this.#pseudo; 
+    }
     set pseudo(value) { this.#pseudo = this.validateString(value, "pseudo"); }
 
     get prenom() { return this.#prenom; }
