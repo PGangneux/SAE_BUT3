@@ -1,5 +1,6 @@
 <script>
 import { toRaw, markRaw } from "vue";
+import { videoStore } from "../../model/videoStore";
 
 
 export default {
@@ -38,24 +39,27 @@ export default {
         formatted_seconds = (hours > 0 || minutes > 0 || seconds > 0) ? formatted_seconds : '00';
         // Retourner la chaîne formatée
         let duree = formatted_hours + formatted_minutes + formatted_seconds;
-        console.log("duree: ", duree);
+        ///console.log("duree: ", duree);
         return duree;
     },
 
     set_dico_timecode() {
         let current_time = 0;
-        console.log("liste_extraits dans set_dico_timecode: ", this.liste_extraits);
+        ///console.log("liste_extraits dans set_dico_timecode: ", this.liste_extraits);
         for (let extrait of this.liste_extraits) {
             this.dico_timecode[extrait.titre] = this.format_duree(current_time);
             current_time += extrait.duree;
         }
         this.dico_timecode["duree"] = this.format_duree(current_time);
-        console.log("les extraits: ", this.liste_extraits);
-        console.log("dico_timecode: ", toRaw(this.dico_timecode));
+        ///console.log("les extraits: ", this.liste_extraits);
+        ///console.log("dico_timecode: ", toRaw(this.dico_timecode));
     },
 
     async onClick(extrait) {
-      // ici tu déclenches l'event
+      // met à jour le temps courant du videoStore
+      clearInterval(videoStore.intervalId);
+      videoStore.currentTime = 0;
+      // émet l'événement pour rediriger vers l'extrait cliqué
       this.$emit('redirect_extrait', extrait);
     }
 
@@ -64,11 +68,11 @@ export default {
   },
 
   async mounted() {
-      console.log("les extraoit")
-      console.log(this.liste_extraits)
+      ///console.log("les extraoit")
+      ///console.log(this.liste_extraits)
 
       this.set_dico_timecode();
-      console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));
+      ///console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));
   },
 
 

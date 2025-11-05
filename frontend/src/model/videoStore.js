@@ -10,4 +10,5 @@ export const videoStore = reactive({
   isPictureInPicture: false,
   currentTime: 0,   // <-- position actuelle en secondes
   isPlaying: true, // <-- statut lecture/pause
+  intervalId: null,
 });

@@ -10,7 +10,7 @@ export default {
 
   setup(props, { expose, emit }) {
     const player = ref(null);
-
+    
     // Charger l’API YouTube une seule fois globalement
     function loadYouTubeAPI() {
       if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
@@ -39,23 +39,28 @@ export default {
         console.warn("URL YouTube invalide :", url);
       }
       return null;
-    }
-
-    let intervalId = null;
+    }    
 
     function startTracking() {
-      intervalId = setInterval(() => {
+      videoStore.intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
-          /// console.log("YouTube current time :", player.value.getCurrentTime());
+          /// ///console.log("YouTube current time :", player.value.getCurrentTime());
+          /////console.log("Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
           videoStore.currentTime = player.value.getCurrentTime();
+          /////console.log("aPRÈS Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
         }
       }, 1000);
     }
 
     function stopTracking() {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
+      if (videoStore.intervalId) {
+        clearInterval(videoStore.intervalId);
+        videoStore.intervalId = null;
+        ///console.log("dans if Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
+      }
+      else{
+        ///console.log("Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
+
       }
     }
 
@@ -70,7 +75,6 @@ export default {
     }
 
     async function initYouTube(videoId) {
-      stopTracking()
       reset_old_lecteur()
       const current_time = videoStore.currentTime
       const YT = await loadYouTubeAPI();
@@ -84,7 +88,9 @@ export default {
           onReady: (event) => {
             if (videoStore.currentTime) {
               event.target.seekTo(current_time);
+              ///console.log("YouTube seekTo :", current_time);
               videoStore.currentTime = current_time;
+              ///console.log("Après YouTube seekTo :", current_time);
               // Synchronisation du temps de lecture
             }
             if (videoStore.isPlaying) event.target.playVideo();
@@ -149,7 +155,9 @@ export default {
       if (videoStore.currentTime) {
         try {
           await vimeoPlayer.setCurrentTime(current_time);
+          ///console.log("Vimeo setCurrentTime :", current_time);
           videoStore.currentTime = current_time
+          ///console.log("Après Vimeo setCurrentTime :", current_time);
         } catch (err) {
           console.warn("Impossible de définir le temps :", err);
         }
@@ -160,8 +168,10 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
-         /// console.log("Vimeo timeupdate :", seconds);
+         /// ///console.log("Vimeo timeupdate :", seconds);
+        ///console.log("Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
         videoStore.currentTime = seconds; 
+        ///console.log("Après Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
       });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
@@ -172,7 +182,7 @@ export default {
 
     async function update_player() {
       await nextTick();
-      console.log("videostore", videoStore.isPlaying)
+      ///console.log("videostore", videoStore.isPlaying)
       if (props.url.includes("youtube")) {
 
         const id = get_YT_videoId(props.url);
@@ -183,10 +193,12 @@ export default {
     }
 
     onMounted(async () => {
-      /// console.log("Initialisation du lecteur iframe vidéo");
-      /// console.log("URL vidéo :", props.url);
-      /// console.log("Temps courant :", videoStore);
+      /// ///console.log("Initialisation du lecteur iframe vidéo");
+      /// ///console.log("URL vidéo :", props.url);
+      /// ///console.log("Temps courant :", videoStore);
+      ///console.log("videostore au montage iframe", videoStore.currentTime)
       await nextTick();
+      ///console.log("après next tick montage iframe", videoStore.currentTime)
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);
         await initYouTube(id);
@@ -204,6 +216,7 @@ export default {
 
     onBeforeUnmount(() => {
       if (player.value && player.value.destroy) player.value.destroy();
+      stopTracking();
     });
 
     expose({
