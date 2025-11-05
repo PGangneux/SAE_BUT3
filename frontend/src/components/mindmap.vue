@@ -1,5 +1,5 @@
 <script>
-import { LegendColorMap, mmget , mmget_all} from '../model/mindmap_func.js';
+import { LegendColorMap, mmget} from '../model/mindmap_func.js';
 
 export default {
     name: "comp_mindmap",
@@ -11,7 +11,6 @@ export default {
             ],
             nodes: [
             ],
-            nodes_visible: [],
             chemin: [],
             fullscreen: false,
             togglelegend: true,
@@ -21,8 +20,7 @@ export default {
         };
     },
     async mounted() {
-        mmget_all(this.nodes,this.linkages);
-        this.nodes_visible = this.nodes;
+        mmget(this);
     },
     computed: {
         searchValue() {
@@ -74,16 +72,18 @@ export default {
                 <div class="mm_legend_outer">
                         <button v-if="togglelegend" @click="togglelegend = false">></button>
                         <button v-else @click="togglelegend = true"><</button>
-                                <div class="mm_legend" v-if="togglelegend">
-                                    <div v-for="(legend_color, legend_class) in LegendColorMap">
-                                        <div class="mm_legend_cercle" :style="{ backgroundColor: legend_color }"></div>
-                                        <p>{{ legend_class }}</p>
-                                    </div>
+                        <transition name="slide">
+                            <div class="mm_legend" v-if="togglelegend">
+                                <div v-for="(legend_color, legend_class) in LegendColorMap">
+                                    <div class="mm_legend_cercle" :style="{ backgroundColor: legend_color }"></div>
+                                    <p>{{ legend_class }}</p>
                                 </div>
+                            </div>
+                        </transition>
                     </div>
             </div>
             <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link"></div>
-            <div v-for="node in nodes_visible" :key="node.id" :style="node.getStyle(scale, offx, offy)"
+            <div v-for="node in nodes" :key="node.id" :style="node.getStyle(scale, offx, offy)"
                 class="mm_node"> {{ node.category.name }} </div>
         </div>
     </div>
@@ -181,14 +181,36 @@ export default {
 }
 
 /* Legend with animation */
+.mm_legend_outer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end
+}
+.mm_legend_outer button {
+    background-color: var(--noir);
+    color: var(--blanc);
+    border-radius: 50%;
+}
+
 .mm_legend {
+    max-width: 400px;
+    gap: 1em;
+    display: flex;
+    flex-wrap: wrap;
     border: 2px solid var(--blanc);
     border-radius: 12px;
     padding: 20px;
-    background-color : rgba(44, 45, 50, 0.95);
-    max-height: 300px;
+    background-color: var(--noir);
     overflow-y: auto;
+}
+
+/* Vue Transition Classes */
+.slide-enter-active {
     animation: slideIn 0.3s ease-out;
+}
+
+.slide-leave-active {
+    animation: slideOut 0.3s ease-out;
 }
 
 @keyframes slideIn {
@@ -196,10 +218,22 @@ export default {
         opacity: 0;
         transform: translateX(30px);
     }
-
     to {
         opacity: 1;
         transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        width : 0px;
+        height : 0px;
+        transform: translateX(30px);
     }
 }
 

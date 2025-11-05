@@ -7,7 +7,7 @@ import StyleMusical from './style_musical.js';
 import Tag from './tag.js';
 import Theme from './theme.js';
 
-export class mmRoot {
+class mmRoot {
 }
 
 export const LegendColorMap = {
@@ -24,15 +24,13 @@ export const LegendColorMap = {
 
 const categorys = [
     Artiste,
-    Extrait,
-    Interview,
     Nation,
     StyleMusical,
     Tag,
     Theme,
 ]
 
-export class mmLinkage {
+class mmLinkage {
     startnode;
     endnode;
     thickness;
@@ -43,37 +41,37 @@ export class mmLinkage {
         this.thickness = thickness;
     }
 
-    get length() {
-        return Math.sqrt(Math.pow(this.endnode.x - this.startnode.x, 2) + Math.pow(this.endnode.y - this.startnode.y, 2));
+    getlength(scale) {
+        return Math.sqrt(Math.pow((this.endnode.x - this.startnode.x + 100 ) * scale, 2) + Math.pow((this.endnode.y - this.startnode.y +100 ) * scale, 2));
     }
 
-    get angle() {
+    getangle() {
         return Math.atan2(this.endnode.y - this.startnode.y, this.endnode.x - this.startnode.x) * 180 / Math.PI;
     }
 
     getStyle(scale, baseOffsetX, baseOffsetY) {
         return {
             'height': (this.thickness * scale) + 'px',
-            'width': (this.length * scale) + 'px',
-            'left': (this.startnode.x + baseOffsetX) + 'px',
-            'top': (this.startnode.y + baseOffsetY) + 'px',
-            'transform': `rotate(${this.angle}deg)`,
+            'width': (this.getlength(scale)) + 'px',
+            'left': (this.startnode.x + baseOffsetX + 25) + 'px',
+            'top': (this.startnode.y + baseOffsetY + 25) + 'px',
+            'transform': `rotate(${this.getangle(scale)}deg)`,
         };
     }
 }
 
-export class mmNode {
+class mmNode {
     x;
     y;
     depth;
-    parent;
+    childrens;
     category;
     uuid;
-    constructor(x, y, depth, parent, category, uuid) {
+    constructor(x, y, depth, category, uuid) {
         this.x = x;
         this.y = y;
         this.depth = depth;
-        this.parent = parent;
+        this.childrens = [];
         this.category = category;
         this.uuid = uuid;
     }
@@ -93,32 +91,54 @@ export class mmNode {
     }
 }
 
-export async function mmget_all(nodelist, linkages) {
-    let root = new mmNode(0,0,0,null,mmRoot,null);
-    nodelist.push(root);
-    nodelist.push(new mmNode(100, -300, 1, root, Artiste, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(200, 0, 1, root, Extrait, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(300, 0, 1, root, Interview, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(0, 100, 1, root, Nation, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(100, 100, 1, root, StyleMusical, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(200, 100, 1, root, Tag, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-    nodelist.push(new mmNode(300, 100, 1, root, Theme, null));
-    linkages.push(new mmLinkage(root, nodelist[nodelist.length - 1], 1));
-}
-
-export function mmget(chemin){
-    
-}
-
-export function mmsearch(obj, searchterm) {
-    if (this.nodes[1]?.category.name != "question") {
-        this.nodes.splice(1, 0, new mmNode(0, 0, 1, this.nodes[0], Question, null));
-        linkages.push(new mmLinkage(nodelist[0], nodelist[1], 1));
+function set_children(obj,root,origin_angle){
+    // failsafe , si pas enfant
+    if (!root.childrens.length) return;
+    // distance entre root et enfant ;
+    // on a un cercle de 360° , et on doit divisier ca par le nombre d'enfants (moins le trait d'origine) 
+    let nb_child = root.childrens.length + (!! origin_angle ? 2 : 0);
+    let angle_per_child = (360 / nb_child);
+    // so the distance is inversly proportional to the number of angle_per_child
+    let distance = (1/angle_per_child) * 100 + 30;
+    // we iterate over an angle
+    let current_angle = origin_angle || 0;
+    for (let index = 0; index < root.childrens.length; index++) {
+        const child = root.childrens[index].childnode;
+        child.x = root.x + Math.cos(current_angle) * distance;
+        child.y = root.y + Math.sign(current_angle) * distance;
+        root.childrens[index].angle = current_angle;
+        // create link
+        obj.linkages.push(new mmLinkage(root,child,(1/obj.chemin.length)*root.depth*2));
+        // advance the angle
+        current_angle += angle_per_child ;
     }
+}
+
+export function mmget(obj){
+    // reset
+    obj.nodes = [];
+    obj.linkages = [];
+    // create root
+    let root = new mmNode(0,0,0,mmRoot,null);
+    obj.nodes.push(root);
+    // put defaults
+    for (const cat of categorys) {
+        // so for each cat in the default categorys
+        // create a "root" category buble
+        let tmp_child = new mmNode(0,0,1,cat,null);
+        // render it
+        obj.nodes.push(tmp_child);
+        // they are children of the white root node
+        root.childrens.push({
+                childnode :tmp_child,
+                angle : null
+            });
+    }
+    // put default cercle position + links
+    set_children(obj,root,null);
+    let current_node = root;
+    for (const child of obj.chemin) {
+        // let next = current_node.childrens. [obj => obj.category == child] ;
+    }
+    console.log(root);
 }
