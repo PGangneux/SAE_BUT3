@@ -29,7 +29,14 @@ export default {
     ,computed: {
       youtubeUrl: {
         get() {
-          return this.current_extrait?.youtube_url ? 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url : 'Chargement...';
+          if(this.current_extrait?.youtube_url != null){
+            return 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url;
+          }else if (this.current_extrait?.youtube_url == null){
+            return '';
+          }else{
+            return 'erreur...';
+          }
+         
         },
         set(value) {
           const id = value.split('v=')[1];
@@ -39,8 +46,16 @@ export default {
 
       vimeoUrl: {
         get() {
+
+          if(this.current_extrait?.vimeo_url != null){
+            return 'https://vimeo.com/' + this.current_extrait.vimeo_url;
+          }else if (this.current_extrait?.vimeo_url == null){
+            return '';
+          }else{
+            return 'erreur...';
+          }
+
           
-          return this.current_extrait?.vimeo_url ? 'https://vimeo.com/' + this.current_extrait.vimeo_url : 'Chargement...';
         },
         set(value) {
           const id = value.split('/').pop();
@@ -66,15 +81,15 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    ////console.log("ID de l'Extraits' :", ExtraitId);
+    //// console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
 
 
-    //console.log(this.current_extrait);
+    console.log(this.current_extrait);
 
-    //console.log("dico complet en cours");
+    // console.log("dico complet en cours");
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
       "question":   (markRaw(await this.current_extrait.titre)).name,
@@ -87,10 +102,10 @@ export default {
 
    
 
-  //  //console.log(this.dico_extrait['artiste']);
-  //  //console.log(this.dico_extrait['question']);
-  //  //console.log(this.dico_extrait['interviews']);
-  //  //console.log(await this.current_extrait.interviews);
+  //  // console.log(this.dico_extrait['artiste']);
+  //  // console.log(this.dico_extrait['question']);
+  //  // console.log(this.dico_extrait['interviews']);
+  //  // console.log(await this.current_extrait.interviews);
 
 
 

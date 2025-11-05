@@ -12,9 +12,9 @@ export default {
     },
     watch: {
         searchValue(newVal, oldVal) {
-            /// //console.log("mindmap searchterm change");
-            /// //console.log("Old:", oldVal);
-            /// //console.log("New:", newVal);
+            /// console.log("mindmap searchterm change");
+            /// console.log("Old:", oldVal);
+            /// console.log("New:", newVal);
         }
     }
 };

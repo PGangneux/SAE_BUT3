@@ -30,13 +30,13 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const InterviewId = this.$route.params.id;
-    //console.log("ID de l'Interview' :", InterviewId);
+    // console.log("ID de l'Interview' :", InterviewId);
 
     //reccuperation de l'Extrait via l'id
     this.current_interview =  markRaw(await Interview.detail(InterviewId));
     this.Extraitlist = markRaw(await Extrait.list());
 
-    //console.log(this.current_interview);
+    // console.log(this.current_interview);
 
     
     await this.current_interview.artiste;

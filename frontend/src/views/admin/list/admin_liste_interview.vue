@@ -19,7 +19,7 @@ export default {
 
 
   async mounted() {
-    //console.log("mounted admin interview list");
+    // console.log("mounted admin interview list");
     this.interviews = markRaw(await Interview.list());
 
     
@@ -27,7 +27,7 @@ export default {
     try {
         for (let interview of this.interviews) {
             this.dico_interviews[interview.uuid] = {"length": (await interview.extraits).length, "tags": markRaw(await interview.tags)};
-            //console.log(markRaw(this.dico_interviews));
+            // console.log(markRaw(this.dico_interviews));
         }
 
 

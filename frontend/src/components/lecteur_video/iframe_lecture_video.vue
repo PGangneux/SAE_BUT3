@@ -44,8 +44,7 @@ export default {
     function startTracking() {
       videoStore.intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
-          /// ///console.log("YouTube current time :", player.value.getCurrentTime());
-          /////console.log("Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
+          /// console.log("YouTube current time :", player.value.getCurrentTime());
           videoStore.currentTime = player.value.getCurrentTime();
           /////console.log("aPRÈS Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
         }
@@ -168,8 +167,12 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
+<<<<<<< HEAD
          /// ///console.log("Vimeo timeupdate :", seconds);
         ///console.log("Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
+=======
+         /// console.log("Vimeo timeupdate :", seconds);
+>>>>>>> bcee838 (changement correct des consol point log)
         videoStore.currentTime = seconds; 
         ///console.log("Après Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
       });
@@ -182,7 +185,11 @@ export default {
 
     async function update_player() {
       await nextTick();
+<<<<<<< HEAD
       ///console.log("videostore", videoStore.isPlaying)
+=======
+      // console.log("videostore", videoStore.isPlaying)
+>>>>>>> bcee838 (changement correct des consol point log)
       if (props.url.includes("youtube")) {
 
         const id = get_YT_videoId(props.url);
@@ -193,10 +200,16 @@ export default {
     }
 
     onMounted(async () => {
+<<<<<<< HEAD
       /// ///console.log("Initialisation du lecteur iframe vidéo");
       /// ///console.log("URL vidéo :", props.url);
       /// ///console.log("Temps courant :", videoStore);
       ///console.log("videostore au montage iframe", videoStore.currentTime)
+=======
+      /// console.log("Initialisation du lecteur iframe vidéo");
+      /// console.log("URL vidéo :", props.url);
+      /// console.log("Temps courant :", videoStore);
+>>>>>>> bcee838 (changement correct des consol point log)
       await nextTick();
       ///console.log("après next tick montage iframe", videoStore.currentTime)
       if (props.url.includes("youtube")) {
