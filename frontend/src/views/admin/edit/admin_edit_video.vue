@@ -20,7 +20,8 @@ export default {
             tags:[],
             thumbnail: '/imgs/width551.png',
             dico_extrait:{},
-            question : null,
+            taillelist:0,    
+
             popup: false
         };
     }
@@ -77,8 +78,12 @@ export default {
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
       "question":   (markRaw(await this.current_extrait.titre)).name,
-      "interviews": (markRaw(await this.current_extrait.interviews))
+      "interviews": (markRaw(await this.current_extrait.interviews)),
+      "tags": (markRaw(await this.current_extrait.tags))
     };
+
+
+    this.taillelist = this.dico_extrait['tags'].length
 
    
 
@@ -87,7 +92,7 @@ export default {
   //  //console.log(this.dico_extrait['interviews']);
   //  //console.log(await this.current_extrait.interviews);
 
-    this.question = 'Chargement...';
+
 
     
     if (this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
@@ -202,14 +207,31 @@ export default {
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
       <div class="row">
-        <ul class="scroller2  row" style="--bs-gutter-x: 0em;">
-          <li class="col" v-for="tag in tags">
-            <div class="row">
-              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-              <p class="col">{{ tag }}</p>
-            </div>
-          </li>
+
+        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+            <li v-for="tag in dico_extrait.tags " class="col">
+                <div class="row">
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+                  <p class="col">{{ tag.name }}</p>
+                </div>
+            </li>
         </ul>
+
+        <ul v-else-if="this.taillelist == 0 " class="col">
+            <li class="row"> 
+                <p  class="col">vide</p>
+            </li>
+        </ul>
+
+        <ul v-else class="col">
+            <li> 
+                <p  class="col">erreur de Chargement</p>
+            </li>
+        </ul>        
+
+
+
+
       </div>
     </div>
     
