@@ -10,10 +10,9 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
-    # expose Neo4j as service; on GitHub Actions le service est accessible depuis le runner
     services:
       neo4j:
-        image: neo4j:5
+        image: neo4j:latest
         ports:
           - 17687:7687            # mappe le bolt (7687) vers 17687 sur le runner
           - 17474:7474             # (optionnel) HTTP browser si besoin

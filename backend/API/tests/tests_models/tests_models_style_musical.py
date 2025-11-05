@@ -2,7 +2,6 @@ from neomodel.exceptions import UniqueProperty
 from neomodel.exceptions import DoesNotExist
 from ...tests import Neo4jTestCase
 from ...models import StyleMusical
-from neomodel import config
 
 
 class StyleMusicalTestCase(Neo4jTestCase):

@@ -2,7 +2,9 @@
 source=API
 omit = 
     */migrations/*
-    */settings/*
-    */monApp/__init__.py
+    */management/*
     */tests/*
-    */admin.py
+    */API/__init__.py
+    */API/apps.py
+    */API/serializers/__init__.py
+    */API/views/__init__.py

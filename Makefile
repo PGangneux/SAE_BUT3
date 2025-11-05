@@ -28,6 +28,8 @@ migration:
 	$(python) $(manage) migrate
 	$(python) $(manage) install_labels
 
+# Nécessite d'avoir un serveur Neo4j sur les ports 17474 et 17687
+# docker run -d -p 17474:7474 -p 17687:7687 -e NEO4J_AUTH=neo4j/testtest neo4j:latest
 tests:
 	$(python) $(manage) test $(APP)
 
@@ -37,7 +39,7 @@ coverage:
 	$(coverage) html
 
 neomodel_gen_diagram:
-	${venv}/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir img
+	${venv}/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir schema
 
 load_bd:
 	$(python) $(manage) install_labels
