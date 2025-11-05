@@ -10,24 +10,14 @@ export default {
     },
     data() {
         return {
-            u : ClientAPI.current_user
-        }
-    },
-    watch: {
-        u(old,qsdqsd) {
-               /// console.log("current_user headerbar");
-                /// console.log(this.user_current.get());
-                this.userKey++; // Force re-render
-                // console.log("RERENDER HEADERBAR");
-           
-        },
+            current_user: null,
+            unsubscribe_current_user: null,
+        };
     },
 
     computed: {
         isconnected() {
-            // console.log("current_user headerbar");
-            // console.log(this.user_current.get());
-            return this.u?.pseudo || false;
+            return !!(this.current_user && this.current_user.pseudo);
         },
         isadmin() {
             return !!(this.current_user && this.current_user.is_admin);
