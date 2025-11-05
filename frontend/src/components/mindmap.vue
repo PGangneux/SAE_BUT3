@@ -116,8 +116,8 @@ export default {
             </button>
             <div class="mm_control_outer">
                 <div class="mm_controls">
-                    <button @click="scale += 0.2">+</button>
-                    <button @click="scale -= 0.2">-</button>
+                    <button @click="scale += 0.2 ; scale = Math.min(5,scale)">+</button>
+                    <button @click="scale -= 0.2 ; scale = Math.max(0.2,scale)">-</button>
                     <button @click="scale = 1">reset zoom</button>
                     <button @click="centerMindmap()">recenter</button>
                 </div>
