@@ -3,7 +3,6 @@ import { markRaw } from 'vue';
 import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Lecteur_video from './components/lecteur_video/lecteur_video.vue';
-import Utilisateur from './model/utilisateur';
 import Interview from './model/interview';
 import Extrait from './model/extrait';
 
@@ -15,10 +14,6 @@ export default {
     },
     data() {
         return {
-            user_current: {
-                type: Utilisateur,
-                value: null,
-            },
             searchterm: "", // text de recherche
             interview_current: markRaw({
                 type: Interview,
@@ -32,10 +27,6 @@ export default {
     },
     provide() {
         return {
-            user_current: {
-                get: () => this.user_current,
-                set: (value) => { this.user_current = value ? markRaw(value) : null; }
-            },
             searchterm: {
                 get: () => this.searchterm,
                 set: (value) => { this.searchterm = value }

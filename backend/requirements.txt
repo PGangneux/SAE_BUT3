@@ -1,4 +1,5 @@
 django
+djangorestframework-simplejwt
 django-rest-framework
 django-debug-toolbar
 django-cors-headers
