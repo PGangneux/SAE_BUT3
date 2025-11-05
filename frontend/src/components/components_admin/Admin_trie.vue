@@ -125,6 +125,7 @@ justify-content: center
 
 .trie-tags{
     background-color: var(--gris-taupe);
+    margin-top: 1em;
 }
 
 

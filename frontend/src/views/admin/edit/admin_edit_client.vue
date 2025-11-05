@@ -102,6 +102,7 @@ label{
     justify-content: center;
     align-content: center;
     padding-right: 1em;
+    min-width: 5em;
 }
 
 .colorneon{

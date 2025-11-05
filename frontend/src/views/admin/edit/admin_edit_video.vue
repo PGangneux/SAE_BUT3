@@ -284,6 +284,9 @@ li>.card {
   margin: 10px 10px 10px 10px;  
 }
 
+span{
+      min-width: 8em;
+}
 
 .scroller2 {
   height: 100%;
