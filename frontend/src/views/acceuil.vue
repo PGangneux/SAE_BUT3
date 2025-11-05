@@ -100,7 +100,13 @@ export default {
       @mousedown="startDrag"
       ref="pip"
     >
-      <iframe_lecture_video :url="videoStore.url" />
+      <!-- iframe picture in picture-->
+       
+      <component
+        v-if="videoStore.iframeComponent"
+        :is="videoStore.iframeComponent.$options"
+        v-bind="videoStore.iframeComponent.$props"
+      />
       <img src="/imgs/agrandir.svg" 
           alt="picture in picture" 
           @click.stop="picture_in_picture">

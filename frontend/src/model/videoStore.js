@@ -11,4 +11,6 @@ export const videoStore = reactive({
   currentTime: 0,   // <-- position actuelle en secondes
   isPlaying: true, // <-- statut lecture/pause
   intervalId: null,
+  set_url: null,
+  iframeComponent: null, // on stockera ici une instance du composant iframe
 });

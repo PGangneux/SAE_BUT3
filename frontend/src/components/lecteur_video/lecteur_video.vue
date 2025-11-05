@@ -32,7 +32,16 @@ export default {
   async mounted() {
     /// ///console.log("Mounted lecteur_video.vue");
     await this.update()
-
+    
+    //videoStore.set_url = this.set_url
+    if (this.$refs.iframe) {
+      // stocke l'instance complète dans videoStore
+      videoStore.iframeComponent = this.$refs.iframe;
+      console.log("iframeComponent stocké :", videoStore.iframeComponent);
+      await this.$refs.iframe.update_player();
+    }
+    console.log("videoStore iframe lecteru", videoStore.lecteur)
+    
   },
 
   beforeUnmount() {
@@ -72,7 +81,7 @@ export default {
         if (this.extrait){
           ///console.log("update videoStore", videoStore.currentTime)
           /// ///console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait, await this.extrait_current.get());
-          this.redirect_extrait(this.extrait)
+          //this.redirect_extrait(this.extrait)
         }
         else {
           ///console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
@@ -83,8 +92,10 @@ export default {
       this.url_yt = this.base_url_yt + this.extrait.youtube_url;
       this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
 
+
       
-      this.set_url(videoStore.lecteur)
+      //this.set_url(videoStore.lecteur)
+      this.redirect_extrait(this.extrait)
     },
 
     iframe_build(){
@@ -139,12 +150,6 @@ export default {
       this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
     },
 
-    async set_lecteur(new_lecteur){
-      videoStore.lecteur = new_lecteur
-      this.set_url(videoStore.lecteur)
-      
-      await this.$refs.iframe.update_player()
-    },
 
     async redirect_extrait(extrait){
         // Mettre à jour l'extrait local
@@ -161,10 +166,16 @@ export default {
 
         ///console.log("videostore dans redirect extrait", videoStore.currentTime)
 
-        this.set_url(videoStore.lecteur)
+        // update videoStore
+        videoStore.uuid = this.extrait.uuid
+        videoStore.url_yt = this.url_yt
+        videoStore.url_vimeo = this.url_vimeo
+        videoStore.url =  (videoStore.lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
+        this.url = videoStore.url
+
         //update le player si il est présent
         if (!this.$refs.iframe) {
-          ///console.log("iframe non trouvé, impossible de mettre à jour le player");
+          console.log("iframe non trouvé, impossible de mettre à jour le player");
           return;
         }
         else{
@@ -253,13 +264,13 @@ export default {
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
 
 
-    <parametres
+    <!--parametres
         v-if="param_visible"
         :pos_x_iframe="pos_x_iframe"
         :pos_y_iframe="pos_y_iframe"
         :lecteur="lecteur"
         @set_lecteur="set_lecteur"
-      />
+      /-->
   </div>
 </template>
 

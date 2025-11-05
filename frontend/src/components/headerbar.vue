@@ -1,16 +1,41 @@
 <script>
 import comp_searchbar from './searchbar.vue';
+import parametres_lecteur from './lecteur_video/parametres_lecteur.vue';
+import { videoStore } from "../model/videoStore";
 
 export default {
+    emits : ['set_lecteur'],
     name: "comp_headerbar",
     components: {
         comp_searchbar,
+        parametres_lecteur,
     },
     inject: ['user_current'],
     data() {
         return {
-            userKey: 0
+            userKey: 0,
+            param_lecteur: false,
         }
+    },
+    methods : {
+        popup_param_lecteur(){
+            console.log("test")
+            this.param_lecteur = !this.param_lecteur
+        },
+
+        async set_lecteur(new_lecteur){
+            videoStore.lecteur = new_lecteur
+            console.log("lecteur set")
+            videoStore.iframeComponent.set_url(videoStore.lecteur) 
+            // get iframe d'un autre composant   
+            //if (videoStore.iframeRef) {
+            //    await videoStore.iframeRef.update_player()
+            //}
+            //else{
+            //    console.log("pas de iframeRef", videoStore.iframeRef)
+            //}
+        }
+
     },
     watch: {
         'user_current.get()': {
@@ -46,6 +71,13 @@ export default {
                 </li>
                 <li style="flex-grow: 1;">
                     <comp_searchbar class="flex-grow-1" />
+                </li>
+                <li>
+                    <p @click="popup_param_lecteur">Lecteur</p>
+                    <parametres_lecteur
+                        v-if="param_lecteur" 
+                        @set_lecteur="this.set_lecteur($event)"
+                    />
                 </li>
                 <li class="btn local" v-if="isconnected && isadmin">
                     <RouterLink class="nav-link" to="/admin">Admin</RouterLink>
