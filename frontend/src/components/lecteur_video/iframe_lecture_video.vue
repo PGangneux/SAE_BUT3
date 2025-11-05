@@ -1,6 +1,7 @@
 <script>
 import { onMounted, onBeforeUnmount, ref, nextTick, } from "vue";
 import { videoStore } from "../../model/videoStore";
+import { markRaw } from 'vue';
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 
@@ -171,7 +172,7 @@ export default {
 
     async function update_player() {
       await nextTick();
-
+      console.log("videostore", videoStore.isPlaying)
       if (props.url.includes("youtube")) {
 
         const id = get_YT_videoId(props.url);
