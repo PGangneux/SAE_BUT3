@@ -10,19 +10,76 @@ jobs:
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
 
+    # expose Neo4j as service; on GitHub Actions le service est accessible depuis le runner
+    services:
+      neo4j:
+        image: neo4j:5
+        ports:
+          - 18676:7687            # mappe le bolt (7687) vers 18676 sur le runner
+          - 7474:7474             # (optionnel) HTTP browser si besoin
+        env:
+          NEO4J_AUTH: "neo4j/testtest"
+        options: >-
+          --health-cmd="cypher-shell -u neo4j -p testtest 'RETURN 1' || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=30
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install Dependencies
+      - name: Install system deps (optional)
+        run: |
+          sudo apt-get update
+          # netcat non strict nécessaire ; on utilise /dev/tcp, mais laisse si besoin
+          sudo apt-get install -y ca-certificates
+
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
 
-      - name: Run Tests
+      - name: Wait for Neo4j bolt port to be ready
+        # On utilise /dev/tcp to tester la connexion TCP sur localhost:18676
         run: |
+          echo "Waiting for Neo4j on localhost:18676..."
+          for i in $(seq 1 60); do
+            if bash -c "</dev/tcp/localhost/18676" >/dev/null 2>&1; then
+              echo "Neo4j is up (port 18676 reachable)"
+              break
+            fi
+            echo "Trying ($i/60)..."
+            sleep 2
+          done
+          # Optional: fail if still not up
+          if ! bash -c "</dev/tcp/localhost/18676" >/dev/null 2>&1; then
+            echo "Neo4j did not become ready in time" >&2
+            docker logs $(docker ps -q --filter ancestor=neo4j:5) || true
+            exit 1
+          fi
+
+      - name: Initialize Neo4j test DB (cleanup)
+        # nettoie la DB avant la suite de tests
+        run: |
+          python - <<'PY'
+            import os
+            from neomodel import db
+            bolt = os.environ.get("TEST_NEO4J_BOLT_URL")
+            db.set_connection(bolt)
+            # cleanup
+            db.cypher_query("MATCH (n) DETACH DELETE n")
+            print("Neo4j test DB cleaned.")
+            PY
+
+      - name: Run Django tests
+        run: |
+          # Optionnel: export DJANGO_SETTINGS_MODULE si tu as un settings_test
+          # export DJANGO_SETTINGS_MODULE=API.settings_test
+          echo "Using TEST_NEO4J_BOLT_URL=$TEST_NEO4J_BOLT_URL"
           python ./backend/manage.py test API
