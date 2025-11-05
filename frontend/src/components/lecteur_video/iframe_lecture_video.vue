@@ -46,7 +46,7 @@ export default {
     function startTracking() {
       intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
-          /// console.log("YouTube current time :", player.value.getCurrentTime());
+          /// //console.log("YouTube current time :", player.value.getCurrentTime());
           videoStore.currentTime = player.value.getCurrentTime();
         }
       }, 1000);
@@ -160,7 +160,7 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
-         /// console.log("Vimeo timeupdate :", seconds);
+         /// //console.log("Vimeo timeupdate :", seconds);
         videoStore.currentTime = seconds; 
       });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
@@ -172,7 +172,7 @@ export default {
 
     async function update_player() {
       await nextTick();
-      console.log("videostore", videoStore.isPlaying)
+      //console.log("videostore", videoStore.isPlaying)
       if (props.url.includes("youtube")) {
 
         const id = get_YT_videoId(props.url);
@@ -183,9 +183,9 @@ export default {
     }
 
     onMounted(async () => {
-      /// console.log("Initialisation du lecteur iframe vidéo");
-      /// console.log("URL vidéo :", props.url);
-      /// console.log("Temps courant :", videoStore);
+      /// //console.log("Initialisation du lecteur iframe vidéo");
+      /// //console.log("URL vidéo :", props.url);
+      /// //console.log("Temps courant :", videoStore);
       await nextTick();
       if (props.url.includes("youtube")) {
         const id = get_YT_videoId(props.url);

@@ -14,17 +14,17 @@ export default {
     },
     watch: {
         u(old,qsdqsd) {
-               /// console.log("current_user headerbar");
-                /// console.log(this.user_current.get());
+               /// //console.log("current_user headerbar");
+                /// //console.log(this.user_current.get());
                 this.userKey++; // Force re-render
-                console.log("RERENDER HEADERBAR");
+                //console.log("RERENDER HEADERBAR");
            
         },
     },
     computed: {
         isconnected() {
-            // console.log("current_user headerbar");
-            // console.log(this.user_current.get());
+            // //console.log("current_user headerbar");
+            // //console.log(this.user_current.get());
             return this.u?.pseudo || false;
         },
         isadmin() {

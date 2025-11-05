@@ -36,7 +36,7 @@ export default {
         this.dico_extrait.tags =markRaw(await this.current_extrait.tags);
 
         this.taillelist = this.dico_extrait.tags.length
-        console.log(markRaw(this.dico_extrait["tags"]));
+        //console.log(markRaw(this.dico_extrait["tags"]));
        
     }
 

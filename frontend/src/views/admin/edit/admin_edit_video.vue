@@ -65,15 +65,15 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    //console.log("ID de l'Extraits' :", ExtraitId);
+    ////console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
 
 
-    console.log(this.current_extrait);
+    //console.log(this.current_extrait);
 
-    console.log("dico complet en cours");
+    //console.log("dico complet en cours");
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
       "question":   (markRaw(await this.current_extrait.titre)).name,
@@ -82,10 +82,10 @@ export default {
 
    
 
-  //  console.log(this.dico_extrait['artiste']);
-  //  console.log(this.dico_extrait['question']);
-  //  console.log(this.dico_extrait['interviews']);
-  //  console.log(await this.current_extrait.interviews);
+  //  //console.log(this.dico_extrait['artiste']);
+  //  //console.log(this.dico_extrait['question']);
+  //  //console.log(this.dico_extrait['interviews']);
+  //  //console.log(await this.current_extrait.interviews);
 
     this.question = 'Chargement...';
 

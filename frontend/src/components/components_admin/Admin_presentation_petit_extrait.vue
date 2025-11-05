@@ -1,5 +1,7 @@
 <script>
+import { markRaw } from 'vue';
 import Extrait from '../../model/extrait.js';
+
 export default {
     name: "comp_admin_presentation_petit_extrait",
 
@@ -12,6 +14,8 @@ export default {
     data() {
         return {
             thumbnail: '/imgs/width551.png', // vignette par défaut
+            dico_extrait:{},
+            taillelist:0,        
         };
     },
 
@@ -23,8 +27,12 @@ export default {
         }else{
             this.thumbnail = await this.current_extrait.url_miniature_vi()
         }
-        console.log(this.current_extrait)
+        ////console.log(this.current_extrait)
         
+        this.dico_extrait.tags =markRaw(await this.current_extrait.tags);
+
+        this.taillelist = this.dico_extrait.tags.length
+        ////console.log(markRaw(this.dico_extrait["tags"]));
     }, 
 };
 </script>
@@ -75,14 +83,24 @@ export default {
                             <img src="/imgs/tags.svg" alt="tags logo " class="col" height="32" width="32">
                             <div class="col">
                                 <p class="col">tags :</p>
-                                 <ul v-if="current_extrait && current_extrait.tags">
-                                    <li v-for="tag in current_extrait.tags">
-                                        <p class="col">{{ tag }}</p>
+
+                                <ul v-if="this.taillelist != 0" class="col" >
+                                    <li v-for="tag in dico_extrait.tags " class="row">
+                                        <p  class="col">{{ tag.name }}</p>
                                     </li>
                                 </ul>
-                                <p v-else>
-                                    Chargement des informations...
-                                </p>
+
+                                <ul v-else-if="this.taillelist == 0 " class="col">
+                                    <li class="row"> 
+                                        <p  class="col">vide</p>
+                                    </li>
+                                </ul>
+
+                                <ul v-else class="col">
+                                    <li> 
+                                        <p  class="col">erreur de Chargement</p>
+                                    </li>
+                                </ul>
                             </div>
                         </li>
 

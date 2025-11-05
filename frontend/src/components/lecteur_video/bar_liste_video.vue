@@ -26,12 +26,12 @@ export default {
 
     async extraits_current_question(){
       this.selected = "questions"
-      /// console.log("current extrait:", this.extrait)
-      /// console.log(await this.extrait.question.then(question => { return question.extraits}))
+      /// //console.log("current extrait:", this.extrait)
+      /// //console.log(await this.extrait.question.then(question => { return question.extraits}))
       this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits}))
     },
     async reset_videoStore(extrait) {
-      console.log("reset")
+      //console.log("reset")
       this.extrait_current.set(extrait);
       this.interview_current.set(null);
       

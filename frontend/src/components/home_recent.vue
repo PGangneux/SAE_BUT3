@@ -39,10 +39,10 @@ export default {
         async gotoInter(inter) {
             this.interview_current.set(inter);
             let ext = await inter.extraits
-            /// console.log("extraits dans gotoInter: HERER", ext);
+            /// //console.log("extraits dans gotoInter: HERER", ext);
             this.extrait_current.set(markRaw(ext[0]));
-            /// console.log("interview current dans gotoInter:", await this.interview_current.get())
-            /// console.log("extrait current dans gotoInter:", await this.extrait_current.get())
+            /// //console.log("interview current dans gotoInter:", await this.interview_current.get())
+            /// //console.log("extrait current dans gotoInter:", await this.extrait_current.get())
             this.$router.push(`/lecteur_video/`);
         },
     },
