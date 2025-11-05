@@ -4,8 +4,9 @@ venv = venv/bin
 python = ${venv}/python
 pip = ${venv}/pip
 npm = npm --prefix ./frontend
+coverage = $(venv)/coverage
 
-.PHONY: install migration tests run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
+.PHONY: install migration tests coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
 
 run_back:
 	$(python) $(manage) runserver
@@ -29,6 +30,11 @@ migration:
 
 tests:
 	$(python) $(manage) test $(APP)
+
+coverage:
+	$(coverage) run --source='$(APP)' $(manage) test ./backend/$(APP)/tests/$(package)
+	$(coverage) report
+	$(coverage) html
 
 neomodel_gen_diagram:
 	${venv}/neomodel_generate_diagram ./backend/API/models.py --file-type arrows --write-to-dir img

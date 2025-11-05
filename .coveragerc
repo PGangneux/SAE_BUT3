@@ -1,0 +1,8 @@
+[run]
+source=API
+omit = 
+    */migrations/*
+    */settings/*
+    */monApp/__init__.py
+    */tests/*
+    */admin.py
