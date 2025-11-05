@@ -15,8 +15,8 @@ jobs:
       neo4j:
         image: neo4j:5
         ports:
-          - 18676:7687            # mappe le bolt (7687) vers 18676 sur le runner
-          - 7474:7474             # (optionnel) HTTP browser si besoin
+          - 17687:7687            # mappe le bolt (7687) vers 17687 sur le runner
+          - 17474:7474             # (optionnel) HTTP browser si besoin
         env:
           NEO4J_AUTH: "neo4j/testtest"
         options: >-
@@ -46,19 +46,19 @@ jobs:
           pip install -r backend/requirements.txt
 
       - name: Wait for Neo4j bolt port to be ready
-        # On utilise /dev/tcp to tester la connexion TCP sur localhost:18676
+        # On utilise /dev/tcp to tester la connexion TCP sur localhost:17687
         run: |
-          echo "Waiting for Neo4j on localhost:18676..."
+          echo "Waiting for Neo4j on localhost:17687..."
           for i in $(seq 1 60); do
-            if bash -c "</dev/tcp/localhost/18676" >/dev/null 2>&1; then
-              echo "Neo4j is up (port 18676 reachable)"
+            if bash -c "</dev/tcp/localhost/17687" >/dev/null 2>&1; then
+              echo "Neo4j is up (port 17687 reachable)"
               break
             fi
             echo "Trying ($i/60)..."
             sleep 2
           done
           # Optional: fail if still not up
-          if ! bash -c "</dev/tcp/localhost/18676" >/dev/null 2>&1; then
+          if ! bash -c "</dev/tcp/localhost/17687" >/dev/null 2>&1; then
             echo "Neo4j did not become ready in time" >&2
             docker logs $(docker ps -q --filter ancestor=neo4j:5) || true
             exit 1
