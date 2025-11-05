@@ -59,7 +59,13 @@ export default {
 
         <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" action="">
             <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
-            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Modifier Utilisateur </button>
+            <RouterLink class="bt btn col" :to="'/admin/user/edit/' +this.current_utilisateur.uuid ">
+                <button  type="button"   class=" btn col" >
+                    <img src="/imgs/save.svg" class="col" alt="Modifier">   
+                    Modifier Utilisateur
+                </button>  
+
+            </RouterLink>
         </form>
 
 
