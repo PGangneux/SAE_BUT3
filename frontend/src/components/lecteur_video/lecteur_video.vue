@@ -179,10 +179,7 @@ export default {
         else{
           await this.$refs.iframe.update_player();
         }
-        catch(e){
-          // console.log(e)
-        }
-        
+
         
     },
 
