@@ -1,31 +1,33 @@
 <script>
-import { LegendColorMap, mmget} from '../model/mindmap_func.js';
+import { LegendColorMap, mmget } from '../model/mindmap_func.js';
 
 export default {
     name: "comp_mindmap",
     inject: ["searchterm"],
     data() {
         return {
-            LegendColorMap : LegendColorMap,
-            linkages: [
-            ],
-            nodes: [
-            ],
+            LegendColorMap: LegendColorMap,
+            linkages: [],
+            nodes: [],
             chemin: [],
             fullscreen: false,
             togglelegend: true,
-            scale: 0.5,
-            offx: 300,
-            offy: 300,
+            scale: 1,
+            offx: 0,
+            offy: 0,
+            dragging: false,
+            lastMouseX: 0,
+            lastMouseY: 0,
         };
     },
     async mounted() {
+        this.centerMindmap();
         mmget(this);
     },
     computed: {
         searchValue() {
             return this.searchterm;
-        }
+        },
     },
     watch: {
         searchValue(newVal) {
@@ -46,6 +48,50 @@ export default {
                     document.exitFullscreen();
                 }
             }
+        },
+        centerMindmap(){
+            this.offx= window.screen.width/2;
+            this.offy= window.screen.height/2;
+        },
+        startDrag(event) {
+            this.dragging = true;
+            this.lastMouseX = event.clientX;
+            this.lastMouseY = event.clientY;
+            event.preventDefault();
+        },
+        
+        doDrag(event) {
+            if (!this.dragging) return;
+            
+            const deltaX = event.clientX - this.lastMouseX;
+            const deltaY = event.clientY - this.lastMouseY;
+            
+            this.offx += deltaX;
+            this.offy += deltaY;
+            
+            this.lastMouseX = event.clientX;
+            this.lastMouseY = event.clientY;
+        },
+        
+        stopDrag() {
+            this.dragging = false;
+        },
+        
+        handleWheel(event) {
+            event.preventDefault();
+            const delta = -Math.sign(event.deltaY) * 0.1;
+            const newScale = Math.max(0.1, Math.min(3, this.scale + delta));
+            
+            // Adjust offsets to zoom toward mouse position
+            const rect = event.currentTarget.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            const scaleFactor = newScale / this.scale;
+            this.offx = mouseX - (mouseX - this.offx) * scaleFactor;
+            this.offy = mouseY - (mouseY - this.offy) * scaleFactor;
+            
+            this.scale = newScale;
         }
     },
 };
@@ -58,7 +104,13 @@ export default {
         <div>
             <p v-for="chem in chemin" :key="chem.name">{{ chem.name }}</p>
         </div>
-        <div class="mm_relative">
+        <div class="mm_relative" 
+            @mousedown="startDrag"
+            @mousemove="doDrag"
+            @mouseup="stopDrag"
+            @mouseleave="stopDrag"
+            @wheel="handleWheel"
+            >
             <button class="mm_fullscreenbtn" @click="toggleFullscreen">
                 {{ fullscreen ? '⤢' : '⤢' }}
             </button>
@@ -67,24 +119,24 @@ export default {
                     <button @click="scale += 0.2">+</button>
                     <button @click="scale -= 0.2">-</button>
                     <button @click="scale = 1">reset zoom</button>
-                    <button @click="offx = 0; offy = 0">recenter</button>
+                    <button @click="centerMindmap()">recenter</button>
                 </div>
                 <div class="mm_legend_outer">
-                        <button v-if="togglelegend" @click="togglelegend = false">></button>
-                        <button v-else @click="togglelegend = true"><</button>
-                        <transition name="slide">
-                            <div class="mm_legend" v-if="togglelegend">
-                                <div v-for="(legend_color, legend_class) in LegendColorMap">
-                                    <div class="mm_legend_cercle" :style="{ backgroundColor: legend_color }"></div>
-                                    <p>{{ legend_class }}</p>
-                                </div>
+                    <button v-if="togglelegend" @click="togglelegend = false">></button>
+                    <button v-else @click="togglelegend = true"><</button>
+                    <transition name="slide">
+                        <div class="mm_legend" v-if="togglelegend">
+                            <div v-for="(legend_color, legend_class) in LegendColorMap" :key="legend_class">
+                                <div class="mm_legend_cercle" :style="{ backgroundColor: legend_color }"></div>
+                                <p>{{ legend_class }}</p>
                             </div>
-                        </transition>
-                    </div>
+                        </div>
+                    </transition>
+                </div>
             </div>
             <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link"></div>
             <div v-for="node in nodes" :key="node.id" :style="node.getStyle(scale, offx, offy)"
-                class="mm_node"> {{ node.category.name }} </div>
+                    class="mm_node"> {{ node.category.name }} </div>
         </div>
     </div>
 </template>
