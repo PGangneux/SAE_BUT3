@@ -35,10 +35,17 @@ export default {
       this.extrait_current.set(extrait);
       this.interview_current.set(null);
       
-      videoStore.currentTime = 0
-      videoStore.isPlaying = true
+      videoStore.currentTime = 0;
+      videoStore.isPlaying = true;
+      console.log("videostore dans reset_videoStore avant clearInterval", videoStore.currentTime, videoStore.intervalId)
+      clearInterval(videoStore.intervalId);
+      console.log("videostore dans reset_videoStore après clearInterval", videoStore.currentTime, videoStore.intervalId)
+      videoStore.intervalId = null;
+      videoStore.currentTime = 0;
+      console.log("videostore dans reset_videoStore", videoStore.currentTime, videoStore.intervalId)
 
       this.$emit('update');
+      console.log("videostore dans reset_videoStore après emit", videoStore.currentTime, videoStore.intervalId)
     },
 
 

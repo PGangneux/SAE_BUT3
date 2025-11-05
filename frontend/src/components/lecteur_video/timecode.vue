@@ -1,5 +1,6 @@
 <script>
 import { toRaw, markRaw } from "vue";
+import { videoStore } from "../../model/videoStore";
 
 
 export default {
@@ -55,7 +56,10 @@ export default {
     },
 
     async onClick(extrait) {
-      // ici tu déclenches l'event
+      // met à jour le temps courant du videoStore
+      clearInterval(videoStore.intervalId);
+      videoStore.currentTime = 0;
+      // émet l'événement pour rediriger vers l'extrait cliqué
       this.$emit('redirect_extrait', extrait);
     }
 
