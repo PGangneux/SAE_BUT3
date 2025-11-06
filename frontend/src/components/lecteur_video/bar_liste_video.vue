@@ -154,7 +154,7 @@ export default {
             <div>
                 <ul class="liste_video">
                     <li v-for="video in videos">
-                        <div v-if="video.uuid != current_extrait?.uuid">
+                        <div>
                             
                             <miniature_video v-if="this.interview" @click="update_liste_video(video)" :video="video" />
                             <miniature_video v-else @click="update_liste_video(video)" :video="video" />
