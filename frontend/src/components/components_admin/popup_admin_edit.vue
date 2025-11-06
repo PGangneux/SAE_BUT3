@@ -18,7 +18,7 @@ export default {
         };
     },methods: {
         sendData () {
-            this.$emit('eventName', !this.popup)
+            this.$emit('ecoutepopup', !this.popup)
         },
         tags_to_string(tags_array) {
             let string_tags = "";
@@ -27,7 +27,10 @@ export default {
             }
             return string_tags.trim();
         },
-    },    
+    },
+    emits : [ "ecoutepopup"],   
+    
+    
     async mounted() {
     this.interviews = markRaw(await Interview.list());
     this.tags = markRaw(await Tags.list())

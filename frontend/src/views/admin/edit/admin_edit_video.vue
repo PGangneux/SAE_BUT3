@@ -200,7 +200,10 @@ export default {
             </div>
 
             <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist</h1>
+              <h1 class="row pcentrer"> Tableau des Playlist
+                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+              </h1>
+             
               <table class="ultagger table tables table-striped">
                   <thead>
                       <tr>
@@ -215,7 +218,7 @@ export default {
                       </tr>
                   </tbody>
               </table>
-              <div class="bt btn row"  @click="popup = !popup,console.log(popup)" style="width: 8%; height: 10%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+             
             </div>
         </div>
       </div>
@@ -262,7 +265,7 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup v-on:eventName="popupchange" /> </div>
+    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
 
     </template>
 
