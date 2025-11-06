@@ -1,4 +1,5 @@
 <script>
+import { markRaw } from 'vue';
 import { LegendColorMap, mmget } from '../model/mindmap_func.js';
 
 export default {
@@ -92,7 +93,13 @@ export default {
             this.offy = mouseY - (mouseY - this.offy) * scaleFactor;
             
             this.scale = newScale;
-        }
+        },
+        handleClick(node){
+            console.log("mm click handle node");
+            this.chemin.push(markRaw(node));
+            console.log(this.chemin);
+            mmget(this);
+        },
     },
 };
 </script>
@@ -135,7 +142,7 @@ export default {
                 </div>
             </div>
             <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link"></div>
-            <div v-for="node in nodes" :key="node.id" :style="node.getStyle(scale, offx, offy)"
+            <div v-for="node in nodes" :key="node.id" :style="node.getStyle(scale, offx, offy)" @click="handleClick(node);"
                     class="mm_node"> {{ node.category.name }} </div>
         </div>
     </div>

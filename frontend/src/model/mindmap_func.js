@@ -147,8 +147,37 @@ export function mmget(vueobj) {
     // put default cercle position + links
     set_children(vueobj, root, null);
     let current_node = root;
-    for (const child of vueobj.chemin) {
-        // let next = current_node.childrens. [obj => obj.category == child] ;
+    try {
+        for (const child of vueobj.chemin) {
+            let next = current_node.childrens.find(obj => obj.childnode === child);
+
+            if (next) {
+                current_node = child;
+                
+                // Filter out categories that are already in the chemin path
+                const availableCategories = categorys.filter(elem => !vueobj.chemin.category.includes(elem));
+                
+                // Add available categories as children
+                for (const element of availableCategories) {
+                    let tmp_child = new mmNode(0, 0, current_node.depth + 1, element, null);
+                    vueobj.nodes.push(tmp_child);
+                    current_node.childrens.push({
+                        childnode: tmp_child,
+                        angle: null
+                    });
+                }
+                
+                // Update positions for the new children
+                set_children(vueobj, current_node, null);
+                
+            } else {
+                console.warn(`Child node with category '${child}' not found`);
+                break;
+            }
+        }
+    } catch (error) {
+        console.error('Error during path traversal:', error);
+        throw error;
     }
     // console.log(root);
 }
