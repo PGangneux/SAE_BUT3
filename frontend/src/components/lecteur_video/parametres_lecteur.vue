@@ -12,16 +12,13 @@ export default {
 
   methods : {
     set_lecteur(lecteur){
-      console.log("lecteur", lecteur)
+      /// console.log("lecteur", lecteur)
       this.$emit('set_lecteur', lecteur),
       this.lecteur_selected = lecteur
-      console.log(videoStore.lecteur)
+      /// console.log(videoStore.lecteur)
     }
   },
 
-  mounted() {
-    console.log("test2")
-  }
 }
 </script>
 

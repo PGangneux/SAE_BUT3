@@ -88,12 +88,11 @@ export default {
 
       if (video.extraits) {
         // c'est une interview
-        console.log(video)
-
+        /// console.log(video)
         this.interview_current.set(video);
         
-        console.log("tdtdtdtdtdtdtt", this.interview_current.get())
-        console.log((await video.extraits)[0])
+
+        ///console.log((await video.extraits)[0])
         this.extrait_current.set((await video.extraits)[0]);
       } else {
         // c'est un extrait
@@ -121,7 +120,7 @@ export default {
     this.interview = toRaw(await this.interview_current.get());
     this.extrait = toRaw(await this.extrait_current.get());
     this.videos = markRaw(await Extrait.list());
-    console.log("interview", this.interview)
+    /// console.log("interview", this.interview)
     if (this.interview) this.img_close = false;
 
   },

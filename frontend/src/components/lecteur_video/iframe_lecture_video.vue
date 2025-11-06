@@ -204,7 +204,7 @@ export default {
       emit('iframe_build')
 
       //videoStore.iframeComponent = instance.proxy
-      console.log("iframeComponent", videoStore.iframeComponent)
+      /// console.log("iframeComponent", videoStore.iframeComponent)
 
 
     });

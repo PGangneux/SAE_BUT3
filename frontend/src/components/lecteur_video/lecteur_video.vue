@@ -36,10 +36,10 @@ export default {
     if (this.$refs.iframe) {
       // stocke l'instance complète dans videoStore
       videoStore.iframeComponent = this.$refs.iframe;
-      console.log("iframeComponent stocké :", videoStore.iframeComponent);
+      /// console.log("iframeComponent stocké :", videoStore.iframeComponent);
       //await this.$refs.iframe.update_player();
     }
-    console.log("videoStore iframe lecteru", videoStore.lecteur)
+    /// console.log("videoStore iframe lecteru", videoStore.lecteur)
     
   },
 
@@ -89,8 +89,8 @@ export default {
       //videoStore.uuid = this.extrait.uuid;
       //videoStore.url_yt = this.url_yt;
       //videoStore.url_vimeo = this.url_vimeo;
-      console.log("lecteur", videoStore.lecteur)
-      console.log("url", videoStore.url)
+      //// console.log("lecteur", videoStore.lecteur)
+      //// console.log("url", videoStore.url)
       videoStore.isPictureInPicture = true;
       videoStore.iframeComponent.set_url(videoStore.lecteur) 
       this.$router.push("/");
@@ -123,7 +123,7 @@ export default {
 
         //update le player si il est présent
         if (!this.$refs.iframe) {
-          console.log("iframe non trouvé, impossible de mettre à jour le player");
+          console.error("iframe non trouvé, impossible de mettre à jour le player");
           return;
         }
         else{
