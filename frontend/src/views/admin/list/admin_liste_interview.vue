@@ -95,7 +95,7 @@ export default {
             <!--tagfully futur probleme-->
 
             <ul class="scroller ultagger row tagsfully">
-                <li class="col" v-for="tag in this.tags">
+                <li class="col padd" v-for="tag in this.tags">
                     <button class="btn btn-primary"> {{ tag.name }} </button>
                 </li>
             </ul>
@@ -176,6 +176,8 @@ export default {
     border-radius: 2em;
     
 }
+
+
 
 .button-blanc{
     background-color: var(--blanc);

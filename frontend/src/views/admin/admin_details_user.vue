@@ -3,7 +3,7 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 import User from "../../model/utilisateur.js";
-
+import Tags from '../../model/tag.js';
 
 export default {
   name: "page_admin_details_client",
@@ -12,13 +12,14 @@ export default {
   },data() {
         return {
             current_utilisateur : {type:User},
+            tags:{type:Tags},
     };
   },    
   async mounted() {
         const utilisateurId = this.$route.params.id;
         this.current_utilisateur = markRaw(await User.detail(utilisateurId));
-        // console.log("utilisateur ",current_utilisateur.name)
-        // console.log(this.current_utilisateur)
+        this.tags = markRaw(await Tags.list())
+
     },
 };
 
@@ -30,26 +31,33 @@ export default {
     <comp_baradmin/>
 
     <h1 class="text-center colorneon"> Details Utilisateur {{ pseudo }} </h1>
+
+
         <div class="row grisee" style=" margin-left: 0 !important; margin-right: 0 !important;">
             <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class=" col">
-                    <p> Nom:{{ nom }}</p>
+                <div class=" col test">
+                    <p> Nom: {{ this.current_utilisateur.nom }}</p>
                 </div>
 
-                <div class="col">
-                    <p> Prénom:{{ prenom }}</p>
+                <div class="col test">
+                    <p> Prénom: {{ this.current_utilisateur.prenom }}</p>
                 </div>
             </div>
 
             <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
                 <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">h1</p>
+                    <p class="row pcentrer">details non definie</p>
 
 
                 </div>
 
                 <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">tags</p>
+                    <p class="row pcentrer">Tag User</p>
+                    <ul class="scroller ultagger row tagsfully">
+                        <li class="col" v-for="tag in this.tags">
+                            <button class="btn btn-primary"> {{ tag.name }} </button>
+                        </li>
+                    </ul>
 
                 </div>
             </div>
@@ -105,6 +113,23 @@ label{
     margin-top: 1em;
     margin-bottom: 1em;
     justify-content: center
+}
+
+
+.ultagger {
+    list-style-type: none;
+
+}
+
+.tagsfully{
+    width: 100%;
+    height:100%;
+}
+
+
+.test{
+    margin: 1%;
+  text-align: center;
 }
 
 </style>
