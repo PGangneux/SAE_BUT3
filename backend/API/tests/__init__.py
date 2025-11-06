@@ -17,8 +17,6 @@ class Neo4jTestCase(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         # Connexion à la base de test
-        # config.DATABASE_URL = TEST_BOLT_URL
-        # Command().handle()
         # Nettoyage initial de la base
         db.cypher_query("MATCH (n) DETACH DELETE n")
 

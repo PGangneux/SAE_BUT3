@@ -8,3 +8,4 @@ omit =
     */API/apps.py
     */API/serializers/__init__.py
     */API/views/__init__.py
+    */API/errors/__init__.py
