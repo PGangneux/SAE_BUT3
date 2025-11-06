@@ -32,7 +32,7 @@ export default {
 
     <h1 class="text-center colorneon"> Éditer un Compte  </h1>
 
-    <form action="" class="grisee">
+    <form action="" class="grisee" style="padding: 1em;">
         <div class="row client">
             <div class="row client">
 
@@ -103,12 +103,14 @@ export default {
                 </div>
             </div>
 
+        <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important; padding: 1em;" action="">
+            <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
+        </form>
+
 
         </div>
 
-        <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" action="">
-            <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
-        </form>
+
     </template>
 
 <style scoped>
