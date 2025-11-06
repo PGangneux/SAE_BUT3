@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
-from ..models import Tag
+from ..models import Extrait, Tag
+from ..errors import NotFound, ContextError
+from neomodel.exceptions import DoesNotExist
 
 class TagsExtraitRelationShipSerializer(serializers.Serializer):
     """
@@ -31,13 +33,13 @@ class TagsExtraitRelationShipSerializer(serializers.Serializer):
         """
         extrait = self.context.get('extrait')
         if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+            raise ContextError(Extrait)
 
         tag_uuid = validated_data['uuid']
         try:
             tag = Tag.nodes.get(uuid=tag_uuid)
-        except Tag.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Tag introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Tag)
 
         if not extrait.tags_extrait.is_connected(tag):
             extrait.tags_extrait.connect(tag)
@@ -50,12 +52,12 @@ class TagsExtraitRelationShipSerializer(serializers.Serializer):
         """
         extrait = self.context.get('extrait')
         if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+            raise ContextError(Extrait)
 
         try:
             tag = Tag.nodes.get(uuid=tag_uuid)
-        except Tag.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Tag introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Tag)
 
         extrait.tags_extrait.disconnect(tag)
         return tag
