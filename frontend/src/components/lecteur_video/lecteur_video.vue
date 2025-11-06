@@ -88,12 +88,6 @@ export default {
       this.redirect_extrait(this.extrait)
     },
 
-    iframe_build(){
-      // Mettre à jour la position du player
-      this.pos_x_iframe = this.get_pos_x_iframe();
-      this.pos_y_iframe = this.get_pos_y_iframe();
-      window.addEventListener('resize', this.updatePopupPosition);
-    },
 
     picture_in_picture() {
       //videoStore.uuid = this.extrait.uuid;
@@ -106,9 +100,8 @@ export default {
       this.$router.push("/");
     },
 
-    async toggle_aside() {
+    toggle_aside() {
       this.aside_visible = !this.aside_visible;
-      await this.updatePopupPosition();
     },
 
 
@@ -182,7 +175,6 @@ export default {
         v-if="url"
         :url='this.url'
         ref="iframe"
-        @iframe_build ="iframe_build"
         @lancement_prochaine_video="lancement_prochaine_video"
    
       />

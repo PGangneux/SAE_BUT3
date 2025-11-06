@@ -19,21 +19,12 @@ export default {
     },
     methods : {
         popup_param_lecteur(){
-            console.log("test")
             this.param_lecteur = !this.param_lecteur
         },
 
         async set_lecteur(new_lecteur){
             videoStore.lecteur = new_lecteur
-            console.log("lecteur set")
             videoStore.iframeComponent.set_url(videoStore.lecteur) 
-            // get iframe d'un autre composant   
-            //if (videoStore.iframeRef) {
-            //    await videoStore.iframeRef.update_player()
-            //}
-            //else{
-            //    console.log("pas de iframeRef", videoStore.iframeRef)
-            //}
         }
 
     },
@@ -73,7 +64,7 @@ export default {
                     <comp_searchbar class="flex-grow-1" />
                 </li>
                 <li>
-                    <p @click="popup_param_lecteur">Lecteur</p>
+                    <img src="/imgs/Settings.svg" alt="paramètres" @click="popup_param_lecteur"></img>
                     <parametres_lecteur
                         v-if="param_lecteur" 
                         @set_lecteur="this.set_lecteur($event)"
@@ -84,7 +75,7 @@ export default {
                 </li>
                 <li class="btn local" v-if="isconnected">
                     <RouterLink class="nav-link" to="/account">
-                        <img src="/imgs/compte.svg" style="max-height: 1.5em;" alt="">
+                        <img src="/imgs/compte.svg"  alt="compte">
                     </RouterLink>
                 </li>
 
@@ -123,5 +114,10 @@ export default {
 ul{
     margin: 0;
     border-bottom: 3px solid var(--gris-taupe);
+}
+
+img{
+    max-height: 1.5em;
+    cursor: pointer;
 }
 </style>

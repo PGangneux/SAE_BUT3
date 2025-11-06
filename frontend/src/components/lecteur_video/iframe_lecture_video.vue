@@ -11,7 +11,7 @@ export default {
 
   
 
-  setup(props, { expose, emit }) {
+  setup(_,{ expose, emit }) {
 
     //const instance = getCurrentInstance(); // récupère l'intance du iframe
     const player = ref(null);
