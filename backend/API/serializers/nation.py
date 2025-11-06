@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
+from neomodel.exceptions import UniqueProperty
 from ..models import Nation
+from ..errors import ValidatorUnique
 
 
 class NationSerializer(serializers.Serializer):
@@ -23,7 +25,12 @@ class NationSerializer(serializers.Serializer):
         """
         Création d'une nation
         """
-        return Nation(**validated_data).save()
+        nation = Nation(**validated_data)
+        try:
+            nation.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
+        return nation
 
     def update(self, nation, validated_data):
         """
@@ -31,4 +38,7 @@ class NationSerializer(serializers.Serializer):
         """
         for k, v in validated_data.items():
             setattr(nation, k, v)
-        return nation.save()
+        try:
+            return nation.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)

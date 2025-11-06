@@ -2,6 +2,8 @@ from django.urls import reverse
 from rest_framework import serializers
 from neomodel.exceptions import UniqueProperty
 from ..models import Theme
+from ..errors import ValidatorUnique
+from neomodel.exceptions import UniqueProperty
 
 
 class ThemeSerializer(serializers.Serializer):
@@ -27,8 +29,8 @@ class ThemeSerializer(serializers.Serializer):
         """
         try:
             return Theme(**validated_data).save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"name": "Ce nom de thème existe déjà."}, 400)
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
 
     def update(self, instance: Theme, validated_data):
         """
@@ -38,6 +40,6 @@ class ThemeSerializer(serializers.Serializer):
             setattr(instance, k, v)
         try:
             instance.save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"name": "Ce nom de thème existe déjà."}, 400)
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         return instance
