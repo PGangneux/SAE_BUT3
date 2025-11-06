@@ -15,8 +15,8 @@ export default {
 
     //const instance = getCurrentInstance(); // récupère l'intance du iframe
     const player = ref(null);
-    console.log(videoStore.url, "videostore")
-    console.log(videoStore, "videostore")
+    /// console.log(videoStore.url, "videostore")
+    /// console.log(videoStore, "videostore")
     
     // Charger l’API YouTube une seule fois globalement
     function loadYouTubeAPI() {
@@ -74,7 +74,6 @@ export default {
     }
 
     async function initYouTube(videoId) {
-      console.log("init 2", videoStore.currentTime)
       reset_old_lecteur()
       const YT = await loadYouTubeAPI();
       await nextTick();
@@ -82,9 +81,7 @@ export default {
         videoId,
         events: {
           onReady: (event) => {
-            console.log("init 3", videoStore.currentTime)
             if (videoStore.currentTime) {
-              console.log(videoStore.currentTime, "temps courent")
               event.target.seekTo(videoStore.currentTime);
             }
             if (videoStore.isPlaying) event.target.playVideo();
@@ -125,7 +122,6 @@ export default {
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
-      console.log(videoStore.url)
       iframe.src = videoStore.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
@@ -174,7 +170,6 @@ export default {
       await nextTick();
       if (videoStore.url.includes("youtube")) {
         const id = get_YT_videoId(videoStore.url);
-        console.log("init", videoStore.currentTime)
         await initYouTube(id);
       } else {
         await initVimeo();
@@ -182,18 +177,13 @@ export default {
     }
 
     function set_url(lecteur) {
-      console.log("lecteur dans iframe", lecteur)
-      console.log((lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo)
       videoStore.url = (lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
-      //console.log("videoStore.url", videoStore.url)
       this.update_player()
     }
 
     onMounted(async () => {
       await nextTick();
-      console.log("url value", videoStore.url)
       if (videoStore.url.includes("youtube")) {
-        console.log(videoStore.url)
         const id = get_YT_videoId(videoStore.url);
         await initYouTube(id);
       } else {
