@@ -1,6 +1,7 @@
 <script>
 import { markRaw} from 'vue';
 import Interview from '../../../model/interview.js';
+import Tags from '../../../model/tag.js';
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
@@ -14,6 +15,7 @@ export default {
         return {
             interviews:{type:Interview},
             dico_interviews:{},
+            tags:{type:Tags}
         };
     },
 
@@ -30,6 +32,8 @@ export default {
             // console.log(markRaw(this.dico_interviews));
         }
 
+        this.tags = markRaw(await Tags.list())
+
 
 
     } catch (error) {
@@ -45,8 +49,7 @@ export default {
         return string_tags.trim();
     },
 
-
-},
+   },
 };
 
 
@@ -92,8 +95,8 @@ export default {
             <!--tagfully futur probleme-->
 
             <ul class="scroller ultagger row tagsfully">
-                <li class="col" v-for="tag in tags">
-                    <button class="btn btn-primary"> {{ tag }} </button>
+                <li class="col padd" v-for="tag in this.tags">
+                    <button class="btn btn-primary"> {{ tag.name }} </button>
                 </li>
             </ul>
         </div>
@@ -174,6 +177,8 @@ export default {
     
 }
 
+
+
 .button-blanc{
     background-color: var(--blanc);
 }
@@ -210,6 +215,7 @@ justify-content: center
 
 .trie-tags{
     background-color: var(--gris-taupe);
+    margin-top: 1em;
 }
 
 ul> li{

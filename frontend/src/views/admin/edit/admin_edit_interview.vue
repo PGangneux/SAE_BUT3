@@ -16,7 +16,10 @@ export default {
         return {
             Extraitlist : [],
             current_interview:{type:Interview},
-            extrait_actif: [ 'jip','jap','jop']
+            current_list_extraits:{type:Extrait},
+            dico_extrait:{},
+            taillelist1:0,   
+            taillelist2:0, 
     };
   },
   computed: {
@@ -35,12 +38,15 @@ export default {
     //reccuperation de l'Extrait via l'id
     this.current_interview =  markRaw(await Interview.detail(InterviewId));
     this.Extraitlist = markRaw(await Extrait.list());
+    this.current_list_extraits = markRaw(await this.current_interview.extraits);
 
-    // console.log(this.current_interview);
-
+    console.log(this.current_list_extraits);
+    console.log(this.Extraitlist);
     
-    await this.current_interview.artiste;
-    await this.current_interview.question;
+    this.taillelist1 = this.Extraitlist.length
+    this.taillelist2 =this.current_list_extraits.length
+
+
     this.question = 'Chargement...';
 
       
@@ -74,7 +80,7 @@ export default {
 
             <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait existant</h1>
-              <h1> Total Question-Extrait : {{5}}</h1>
+              <h1> Total Question-Extrait : {{this.taillelist1}}</h1>
             </div>
 
             <div class="search-bar grisee">
@@ -87,8 +93,8 @@ export default {
             </div>
 
             <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <li class="row carte pcentrer" v-for="extrait in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                    <comp_petit_extrait :current_extrait=extrait />
+                <li class="row carte pcentrer" v-for="extraitv1 in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <comp_petit_extrait :current_extrait=extraitv1 />
                 </li>
             </ul>
         </div>
@@ -101,7 +107,7 @@ export default {
 
             <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
               <h1> Question-Extrait dans Playlist</h1>
-              <h1> Total Question-Extrait : {{ 8 }}</h1>
+              <h1> Total Question-Extrait : {{ this.taillelist2 }}</h1>
             </div>
 
             <div class="search-bar grisee">
@@ -114,8 +120,8 @@ export default {
             </div>
 
             <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <li class="row carte pcentrer" v-for="extrait in extrait_actif" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                    <comp_petit_extrait/>
+                <li class="row carte pcentrer" v-for="extraitv2 in this.current_list_extraits" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <comp_petit_extrait :current_extrait=extraitv2 />
                 </li>
             </ul>
         </div>

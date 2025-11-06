@@ -73,6 +73,16 @@ export default {
           return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
         },
       }
+  },
+
+
+  methods: {
+
+
+    popupchange(){
+      this.popup = !this.popup
+      console.log(this.popup)
+    }
 
 
   },
@@ -190,7 +200,10 @@ export default {
             </div>
 
             <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist</h1>
+              <h1 class="row pcentrer"> Tableau des Playlist
+                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+              </h1>
+             
               <table class="ultagger table tables table-striped">
                   <thead>
                       <tr>
@@ -205,13 +218,13 @@ export default {
                       </tr>
                   </tbody>
               </table>
+             
             </div>
         </div>
       </div>
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <div class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 
@@ -252,7 +265,7 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup/> </div>
+    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
 
     </template>
 
@@ -274,6 +287,9 @@ li>.card {
   margin: 10px 10px 10px 10px;  
 }
 
+span{
+      min-width: 8em;
+}
 
 .scroller2 {
   height: 100%;
