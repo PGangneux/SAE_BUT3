@@ -18,10 +18,7 @@ import page_admin_listuser from "./views/admin/list/admin_liste_user.vue";
 import page_admin_interview from "./views/admin/list/admin_liste_interview.vue";
 
 import page_admin_edit_video from "./views/admin/edit/admin_edit_video.vue";
-import page_admin_edit_client from "./views/admin/edit/admin_edit_client.vue";
 import page_admin_edit_interview from "./views/admin/edit/admin_edit_interview.vue";
-
-
 import page_admin_details_client from "./views/admin/admin_details_user.vue";
 
 
@@ -45,7 +42,6 @@ const routes = [
     { path: "/admin", component: page_admin },
     
     { path: "/admin/user", component: page_admin_listuser },
-    { path: "/admin/user/edit/:id", component: page_admin_edit_client },
     { path: "/admin/user/:id", component: page_admin_details_client },
 
     

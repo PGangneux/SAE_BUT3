@@ -30,7 +30,48 @@ export default {
 <template>
     <comp_baradmin/>
 
-    <h1 class="text-center colorneon"> Details Utilisateur {{ pseudo }} </h1>
+    <h1 class="text-center colorneon"> Éditer un Compte  </h1>
+
+    <form action="" class="grisee">
+        <div class="row client">
+            <div class="row client">
+
+                <div class="input-group mb-3 col">
+                    <label class="row client" for="Pseudo"> Pseudo </label>
+                    <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo" v-model="this.current_utilisateur.pseudo" >
+                </div>
+
+                <div class="input-group mb-3 col">
+                    <label class="row client" for="Prénom">Prénom</label>
+                    <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom" v-model="this.current_utilisateur.prenom" >
+                </div>
+
+            </div>
+
+            <div class="row client">
+
+
+                <div class="input-group mb-3 col">
+                    <label class="row client" for="Nom">Nom</label>
+                    <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom" v-model="this.current_utilisateur.nom">
+                </div>
+
+                <div class="input-group mb-3 col">
+                    <label class="row client" for="Adresse">Adresse</label>
+                        <input type="text" class="form-control row client " id="Adresse" name="Adresse" placeholder="Adresse e-mail" v-model="this.current_utilisateur.email" >
+                </div>
+
+            </div>
+        </div>
+        <div class="row client">
+
+            <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+            <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
+        </div>
+    </form>
+
+    <h2 class="text-center colorneon"> Details Utilisateur {{ pseudo }} </h2>
 
 
         <div class="row grisee" style=" margin-left: 0 !important; margin-right: 0 !important;">
@@ -67,17 +108,7 @@ export default {
 
         <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" action="">
             <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
-            <RouterLink class="bt btn col" :to="'/admin/user/edit/' +this.current_utilisateur.uuid ">
-                <button  type="button"   class=" btn col" >
-                    <img src="/imgs/save.svg" class="col" alt="Modifier">   
-                    Modifier Utilisateur
-                </button>  
-
-            </RouterLink>
         </form>
-
-
-    
     </template>
 
 <style scoped>
@@ -87,6 +118,10 @@ export default {
     background-color:var(--vert-pale);
     border-radius: 2em;
     
+}
+
+h2{
+    margin-top: 1em;
 }
 
 .btred{
@@ -131,5 +166,39 @@ label{
     margin: 1%;
   text-align: center;
 }
+
+
+.bt{
+    color: var(--blanc);
+    background-color:var(--vert-pale);
+    border-radius: 2em;
+    
+}
+
+.btred{
+    color: var(--blanc);
+    background-color:var(--rouge);
+    border-radius: 2em;
+    
+}
+
+.client{
+    margin-right:0px;
+    margin-left:0px;
+}
+
+label{
+    color: var(--blanc);
+    text-align: center;
+    justify-content: center;
+    align-content: center;
+    padding-right: 1em;
+    min-width: 5em;
+}
+
+.colorneon{
+  color: var(--vert-neon);
+}
+
 
 </style>
