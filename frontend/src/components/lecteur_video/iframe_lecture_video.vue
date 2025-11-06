@@ -173,7 +173,6 @@ export default {
     async function update_player() {
       await nextTick();
       if (videoStore.url.includes("youtube")) {
-
         const id = get_YT_videoId(videoStore.url);
         console.log("init", videoStore.currentTime)
         await initYouTube(id);
@@ -191,13 +190,6 @@ export default {
     }
 
     onMounted(async () => {
-      console.log("cc")
-      console.log("url courrent", videoStore.url)
-      console.log(videoStore.url, "videostore")
-      console.log(videoStore, "videostore")
-      /// ///console.log("Initialisation du lecteur iframe vidéo");
-      /// ///console.log("URL vidéo :", url);
-      /// ///console.log("Temps courant :", videoStore);
       await nextTick();
       console.log("url value", videoStore.url)
       if (videoStore.url.includes("youtube")) {

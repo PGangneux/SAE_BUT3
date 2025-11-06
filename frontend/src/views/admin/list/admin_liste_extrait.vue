@@ -1,10 +1,9 @@
 <script>
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-
 import comp_extrait from '../../../components/components_admin/Admin_presentation_extrait.vue';
-
 import comp_admin_trie_extrait from '../../../components/components_admin/Admin_trie.vue';
+
 import Extrait from "../../../model/extrait.js";
 
 export default {
@@ -22,8 +21,11 @@ export default {
 
   async mounted() {
     this.extraits = markRaw(await Extrait.list());
-    console.log("liste des extrait")
-    console.log(this.extraits)
+
+    
+
+    // console.log("liste des extrait")
+    // console.log(this.extraits)
   },
 }
 

@@ -7,6 +7,7 @@ import Extrait from "../../../model/extrait";
 
 
 
+
 export default {
   name: "page_admin_detail_video",
   components: {
@@ -17,7 +18,10 @@ export default {
         return {
             current_extrait : {type:Extrait},
             tags:[],
-            question : null,
+            thumbnail: '/imgs/width551.png',
+            dico_extrait:{},
+            taillelist:0,    
+
             popup: false
         };
     }
@@ -25,7 +29,14 @@ export default {
     ,computed: {
       youtubeUrl: {
         get() {
-          return this.current_extrait?.youtube_url ? 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url : 'Chargement...';
+          if(this.current_extrait?.youtube_url != null){
+            return 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url;
+          }else if (this.current_extrait?.youtube_url == null){
+            return '';
+          }else{
+            return 'erreur...';
+          }
+         
         },
         set(value) {
           const id = value.split('v=')[1];
@@ -35,8 +46,16 @@ export default {
 
       vimeoUrl: {
         get() {
+
+          if(this.current_extrait?.vimeo_url != null){
+            return 'https://vimeo.com/' + this.current_extrait.vimeo_url;
+          }else if (this.current_extrait?.vimeo_url == null){
+            return '';
+          }else{
+            return 'erreur...';
+          }
+
           
-          return this.current_extrait?.vimeo_url ? 'https://vimeo.com/' + this.current_extrait.vimeo_url : 'Chargement...';
         },
         set(value) {
           const id = value.split('/').pop();
@@ -54,6 +73,16 @@ export default {
           return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
         },
       }
+  },
+
+
+  methods: {
+
+
+    popupchange(){
+      this.popup = !this.popup
+      console.log(this.popup)
+    }
 
 
   },
@@ -62,18 +91,44 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    console.log("ID de l'Extraits' :", ExtraitId);
+    //// console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+
+
     console.log(this.current_extrait);
 
-    
-    await this.current_extrait.artiste;
-    await this.current_extrait.question;
-    this.question = 'Chargement...';
+    // console.log("dico complet en cours");
+    this.dico_extrait = {
+      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
+      "question":   (markRaw(await this.current_extrait.titre)).name,
+      "interviews": (markRaw(await this.current_extrait.interviews)),
+      "tags": (markRaw(await this.current_extrait.tags))
+    };
 
-      
+
+    this.taillelist = this.dico_extrait['tags'].length
+
+   
+
+  //  // console.log(this.dico_extrait['artiste']);
+  //  // console.log(this.dico_extrait['question']);
+  //  // console.log(this.dico_extrait['interviews']);
+  //  // console.log(await this.current_extrait.interviews);
+
+
+
+    
+    if (this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
+        
+      this.thumbnail = await this.current_extrait.url_miniature_yt
+        
+    }else{
+        this.thumbnail = await this.current_extrait.url_miniature_vi()
+        
+    }
+
 
   },
 
@@ -90,25 +145,25 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <div class="col-md-4">
-          <img src="/imgs/width551.png" class="migniature" alt="migniature">
-        </div>
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+          <img :src="thumbnail" class="migniature" alt="migniature">
+        </RouterLink>
 
         <div class="col-md-6">
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="question"  />
+                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.dico_extrait['question']"  />
             </div>
           </div>
 
           <div class="input-group mb-3" >
             <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="test" />
+            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.dico_extrait['artiste']" />
 
             <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
               <!-- utiliser js TODO -->
-                <option value=""> > </option>
+              <option value=""> > </option>
               <option value="option1"> Artiste 1</option> 
               <option value="option2"> Artiste 2</option>
               <option value="option3"> Artiste 3</option>
@@ -117,7 +172,7 @@ export default {
             <div class="form-control colovert">
               <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
               <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" v-model="this.current_extrait.date"/>
+              <input class="col" type="date" lang="fr" id="name4" name="name4" :value="this.current_extrait.uploaded_at"/>
               <!-- rendre jolie TODO -->
             </div>
           </div>
@@ -145,7 +200,10 @@ export default {
             </div>
 
             <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist</h1>
+              <h1 class="row pcentrer"> Tableau des Playlist
+                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+              </h1>
+             
               <table class="ultagger table tables table-striped">
                   <thead>
                       <tr>
@@ -154,19 +212,19 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd scroller">
-                      <tr class="col" v-for="tag in tags">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> {{ tag }} </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" to="/admin/interview/edit"> <button class="bt col"> update </button> <button class="bt col"> supprimer </button> </RouterLink> </td>
+                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
+                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
                       </tr>
                   </tbody>
               </table>
+             
             </div>
         </div>
       </div>
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <div class="bt btn col"  @click="popup = !popup" > <img src="/imgs/add.svg" alt="Edit"> Edit</div>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 
@@ -177,24 +235,46 @@ export default {
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
       <div class="row">
-        <ul class="scroller2  row" style="--bs-gutter-x: 0em;">
-          <li class="col" v-for="tag in tags">
-            <div class="row">
-              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-              <p class="col">{{ tag }}</p>
-            </div>
-          </li>
+
+        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+            <li v-for="tag in dico_extrait.tags " class="col">
+                <div class="row">
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+                  <p class="col">{{ tag.name }}</p>
+                </div>
+            </li>
         </ul>
+
+        <ul v-else-if="this.taillelist == 0 " class="col">
+            <li class="row"> 
+                <p  class="col">vide</p>
+            </li>
+        </ul>
+
+        <ul v-else class="col">
+            <li> 
+                <p  class="col">erreur de Chargement</p>
+            </li>
+        </ul>        
+
+
+
+
       </div>
     </div>
     
    
 
-    <div v-if="popup === true">  <comp_popup/> </div>
+    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
 
     </template>
 
 <style scoped>
+.migniature{
+  height: 90%;
+  width: 90%;
+}
+
 .card {
   background-color: var(--gris-moyen);
   filter: drop-shadow(20px 13px 4px var(--noir));
@@ -207,6 +287,9 @@ li>.card {
   margin: 10px 10px 10px 10px;  
 }
 
+span{
+      min-width: 8em;
+}
 
 .scroller2 {
   height: 100%;

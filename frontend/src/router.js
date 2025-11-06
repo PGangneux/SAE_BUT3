@@ -45,7 +45,7 @@ const routes = [
     { path: "/admin", component: page_admin },
     
     { path: "/admin/user", component: page_admin_listuser },
-    { path: "/admin/user/edit", component: page_admin_edit_client },
+    { path: "/admin/user/edit/:id", component: page_admin_edit_client },
     { path: "/admin/user/:id", component: page_admin_details_client },
 
     

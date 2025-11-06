@@ -1,6 +1,7 @@
 <script>
-import { markRaw } from 'vue';
+import { markRaw} from 'vue';
 import Interview from '../../../model/interview.js';
+import Tags from '../../../model/tag.js';
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
@@ -13,20 +14,25 @@ export default {
   },data() {
         return {
             interviews:{type:Interview},
+            dico_interviews:{},
+            tags:{type:Tags}
         };
     },
 
 
   async mounted() {
+    // console.log("mounted admin interview list");
     this.interviews = markRaw(await Interview.list());
-    console.log("liste des interviews")
-    console.log(this.interviews)
+
+    
 
     try {
         for (let interview of this.interviews) {
-            interview.realiserextraits = await interview.extraits;
-            console.log(interview.realiserextraits.length)
+            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits).length, "tags": markRaw(await interview.tags)};
+            // console.log(markRaw(this.dico_interviews));
         }
+
+        this.tags = markRaw(await Tags.list())
 
 
 
@@ -35,11 +41,15 @@ export default {
     }
   },
   methods: {
-    
-    extraitsLength(extraits) {
-      return extraits ? extraits.length : 0;
-  },
-},
+    tags_to_string(tags_array) {
+        let string_tags = "";
+        for (let tag of tags_array){
+            string_tags += tag.name + " ";
+        }
+        return string_tags.trim();
+    },
+
+   },
 };
 
 
@@ -85,8 +95,8 @@ export default {
             <!--tagfully futur probleme-->
 
             <ul class="scroller ultagger row tagsfully">
-                <li class="col" v-for="tag in tags">
-                    <button class="btn btn-primary"> {{ tag }} </button>
+                <li class="col padd" v-for="tag in this.tags">
+                    <button class="btn btn-primary"> {{ tag.name }} </button>
                 </li>
             </ul>
         </div>
@@ -106,8 +116,8 @@ export default {
                         <tr class="col"  v-for="interview in this.interviews">
                             
                                 <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.realiserextraits ? interview.realiserextraits.length :0}} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.tags }} </RouterLink> </td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </RouterLink></td>
+                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </RouterLink> </td>
                             
                         </tr>
                     
@@ -167,6 +177,8 @@ export default {
     
 }
 
+
+
 .button-blanc{
     background-color: var(--blanc);
 }
@@ -203,6 +215,7 @@ justify-content: center
 
 .trie-tags{
     background-color: var(--gris-taupe);
+    margin-top: 1em;
 }
 
 ul> li{

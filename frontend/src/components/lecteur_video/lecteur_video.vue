@@ -30,7 +30,7 @@ export default {
   },
 
   async mounted() {
-    /// ///console.log("Mounted lecteur_video.vue");
+    /// console.log("Mounted lecteur_video.vue");
     await this.update()
     
     if (this.$refs.iframe) {
@@ -50,7 +50,6 @@ export default {
 
   methods: {
     async update(){
-      
       const interviewData = await this.interview_current.get();
       const extraitData = await this.extrait_current.get();
       
@@ -69,7 +68,6 @@ export default {
 
 
       if (this.interview != null){ 
-
         this.liste_extraits = markRaw( await this.interview.extraits);
         if (!this.extrait){
           this.extrait = markRaw(this.liste_extraits[0]);
@@ -83,8 +81,6 @@ export default {
       this.url_yt = this.base_url_yt + this.extrait.youtube_url;
       this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
 
-
-      
       this.redirect_extrait(this.extrait)
     },
 
@@ -116,8 +112,6 @@ export default {
         
         // Réinitialiser le store
         videoStore.isPlaying = true;
-        
-
 
         // update videoStore
         videoStore.uuid = this.extrait.uuid
@@ -135,7 +129,7 @@ export default {
         else{
           await this.$refs.iframe.update_player();
         }
-        
+
         
     },
 
@@ -155,7 +149,7 @@ export default {
         await this.redirect_extrait(next_extrait);
 
       } else {
-        ///console.log("Fin de la liste des extraits de l'interview");
+        // console.log("Fin de la liste des extraits de l'interview");
       }
     }
 

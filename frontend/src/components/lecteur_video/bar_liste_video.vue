@@ -34,8 +34,8 @@ export default {
 
     async extraits_current_question(){
       this.selected = "questions"
-      ///console.log("current extrait:", this.extrait)
-      console.log(this.extrait)
+      /// console.log("current extrait:", this.extrait)
+      /// console.log(await this.extrait.question.then(question => { return question.extraits}))
       this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits}))
     },
 

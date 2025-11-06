@@ -3,7 +3,6 @@ import { markRaw } from 'vue';
 import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Lecteur_video from './components/lecteur_video/lecteur_video.vue';
-import Utilisateur from './model/utilisateur';
 import Interview from './model/interview';
 import Extrait from './model/extrait';
 import { videoStore } from "./model/videoStore";
@@ -16,10 +15,6 @@ export default {
     },
     data() {
         return {
-            user_current: {
-                type: Utilisateur,
-                value: null,
-            },
             searchterm: "", // text de recherche
             interview_current: markRaw({
                 type: Interview,
@@ -33,10 +28,6 @@ export default {
     },
     provide() {
         return {
-            user_current: {
-                get: () => this.user_current,
-                set: (value) => { this.user_current = value ? markRaw(value) : null; }
-            },
             searchterm: {
                 get: () => this.searchterm,
                 set: (value) => { this.searchterm = value }
@@ -44,29 +35,29 @@ export default {
             interview_current: {
                 get: async () => {
                     if (this.interview_current != null){
-                        ///console.log("icicicicici")
-                        ///console.log(this.interview_current)
-                        /// ///console.log("APP VUE Getting interview_current from provider...",this.interview_current);
+                        // console.log("icicicicici")
+                        // console.log(this.interview_current)
+                        /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
                         if (this.interview_current.value){
-                            ///console.log("APP VUE interview_current exists:", this.interview_current);
+                            // console.log("APP VUE interview_current exists:", this.interview_current);
                             return this.interview_current;
                         } else {
                             const uuid = sessionStorage.getItem('interview_current');
                             if (uuid != "null"){
-                                ///console.log("avec uuid", uuid)
+                                // console.log("avec uuid", uuid)
                                 let tmp =  markRaw(await Interview.detail(uuid));
-                                ///console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
+                                // console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
                                 return tmp;
                             }
                             else{
-                                ///console.log("pas d'uuid", uuid)
+                                // console.log("pas d'uuid", uuid)
                                 return null;
                             }
                             
                         }
                     }
                     else{
-                        ///console.log("qkdqodqodqoz")
+                        // console.log("qkdqodqodqoz")
                         return null
                     }
                     
@@ -78,11 +69,22 @@ export default {
             },
             extrait_current: {
                 get: async () => {
+<<<<<<< HEAD
 
                     if (this.extrait_current.value) {
+=======
+                    /// console.log("APP VUE Getting extrait from provider...",this.extrait_current);
+
+                    if (this.extrait_current.value) {
+                        /// console.log("APP VUE extrait_current exists:", this.extrait_current);
+>>>>>>> develop
                         return this.extrait_current;
                     } else {
                         let tmp = markRaw(await Extrait.detail(sessionStorage.getItem('extrait_current')));
+<<<<<<< HEAD
+=======
+                        //// console.log("APP VUE Fetched extrait_current from sessionStorage:", tmp);
+>>>>>>> develop
                         return tmp;
                     } 
                 },

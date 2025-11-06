@@ -2,6 +2,8 @@
 import comp_searchbar from './searchbar.vue';
 import parametres_lecteur from './lecteur_video/parametres_lecteur.vue';
 import { videoStore } from "../model/videoStore";
+import ClientAPI from "../model/clientAPI.js";
+import { markRaw } from 'vue';
 
 export default {
     emits : ['set_lecteur'],
@@ -10,11 +12,11 @@ export default {
         comp_searchbar,
         parametres_lecteur,
     },
-    inject: ['user_current'],
     data() {
         return {
-            userKey: 0,
             param_lecteur: false,
+            current_user: null,
+            unsubscribe_current_user: null,
         }
     },
     methods : {
@@ -28,27 +30,22 @@ export default {
         }
 
     },
-    watch: {
-        'user_current.get()': {
-            handler() {
-                /// console.log("current_user headerbar");
-                /// console.log(this.user_current.get());
-                this.userKey++; // Force re-render
-            },
-            deep: true
-        }
-    },
+
     computed: {
         isconnected() {
-            // console.log("current_user headerbar");
-            // console.log(this.user_current.get());
-            this.userKey;
-            return this.user_current.get()?.pseudo || false;
+            return !!(this.current_user && this.current_user.pseudo);
         },
         isadmin() {
-            this.userKey;
-            return this.user_current.get()?.admin || false;
+            return !!(this.current_user && this.current_user.is_admin);
         }
+    },
+
+    mounted() {
+        this.unsubscribe_current_user = ClientAPI.subscribe((u) => { this.current_user = u ? markRaw(u) : u; });
+    },
+
+    beforeUnmount() {
+        if (this.unsubscribe_current_user) { this.unsubscribe_current_user = this.unsubscribe_current_user(); };
     }
 };
 </script>

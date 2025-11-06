@@ -15,8 +15,9 @@ export default {
     },
 
     async mounted() {
+        
         this.utilisateurs = markRaw(await User.list());
-        console.log("liste des utilisateurs")
+        // console.log("liste des utilisateurs")
         console.log(this.utilisateurs)
     },
 };
@@ -40,7 +41,7 @@ export default {
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                     <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
-                        </button>
+                    </button>
                 </div>
             </div>
         </div>
