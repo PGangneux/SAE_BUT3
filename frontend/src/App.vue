@@ -69,22 +69,11 @@ export default {
             },
             extrait_current: {
                 get: async () => {
-<<<<<<< HEAD
 
                     if (this.extrait_current.value) {
-=======
-                    /// console.log("APP VUE Getting extrait from provider...",this.extrait_current);
-
-                    if (this.extrait_current.value) {
-                        /// console.log("APP VUE extrait_current exists:", this.extrait_current);
->>>>>>> develop
                         return this.extrait_current;
                     } else {
                         let tmp = markRaw(await Extrait.detail(sessionStorage.getItem('extrait_current')));
-<<<<<<< HEAD
-=======
-                        //// console.log("APP VUE Fetched extrait_current from sessionStorage:", tmp);
->>>>>>> develop
                         return tmp;
                     } 
                 },
