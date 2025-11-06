@@ -1,25 +1,25 @@
-import Artiste from '../../model/artiste.js';
-import Extrait from '../../model/extrait.js';
-import Interview from '../../model/interview.js';
-import Nation from '../../model/nation.js';
-import Question from '../../model/question.js';
-import StyleMusical from '../../model/style_musical.js';
-import Tag from '../../model/tag.js';
-import Theme from '../../model/theme.js';
+import Artiste from "../../model/artiste.js";
+import Extrait from "../../model/extrait.js";
+import Interview from "../../model/interview.js";
+import Nation from "../../model/nation.js";
+import Question from "../../model/question.js";
+import StyleMusical from "../../model/style_musical.js";
+import Tag from "../../model/tag.js";
+import Theme from "../../model/theme.js";
 
 class mmRoot {
 }
 
 export const LegendColorMap = {
-    'mmRoot': "#fff",
-    'Artiste': "#A0522D",
-    'Extrait': "#941C1C",
-    'Interview': "#9747FF",
-    'Nation': "#c24e00ff",
-    'Question': "#FFCD06",
-    'StyleMusical': "#010582",
-    'Tag': "#02b360ff",
-    'Theme': "#016969ff",
+    "mmRoot": "#fff",
+    "Artiste": "#A0522D",
+    "Extrait": "#941C1C",
+    "Interview": "#9747FF",
+    "Nation": "#c24e00ff",
+    "Question": "#FFCD06",
+    "StyleMusical": "#010582",
+    "Tag": "#02b360ff",
+    "Theme": "#016969ff",
 };
 
 const categorys = [
@@ -52,12 +52,12 @@ class mmLinkage {
         const angle = Math.atan2(scaledEndY - scaledStartY, scaledEndX - scaledStartX) * 180 / Math.PI;
 
         return {
-            'height': (this.thickness * scale) + 'px',
-            'width': length + 'px',
-            'left': (scaledStartX + baseOffsetX + 50 * scale) + 'px', // 50 * scale to center (half of node size)
-            'top': (scaledStartY + baseOffsetY + 50 * scale) + 'px', // 50 * scale to center
-            'transform': `rotate(${angle}deg)`,
-            'transform-origin': '0 50%',
+            "height": (this.thickness * scale) + "px",
+            "width": length + "px",
+            "left": (scaledStartX + baseOffsetX + 50 * scale) + "px", // 50 * scale to center (half of node size)
+            "top": (scaledStartY + baseOffsetY + 50 * scale) + "px", // 50 * scale to center
+            "transform": `rotate(${angle}deg)`,
+            "transform-origin": "0 50%",
         };
     }
 }
@@ -84,13 +84,13 @@ class mmNode {
         const scaledY = this.y * scale;
 
         return {
-            'background-color': LegendColorMap[this.category.name] || '#000000',
-            'left': (scaledX + baseOffsetX) + 'px',
-            'top': (scaledY + baseOffsetY) + 'px',
-            'width': size + 'px',
-            'height': size + 'px',
-            'font-size': (16 * scale) + 'px',
-            'line-height': size + 'px',
+            "background-color": LegendColorMap[this.category.name] || "#000000",
+            "left": (scaledX + baseOffsetX) + "px",
+            "top": (scaledY + baseOffsetY) + "px",
+            "width": size + "px",
+            "height": size + "px",
+            "font-size": (16 * scale) + "px",
+            "line-height": size + "px",
         };
     }
 }
@@ -99,7 +99,7 @@ function set_children(vueobj, root, origin_angle) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
     // distance entre root et enfant ;
-    // on a un cercle de 360° , et on doit divisier ca par le nombre d'enfants (moins le trait d'origine) 
+    // on a un cercle de 360° , et on doit divisier ca par le nombre d"enfants (moins le trait d"origine) 
     let nb_child = root.childrens.length + (origin_angle ? 2 : 0);
     let angle_per_child = (360 / nb_child);
     // so the distance is inversly proportional to the number of angle_per_child
@@ -153,10 +153,10 @@ export function mmget(vueobj) {
 
             if (next) {
                 current_node = child;
-                
+
                 // Filter out categories that are already in the chemin path
                 const availableCategories = categorys.filter(elem => !vueobj.chemin.category.includes(elem));
-                
+
                 // Add available categories as children
                 for (const element of availableCategories) {
                     let tmp_child = new mmNode(0, 0, current_node.depth + 1, element, null);
@@ -166,17 +166,17 @@ export function mmget(vueobj) {
                         angle: null
                     });
                 }
-                
+
                 // Update positions for the new children
                 set_children(vueobj, current_node, null);
-                
+
             } else {
-                console.warn(`Child node with category '${child}' not found`);
+                console.warn(`Child node with category "${child}" not found`);
                 break;
             }
         }
     } catch (error) {
-        console.error('Error during path traversal:', error);
+        console.error("Error during path traversal:", error);
         throw error;
     }
     // console.log(root);
