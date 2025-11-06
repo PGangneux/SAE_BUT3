@@ -1,7 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import UniqueProperty
+from neomodel.exceptions import UniqueProperty, DoesNotExist
 from ..models import Question, Theme
+from ..errors import ValidatorUnique, NotFound
 
 
 class QuestionSerializer(serializers.Serializer):
@@ -36,16 +37,17 @@ class QuestionSerializer(serializers.Serializer):
         Création d'une question
         """
         theme_uuid = validated_data.pop("theme_uuid", None)
+        question = Question(**validated_data)
         try:
-            question = Question(**validated_data).save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"text": "Cette question existe déjà"}, 400)
+            question.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         if theme_uuid:
             try:
                 theme = Theme.nodes.get(uuid=theme_uuid)
                 question.theme.connect(theme)
-            except Theme.DoesNotExist:
-                raise serializers.ValidationError({"theme_uuid": "Thème introuvable."}, 404)
+            except DoesNotExist:
+                raise NotFound(Theme)
         return question
 
     def update(self, instance, validated_data):
@@ -57,12 +59,14 @@ class QuestionSerializer(serializers.Serializer):
             setattr(instance, k, v)
         try:
             instance.save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"name": "Cette question existe déjà."}, 400)
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         try:
-            instance.theme.disconnect(instance.theme.single())
+            theme = instance.theme.single()
+            if theme:
+                instance.theme.disconnect(theme)
             if theme_uuid:
                 instance.theme.connect(Theme.nodes.get(uuid=theme_uuid))
-        except Theme.DoesNotExist:
-            raise serializers.ValidationError({"theme_uuid": "Thème introuvable."}, 404)
+        except DoesNotExist:
+                raise NotFound(Theme)
         return instance

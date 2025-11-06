@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
 from ..models import StyleMusical
+from ..errors import ValidatorUnique
+from neomodel.exceptions import UniqueProperty
 
 
 class StyleMusicalSerializer(serializers.Serializer):
@@ -23,7 +25,11 @@ class StyleMusicalSerializer(serializers.Serializer):
         """
         Création d'un style musical
         """
-        return StyleMusical(**validated_data).save()
+        style_musical = StyleMusical(**validated_data)
+        try:
+            return style_musical.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
 
     def update(self, style_musical, validated_data):
         """
@@ -31,4 +37,7 @@ class StyleMusicalSerializer(serializers.Serializer):
         """
         for k, v in validated_data.items():
             setattr(style_musical, k, v)
-        return style_musical.save()
+        try:
+            return style_musical.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)

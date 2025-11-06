@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
-from ..models import StyleMusical
+from ..models import Artiste, StyleMusical
+from ..errors import NotFound, ContextError
+from neomodel.exceptions import DoesNotExist
 
 class StyleRelationShipSerializer(serializers.Serializer):
     """
@@ -24,13 +26,13 @@ class StyleRelationShipSerializer(serializers.Serializer):
         """
         artiste = self.context.get('artiste')
         if not artiste:
-            raise serializers.ValidationError("Artiste manquant dans le contexte.")
+            raise ContextError(Artiste)
 
         style_uuid = validated_data['uuid']
         try:
             style = StyleMusical.nodes.get(uuid=style_uuid)
-        except StyleMusical.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Style Musical introuvable.'})
+        except DoesNotExist:
+            raise NotFound(StyleMusical)
 
         if not artiste.style.is_connected(style):
             artiste.style.connect(style)
@@ -43,12 +45,12 @@ class StyleRelationShipSerializer(serializers.Serializer):
         """
         artiste = self.context.get('artiste')
         if not artiste:
-            raise serializers.ValidationError("Artiste manquant dans le contexte.")
+            raise ContextError(Artiste)
 
         try:
             style = StyleMusical.nodes.get(uuid=style_uuid)
-        except StyleMusical.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Style Musical introuvable.'})
+        except DoesNotExist:
+            raise NotFound(StyleMusical)
 
         artiste.style.disconnect(style)
         return style

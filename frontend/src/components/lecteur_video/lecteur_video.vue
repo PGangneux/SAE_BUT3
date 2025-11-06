@@ -32,7 +32,15 @@ export default {
   async mounted() {
     /// console.log("Mounted lecteur_video.vue");
     await this.update()
-
+    
+    if (this.$refs.iframe) {
+      // stocke l'instance complète dans videoStore
+      videoStore.iframeComponent = this.$refs.iframe;
+      /// console.log("iframeComponent stocké :", videoStore.iframeComponent);
+      //await this.$refs.iframe.update_player();
+    }
+    /// console.log("videoStore iframe lecteru", videoStore.lecteur)
+    
   },
 
   beforeUnmount() {
@@ -42,117 +50,56 @@ export default {
 
   methods: {
     async update(){
-      // console.log("1")
       const interviewData = await this.interview_current.get();
       const extraitData = await this.extrait_current.get();
-      ///console.log("après get intervew/extrait data update lecteur video.vue", videoStore.currentTime);
+      
 
       if (interviewData) {
         this.interview = markRaw(interviewData);
       } else {
-        // console.log("⚠️ Aucun interview trouvé");
         this.interview = null;
       }
 
       if (extraitData) {
         this.extrait = markRaw(extraitData);
       } else {
-        // console.log("⚠️ Aucun extrait trouvé");
         this.extrait = null;
       }
 
 
       if (this.interview != null){ 
-        // console.log("Interview trouvée :", this.interview);
-
         this.liste_extraits = markRaw( await this.interview.extraits);
-        // console.log("les extrait dans mounted")
-        // console.log(this.liste_extraits)
         if (!this.extrait){
           this.extrait = markRaw(this.liste_extraits[0]);
           this.extrait_current.set(this.liste_extraits[0]);
         }
-        else {
-          // console.log("extrait current déjà défini :", this.extrait);
-        }
       }
       else {
-        if (this.extrait){
-          // console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait, await this.extrait_current.get());
-          this.redirect_extrait(this.extrait)
-        }
-        else {
-          // console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
-        }
         this.liste_extraits = null;
       }
 
       this.url_yt = this.base_url_yt + this.extrait.youtube_url;
       this.url_vimeo = this.base_url_vimeo + this.extrait.vimeo_url;
 
-      // console.log("etxerait current dans lecteur video:", this.extrait)
-      
-      this.set_url(videoStore.lecteur)
+      this.redirect_extrait(this.extrait)
     },
 
-    iframe_build(){
-      // Mettre à jour la position du player
-      this.pos_x_iframe = this.get_pos_x_iframe();
-      this.pos_y_iframe = this.get_pos_y_iframe();
-      window.addEventListener('resize', this.updatePopupPosition);
-    },
-
-    toggle_parametres() {
-      this.param_visible = !this.param_visible;
-    },
 
     picture_in_picture() {
-      videoStore.uuid = this.extrait.uuid;
-      videoStore.url_yt = this.url_yt;
-      videoStore.url_vimeo = this.url_vimeo;
-      videoStore.url = this.url;
+      //videoStore.uuid = this.extrait.uuid;
+      //videoStore.url_yt = this.url_yt;
+      //videoStore.url_vimeo = this.url_vimeo;
+      //// console.log("lecteur", videoStore.lecteur)
+      //// console.log("url", videoStore.url)
       videoStore.isPictureInPicture = true;
+      videoStore.iframeComponent.set_url(videoStore.lecteur) 
       this.$router.push("/");
     },
 
-    get_pos_x_iframe() {
-      if (videoStore.lecteur == "YouTube"){
-        const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-        return rect ? rect.right : null;
-      }
-      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.right : null;
-    },
-
-    get_pos_y_iframe() {
-      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.bottom : null;
-    },
-
-    async toggle_aside() {
+    toggle_aside() {
       this.aside_visible = !this.aside_visible;
-      await this.updatePopupPosition();
     },
 
-    async updatePopupPosition() {
-      const before_visible = this.param_visible;
-      if (this.param_visible) this.param_visible = false;
-      await new Promise(resolve => setTimeout(resolve, 100));
-      this.pos_x_iframe = this.get_pos_x_iframe();
-      this.pos_y_iframe = this.get_pos_y_iframe();
-      if (before_visible) this.param_visible = true;
-    },
-
-    set_url(lecteur) {
-      this.url = (lecteur === 'YouTube') ? this.url_yt : this.url_vimeo;
-    },
-
-    async set_lecteur(new_lecteur){
-      videoStore.lecteur = new_lecteur
-      this.set_url(videoStore.lecteur)
-      
-      await this.$refs.iframe.update_player()
-    },
 
     async redirect_extrait(extrait){
         // Mettre à jour l'extrait local
@@ -165,15 +112,18 @@ export default {
         
         // Réinitialiser le store
         videoStore.isPlaying = true;
+
+        // update videoStore
+        videoStore.uuid = this.extrait.uuid
+        videoStore.url_yt = this.url_yt
+        videoStore.url_vimeo = this.url_vimeo
+        videoStore.url =  (videoStore.lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
+        this.url = videoStore.url
         
 
-        // console.log("videostore", videoStore.isPlaying)
-        // console.log("extrait", this.extrait)
-
-        this.set_url(videoStore.lecteur)
         //update le player si il est présent
         if (!this.$refs.iframe) {
-          ///console.log("iframe non trouvé, impossible de mettre à jour le player");
+          console.error("iframe non trouvé, impossible de mettre à jour le player");
           return;
         }
         else{
@@ -194,7 +144,7 @@ export default {
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
         // réinitialiser le temps de la vidéo
-        videoStore.currentTime = 0;
+        //videoStore.currentTime = 0;
         // lancer la prochaine vidéo
         await this.redirect_extrait(next_extrait);
 
@@ -219,7 +169,6 @@ export default {
         v-if="url"
         :url='this.url'
         ref="iframe"
-        @iframe_build ="iframe_build"
         @lancement_prochaine_video="lancement_prochaine_video"
    
       />
@@ -231,9 +180,7 @@ export default {
         <div id="bottom-iframe">
           <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
-            <a>Voir toute les playlists</a>
-            <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
-            <img src="/imgs/affichage_lecteur_réduit.png" alt="picture in picture" @click="picture_in_picture">
+            <img src="/imgs/reduire.svg" alt="picture in picture" @click="picture_in_picture">
           </div>
         </div>
 
@@ -257,20 +204,12 @@ export default {
       <bar_liste_video 
         @toggle_aside="toggle_aside" 
         @update="update"
-        :current_extrait="extrait"
-        :current_interview="interview"
+        :liste_extraits_current_interview="this.liste_extraits"
       />
     </aside>
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
 
 
-    <parametres
-        v-if="param_visible"
-        :pos_x_iframe="pos_x_iframe"
-        :pos_y_iframe="pos_y_iframe"
-        :lecteur="lecteur"
-        @set_lecteur="set_lecteur"
-      />
   </div>
 </template>
 

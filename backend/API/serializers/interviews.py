@@ -1,7 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
-from neomodel import db
-from ..models import Interview
+from neomodel.exceptions import DoesNotExist
+from ..errors import NotFound, ContextError
+from ..models import Extrait, Interview
 
 
 class InterviewsSerializer(serializers.Serializer):
@@ -38,14 +39,14 @@ class InterviewsSerializer(serializers.Serializer):
         """
         extrait = self.context.get('extrait')
         if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+            raise ContextError(Extrait)
 
         interview_uuid = validated_data['uuid']
         position = validated_data['position']
         try:
             interview = Interview.nodes.get(uuid=interview_uuid)
-        except Interview.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Interview)
 
         if not extrait.interviews.is_connected(interview):
             extrait.interviews.connect(interview, {'position': position})
@@ -58,15 +59,15 @@ class InterviewsSerializer(serializers.Serializer):
         """
         extrait = self.context.get('extrait')
         if not extrait:
-            raise serializers.ValidationError("Extrait manquant dans le contexte.")
+            raise ContextError(Extrait)
 
         try:
-            artiste = Interview.nodes.get(uuid=interview_uuid)
-        except Interview.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
+            interview = Interview.nodes.get(uuid=interview_uuid)
+        except DoesNotExist:
+            raise NotFound(Interview)
 
-        extrait.interviews.disconnect(artiste)
-        return artiste
+        extrait.interviews.disconnect(interview)
+        return interview
 
 class PositionInputSerializer(serializers.Serializer):
     """

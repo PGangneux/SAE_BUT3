@@ -1,15 +1,22 @@
 <script>
-import { onMounted, onBeforeUnmount, ref, nextTick, } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick, getCurrentInstance } from "vue";
 import { videoStore } from "../../model/videoStore";
 import { markRaw } from 'vue';
 
 const YT_API_URL = "https://www.youtube.com/iframe_api";
 
-export default {
-  props: { url: String },
 
-  setup(props, { expose, emit }) {
+
+export default {
+
+  
+
+  setup(_,{ expose, emit }) {
+
+    //const instance = getCurrentInstance(); // récupère l'intance du iframe
     const player = ref(null);
+    /// console.log(videoStore.url, "videostore")
+    /// console.log(videoStore, "videostore")
     
     // Charger l’API YouTube une seule fois globalement
     function loadYouTubeAPI() {
@@ -44,9 +51,7 @@ export default {
     function startTracking() {
       videoStore.intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
-          /// console.log("YouTube current time :", player.value.getCurrentTime());
           videoStore.currentTime = player.value.getCurrentTime();
-          /////console.log("aPRÈS Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
         }
       }, 1000);
     }
@@ -55,11 +60,6 @@ export default {
       if (videoStore.intervalId) {
         clearInterval(videoStore.intervalId);
         videoStore.intervalId = null;
-        ///console.log("dans if Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
-      }
-      else{
-        ///console.log("Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
-
       }
     }
 
@@ -75,22 +75,14 @@ export default {
 
     async function initYouTube(videoId) {
       reset_old_lecteur()
-      const current_time = videoStore.currentTime
       const YT = await loadYouTubeAPI();
       await nextTick();
       player.value = new YT.Player("player", {
         videoId,
-        playerVars: {
-          start: 0  // Force le démarrage à 0
-        },
         events: {
           onReady: (event) => {
             if (videoStore.currentTime) {
-              event.target.seekTo(current_time);
-              ///console.log("YouTube seekTo :", current_time);
-              videoStore.currentTime = current_time;
-              ///console.log("Après YouTube seekTo :", current_time);
-              // Synchronisation du temps de lecture
+              event.target.seekTo(videoStore.currentTime);
             }
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
@@ -115,7 +107,6 @@ export default {
     async function initVimeo() {
       stopTracking()
       reset_old_lecteur()
-      const current_time = videoStore.currentTime
       // Charger Vimeo API si pas encore là
       if (!window.Vimeo || !window.Vimeo.Player) {
         await new Promise((resolve) => {
@@ -131,8 +122,7 @@ export default {
       container.innerHTML = "";
 
       const iframe = document.createElement("iframe");
-
-      iframe.src = props.url;
+      iframe.src = videoStore.url;
       iframe.allow = "autoplay; fullscreen; picture-in-picture";
       iframe.allowFullscreen = true;
       iframe.style.width = "100%";
@@ -153,10 +143,7 @@ export default {
       // Synchroniser l'état
       if (videoStore.currentTime) {
         try {
-          await vimeoPlayer.setCurrentTime(current_time);
-          ///console.log("Vimeo setCurrentTime :", current_time);
-          videoStore.currentTime = current_time
-          ///console.log("Après Vimeo setCurrentTime :", current_time);
+          await vimeoPlayer.setCurrentTime(videoStore.currentTime);
         } catch (err) {
           console.warn("Impossible de définir le temps :", err);
         }
@@ -167,37 +154,37 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
-         /// console.log("Vimeo timeupdate :", seconds);
         videoStore.currentTime = seconds; 
-        ///console.log("Après Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
       });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
-      vimeoPlayer.on("ended", () => (emit('lancement_prochaine_video')));
+      vimeoPlayer.on("ended", () => {
+        videoStore.currentTime = 0;
+        emit('lancement_prochaine_video');
+      });
 
       player.value = vimeoPlayer;
     }
 
     async function update_player() {
       await nextTick();
-      // console.log("videostore", videoStore.isPlaying)
-      if (props.url.includes("youtube")) {
-
-        const id = get_YT_videoId(props.url);
+      if (videoStore.url.includes("youtube")) {
+        const id = get_YT_videoId(videoStore.url);
         await initYouTube(id);
       } else {
         await initVimeo();
       }
     }
 
+    function set_url(lecteur) {
+      videoStore.url = (lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
+      this.update_player()
+    }
+
     onMounted(async () => {
-      /// console.log("Initialisation du lecteur iframe vidéo");
-      /// console.log("URL vidéo :", props.url);
-      /// console.log("Temps courant :", videoStore);
       await nextTick();
-      ///console.log("après next tick montage iframe", videoStore.currentTime)
-      if (props.url.includes("youtube")) {
-        const id = get_YT_videoId(props.url);
+      if (videoStore.url.includes("youtube")) {
+        const id = get_YT_videoId(videoStore.url);
         await initYouTube(id);
       } else {
 
@@ -205,6 +192,9 @@ export default {
       }
 
       emit('iframe_build')
+
+      //videoStore.iframeComponent = instance.proxy
+      /// console.log("iframeComponent", videoStore.iframeComponent)
 
 
     });
@@ -218,6 +208,7 @@ export default {
 
     expose({
       update_player,
+      set_url,
     });
 
     return {};

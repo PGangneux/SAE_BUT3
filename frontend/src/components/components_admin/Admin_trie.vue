@@ -1,4 +1,8 @@
 <script>
+import { markRaw } from 'vue';
+import Tags from '../../model/tag.js';
+
+
 
 export default {
     name: "comp_admin_trie_extrait",
@@ -6,9 +10,14 @@ export default {
     },
     data() {
         return {
-            tags: ['Foo', 'Bar', 'Bsq', 'Bar2']
+            tags: {type:Tags}
         };
-    }
+    },
+
+    async mounted() {
+       this.tags = markRaw(await Tags.list())
+    },
+
 };
 
 
@@ -47,8 +56,8 @@ export default {
             <p class="row pcentrer" >Trier par tag</p>
 
             <ul class="scroller ultagger row tagsfully">
-                <li class="col" v-for="tag in tags">
-                    <button class="btn btn-primary"> {{ tag }} </button>
+                <li class="col" v-for="tag in this.tags">
+                    <button class="btn btn-primary"> {{ tag.name }} </button>
                 </li>
             </ul>
 
@@ -116,6 +125,7 @@ justify-content: center
 
 .trie-tags{
     background-color: var(--gris-taupe);
+    margin-top: 1em;
 }
 
 
