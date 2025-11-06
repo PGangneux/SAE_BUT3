@@ -11,17 +11,23 @@ import page_reset_password from "./views/reset_password.vue";
 
 
 
-// ADMIN PAGES
+//   ADMIN PAGES
 import page_admin from "./views/admin/admin_acceuil.vue";
+
+// liste admin
 import page_admin_listextrait from "./views/admin/list/admin_liste_extrait.vue";
 import page_admin_listuser from "./views/admin/list/admin_liste_user.vue";
 import page_admin_interview from "./views/admin/list/admin_liste_interview.vue";
 
+// editer admin
 import page_admin_edit_video from "./views/admin/edit/admin_edit_video.vue";
 import page_admin_edit_interview from "./views/admin/edit/admin_edit_interview.vue";
 import page_admin_details_client from "./views/admin//edit/admin_details_user.vue";
 
-
+// creer admin
+import page_admin_creer_video from "./views/admin/creer/admin_creer_video.vue";
+import page_admin_creer_interview from "./views/admin/creer/admin_creer_interview.vue";
+import page_admin_creer_client from "./views/admin//creer/admin_creer_user.vue";
 
 // Lecteur Video Pages
 import lecteur_video from './components/lecteur_video/lecteur_video.vue';
@@ -53,7 +59,12 @@ const routes = [
     { path: "/admin/extrait/:id", component: page_admin_edit_video },
 
 
-    
+
+    { path: "/admin/user/creer/",    component: page_admin_creer_client },
+    { path: "/admin/extrait/creer/", component: page_admin_creer_interview },
+    { path: "/admin/extrait/creer/", component: page_admin_creer_video },
+
+
 ];
 
 const router = createRouter({

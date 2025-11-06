@@ -16,6 +16,7 @@ ajouter utilisateur (modif rooter et pages avec meme templates)
 page details user a realiser
 page details interview a finir ( probleme vigniette vimeo et youtube)
 
+faire comme creer user mais pour compte
 
 fonction trie
 faire attention au button annuler qui efface tout
