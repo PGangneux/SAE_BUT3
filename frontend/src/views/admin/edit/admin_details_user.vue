@@ -1,9 +1,9 @@
 <script>
 
 import { markRaw } from 'vue';
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
-import User from "../../model/utilisateur.js";
-import Tags from '../../model/tag.js';
+import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+import User from "../../../model/utilisateur.js";
+import Tags from '../../../model/tag.js';
 
 export default {
   name: "page_admin_details_client",
@@ -13,12 +13,26 @@ export default {
         return {
             current_utilisateur : {type:User},
             tags:{type:Tags},
+
+            dico_user:{},
+            taillelist1:0,   
+            taillelist2:0, 
     };
   },    
   async mounted() {
         const utilisateurId = this.$route.params.id;
         this.current_utilisateur = markRaw(await User.detail(utilisateurId));
         this.tags = markRaw(await Tags.list())
+
+        console.log(this.current_utilisateur);
+
+        this.dico_user = {
+            "recherches_artistes" :     (markRaw(await this.current_utilisateur.recherches_artistes)),
+            "regarder_interviews" :     (markRaw(await this.current_utilisateur.regarder_interviews)),
+            "regarder_extraits"   :     (markRaw(await this.current_utilisateur.regarder_extraits)),
+            "recherches_questions":     (markRaw(await this.current_utilisateur.recherches_questions))
+        };
+
 
     },
 };
@@ -30,7 +44,7 @@ export default {
 <template>
     <comp_baradmin/>
 
-    <h1 class="text-center colorneon"> Éditer un Compte  </h1>
+    <h1 class="text-center colorneon"> Éditer {{ this.current_utilisateur.pseudo }}  </h1>
 
     <form action="" class="grisee" style="padding: 1em;">
         <div class="row client">
@@ -71,35 +85,37 @@ export default {
         </div>
     </form>
 
-    <h2 class="text-center colorneon"> Details Utilisateur {{ pseudo }} </h2>
+    <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
 
 
         <div class="row grisee" style=" margin-left: 0 !important; margin-right: 0 !important;">
             <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class=" col test">
-                    <p> Nom: {{ this.current_utilisateur.nom }}</p>
-                </div>
-
-                <div class="col test">
-                    <p> Prénom: {{ this.current_utilisateur.prenom }}</p>
-                </div>
-            </div>
-
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
                 <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">details non definie</p>
-
-
+                    <p class="row pcentrer">Historique non definie</p>
                 </div>
 
                 <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Tag User</p>
+                    <p class="row pcentrer">Historique Video</p>
                     <ul class="scroller ultagger row tagsfully">
                         <li class="col" v-for="tag in this.tags">
                             <button class="btn btn-primary"> {{ tag.name }} </button>
                         </li>
                     </ul>
+                </div>
+            </div>
 
+            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
+                    <p class="row pcentrer">Historique non definie</p>
+                </div>
+
+                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
+                    <p class="row pcentrer">Historique Tag</p>
+                    <ul class="scroller ultagger row tagsfully">
+                        <li class="col" v-for="tag in this.tags">
+                            <button class="btn btn-primary"> {{ tag.name }} </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
 

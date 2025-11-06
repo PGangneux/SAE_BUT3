@@ -17,7 +17,6 @@ export default {
             Extraitlist : [],
             current_interview:{type:Interview},
             current_list_extraits:{type:Extrait},
-            dico_extrait:{},
             taillelist1:0,   
             taillelist2:0, 
     };

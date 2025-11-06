@@ -19,7 +19,7 @@ import page_admin_interview from "./views/admin/list/admin_liste_interview.vue";
 
 import page_admin_edit_video from "./views/admin/edit/admin_edit_video.vue";
 import page_admin_edit_interview from "./views/admin/edit/admin_edit_interview.vue";
-import page_admin_details_client from "./views/admin/admin_details_user.vue";
+import page_admin_details_client from "./views/admin//edit/admin_details_user.vue";
 
 
 
