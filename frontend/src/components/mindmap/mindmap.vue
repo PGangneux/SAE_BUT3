@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendColorMap, mmget } from '../model/mindmap_func.js';
+import { LegendColorMap, mmget } from './mindmap_func.js';
 
 export default {
     name: "comp_mindmap",

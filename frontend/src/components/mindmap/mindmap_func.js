@@ -1,11 +1,11 @@
-import Artiste from './artiste.js';
-import Extrait from './extrait.js';
-import Interview from './interview.js';
-import Nation from './nation.js';
-import Question from './question.js';
-import StyleMusical from './style_musical.js';
-import Tag from './tag.js';
-import Theme from './theme.js';
+import Artiste from '../../model/artiste.js';
+import Extrait from '../../model/extrait.js';
+import Interview from '../../model/interview.js';
+import Nation from '../../model/nation.js';
+import Question from '../../model/question.js';
+import StyleMusical from '../../model/style_musical.js';
+import Tag from '../../model/tag.js';
+import Theme from '../../model/theme.js';
 
 class mmRoot {
 }
