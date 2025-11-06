@@ -2,7 +2,7 @@
 import { markRaw } from 'vue';
 import comp_baradmin from '../../../components/components_admin/nav_admin.vue';
 
-import User from "../../../model/utilisateur.js";
+import Utilisateur from "../../../model/utilisateur.js";
 
 export default {
     name: "page_admin_listuser",
@@ -10,13 +10,13 @@ export default {
         comp_baradmin,
     },data() {
         return {
-            utilisateurs:{type:User},
+            utilisateurs:{type:Utilisateur},
         };
     },
 
     async mounted() {
         
-        this.utilisateurs = markRaw(await User.list());
+        this.utilisateurs = markRaw(await Utilisateur.list());
         // console.log("liste des utilisateurs")
         console.log(this.utilisateurs)
     },
@@ -29,7 +29,7 @@ export default {
 
     <comp_baradmin/>
 
-    <h1 class="text-center">User</h1>
+    <h1 class="text-center">Utilisateur</h1>
 
     <div class="row"> 
         <button class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></button>
