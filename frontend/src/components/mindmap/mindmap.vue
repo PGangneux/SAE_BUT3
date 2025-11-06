@@ -1,14 +1,18 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendClassMap ,  LegendColorMap, mmget } from './mindmap_func.js';
+import { LegendClassMap, LegendColorMap, mmget } from './mindmap_func.js';
+import mindmap_node from './mindmap_node.vue';
 
 export default {
     name: "comp_mindmap",
     inject: ["searchterm"],
+    components: {
+        mindmap_node
+    },
     data() {
         return {
             LegendColorMap: LegendColorMap,
-            LegendClassMap : LegendClassMap,
+            LegendClassMap: LegendClassMap,
             linkages: [],
             nodes: [],
             chemin: [],
@@ -20,6 +24,7 @@ export default {
             dragging: false,
             lastMouseX: 0,
             lastMouseY: 0,
+            clickTimer: null, // For click-and-hold functionality
         };
     },
     async mounted() {
@@ -51,9 +56,52 @@ export default {
                 }
             }
         },
-        centerMindmap(){
-            this.offx= window.screen.width/2;
-            this.offy= window.screen.height/2;
+        centerMindmap() {
+            const container = this.$el.querySelector('.mm_relative');
+            if (container) {
+                this.offx = container.clientWidth / 2;
+                this.offy = container.clientHeight / 2;
+            }
+        },
+        centerOnNode(node) {
+            const container = this.$el.querySelector('.mm_relative');
+            if (container) {
+                // Calculate target position to center the node
+                const targetOffx = container.clientWidth / 2 - node.x * this.scale;
+                const targetOffy = container.clientHeight / 2 - node.y * this.scale;
+
+                // Animate over 1 second (1000ms)
+                this.animateToPosition(targetOffx, targetOffy, 1000);
+            }
+        },
+        animateToPosition(targetOffx, targetOffy, duration) {
+            const startOffx = this.offx;
+            const startOffy = this.offy;
+            const startTime = performance.now();
+            
+            const animate = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function for smooth animation
+                const easeProgress = this.easeInOutCubic(progress);
+                
+                this.offx = startOffx + (targetOffx - startOffx) * easeProgress;
+                this.offy = startOffy + (targetOffy - startOffy) * easeProgress;
+                
+                // Force hover state update by triggering a small, non-visible change
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Final position - force a complete repaint
+                    this.$forceUpdate();
+                }
+            };
+            
+            requestAnimationFrame(animate);
+        },
+        easeInOutCubic(t) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         },
         startDrag(event) {
             this.dragging = true;
@@ -61,44 +109,64 @@ export default {
             this.lastMouseY = event.clientY;
             event.preventDefault();
         },
-        
         doDrag(event) {
             if (!this.dragging) return;
-            
+
             const deltaX = event.clientX - this.lastMouseX;
             const deltaY = event.clientY - this.lastMouseY;
+
+            this.offx += deltaX;
+            this.offy += deltaY;
+
+            this.lastMouseX = event.clientX;
+            this.lastMouseY = event.clientY;
+        },
+        stopDrag() {
+            this.dragging = false;
+        },
+        startDragTouch(event) {
+            this.dragging = true;
+            const touch = event.touches[0];
+            this.lastMouseX = touch.clientX;
+            this.lastMouseY = touch.clientY;
+            event.preventDefault();
+        },
+        doDragTouch(event) {
+            if (!this.dragging) return;
+            
+            const touch = event.touches[0];
+            const deltaX = touch.clientX - this.lastMouseX;
+            const deltaY = touch.clientY - this.lastMouseY;
             
             this.offx += deltaX;
             this.offy += deltaY;
             
-            this.lastMouseX = event.clientX;
-            this.lastMouseY = event.clientY;
+            this.lastMouseX = touch.clientX;
+            this.lastMouseY = touch.clientY;
+            
+            event.preventDefault();
         },
-        
-        stopDrag() {
-            this.dragging = false;
-        },
-        
         handleWheel(event) {
             event.preventDefault();
             const delta = -Math.sign(event.deltaY) * 0.1;
             const newScale = Math.max(0.1, Math.min(3, this.scale + delta));
-            
+
             // Adjust offsets to zoom toward mouse position
             const rect = event.currentTarget.getBoundingClientRect();
             const mouseX = event.clientX - rect.left;
             const mouseY = event.clientY - rect.top;
-            
+
             const scaleFactor = newScale / this.scale;
             this.offx = mouseX - (mouseX - this.offx) * scaleFactor;
             this.offy = mouseY - (mouseY - this.offy) * scaleFactor;
-            
+
             this.scale = newScale;
         },
-        handleClick(node){
+        handleClick(node) {
             console.log("mm click handle node");
             this.chemin.push(markRaw(node));
             console.log(this.chemin);
+            this.centerOnNode(node); // Center on the clicked node
             mmget(this);
         },
     },
@@ -113,19 +181,21 @@ export default {
             <p v-for="chem in chemin" :key="chem.name">{{ chem.name }}</p>
         </div>
         <div class="mm_relative" 
-            @mousedown="startDrag"
-            @mousemove="doDrag"
-            @mouseup="stopDrag"
-            @mouseleave="stopDrag"
+            @mousedown="startDrag" @mouseup="stopDrag"
+            @mousemove="doDrag" @mouseleave="stopDrag"
             @wheel="handleWheel"
+            @touchstart="startDragTouch" @touchend="stopDrag"
+            @touchmove="doDragTouch"
             >
             <button class="mm_fullscreenbtn" @click="toggleFullscreen">
-                {{ fullscreen ? '⤢' : '⤢' }}
+                <img :src="fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
+                    :alt="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
+                    class="fullscreen-icon">
             </button>
             <div class="mm_control_outer">
                 <div class="mm_controls">
-                    <button @click="scale += 0.2 ; scale = Math.min(5,scale)">+</button>
-                    <button @click="scale -= 0.2 ; scale = Math.max(0.2,scale)">-</button>
+                    <button @click="scale += 0.2; scale = Math.min(5, scale)">+</button>
+                    <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
                     <button @click="scale = 1">reset zoom</button>
                     <button @click="centerMindmap()">recenter</button>
                 </div>
@@ -135,16 +205,18 @@ export default {
                     <transition name="slide">
                         <div class="mm_legend" v-if="togglelegend">
                             <div v-for="(nameproper, nameclass) in LegendClassMap">
-                                <div class="mm_legend_cercle" :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
+                                <div class="mm_legend_cercle"
+                                    :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
                                 <p>{{ nameproper }}</p>
                             </div>
                         </div>
                     </transition>
                 </div>
             </div>
-            <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link"></div>
-            <div v-for="node in nodes" :key="node.id" :style="node.getStyle(scale, offx, offy)" @click="handleClick(node);"
-                    class="mm_node"> {{ node.category.name }} </div>
+            <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
+            </div>
+            <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
+                @click="handleClick(node);" class="mm_node" />
         </div>
     </div>
 </template>
@@ -167,7 +239,7 @@ export default {
     margin: 0 auto;
 
     /* Backdrop */
-    background-color : var(--gris-moyen);
+    background-color: var(--gris-moyen);
     border: 3px solid var(--vert-neon);
     box-shadow: 12px 8px 3.2px 6px var(--vert-pale);
     border-radius: 20px;
@@ -197,10 +269,13 @@ export default {
     text-align: center;
     border-radius: 50%;
     border: none;
-    background-color : var(--noir);
+    background-color: var(--noir);
     color: var(--blanc);
     cursor: pointer;
     transition: all 0.3s ease;
+}
+.mm_fullscreenbtn img {
+    width: 20px;
 }
 
 .mm_fullscreenbtn:hover {
@@ -228,7 +303,7 @@ export default {
 .mm_controls button {
     padding: 10px;
     border-radius: 40%;
-    background-color : var(--noir);
+    background-color: var(--noir);
     color: var(--blanc);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -236,7 +311,7 @@ export default {
 }
 
 .mm_controls button:hover {
-    background-color : var(--vert-pale);
+    background-color: var(--vert-pale);
     transform: translateY(-2px);
     box-shadow: 0 0 10px var(--vert-neon);
 }
@@ -247,62 +322,79 @@ export default {
     align-items: center;
     justify-content: flex-end
 }
+
 .mm_legend_outer button {
     background-color: var(--noir);
     color: var(--blanc);
     border-radius: 50%;
+    transition: all 0.3s ease;
+}
+.mm_legend_outer button:hover {
+    background-color: var(--vert-pale);
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px var(--vert-neon);
 }
 
 .mm_legend {
-    max-width: 400px;
-    gap: 1em;
+    max-width: 450px;
     display: flex;
     flex-wrap: wrap;
     border: 2px solid var(--blanc);
     border-radius: 12px;
-    padding: 20px;
+    padding: 10px;
     background-color: var(--noir);
-    overflow-y: auto;
+    overflow: hidden; /* Change from auto to hidden during animation */
+    margin-left: 10px; /* Space between legend and toggle button */
 }
 
 /* Vue Transition Classes */
-.slide-enter-active {
-    animation: slideIn 0.3s ease-out;
-}
-
+.slide-enter-active,
 .slide-leave-active {
-    animation: slideOut 0.3s ease-out;
+    transition: all 0.3s ease-out;
 }
 
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.slide-enter-from {
+    opacity: 0;
+    max-width: 0;
+    max-height: 0;
+    padding: 0;
+    margin-right: 0;
+    transform: translateX(30px);
 }
 
-@keyframes slideOut {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        width : 0px;
-        height : 0px;
-        transform: translateX(30px);
-    }
+.slide-enter-to {
+    opacity: 1;
+    max-width: 400px;
+    max-height: 400px; /* Adjust based on your content */
+    padding: 10px;
+    margin-right: 10px;
+    transform: translateX(0);
+}
+
+.slide-leave-from {
+    opacity: 1;
+    max-width: 400px;
+    max-height: 500px;
+    padding: 10px;
+    margin-right: 10px;
+    transform: translateX(0);
+}
+
+.slide-leave-to {
+    opacity: 0;
+    max-width: 0;
+    max-height: 0;
+    padding: 0;
+    margin-right: 0;
+    transform: translateX(30px);
 }
 
 .mm_legend>div {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
-    padding: 6px 0;
+    padding: 0 6px;
+    min-width: 100px; /* Prevent content from squeezing during animation */
 }
 
 .mm_legend_cercle {
@@ -323,7 +415,7 @@ export default {
 /* Links */
 .mm_link {
     position: absolute;
-    background-color :  var(--blanc);
+    background-color: var(--blanc);
     transform-origin: 0 0;
     pointer-events: none;
     z-index: 2;
@@ -353,7 +445,7 @@ export default {
 
 .mm_controls>div button {
     padding: 6px 10px;
-    background-color : var(--gris-taupe);
+    background-color: var(--gris-taupe);
 }
 
 /* Mobile styles - controls at top right when screen < 800px */
@@ -392,17 +484,17 @@ export default {
 }
 
 .mm_legend::-webkit-scrollbar-track {
-    background-color : var(--gris-taupe);
+    background-color: var(--gris-taupe);
     border-radius: 4px;
 }
 
 .mm_legend::-webkit-scrollbar-thumb {
-    background-color : var(--vert-neon);
+    background-color: var(--vert-neon);
     border-radius: 4px;
     box-shadow: 0 0 8px var(--vert-neon);
 }
 
 .mm_legend::-webkit-scrollbar-thumb:hover {
-    background-color : var(--vert-midel);
+    background-color: var(--vert-midel);
 }
 </style>

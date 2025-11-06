@@ -6,6 +6,7 @@ import Question from "../../model/question.js";
 import StyleMusical from "../../model/style_musical.js";
 import Tag from "../../model/tag.js";
 import Theme from "../../model/theme.js";
+import router from "../../router.js";
 
 class mmRoot {
 }

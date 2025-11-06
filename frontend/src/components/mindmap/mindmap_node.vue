@@ -1,5 +1,5 @@
 <script>
-import { mmNode } from "./mindmap_func";
+import { LegendClassMap, mmNode } from "./mindmap_func";
 
 export default {
     name : "mindmap_node",
@@ -21,11 +21,17 @@ export default {
             required : true,
         },
     },
+    data() {
+        return {
+            LegendClassMap : LegendClassMap,
+        };
+    },
 }
 </script>
 
 <template>
     <div :style="node.getStyle(scale,offx,offy)">
-        {{ node.category.name }}
+        <p>{{ LegendClassMap[node.category.name] }}</p>
+        <p>{{ node.content }}</p>
     </div>
 </template>
