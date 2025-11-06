@@ -78,15 +78,11 @@ export default {
             },
             extrait_current: {
                 get: async () => {
-                    ///console.log("APP VUE Getting extrait from provider...",videoStore.currentTime);
 
                     if (this.extrait_current.value) {
-                        ///console.log("APP VUE extrait_current exists:", videoStore.currentTime);
                         return this.extrait_current;
                     } else {
-                        ///console.log("APP VUE before Fetched extrait_current from sessionStorage:", videoStore.currentTime, videoStore.intervalId);
                         let tmp = markRaw(await Extrait.detail(sessionStorage.getItem('extrait_current')));
-                        ///console.log("APP VUE Fetched extrait_current from sessionStorage:", videoStore.currentTime, videoStore.intervalId);
                         return tmp;
                     } 
                 },

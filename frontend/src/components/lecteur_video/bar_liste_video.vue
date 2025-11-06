@@ -83,6 +83,7 @@ export default {
 
 
     async update_liste_video(video) {
+
       // maj du extrait_current ou interview_current selon le type de video
 
       if (video.extraits) {
@@ -105,17 +106,13 @@ export default {
       this.interview = await this.interview_current.get();
       
       // reset du videoStore
-      // videoStore.currentTime = 0;
       videoStore.isPlaying = true;
       clearInterval(videoStore.intervalId);
       videoStore.intervalId = null;
       videoStore.currentTime = 0;
 
-      ///console.log("videostore dans reset_videoStore", videoStore.currentTime, videoStore.intervalId)
-
       this.$emit('update');
       this.videos = markRaw(await Extrait.list());
-      ///console.log("videostore dans reset_videoStore après emit", videoStore.currentTime, videoStore.intervalId)
     },
 
 

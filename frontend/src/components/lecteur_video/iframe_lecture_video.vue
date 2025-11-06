@@ -51,10 +51,7 @@ export default {
     function startTracking() {
       videoStore.intervalId = setInterval(() => {
         if (player.value && typeof player.value.getCurrentTime === "function") {
-          /// ///console.log("YouTube current time :", player.value.getCurrentTime());
-          /////console.log("Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
           videoStore.currentTime = player.value.getCurrentTime();
-          /////console.log("aPRÈS Mise à jour videoStore.currentTime depuis YouTube :", videoStore.currentTime);
         }
       }, 1000);
     }
@@ -63,11 +60,6 @@ export default {
       if (videoStore.intervalId) {
         clearInterval(videoStore.intervalId);
         videoStore.intervalId = null;
-        ///console.log("dans if Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
-      }
-      else{
-        ///console.log("Arrêt du suivi du temps de la vidéo", videoStore.currentTime);
-
       }
     }
 
@@ -82,23 +74,18 @@ export default {
     }
 
     async function initYouTube(videoId) {
+      console.log("init 2", videoStore.currentTime)
       reset_old_lecteur()
-      const current_time = videoStore.currentTime
       const YT = await loadYouTubeAPI();
       await nextTick();
       player.value = new YT.Player("player", {
         videoId,
-        playerVars: {
-          start: 0  // Force le démarrage à 0
-        },
         events: {
           onReady: (event) => {
+            console.log("init 3", videoStore.currentTime)
             if (videoStore.currentTime) {
-              event.target.seekTo(current_time);
-              ///console.log("YouTube seekTo :", current_time);
-              videoStore.currentTime = current_time;
-              ///console.log("Après YouTube seekTo :", current_time);
-              // Synchronisation du temps de lecture
+              console.log(videoStore.currentTime, "temps courent")
+              event.target.seekTo(videoStore.currentTime);
             }
             if (videoStore.isPlaying) event.target.playVideo();
             else event.target.pauseVideo();
@@ -123,7 +110,6 @@ export default {
     async function initVimeo() {
       stopTracking()
       reset_old_lecteur()
-      const current_time = videoStore.currentTime
       // Charger Vimeo API si pas encore là
       if (!window.Vimeo || !window.Vimeo.Player) {
         await new Promise((resolve) => {
@@ -161,10 +147,7 @@ export default {
       // Synchroniser l'état
       if (videoStore.currentTime) {
         try {
-          await vimeoPlayer.setCurrentTime(current_time);
-          ///console.log("Vimeo setCurrentTime :", current_time);
-          videoStore.currentTime = current_time
-          ///console.log("Après Vimeo setCurrentTime :", current_time);
+          await vimeoPlayer.setCurrentTime(videoStore.currentTime);
         } catch (err) {
           console.warn("Impossible de définir le temps :", err);
         }
@@ -175,24 +158,24 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
-         /// ///console.log("Vimeo timeupdate :", seconds);
-        ///console.log("Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
         videoStore.currentTime = seconds; 
-        ///console.log("Après Mise à jour videoStore.currentTime depuis Vimeo :", videoStore.currentTime);
       });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
-      vimeoPlayer.on("ended", () => (emit('lancement_prochaine_video')));
+      vimeoPlayer.on("ended", () => {
+        videoStore.currentTime = 0;
+        emit('lancement_prochaine_video');
+      });
 
       player.value = vimeoPlayer;
     }
 
     async function update_player() {
       await nextTick();
-      ///console.log("videostore", videoStore.isPlaying)
       if (videoStore.url.includes("youtube")) {
 
         const id = get_YT_videoId(videoStore.url);
+        console.log("init", videoStore.currentTime)
         await initYouTube(id);
       } else {
         await initVimeo();
@@ -215,9 +198,7 @@ export default {
       /// ///console.log("Initialisation du lecteur iframe vidéo");
       /// ///console.log("URL vidéo :", url);
       /// ///console.log("Temps courant :", videoStore);
-      ///console.log("videostore au montage iframe", videoStore.currentTime)
       await nextTick();
-      ///console.log("après next tick montage iframe", videoStore.currentTime)
       console.log("url value", videoStore.url)
       if (videoStore.url.includes("youtube")) {
         console.log(videoStore.url)

@@ -51,10 +51,10 @@ export default {
 
   methods: {
     async update(){
-      ///console.log("debut update lecteur video.vue", videoStore.currentTime);
+      
       const interviewData = await this.interview_current.get();
       const extraitData = await this.extrait_current.get();
-      ///console.log("après get intervew/extrait data update lecteur video.vue", videoStore.currentTime);
+      
 
       if (interviewData) {
         this.interview = markRaw(interviewData);
@@ -78,14 +78,6 @@ export default {
         }
       }
       else {
-        if (this.extrait){
-          ///console.log("update videoStore", videoStore.currentTime)
-          /// ///console.log("Aucune interview trouvée, mais extrait seul en lecture :", this.extrait, await this.extrait_current.get());
-          //this.redirect_extrait(this.extrait)
-        }
-        else {
-          ///console.log("AUCUN INTERVIEW AUCUN EXTRAIT FFFF");
-        }
         this.liste_extraits = null;
       }
 
@@ -163,7 +155,6 @@ export default {
         videoStore.isPlaying = true;
         
 
-        ///console.log("videostore dans redirect extrait", videoStore.currentTime)
 
         // update videoStore
         videoStore.uuid = this.extrait.uuid
@@ -196,7 +187,7 @@ export default {
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
         // réinitialiser le temps de la vidéo
-        videoStore.currentTime = 0;
+        //videoStore.currentTime = 0;
         // lancer la prochaine vidéo
         await this.redirect_extrait(next_extrait);
 
