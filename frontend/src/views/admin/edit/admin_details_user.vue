@@ -24,15 +24,19 @@ export default {
         this.current_utilisateur = markRaw(await User.detail(utilisateurId));
         this.tags = markRaw(await Tags.list())
 
-        console.log(this.current_utilisateur);
+        
 
         this.dico_user = {
-            "recherches_artistes" :     (markRaw(await this.current_utilisateur.recherches_artistes)),
-            "regarder_interviews" :     (markRaw(await this.current_utilisateur.regarder_interviews)),
-            "regarder_extraits"   :     (markRaw(await this.current_utilisateur.regarder_extraits)),
-            "recherches_questions":     (markRaw(await this.current_utilisateur.recherches_questions))
+            "recherches_artistes" : (markRaw(await this.current_utilisateur.recherches_artistes)),
+            "regarder_interviews" : (markRaw(await this.current_utilisateur.regarder_interviews)),
+            "regarder_extraits"   : (markRaw(await this.current_utilisateur.regarder_extraits)),
+            "recherches_questions": (markRaw(await this.current_utilisateur.recherches_questions))
         };
 
+        console.log(recherches_artistes     ,this.dico_user["recherches_artistes" ]);
+        console.log(regarder_intervie       ,this.dico_user["regarder_interviews" ]);
+        console.log(regarder_extraits       ,this.dico_user["regarder_extraits"   ]);
+        console.log(recherches_questions    ,this.dico_user["recherches_questions"]);
 
     },
 };
