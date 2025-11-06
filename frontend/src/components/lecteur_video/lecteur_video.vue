@@ -33,7 +33,6 @@ export default {
     /// ///console.log("Mounted lecteur_video.vue");
     await this.update()
     
-    //videoStore.set_url = this.set_url
     if (this.$refs.iframe) {
       // stocke l'instance complète dans videoStore
       videoStore.iframeComponent = this.$refs.iframe;
@@ -86,7 +85,6 @@ export default {
 
 
       
-      //this.set_url(videoStore.lecteur)
       this.redirect_extrait(this.extrait)
     },
 
@@ -95,10 +93,6 @@ export default {
       this.pos_x_iframe = this.get_pos_x_iframe();
       this.pos_y_iframe = this.get_pos_y_iframe();
       window.addEventListener('resize', this.updatePopupPosition);
-    },
-
-    toggle_parametres() {
-      this.param_visible = !this.param_visible;
     },
 
     picture_in_picture() {
@@ -112,34 +106,10 @@ export default {
       this.$router.push("/");
     },
 
-    get_pos_x_iframe() {
-      if (videoStore.lecteur == "YouTube"){
-        const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-        return rect ? rect.right : null;
-      }
-      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.right : null;
-    },
-
-    get_pos_y_iframe() {
-      const rect = this.$refs.iframe?.$el?.getBoundingClientRect?.();
-      return rect ? rect.bottom : null;
-    },
-
     async toggle_aside() {
       this.aside_visible = !this.aside_visible;
       await this.updatePopupPosition();
     },
-
-    async updatePopupPosition() {
-      const before_visible = this.param_visible;
-      if (this.param_visible) this.param_visible = false;
-      await new Promise(resolve => setTimeout(resolve, 100));
-      this.pos_x_iframe = this.get_pos_x_iframe();
-      this.pos_y_iframe = this.get_pos_y_iframe();
-      if (before_visible) this.param_visible = true;
-    },
-
 
 
     async redirect_extrait(extrait){
@@ -224,7 +194,6 @@ export default {
         <div id="bottom-iframe">
           <h2>{{ extrait?.titre || 'titre' }}</h2>
           <div class="right-content">
-            <img src="/imgs/Settings.png" alt="Paramètres" @click="toggle_parametres">
             <img src="/imgs/reduire.svg" alt="picture in picture" @click="picture_in_picture">
           </div>
         </div>
@@ -255,13 +224,6 @@ export default {
     <h2 v-show="!aside_visible" @click="toggle_aside"> < </h2>
 
 
-    <!--parametres
-        v-if="param_visible"
-        :pos_x_iframe="pos_x_iframe"
-        :pos_y_iframe="pos_y_iframe"
-        :lecteur="lecteur"
-        @set_lecteur="set_lecteur"
-      /-->
   </div>
 </template>
 
