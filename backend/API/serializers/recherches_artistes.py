@@ -2,7 +2,9 @@ from datetime import datetime
 from django.urls import reverse
 from rest_framework import serializers
 from neomodel import db
-from ..models import Artiste
+from neomodel.exceptions import DoesNotExist
+from ..models import Artiste, Utilisateur
+from ..errors import NotFound, ContextError
 
 
 class RecherchesArtistesSerializer(serializers.Serializer):
@@ -25,7 +27,7 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
         query = "MATCH (i:Artiste {uuid:$artiste})<-[r:RECHERCHES_ARTISTES]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'artiste': artiste.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
@@ -55,13 +57,13 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         artiste_uuid = validated_data['uuid']
         try:
             artiste = Artiste.nodes.get(uuid=artiste_uuid)
-        except Artiste.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Artiste introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Artiste)
 
         if not utilisateur.recherches_artistes.is_connected(artiste):
             utilisateur.recherches_artistes.connect(artiste)
@@ -74,12 +76,12 @@ class RecherchesArtistesSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         try:
             artiste = Artiste.nodes.get(uuid=artiste_uuid)
-        except Artiste.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Artiste introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Artiste)
 
         utilisateur.recherches_artistes.disconnect(artiste)
         return artiste

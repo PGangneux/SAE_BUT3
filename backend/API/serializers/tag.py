@@ -1,7 +1,8 @@
 from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import UniqueProperty
 from ..models import Tag
+from ..errors import ValidatorUnique
+from neomodel.exceptions import UniqueProperty
 
 
 class TagSerializer(serializers.Serializer):
@@ -33,8 +34,8 @@ class TagSerializer(serializers.Serializer):
         """
         try:
             return Tag(**validated_data).save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"name": "Ce nom de thème existe déjà."}, 400)
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
 
     def update(self, tag, validated_data):
         """
@@ -44,6 +45,6 @@ class TagSerializer(serializers.Serializer):
             setattr(tag, k, v)
         try:
             tag.save()
-        except UniqueProperty:
-            raise serializers.ValidationError({"name": "Ce nom de thème existe déjà."}, 400)
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         return tag

@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import serializers
-from rest_framework.exceptions import NotFound
-from neomodel.exceptions import DoesNotExist
+from neomodel.exceptions import DoesNotExist, UniqueProperty
+from ..errors import ValidatorUnique, NotFound
 from ..models import Artiste, Nation
 
 
@@ -45,12 +45,16 @@ class ArtisteSerializer(serializers.Serializer):
         Création d'un artiste
         """
         nation_uuid = validated_data.pop('nation_uuid', None)
-        artiste = Artiste(**validated_data).save()
+        artiste = Artiste(**validated_data)
+        try:
+            artiste.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         if nation_uuid is not None:
             try: 
                 artiste.nationalite.connect(Nation.nodes.get(uuid=nation_uuid))
             except DoesNotExist:
-                raise NotFound('Nation introuvable.', 404)
+                raise NotFound(Nation)
         return artiste
 
     def update(self, artiste, validated_data):
@@ -60,11 +64,15 @@ class ArtisteSerializer(serializers.Serializer):
         nation_uuid = validated_data.pop('nation_uuid', None)
         for k, v in validated_data.items():
             setattr(artiste, k, v)
+        try:
+            artiste.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
         if nation_uuid is not None:
             try:
                 if artiste.nationalite:
                     artiste.nationalite.disconnect(artiste.nationnalite.single())
                 artiste.nationalite.connect(Nation.nodes.get(uuid=nation_uuid))
             except DoesNotExist:
-                raise NotFound('Nation introuvable.', 404)
+                raise NotFound(Nation)
         return artiste.save()

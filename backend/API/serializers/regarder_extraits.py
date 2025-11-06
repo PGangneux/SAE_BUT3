@@ -2,7 +2,9 @@ from datetime import datetime
 from django.urls import reverse
 from rest_framework import serializers
 from neomodel import db
-from ..models import Extrait
+from ..models import Extrait, Utilisateur
+from ..errors import NotFound, ContextError
+from neomodel.exceptions import DoesNotExist
 
 
 class RegarderExtraitsSerializer(serializers.Serializer):
@@ -30,7 +32,7 @@ class RegarderExtraitsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
         query = "MATCH (i:Extrait {uuid:$extrait})<-[r:REGARDER_EXTRAITS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'extrait': extrait.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
@@ -67,13 +69,13 @@ class RegarderExtraitsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         extrait_uuid = validated_data['uuid']
         try:
             extrait = Extrait.nodes.get(uuid=extrait_uuid)
-        except Extrait.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Extrait introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Extrait)
 
         if not utilisateur.regarder_extraits.is_connected(extrait):
             utilisateur.regarder_extraits.connect(extrait)
@@ -86,12 +88,12 @@ class RegarderExtraitsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         try:
             extrait = Extrait.nodes.get(uuid=extrait_uuid)
-        except Extrait.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Extrait introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Extrait)
 
         utilisateur.regarder_extraits.disconnect(extrait)
         return extrait
