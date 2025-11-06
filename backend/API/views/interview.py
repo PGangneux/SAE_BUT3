@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from neomodel import db
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Interview
 from ..serializers import InterviewSerializer
 
@@ -33,7 +33,7 @@ class InterviewViewSet(viewsets.ModelViewSet):
         try:
             return Interview.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Interview introuvable.', 404)
+            raise NotFound(Interview)
 
 
 class TagInterviewViewSet(viewsets.ModelViewSet):
@@ -56,10 +56,10 @@ class TagInterviewViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Interview {uuid: $uuid})-[:TAGS_INTERVIEW]->(t:Tag {uuid: $tag}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
-            return Interview.inflate(results[0][0])
-        except:
-            raise NotFound('Interview introuvable.', 404)
+        
+        query = "MATCH (q:Interview {uuid: $uuid})-[:TAGS_INTERVIEW]->(t:Tag {uuid: $tag}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
+        if not results:
+            raise NotFound(Interview)
+        return Interview.inflate(results[0][0])
 

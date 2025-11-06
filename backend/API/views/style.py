@@ -1,9 +1,9 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from neomodel import db, DoesNotExist
+from ..errors import NotFound
 from ..models import Artiste, StyleMusical
 from ..serializers import StyleRelationShipSerializer
-from neomodel import db, DoesNotExist
 
 class ArtisteStyleRelationShipViewSet(
     mixins.ListModelMixin,
@@ -29,12 +29,11 @@ class ArtisteStyleRelationShipViewSet(
         """
         Récupération de l'Objet
         """
-        try: 
-            query = "MATCH (q:StyleMusical {uuid: $uuid})<-[:STYLE]-(t:Artiste {uuid: $artiste}) RETURN q"
-            results = db.cypher_query(query, {'artiste': self.kwargs['artiste_uuid'], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return StyleMusical.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Style Musical introuvable.', 404)
+        query = "MATCH (q:StyleMusical {uuid: $uuid})<-[:STYLE]-(t:Artiste {uuid: $artiste}) RETURN q"
+        results = db.cypher_query(query, {'artiste': self.kwargs['artiste_uuid'], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(StyleMusical)
+        return StyleMusical.inflate(results[0][0])
 
     def get_artiste(self):
         """
@@ -43,7 +42,7 @@ class ArtisteStyleRelationShipViewSet(
         try:
             return Artiste.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Artiste introuvable.')
+            raise NotFound(Artiste)
 
     def get_serializer_context(self):
         """

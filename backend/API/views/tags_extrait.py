@@ -1,9 +1,9 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from neomodel import db, DoesNotExist
+from ..errors import NotFound
 from ..models import Extrait, Tag
 from ..serializers import TagsExtraitRelationShipSerializer
-from neomodel import db, DoesNotExist
 
 class TagsExtraitRelationShipViewSet(
     mixins.ListModelMixin,
@@ -29,12 +29,11 @@ class TagsExtraitRelationShipViewSet(
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Tag {uuid: $uuid})<-[:TAGS_EXTRAIT]-(t:Extrait {uuid: $extrait}) RETURN q"
-            results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return Tag.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Tag introuvable.', 404)
+        query = "MATCH (q:Tag {uuid: $uuid})<-[:TAGS_EXTRAIT]-(t:Extrait {uuid: $extrait}) RETURN q"
+        results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Tag)
+        return Tag.inflate(results[0][0])
 
     def get_extrait(self):
         """
@@ -43,7 +42,7 @@ class TagsExtraitRelationShipViewSet(
         try:
             return Extrait.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Extrait introuvable.')
+            raise NotFound(Extrait)
 
     def get_serializer_context(self):
         """

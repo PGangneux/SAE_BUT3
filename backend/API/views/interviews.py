@@ -1,8 +1,8 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
+from ..errors import NotFound
 from ..models import Interview, Extrait
 from ..serializers import InterviewsSerializer, PositionInputSerializer
 
@@ -33,12 +33,11 @@ class InterviewsViewSet(
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Interview {uuid: $uuid})<-[:APPARTIENT_A]-(t:Extrait {uuid: $extrait}) RETURN q"
-            results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return Interview.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Interview introuvable.', 404)
+        query = "MATCH (q:Interview {uuid: $uuid})<-[:APPARTIENT_A]-(t:Extrait {uuid: $extrait}) RETURN q"
+        results = db.cypher_query(query, {'extrait': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Interview)
+        return Interview.inflate(results[0][0])
 
     def get_extrait(self):
         """
@@ -47,7 +46,7 @@ class InterviewsViewSet(
         try:
             return Extrait.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Extrait introuvable.')
+            raise NotFound(Extrait)
 
     def get_serializer_context(self):
         """
