@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendColorMap, mmget } from './mindmap_func.js';
+import { LegendClassMap ,  LegendColorMap, mmget } from './mindmap_func.js';
 
 export default {
     name: "comp_mindmap",
@@ -8,6 +8,7 @@ export default {
     data() {
         return {
             LegendColorMap: LegendColorMap,
+            LegendClassMap : LegendClassMap,
             linkages: [],
             nodes: [],
             chemin: [],
@@ -133,9 +134,9 @@ export default {
                     <button v-else @click="togglelegend = true"><</button>
                     <transition name="slide">
                         <div class="mm_legend" v-if="togglelegend">
-                            <div v-for="(legend_color, legend_class) in LegendColorMap" :key="legend_class">
-                                <div class="mm_legend_cercle" :style="{ backgroundColor: legend_color }"></div>
-                                <p>{{ legend_class }}</p>
+                            <div v-for="(nameproper, nameclass) in LegendClassMap">
+                                <div class="mm_legend_cercle" :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
+                                <p>{{ nameproper }}</p>
                             </div>
                         </div>
                     </transition>
@@ -173,6 +174,7 @@ export default {
     padding: 20px;
 
     overflow: hidden;
+    touch-action: none;
 }
 
 /* Fullscreen mode */
@@ -309,7 +311,6 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-right: 15px;
-    border: 2px solid var(--blanc);
     flex-shrink: 0;
 }
 

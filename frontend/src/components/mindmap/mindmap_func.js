@@ -10,6 +10,17 @@ import Theme from "../../model/theme.js";
 class mmRoot {
 }
 
+export const LegendClassMap = {
+    "Artiste": "Artiste",
+    "Extrait": "Extrait",
+    "Interview": "Interview",
+    "Nation": "Pays",
+    "Question": "Question",
+    "StyleMusical": "Style Musical",
+    "Tag": "Tag",
+    "Theme": "Thème",
+}
+
 export const LegendColorMap = {
     "mmRoot": "#fff",
     "Artiste": "#A0522D",
@@ -62,24 +73,25 @@ class mmLinkage {
     }
 }
 
-class mmNode {
+export class mmNode {
     x;
     y;
     depth;
     childrens;
     category;
-    uuid;
-    constructor(x, y, depth, category, uuid) {
+    content;
+    constructor(x, y, depth, category, content) {
         this.x = x;
         this.y = y;
         this.depth = depth;
         this.childrens = [];
         this.category = category;
-        this.uuid = uuid;
+        this.content = content;
     }
 
     getStyle(scale, baseOffsetX, baseOffsetY) {
         const size = 100 * scale;
+        const sizetext = 20 * scale;
         const scaledX = this.x * scale;
         const scaledY = this.y * scale;
 
@@ -89,7 +101,7 @@ class mmNode {
             "top": (scaledY + baseOffsetY) + "px",
             "width": size + "px",
             "height": size + "px",
-            "font-size": (16 * scale) + "px",
+            "font-size": sizetext + "px",
             "line-height": size + "px",
         };
     }
@@ -103,7 +115,8 @@ function set_children(vueobj, root, origin_angle) {
     let nb_child = root.childrens.length + (origin_angle ? 2 : 0);
     let angle_per_child = (360 / nb_child);
     // so the distance is inversly proportional to the number of angle_per_child
-    let distance = (1 / angle_per_child) * 300 + 500;
+    let taille_max_node = 300; // TODO : compute that 
+    let distance = taille_max_node + (1 / angle_per_child) * taille_max_node;
     // we iterate over an angle
     let current_angle = origin_angle || 0;
     let thickness_base = (vueobj.chemin.length + 1) * 3;
@@ -153,12 +166,12 @@ export function mmget(vueobj) {
 
             if (next) {
                 current_node = child;
-
+                
                 // Filter out categories that are already in the chemin path
-                const availableCategories = categorys.filter(elem => !vueobj.chemin.category.includes(elem));
-
+                // const availableCategories = categorys.filter(elem => !vueobj.chemin.category.includes(elem));
+                
                 // Add available categories as children
-                for (const element of availableCategories) {
+                for (const element of categorys) {
                     let tmp_child = new mmNode(0, 0, current_node.depth + 1, element, null);
                     vueobj.nodes.push(tmp_child);
                     current_node.childrens.push({
@@ -166,10 +179,10 @@ export function mmget(vueobj) {
                         angle: null
                     });
                 }
-
+                
                 // Update positions for the new children
                 set_children(vueobj, current_node, null);
-
+                
             } else {
                 console.warn(`Child node with category "${child}" not found`);
                 break;
