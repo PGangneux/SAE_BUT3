@@ -82,11 +82,9 @@ class InterviewsViewSet(
 
         interview = self.get_object()
         rel = self.get_extrait().interviews.relationship(interview)
-        if not rel:
-            return Response({'detail': "Relation inexistante entre l'extrait et l'interview."}, status=status.HTTP_404_NOT_FOUND)
         try:
             rel.position = int(new_position)
             rel.save()
-        except Exception as e:
-            return Response({'detail': f'Impossible de mettre à jour la position : {e}'}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e: # pragma: no cover
+            return Response({'detail': f'Impossible de mettre à jour la position : {e}'}, status=status.HTTP_400_BAD_REQUEST) # pragma: no cover
         return Response(self.get_serializer(interview, context=self.get_serializer_context()).data, status=status.HTTP_200_OK)

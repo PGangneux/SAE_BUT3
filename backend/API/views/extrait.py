@@ -53,13 +53,11 @@ class QuestionExtraitViewSet(viewsets.ModelViewSet):
             where_clauses = []
             for idx, term in enumerate(terms):
                 key = f"term{idx}"
-                params[key] = term.lower()
+                params[key] = term
                 # Titre dans la bd Neo4j est enregistré en temps que name
                 where_clauses.append(f"q.name CONTAINS ${key}")
             query += " WHERE " + " AND ".join(where_clauses)
         query += " RETURN q"
-        print('query', query)
-        print('params', params)
         results = db.cypher_query(query, params)[0]
         return [Extrait.inflate(row[0]) for row in results]
 
@@ -101,7 +99,7 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
         try:
             return Interview.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Interview introuvable.')
+            raise NotFound(Interview)
 
     def get_serializer_context(self):
         """

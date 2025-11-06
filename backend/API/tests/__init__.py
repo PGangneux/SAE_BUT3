@@ -16,11 +16,9 @@ class Neo4jTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        # Connexion à la base de test
         # Nettoyage initial de la base
         db.cypher_query("MATCH (n) DETACH DELETE n")
 
     def tearDown(self):
         # Nettoyage après chaque test pour isoler les données
         db.cypher_query("MATCH (n) DETACH DELETE n")
-        super().tearDown()
