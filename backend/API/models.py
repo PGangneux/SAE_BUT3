@@ -4,6 +4,7 @@ from neomodel import (
     DateTimeProperty, ZeroOrMore, BooleanProperty,
     ZeroOrOne, DateTimeFormatProperty
 )
+from datetime import date
 
 
 class PositionExtraitRel(StructuredRel):
@@ -63,7 +64,7 @@ class Extrait(StructuredNode):
     description = StringProperty()
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)
-    uploaded_at = DateProperty(default_now=True)
+    uploaded_at = DateProperty(default=date.today())
     duree = IntegerProperty(required=True) # Nombre de seconde
 
     interviewer = RelationshipTo('Artiste', 'PARTICIPER', ZeroOrOne)

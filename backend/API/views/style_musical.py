@@ -1,7 +1,7 @@
 from neomodel import db
 from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import StyleMusical
 from ..serializers import StyleMusicalSerializer
 
@@ -26,4 +26,4 @@ class StyleMusicalViewSet(viewsets.ModelViewSet):
         try:
             return StyleMusical.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Artiste introuvable.', 404)
+            raise NotFound(StyleMusical)

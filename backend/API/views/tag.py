@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Tag
 from ..serializers import TagSerializer
 
@@ -25,4 +25,4 @@ class TagViewSet(viewsets.ModelViewSet):
         try:
             return Tag.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Tag introuvable.', 404)
+            raise NotFound(Tag)
