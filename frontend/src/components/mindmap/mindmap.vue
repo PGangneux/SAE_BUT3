@@ -64,7 +64,7 @@ export default {
             }
         },
         centerOnNode(node) {
-            const container = this.$el.querySelector('.mm_relative');
+            const container = this.$el;
             if (container) {
                 // Calculate target position to center the node
                 const targetOffx = container.clientWidth / 2 - node.x * this.scale;
@@ -163,10 +163,10 @@ export default {
             this.scale = newScale;
         },
         handleClick(node) {
-            console.log("mm click handle node");
-            this.chemin.push(markRaw(node));
-            console.log(this.chemin);
+            // console.log("mm click handle node");
             this.centerOnNode(node); // Center on the clicked node
+            this.chemin.push(markRaw(node));
+            // console.log(this.chemin);
             mmget(this);
         },
     },
@@ -192,6 +192,7 @@ export default {
                 <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
                 <button @click="scale = 1">reset zoom</button>
                 <button @click="centerMindmap()">recenter</button>
+                <button @click="handleClick(nodes[0])">redraw</button>
             </div>
             <div class="mm_legend_outer">
                 <button v-if="togglelegend" @click="togglelegend = false">></button>
@@ -283,6 +284,7 @@ export default {
     display: flex;
     flex-direction: column;
     z-index: 100;
+    align-items: flex-end
 }
 
 .mm_controls {
@@ -312,7 +314,7 @@ export default {
 .mm_legend_outer {
     display: flex;
     align-items: center;
-    justify-content: flex-end
+    justify-content: space-evenly;
 }
 
 .mm_legend_outer button {

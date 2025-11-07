@@ -191,7 +191,6 @@ export default {
         await initVimeo();
       }
 
-      emit('iframe_build')
 
       //videoStore.iframeComponent = instance.proxy
       /// console.log("iframeComponent", videoStore.iframeComponent)

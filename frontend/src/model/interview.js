@@ -10,6 +10,8 @@ export default class Interview extends Model {
     #lieu;
     #extraits;
     #tags;
+    #duree;
+    #dureePromise;
 
     constructor({ uuid, titre, date, occasion, description, lieu, extraits, tags }) {
         super(uuid);
@@ -20,6 +22,7 @@ export default class Interview extends Model {
         this.#lieu = lieu;
         this.#extraits = extraits;
         this.#tags = tags;
+        this.#duree = 0;
     }
 
     static get endpoint() { return "interviews"; }
@@ -42,6 +45,22 @@ export default class Interview extends Model {
     get extraits() { return this.fetchList(this.#extraits, Extrait); }
 
     get tags() { return this.fetchList(this.#tags, Tag); }
+
+    get duree() {
+        if (!this.#dureePromise) {
+            this.#dureePromise = (async () => {
+                const extraits = await this.extraits;
+                let total = 0;
+                for (const extrait of extraits) {
+                    total += extrait.duree;
+                }
+                this.#duree = total;
+                return total;
+            })();
+        }
+        return this.#dureePromise;
+    }
+
 
     /**
      * Connecte une interview à un tag

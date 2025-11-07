@@ -97,7 +97,7 @@ export default class Model {
         try{
             return new Class(await ClientAPI.get(url));
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }
@@ -113,7 +113,7 @@ export default class Model {
             return await ClientAPI.get(url)
             .then(data => { return data.map(row => { return new Class(row); }); });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return [];
         }
     }
@@ -128,7 +128,7 @@ export default class Model {
             return await ClientAPI.get(await ClientAPI.endpoints(this.endpoint), args)
             .then(data => { return data.map(row => { return new this(row); }); });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return [];
         }
     }
@@ -154,7 +154,7 @@ export default class Model {
             return await ClientAPI.get(ClientAPI.url_uuid(await ClientAPI.endpoints(this.endpoint), uuid))
             .then(data => { return new this(data); });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }
@@ -175,7 +175,7 @@ export default class Model {
             // Charger les nouvelles données dans l'instance
             .then(json => { return this.fromJSON(json); });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }
@@ -196,7 +196,7 @@ export default class Model {
             // Charger les nouvelles données dans l'instance
             .then(json => { return this.fromJSON(json); });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }
@@ -216,7 +216,7 @@ export default class Model {
             // Charger les nouvelles données dans l'instance
             .then(result => { return true; });
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return false;
         }
     }
@@ -231,7 +231,7 @@ export default class Model {
         try {
             return await ClientAPI.post(url, data);
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }
@@ -246,7 +246,7 @@ export default class Model {
         try {
             return await ClientAPI.delete(ClientAPI.url_uuid(url, instance.uuid));
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return false;
         }
     }
