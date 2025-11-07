@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendClassMap, LegendColorMap, mmget } from './mindmap_func.js';
+import { LegendClassMap, LegendColorMap, mmdraw_root , mmdraw_update } from './mindmap_func.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
@@ -29,7 +29,7 @@ export default {
     },
     async mounted() {
         this.centerMindmap();
-        mmget(this);
+        mmdraw_root(this);
     },
     computed: {
         searchValue: {
@@ -39,7 +39,7 @@ export default {
     watch: {
         searchValue(newVal) {
             console.log("Search term changed:", newVal);
-            mmget(this);
+            mmdraw_root(this);
         }
     },
     methods: {
@@ -167,8 +167,11 @@ export default {
             this.centerOnNode(node); // Center on the clicked node
             this.chemin.push(markRaw(node));
             // console.log(this.chemin);
-            mmget(this);
+            mmdraw_update(this);
         },
+        redraw_root(){
+            mmdraw_root(this);
+        }
     },
 };
 </script>
@@ -191,8 +194,8 @@ export default {
                 <button @click="scale += 0.2; scale = Math.min(5, scale)">+</button>
                 <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
                 <button @click="scale = 1">reset zoom</button>
-                <button @click="centerMindmap()">recenter</button>
-                <button @click="handleClick(nodes[0])">redraw</button>
+                <button @click="centerOnNode(nodes[0])">recenter</button>
+                <button @click="redraw_root">redraw</button>
             </div>
             <div class="mm_legend_outer">
                 <button v-if="togglelegend" @click="togglelegend = false">></button>
