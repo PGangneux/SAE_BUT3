@@ -63,8 +63,6 @@ class ExtraitSerializer(serializers.Serializer):
     
     def get_position(self, extrait):
         interview = self.context.get('interview')
-        if not interview:
-            return None
         return int(db.cypher_query(
             "MATCH (e:Extrait {uuid:$extrait_uuid})-[r:APPARTIENT_A]->(i:Interview {uuid:$interview_uuid}) RETURN r.position AS pos",
             {'extrait_uuid': extrait.uuid, 'interview_uuid': interview.uuid}

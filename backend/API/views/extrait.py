@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from neomodel import db
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Extrait, Interview
 from ..serializers import ExtraitSerializer
 
@@ -29,7 +29,7 @@ class ExtraitViewSet(viewsets.ModelViewSet):
         try:
             return Extrait.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Extrait introuvable.', 404)
+            raise NotFound(Extrait)
 
 
 class QuestionExtraitViewSet(viewsets.ModelViewSet):
@@ -53,19 +53,19 @@ class QuestionExtraitViewSet(viewsets.ModelViewSet):
             where_clauses = []
             for idx, term in enumerate(terms):
                 key = f"term{idx}"
-                params[key] = term.lower()
+                params[key] = term
                 # Titre dans la bd Neo4j est enregistré en temps que name
                 where_clauses.append(f"q.name CONTAINS ${key}")
             query += " WHERE " + " AND ".join(where_clauses)
         query += " RETURN q"
-        print('query', query)
-        print('params', params)
         results = db.cypher_query(query, params)[0]
         return [Extrait.inflate(row[0]) for row in results]
 
     def get_object(self):
         query = "MATCH (q:Extrait {uuid: $uuid})-[:POSE]->(t:Question {uuid: $question}) RETURN q"
         results = db.cypher_query(query, {'question': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Extrait)
         return Extrait.inflate(results[0][0])
 
 
@@ -86,12 +86,11 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
         return [Extrait.inflate(row[0]) for row in results]
 
     def get_object(self):
-        try:
-            query = "MATCH (q:Extrait {uuid: $uuid})-[:APPARTIENT_A]->(t:Interview {uuid: $theme}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs[self.router_lookup_field]})[0]
-            return Extrait.inflate(results[0][0])
-        except:
-            raise NotFound('Extrait introuvable.', 404)
+        query = "MATCH (q:Extrait {uuid: $uuid})-[:APPARTIENT_A]->(t:Interview {uuid: $theme}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs[self.router_lookup_field]})[0]
+        if not results:
+            raise NotFound(Extrait)
+        return Extrait.inflate(results[0][0])
 
     def get_interview(self):
         """
@@ -100,7 +99,7 @@ class InterviewExtraitViewSet(viewsets.ModelViewSet):
         try:
             return Interview.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Interview introuvable.')
+            raise NotFound(Interview)
 
     def get_serializer_context(self):
         """
@@ -131,12 +130,11 @@ class TagExtraitViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Extrait {uuid: $uuid})-[:TAGS_EXTRAIT]->(t:Tag {uuid: $tag}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
-            return Extrait.inflate(results[0][0])
-        except:
-            raise NotFound('Extrait introuvable.', 404)
+        query = "MATCH (q:Extrait {uuid: $uuid})-[:TAGS_EXTRAIT]->(t:Tag {uuid: $tag}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'tag': self.kwargs[self.router_lookup_field]})[0]
+        if not results:
+            raise NotFound(Extrait)
+        return Extrait.inflate(results[0][0])
 
 
 class ArtisteExtraitViewSet(viewsets.ModelViewSet):
@@ -159,9 +157,8 @@ class ArtisteExtraitViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Extrait {uuid: $uuid})-[:PARTICIPER]->(t:Artiste {uuid: $artiste}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'artiste': self.kwargs[self.router_lookup_field]})[0]
-            return Extrait.inflate(results[0][0])
-        except:
-            raise NotFound('Extrait introuvable.', 404)
+        query = "MATCH (q:Extrait {uuid: $uuid})-[:PARTICIPER]->(t:Artiste {uuid: $artiste}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'artiste': self.kwargs[self.router_lookup_field]})[0]
+        if not results:
+            raise NotFound(Extrait)
+        return Extrait.inflate(results[0][0])

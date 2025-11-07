@@ -1,7 +1,7 @@
 from datetime import date
 from django.core.management.base import BaseCommand
 from neomodel import db
-from ...models import Artiste, Interview, Extrait, Nation, PositionExtraitRel, Question, StyleMusical, Tag, Theme, Utilisateur
+from ...models import Artiste, Interview, Extrait, Nation, Question, StyleMusical, Tag, Theme, Utilisateur
 from django.contrib.auth.hashers import make_password
 
 class Command(BaseCommand):
