@@ -183,6 +183,10 @@ function mmreset(vueobj) {
     set_children(vueobj, root, null);
 }
 
+function mmget_chemin_from_root(vueobj,chemin_node){
+
+}
+
 export function mmget(vueobj) {
     mmreset(vueobj);
     let current_node = vueobj.nodes[0]; // get root
@@ -222,36 +226,9 @@ export function mmget(vueobj) {
             console.log("current_node", current_node);
             console.log("next", next);
             if (!next) throw new Error("no child node found in chemin");
-
-            // Alternate based on CURRENT node type, not next node type
-            if (next.childnode.content) {
-                // Current node has content - add CATEGORY nodes
-                console.log("Adding category nodes to content node");
-                for (const element of availableCategories) {
-                    let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, element, null);
-                    vueobj.nodes.push(markRaw(tmp_child));
-                    next.childnode.childrens.push({
-                        childnode: tmp_child,
-                        angle: null
-                    });
-                }
-            } else {
-                // Current node is a category - add content nodes using category.list()                
-                const contentList = next.childnode.category.list().then(contentList => {
-                    console.log("getting detail from category", next.childnode.category, contentList);
-                    for (const element of contentList.slice(0, 5)) { // Limit to 5 items
-                        let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, next.childnode.category, element);
-                        vueobj.nodes.push(markRaw(tmp_child));
-                        next.childnode.childrens.push({
-                            childnode: tmp_child,
-                            angle: null
-                        });
-                    }
-                });
-            }
-            // Update positions for the new children
-            set_children(vueobj, next.childnode, next.angle);
+            mmget_onecat(vueobj,vueobj.chemin[indexchem]);
             current_node = next.childnode;
+            console.log("loop done");
         } catch (error) {
             console.error("Error during path traversal:", error);
             throw error;
@@ -259,6 +236,33 @@ export function mmget(vueobj) {
     }
 }
 
-export function mmdelta(vueobj){
-    
+export function mmget_onecat(vueobj,cheminnode){
+    // Alternate based on CURRENT node type, not next node type
+    if (cheminnode.content) {
+        // Current node has content - add CATEGORY nodes
+        console.log("Adding category nodes to content node");
+        for (const element of availableCategories) {
+            let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, element, null);
+            vueobj.nodes.push(markRaw(tmp_child));
+            next.childnode.childrens.push({
+                childnode: tmp_child,
+                angle: null
+            });
+        }
+    } else {
+        // Current node is a category - add content nodes using category.list()                
+        const contentList = next.childnode.category.list().then(contentList => {
+            console.log("getting detail from category", next.childnode.category, contentList);
+            for (const element of contentList.slice(0, 5)) { // Limit to 5 items
+                let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, next.childnode.category, element);
+                vueobj.nodes.push(markRaw(tmp_child));
+                next.childnode.childrens.push({
+                    childnode: tmp_child,
+                    angle: null
+                });
+            }
+        });
+    }
+    // Update positions for the new children
+    set_children(vueobj, next.childnode, next.angle);
 }
