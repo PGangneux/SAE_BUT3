@@ -1,8 +1,8 @@
 from rest_framework import viewsets, mixins, status
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
+from ..errors import NotFound
 from ..models import Question, Utilisateur
 from ..serializers import RecherchesQuestionsSerializer
 
@@ -33,12 +33,11 @@ class RecherchesQuestionsViewSet(
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Question {uuid: $uuid})<-[:RECHERCHES_QUESTIONS]-(t:Utilisateur {uuid: $utilisateur}) RETURN q"
-            results = db.cypher_query(query, {'utilisateur': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return Question.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Question introuvable.', 404)
+        query = "MATCH (q:Question {uuid: $uuid})<-[:RECHERCHES_QUESTIONS]-(t:Utilisateur {uuid: $utilisateur}) RETURN q"
+        results = db.cypher_query(query, {'utilisateur': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Question)
+        return Question.inflate(results[0][0])
 
     def get_utilisateur(self):
         """
@@ -47,7 +46,7 @@ class RecherchesQuestionsViewSet(
         try:
             return Utilisateur.nodes.get(uuid=self.kwargs[self.router_lookup_field])
         except DoesNotExist:
-            raise NotFound('Utilisateur introuvable.')
+            raise NotFound(Utilisateur)
 
     def get_serializer_context(self):
         """

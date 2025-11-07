@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Theme
 from ..serializers import ThemeSerializer
 
@@ -25,4 +25,4 @@ class ThemeViewSet(viewsets.ModelViewSet):
         try:
             return Theme.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Thème introuvable.', 404)
+            raise NotFound(Theme)

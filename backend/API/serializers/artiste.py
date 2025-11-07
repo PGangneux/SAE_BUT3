@@ -71,7 +71,7 @@ class ArtisteSerializer(serializers.Serializer):
         if nation_uuid is not None:
             try:
                 if artiste.nationalite:
-                    artiste.nationalite.disconnect(artiste.nationnalite.single())
+                    artiste.nationalite.disconnect(artiste.nationalite.single())
                 artiste.nationalite.connect(Nation.nodes.get(uuid=nation_uuid))
             except DoesNotExist:
                 raise NotFound(Nation)

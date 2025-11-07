@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Utilisateur
 from ..serializers import UtilisateurSerializer
 
@@ -25,4 +25,4 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
         try:
             return Utilisateur.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Utilisateur introuvable.', 404)
+            raise NotFound(Utilisateur)
