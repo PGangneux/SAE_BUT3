@@ -167,6 +167,7 @@ export default {
 }
 
 .tables{
+    height: 1em;
     width: 100%;
 }
 
@@ -256,6 +257,21 @@ ul> li{
 .buttonsearch{
     background-color: var(--vert-pale);
 }
+
+
+
+th {
+  height: 50px;
+}
+
+tr{
+    height: 50px;
+}
+
+td {
+  height: 50px;
+}
+
 </style>
 
 

@@ -131,6 +131,7 @@ export default {
 }
 
 .tables{
+    height: 1em;
     width: 100%;
 }
 

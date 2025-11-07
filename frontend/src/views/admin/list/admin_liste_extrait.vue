@@ -39,7 +39,7 @@ export default {
     <comp_admin_trie_extrait/>
 
     <div class="col-md-9 aggrandir">
-      <ul class="scroller2  row">
+      <ul class="scroller2  row" >
         <li class="row carte" v-for="extrait in this.extraits">
             <comp_extrait :current_extrait=extrait></comp_extrait>
         </li>

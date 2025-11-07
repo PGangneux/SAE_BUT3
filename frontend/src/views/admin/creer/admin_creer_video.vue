@@ -229,7 +229,8 @@ justify-content: center
 }
 
 .tables{
-    width: 100%;
+  height: 1em;
+  width: 100%;
 }
 
 .ultagger {

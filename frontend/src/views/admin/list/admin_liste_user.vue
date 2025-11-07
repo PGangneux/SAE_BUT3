@@ -120,6 +120,7 @@ ul {
 }
 
 .tables{
+    height: 1em;
     width: 100%;
 }
 

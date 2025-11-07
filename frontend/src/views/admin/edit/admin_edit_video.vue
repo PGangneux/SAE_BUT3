@@ -145,11 +145,11 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
-        <div class="col-md-6 scroller" style="width: 50%;">
+        <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
@@ -199,9 +199,9 @@ export default {
               </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
               </h1>
              
               <table class="ultagger table tables table-striped">
@@ -236,7 +236,7 @@ export default {
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
       <div class="row">
 
-        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
             <li v-for="tag in dico_extrait.tags " class="col">
                 <div class="row">
                   <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
@@ -305,7 +305,8 @@ justify-content: center
 }
 
 .tables{
-    width: 100%;
+  height: 1em;
+  width: 100%;
 }
 
 .ultagger {
@@ -349,6 +350,9 @@ justify-content: center
   border: solid 3px;
   border-color: var(--vert-neon);
   border-radius: 2em;
+
+  height: 100%;
+  width: 100%;
 }
 
 option{
