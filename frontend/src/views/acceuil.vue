@@ -176,12 +176,11 @@ export default {
         <div class="flex-grow">
             <comp_mindmap />
         </div>
-        <comp_recent />
+        <comp_recent class="recent-component" />
     </div>
     <!-- Si le mode PiP est actif -->
     <div v-if="videoStore.isPictureInPicture" class="pip-video" ref="pip"
-        @mousedown="startDrag" @touchstart="startDrag"
-        >
+        @mousedown="startDrag" @touchstart="startDrag">
         <!-- iframe picture in picture-->
         <component v-if="videoStore.iframeComponent" :is="videoStore.iframeComponent.$options"
             v-bind="videoStore.iframeComponent.$props" />
@@ -193,11 +192,46 @@ export default {
 .local-flex {
     display: flex;
     height: 100%;
+    flex-direction: row; /* Default for larger screens */
 }
 
 .flex-grow {
     flex-grow: 1;
     margin: 1%;
+}
+
+.recent-component {
+    margin: 1%;
+    width: 30%;
+    min-width: 300px;
+}
+
+/* Vertical layout for small screens */
+@media (max-width: 200px), (max-height: 200px) {
+    .local-flex {
+        flex-direction: column;
+    }
+    
+    .flex-grow {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .recent-component {
+        width: 100%;
+        order: 2;
+    }
+    
+    .pip-video {
+        width: 40%;
+        height: 20%;
+        bottom: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .pip-video img {
+        width: 12%;
+    }
 }
 
 .pip-video {
