@@ -163,16 +163,27 @@ export function mmget(vueobj) {
     let current_node = root;
     try {
         for (const child of vueobj.chemin) {
-            let next = current_node.childrens.find(obj => obj.childnode === child);
+            console.log("current_node",current_node);
+            console.log("child",child);
+            // Find the child node that matches the current chemin element
+            // Look for matching category or content
+            let next = current_node.childrens.find(obj => 
+                obj.childnode.category === child.category || 
+                obj.childnode.content === child.content
+            );
 
             if (next) {
                 current_node = child;
                 
                 // Filter out categories that are already in the chemin path
-                // const availableCategories = categorys.filter(elem => !vueobj.chemin.category.includes(elem));
+                // Get categories that are NOT in the current path
+                const currentPathCategories = vueobj.chemin.map(item => item.category.name);
+                const availableCategories = categorys.filter(cat => 
+                    !currentPathCategories.includes(cat.name)
+                );
                 
                 // Add available categories as children
-                for (const element of categorys) {
+                for (const element of availableCategories) {
                     let tmp_child = new mmNode(0, 0, current_node.depth + 1, element, null);
                     vueobj.nodes.push(tmp_child);
                     current_node.childrens.push({
