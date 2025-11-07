@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from neomodel import db
 from neomodel.exceptions import DoesNotExist
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Question
 from ..serializers import QuestionSerializer
 
@@ -33,7 +33,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         try:
             return Question.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Question introuvable.', 404)
+            raise NotFound(Question)
 
 
 class ThemeQuestionViewSet(viewsets.ModelViewSet):
@@ -56,9 +56,8 @@ class ThemeQuestionViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Question {uuid: $uuid})-[:A_THEME]->(t:Theme {uuid: $theme}) RETURN q"
-            results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs[self.router_lookup_field]})[0]
-            return Question.inflate(results[0][0])
-        except:
-            raise NotFound('Question introuvable.', 404)
+        query = "MATCH (q:Question {uuid: $uuid})-[:A_THEME]->(t:Theme {uuid: $theme}) RETURN q"
+        results = db.cypher_query(query, {'uuid': self.kwargs[self.lookup_field], 'theme': self.kwargs[self.router_lookup_field]})[0]
+        if not results:
+            raise NotFound(Question)
+        return Question.inflate(results[0][0])

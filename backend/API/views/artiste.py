@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
-from rest_framework.exceptions import NotFound
+from ..errors import NotFound
 from ..models import Artiste
 from ..serializers import ArtisteSerializer
 
@@ -33,7 +33,7 @@ class ArtisteViewSet(viewsets.ModelViewSet):
         try:
             return Artiste.nodes.get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
-            raise NotFound('Artiste introuvable.', 404)
+            raise NotFound(Artiste)
 
 
 class StyleMusicalArtisteViewSet(viewsets.ModelViewSet):
@@ -56,12 +56,11 @@ class StyleMusicalArtisteViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Artiste {uuid: $uuid})-[:STYLE]->(t:StyleMusical {uuid: $stylemusical}) RETURN q"
-            results = db.cypher_query(query, {'stylemusical': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return Artiste.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Artiste introuvable.', 404)
+        query = "MATCH (q:Artiste {uuid: $uuid})-[:STYLE]->(t:StyleMusical {uuid: $stylemusical}) RETURN q"
+        results = db.cypher_query(query, {'stylemusical': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Artiste)
+        return Artiste.inflate(results[0][0])
 
 
 class NationArtisteViewSet(viewsets.ModelViewSet):
@@ -84,9 +83,8 @@ class NationArtisteViewSet(viewsets.ModelViewSet):
         """
         Récupération de l'Objet
         """
-        try:
-            query = "MATCH (q:Artiste {uuid: $uuid})-[:NATIONALITE]->(t:Nation {uuid: $nation}) RETURN q"
-            results = db.cypher_query(query, {'nation': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
-            return Artiste.inflate(results[0][0])
-        except DoesNotExist:
-            raise NotFound('Artiste introuvable.', 404)
+        query = "MATCH (q:Artiste {uuid: $uuid})-[:NATIONALITE]->(t:Nation {uuid: $nation}) RETURN q"
+        results = db.cypher_query(query, {'nation': self.kwargs[self.router_lookup_field], 'uuid': self.kwargs[self.lookup_field]})[0]
+        if not results:
+            raise NotFound(Artiste)
+        return Artiste.inflate(results[0][0])
