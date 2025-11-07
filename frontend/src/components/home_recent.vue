@@ -51,6 +51,7 @@ export default {
 
 <template>
     <div class="local-flex">
+        <h3 class="vert-neon">Interview Récente</h3>
         <div v-if="loading" v-for="i in [1, 2, 3]" :key="i" class="local">
             <img src="/imgs/spinner.gif" alt="loading image...">
             <p>loading ...</p>
@@ -72,6 +73,13 @@ export default {
 </template>
 
 <style scoped>
+.vert-neon {
+    color: var(--vert-neon);
+    text-align: center;
+    margin: 0;
+    padding: 1rem 0;
+    text-shadow: 0 0 10px var(--vert-neon);
+}
 .mini {
     width: 90%;
     height: auto;
@@ -82,6 +90,7 @@ export default {
 .local-flex {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: column;
     gap: 20px;
     justify-content: space-evenly
 }
@@ -90,7 +99,7 @@ export default {
     background: var(--gris-moyen);
 
     border: 3px solid var(--vert-neon);
-    box-shadow: 12px 8px 3.2px 6px var(--vert-pale);
+    box-shadow: 8px 8px 3.2px 5px var(--vert-pale);
     border-radius: 20px;
 
     padding: 16px;
