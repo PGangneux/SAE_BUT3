@@ -5,7 +5,7 @@ import mindmap_node from './mindmap_node.vue';
 
 export default {
     name: "comp_mindmap",
-    inject: ["searchterm"],
+    inject: ["searchterm","mindmap_chemin"],
     components: {
         mindmap_node
     },
@@ -166,6 +166,7 @@ export default {
             // console.log("mm click handle node");
             this.centerOnNode(node); // Center on the clicked node
             this.chemin.push(markRaw(node));
+            this.mindmap_chemin.set(this.chemin);
             // console.log(this.chemin);
             mmdraw_update(this);
         },
