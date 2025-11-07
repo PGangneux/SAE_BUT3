@@ -58,7 +58,7 @@ export default class Interview extends Model {
                 return total;
             })();
         }
-        return this._dureePromise;
+        return this.#dureePromise;
     }
 
 
