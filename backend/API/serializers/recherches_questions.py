@@ -2,7 +2,9 @@ from datetime import datetime
 from django.urls import reverse
 from rest_framework import serializers
 from neomodel import db
-from ..models import Question
+from neomodel.exceptions import DoesNotExist
+from ..models import Question, Utilisateur
+from ..errors import NotFound, ContextError
 
 
 class RecherchesQuestionsSerializer(serializers.Serializer):
@@ -23,7 +25,7 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
         query = "MATCH (i:Question {uuid:$question})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'question': question.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
@@ -47,13 +49,13 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         question_uuid = validated_data['uuid']
         try:
             question = Question.nodes.get(uuid=question_uuid)
-        except Question.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Question introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Question)
 
         if not utilisateur.recherches_questions.is_connected(question):
             utilisateur.recherches_questions.connect(question)
@@ -66,12 +68,12 @@ class RecherchesQuestionsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         try:
             question = Question.nodes.get(uuid=question_uuid)
-        except Question.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Question introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Question)
 
         utilisateur.recherches_questions.disconnect(question)
         return question

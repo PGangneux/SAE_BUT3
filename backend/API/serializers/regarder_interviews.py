@@ -2,7 +2,9 @@ from datetime import datetime
 from django.urls import reverse
 from rest_framework import serializers
 from neomodel import db
-from ..models import Interview
+from ..models import Interview, Utilisateur
+from ..errors import NotFound, ContextError
+from neomodel.exceptions import DoesNotExist
 
 
 class RegarderInterviewsSerializer(serializers.Serializer):
@@ -27,7 +29,7 @@ class RegarderInterviewsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
         query = "MATCH (i:Interview {uuid:$interview})<-[r:REGARDER_INTERVIEWS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
         res = db.cypher_query(query, {'interview': interview.uuid, 'utilisateur': utilisateur.uuid})[0][0]
         return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
@@ -50,13 +52,13 @@ class RegarderInterviewsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         interview_uuid = validated_data['uuid']
         try:
             interview = Interview.nodes.get(uuid=interview_uuid)
-        except Interview.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Interview)
 
         if not utilisateur.regarder_interviews.is_connected(interview):
             utilisateur.regarder_interviews.connect(interview)
@@ -69,12 +71,12 @@ class RegarderInterviewsSerializer(serializers.Serializer):
         """
         utilisateur = self.context.get('utilisateur')
         if not utilisateur:
-            raise serializers.ValidationError("Utilisateur manquant dans le contexte.")
+            raise ContextError(Utilisateur)
 
         try:
             artiste = Interview.nodes.get(uuid=interview_uuid)
-        except Interview.DoesNotExist:
-            raise serializers.ValidationError({'uuid': 'Interview introuvable.'})
+        except DoesNotExist:
+            raise NotFound(Interview)
 
         utilisateur.regarder_interviews.disconnect(artiste)
         return artiste

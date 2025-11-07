@@ -2,6 +2,8 @@ from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from rest_framework import serializers
 from ..models import Utilisateur
+from ..errors import ValidatorUnique
+from neomodel.exceptions import UniqueProperty
 
 
 class UtilisateurSerializer(serializers.Serializer):
@@ -52,16 +54,23 @@ class UtilisateurSerializer(serializers.Serializer):
         """
         # hash password
         validated_data['password'] = make_password(validated_data.pop('password'))
-        return Utilisateur(**validated_data).save()
+        try:
+            return Utilisateur(**validated_data).save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
 
-    def update(self, instance, validated_data):
+
+    def update(self, utilisateur, validated_data):
         """
         Modification d'un utilisateur
         """
         # hash password
         pwd = validated_data.pop('password', None)
         if pwd:
-            instance.password = make_password(pwd)
+            utilisateur.password = make_password(pwd)
         for k, v in validated_data.items():
-            setattr(instance, k, v)
-        return instance.save()
+            setattr(utilisateur, k, v)
+        try:
+            return utilisateur.save()
+        except UniqueProperty as error:
+            raise ValidatorUnique(error.message)
