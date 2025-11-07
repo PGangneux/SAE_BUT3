@@ -23,60 +23,59 @@ export default {
 </script>
 
 <template>
-    <div>
 
-        <h1 class="text-center colorneon"> Compte  </h1>
+<h1 class="text-center colorneon"> Compte  </h1>
 
-        <form action="" class="grisee" style="padding: 1em;">
-            <div class="row client">
-                <div class="row client">
+<form action="" class="heit" style="padding: 1em;">
+    <div class="row client" style="height: 80%;">
+        <div class="row client">
 
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="Pseudo"> Pseudo </label>
-                        <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo" v-model="this.current_utilisateur.pseudo" >
-                    </div>
-
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="Prénom">Prénom</label>
-                        <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom" v-model="this.current_utilisateur.prenom" >
-                    </div>
-
-                </div>
-
-                <div class="row client">
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="Nom">Nom</label>
-                        <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom" v-model="this.current_utilisateur.nom">
-                    </div>
-
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="mot de passe">Nouveau Mot De Passe</label>
-                        <input type="text" class="form-control row client" id="mot de passe" name="mot de passe" placeholder="mot de passe" >
-                    </div>
-
-
-                </div>
-
-                <div class="row client">
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="Adresse">Adresse</label>
-                            <input type="text" class="form-control row client " id="Adresse" name="Adresse" placeholder="Adresse e-mail" v-model="this.current_utilisateur.email" >
-                    </div>
-
-                    <div class="input-group mb-3 col">
-                        <label class="row client" for="confirmer mdp">Confirmer Nouveau <br></br> Mot De Passe</label>
-                            <input type="text" class="form-control row client " id="confirmer mdp" name="confirmer mdp" placeholder="confirmer mot de passe" >
-                    </div>
-                </div>
-
-
+            <div class="input-group mb-3 col">
+                <label class="row client" for="Pseudo"> Pseudo </label>
+                <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo" v-model="this.current_utilisateur.pseudo" >
             </div>
-            <div class="row client">
-                <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-                <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
+
+            <div class="input-group mb-3 col">
+                <label class="row client" for="Prénom">Prénom</label>
+                <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom" v-model="this.current_utilisateur.prenom" >
             </div>
-        </form>
+
+        </div>
+
+        <div class="row client">
+            <div class="input-group mb-3 col">
+                <label class="row client" for="Nom">Nom</label>
+                <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom" v-model="this.current_utilisateur.nom">
+            </div>
+
+            <div class="input-group mb-3 col">
+                <label class="row client" for="mot de passe">Nouveau Mot De Passe</label>
+                <input type="text" class="form-control row client" id="mot de passe" name="mot de passe" placeholder="mot de passe" >
+            </div>
+
+
+        </div>
+
+        <div class="row client">
+            <div class="input-group mb-3 col">
+                <label class="row client" for="Adresse">Adresse</label>
+                    <input type="text" class="form-control row client " id="Adresse" name="Adresse" placeholder="Adresse e-mail" v-model="this.current_utilisateur.email" >
+            </div>
+
+            <div class="input-group mb-3 col">
+                <label class="row client" for="confirmer mdp">Confirmer Nouveau <br></br> Mot De Passe</label>
+                    <input type="text" class="form-control row client " id="confirmer mdp" name="confirmer mdp" placeholder="confirmer mot de passe" >
+            </div>
+        </div>
+
+
     </div>
+    <div class="row client" style="height: 10%;">
+        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
+    </div>
+</form>
+
 </template>
 
 <style scoped>
@@ -99,8 +98,8 @@ h2{
     
 }
 
-.grisee{
-  background-color: var(--gris-moyen);
+.heit{
+  height: 100%;
 }
 
 label{
