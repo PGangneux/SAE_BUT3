@@ -238,9 +238,9 @@ export default {
 
         <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
             <li v-for="tag in dico_extrait.tags " class="col">
-                <div class="row">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-                  <p class="col">{{ tag.name }}</p>
+                <div class="row" style="--bs-gutter-x: 0rem;">
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50" style="max-width: 5em;">
+                  <p class="col" style="text-align: center; max-width:max-content; align-content: center; ">{{ tag.name }}</p>
                 </div>
             </li>
         </ul>
