@@ -11,6 +11,7 @@ export default class Interview extends Model {
     #extraits;
     #tags;
     #duree;
+    #dureePromise;
 
     constructor({ uuid, titre, date, occasion, description, lieu, extraits, tags }) {
         super(uuid);
@@ -46,19 +47,18 @@ export default class Interview extends Model {
     get tags() { return this.fetchList(this.#tags, Tag); }
 
     get duree() {
-    if (!this._dureePromise) {
-        this._dureePromise = (async () => {
-            const extraits = await this.extraits;
-            let total = 0;
-            for (const extrait of extraits) {
-                console.log(total)
-                total += extrait.duree;
-            }
-            this._duree = total;
-            return total;
-        })();
-    }
-    return this._dureePromise;
+        if (!this.#dureePromise) {
+            this.#dureePromise = (async () => {
+                const extraits = await this.extraits;
+                let total = 0;
+                for (const extrait of extraits) {
+                    total += extrait.duree;
+                }
+                this.#duree = total;
+                return total;
+            })();
+        }
+        return this._dureePromise;
     }
 
 
