@@ -1,3 +1,4 @@
+import { markRaw } from 'vue';
 import Artiste from "../../model/artiste.js";
 import Extrait from "../../model/extrait.js";
 import Interview from "../../model/interview.js";
@@ -136,73 +137,128 @@ function set_children(vueobj, root, origin_angle) {
         // advance the angle
         current_angle += angle_per_child;
     }
+    // console.log("set_children",root.childrens);
 }
 
-export function mmget(vueobj) {
+function mmreset(vueobj) {
     // reset
     vueobj.nodes = [];
     vueobj.linkages = [];
     // create root
     let root = new mmNode(0, 0, 1, mmRoot, null);
-    vueobj.nodes.push(root);
+    vueobj.nodes.push(markRaw(root));
+    // console.log("before olders prune", vueobj.chemin);
+    // Validate depth and handle depth mismatches
+    if (vueobj.chemin.length > 0) {
+        let lastElement = vueobj.chemin[vueobj.chemin.length - 1];
+        let minDepth = lastElement.depth;
+        // console.log("minDepth chemin", minDepth);
+
+        vueobj.chemin = vueobj.chemin.filter((element, index) => {
+            // Always keep the last element
+            if (index === vueobj.chemin.length - 1) return true;
+            // Keep if depth is smaller
+            if (element.depth < minDepth) {
+                return true;
+            } else {
+                return false;
+            }
+        });
+    }
+    // Filter out mmRoot from chemin if present
+    vueobj.chemin = vueobj.chemin.filter(item => item.category !== mmRoot);
+    // console.log("after olders prune", vueobj.chemin);
+
     // put defaults
     for (const cat of categorys) {
-        // so for each cat in the default categorys
-        // create a "root" category buble
         let tmp_child = new mmNode(0, 0, 2, cat, null);
-        // render it
-        vueobj.nodes.push(tmp_child);
-        // they are children of the white root node
+        vueobj.nodes.push(markRaw(tmp_child));
         root.childrens.push({
             childnode: tmp_child,
             angle: null
         });
     }
-    // put default cercle position + links
-    set_children(vueobj, root, null);
-    let current_node = root;
-    try {
-        for (const child of vueobj.chemin) {
-            console.log("current_node",current_node);
-            console.log("child",child);
-            // Find the child node that matches the current chemin element
-            // Look for matching category or content
-            let next = current_node.childrens.find(obj => 
-                obj.childnode.category === child.category || 
-                obj.childnode.content === child.content
-            );
 
-            if (next) {
-                current_node = child;
-                
-                // Filter out categories that are already in the chemin path
-                // Get categories that are NOT in the current path
-                const currentPathCategories = vueobj.chemin.map(item => item.category.name);
-                const availableCategories = categorys.filter(cat => 
-                    !currentPathCategories.includes(cat.name)
+    // put default circle position + links
+    set_children(vueobj, root, null);
+}
+
+export function mmget(vueobj) {
+    mmreset(vueobj);
+    let current_node = vueobj.nodes[0]; // get root
+    for (let indexchem = 0; indexchem < vueobj.chemin.length; indexchem++) {
+        try {
+            // Get categories that are NOT in the current path up to this index
+            const currentPathCategories = vueobj.chemin.slice(0, indexchem + 1).map(item => item.category.name);
+            const availableCategories = categorys.filter(cat =>
+                !currentPathCategories.includes(cat.name)
+            );
+            // Find the child node that matches the current chemin element
+            const cheminNode = vueobj.chemin[indexchem];
+            // First filter by category
+            const categoryMatches = current_node.childrens.filter(obj =>
+                obj.childnode.category?.name === cheminNode.category?.name
+            );
+            console.log(`Category matches for ${cheminNode.category?.name}:`, categoryMatches);
+            // Then filter by content.uuid if there is content
+            let next;
+            if (cheminNode.content) {
+                // Look for exact match with content.uuid
+                next = categoryMatches.find(obj =>
+                    obj.childnode.content?.uuid === cheminNode.content?.uuid
                 );
-                
-                // Add available categories as children
+                console.log(`UUID match search:`, { 
+                    lookingFor: cheminNode.content?.uuid,
+                    found: next ? next.childnode.content?.uuid : 'none'
+                });
+            } else {
+                // No content - take first category match
+                next = categoryMatches[0];
+                console.log(`No content - taking first category match:`, next);
+            }
+            console.log("whole chemin",vueobj.chemin);
+            console.log("seelcted category",indexchem, vueobj.chemin[indexchem]);
+            console.log("available cat", availableCategories);
+            console.log("current_node", current_node);
+            console.log("next", next);
+            if (!next) throw new Error("no child node found in chemin");
+
+            // Alternate based on CURRENT node type, not next node type
+            if (next.childnode.content) {
+                // Current node has content - add CATEGORY nodes
+                console.log("Adding category nodes to content node");
                 for (const element of availableCategories) {
-                    let tmp_child = new mmNode(0, 0, current_node.depth + 1, element, null);
-                    vueobj.nodes.push(tmp_child);
-                    current_node.childrens.push({
+                    let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, element, null);
+                    vueobj.nodes.push(markRaw(tmp_child));
+                    next.childnode.childrens.push({
                         childnode: tmp_child,
                         angle: null
                     });
                 }
-                
-                // Update positions for the new children
-                set_children(vueobj, current_node, null);
-                
             } else {
-                console.warn(`Child node with category "${child}" not found`);
-                break;
+                // Current node is a category - add content nodes using category.list()                
+                const contentList = next.childnode.category.list().then(contentList => {
+                    console.log("getting detail from category", next.childnode.category, contentList);
+                    for (const element of contentList.slice(0, 5)) { // Limit to 5 items
+                        let tmp_child = new mmNode(next.childnode.x + 100, next.childnode.y + 100, next.childnode.depth + 1, next.childnode.category, element);
+                        vueobj.nodes.push(markRaw(tmp_child));
+                        next.childnode.childrens.push({
+                            childnode: tmp_child,
+                            angle: null
+                        });
+                    }
+                });
             }
+            // Update positions for the new children
+            set_children(vueobj, next.childnode, next.angle);
+            current_node = next.childnode;
+        } catch (error) {
+            console.error("Error during path traversal:", error);
+            throw error;
         }
-    } catch (error) {
-        console.error("Error during path traversal:", error);
-        throw error;
     }
-    // console.log(root);
+}
+
+export function mmdelta(vueobj){
+    
 }
