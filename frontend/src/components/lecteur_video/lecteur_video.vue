@@ -48,6 +48,7 @@ export default {
   },
 
 
+
   methods: {
     async update(){
       const interviewData = await this.interview_current.get();
@@ -144,14 +145,17 @@ export default {
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
         // réinitialiser le temps de la vidéo
-        //videoStore.currentTime = 0;
+        videoStore.currentTime = 0;
+        
         // lancer la prochaine vidéo
         await this.redirect_extrait(next_extrait);
 
       } else {
         // console.log("Fin de la liste des extraits de l'interview");
       }
-    }
+    },
+
+    
 
   },
 
