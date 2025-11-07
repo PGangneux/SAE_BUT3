@@ -7,7 +7,7 @@ import Artiste from '../../model/artiste';
 
 export default {
   components: { miniature_video, },
-  emits: ["toggle_aside", 'update'],
+  emits: ["toggle_aside", 'update', "format_duree"],
   inject : ["extrait_current", "interview_current"],
   props: {
     liste_extraits_current_interview: {
@@ -24,12 +24,15 @@ export default {
 
     };
   },
+
   methods : {
 
 
     async interview_current_extrait(){
-      this.selected = "extrait_in_playlists"
+      console.log("interv extra", )
+      this.selected = "playlists"
       this.videos = markRaw(await this.extrait.interviews)
+      console.log(this.videos)
     },
 
     async extraits_current_question(){
@@ -79,14 +82,17 @@ export default {
 
       this.videos = markRaw(artiste_videos);
     },
+    
 
 
 
     async update_liste_video(video) {
+      console.log("test0", video)
 
       // maj du extrait_current ou interview_current selon le type de video
 
       if (video.extraits) {
+        console.log("test0.7")
         // c'est une interview
         /// console.log(video)
         this.interview_current.set(video);
@@ -95,11 +101,12 @@ export default {
         ///console.log((await video.extraits)[0])
         this.extrait_current.set((await video.extraits)[0]);
       } else {
+        console.log("test0.5")
         // c'est un extrait
         this.extrait_current.set(video);
         this.interview_current.set(null);
       }
-
+      console.log("test0.1")
       // recupération des nouveau extrait et interview
       this.extrait = await this.extrait_current.get();
       this.interview = await this.interview_current.get();
@@ -110,9 +117,18 @@ export default {
       videoStore.intervalId = null;
       videoStore.currentTime = 0;
 
+      console.log("test0.1")
+      
+      console.log("test0.2")
       this.$emit('update');
       this.videos = markRaw(await Extrait.list());
+
+      
     },
+
+
+    
+
 
 
   },
@@ -120,8 +136,9 @@ export default {
     this.interview = toRaw(await this.interview_current.get());
     this.extrait = toRaw(await this.extrait_current.get());
     this.videos = markRaw(await Extrait.list());
-    /// console.log("interview", this.interview)
+    console.log("interview", this.interview)
     if (this.interview) this.img_close = false;
+
 
   },
 
@@ -137,7 +154,7 @@ export default {
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <!--si la video est un extrait-->
-              <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists</li>
+              <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'playlists'}">Playlists</li>
               
             </ul>
             
@@ -155,10 +172,8 @@ export default {
                 <ul class="liste_video">
                     <li v-for="video in videos">
                         <div>
-                            
-                            <miniature_video v-if="this.interview" @click="update_liste_video(video)" :video="video" />
-                            <miniature_video v-else @click="update_liste_video(video)" :video="video" />
-                          <div>
+                            <miniature_video @click="update_liste_video(video)" :video="video" />
+                          <div class="video_text">
                               <h4>{{ video.titre }}</h4>
                               <p>{{ video.description }}</p>
                               
@@ -264,21 +279,22 @@ main {
   display: flex;  
 }
 
-.liste_video img, .liste_video a{
-  display: block;
-  width: 30%;
-  height: 30%;
 
-  border-radius: 20px;
-  object-fit: cover;
-  background-color: var(--gris-moyen);
-}
 
 .liste_video a{
     width: 55%;
     height: 55%;
     margin-right: 1em;
     margin-bottom: 2em;
+}
+
+.video_text{
+  padding-right: 5%;
+  flex-grow: 1;
+}
+
+p, h4{
+  margin: 0;
 }
 
 

@@ -48,6 +48,7 @@ export default {
   },
 
 
+
   methods: {
     async update(){
       const interviewData = await this.interview_current.get();
@@ -152,7 +153,9 @@ export default {
       } else {
         // console.log("Fin de la liste des extraits de l'interview");
       }
-    }
+    },
+
+    
 
   },
 
