@@ -75,7 +75,7 @@ export default {
 <style scoped>
 .scroller {
     width: 300px;
-    height: 100vh;
+    height: 32vh;
     overflow-y: scroll;
     scrollbar-color: var(---blanc) #A6A6A6;
     scrollbar-width: thin;
@@ -90,7 +90,6 @@ justify-content: center
 
 .tagsfully{
     width: 100%;
-    height: 100%;
     flex-grow: 1;
 }
 
