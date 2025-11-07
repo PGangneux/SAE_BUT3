@@ -45,7 +45,7 @@ export default {
     methods: {
         toggleFullscreen() {
             this.fullscreen = !this.fullscreen;
-            const element = this.$el.querySelector('.mm_relative');
+            const element = this.$el;
             if (this.fullscreen) {
                 if (element.requestFullscreen) {
                     element.requestFullscreen();
@@ -57,7 +57,7 @@ export default {
             }
         },
         centerMindmap() {
-            const container = this.$el.querySelector('.mm_relative');
+            const container = this.$el;
             if (container) {
                 this.offx = container.clientWidth / 2;
                 this.offy = container.clientHeight / 2;
@@ -174,50 +174,43 @@ export default {
 </script>
 
 <template>
-    <div>
-        <h2 class="vert-neon">Mindmap Component</h2>
-        <div class="vert-neon">Search: {{ searchValue }}</div>
-        <div>
-            <p v-for="chem in chemin" :key="chem.name">{{ chem.name }}</p>
-        </div>
-        <div class="mm_relative" 
-            @mousedown="startDrag" @mouseup="stopDrag"
-            @mousemove="doDrag" @mouseleave="stopDrag"
-            @wheel="handleWheel"
-            @touchstart="startDragTouch" @touchend="stopDrag"
-            @touchmove="doDragTouch"
-            >
-            <button class="mm_fullscreenbtn" @click="toggleFullscreen">
-                <img :src="fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
-                    :alt="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
-                    class="fullscreen-icon">
-            </button>
-            <div class="mm_control_outer">
-                <div class="mm_controls">
-                    <button @click="scale += 0.2; scale = Math.min(5, scale)">+</button>
-                    <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
-                    <button @click="scale = 1">reset zoom</button>
-                    <button @click="centerMindmap()">recenter</button>
-                </div>
-                <div class="mm_legend_outer">
-                    <button v-if="togglelegend" @click="togglelegend = false">></button>
-                    <button v-else @click="togglelegend = true"><</button>
-                    <transition name="slide">
-                        <div class="mm_legend" v-if="togglelegend">
-                            <div v-for="(nameproper, nameclass) in LegendClassMap">
-                                <div class="mm_legend_cercle"
-                                    :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
-                                <p>{{ nameproper }}</p>
-                            </div>
+    <div class="mm_relative" 
+        @mousedown="startDrag" @mouseup="stopDrag"
+        @mousemove="doDrag" @mouseleave="stopDrag"
+        @wheel="handleWheel"
+        @touchstart="startDragTouch" @touchend="stopDrag"
+        @touchmove="doDragTouch"
+        >
+        <button class="mm_fullscreenbtn" @click="toggleFullscreen">
+            <img :src="fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
+                :alt="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
+                class="fullscreen-icon">
+        </button>
+        <div class="mm_control_outer">
+            <div class="mm_controls">
+                <button @click="scale += 0.2; scale = Math.min(5, scale)">+</button>
+                <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
+                <button @click="scale = 1">reset zoom</button>
+                <button @click="centerMindmap()">recenter</button>
+            </div>
+            <div class="mm_legend_outer">
+                <button v-if="togglelegend" @click="togglelegend = false">></button>
+                <button v-else @click="togglelegend = true"><</button>
+                <transition name="slide">
+                    <div class="mm_legend" v-if="togglelegend">
+                        <div v-for="(nameproper, nameclass) in LegendClassMap">
+                            <div class="mm_legend_cercle"
+                                :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
+                            <p>{{ nameproper }}</p>
                         </div>
-                    </transition>
-                </div>
+                    </div>
+                </transition>
             </div>
-            <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
-            </div>
-            <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
-                @click="handleClick(node);" class="mm_node" />
         </div>
+        <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
+        </div>
+        <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
+            @click="handleClick(node);" class="mm_node" />
     </div>
 </template>
 
@@ -234,14 +227,13 @@ export default {
 /* Mindmap container with backdrop */
 .mm_relative {
     position: relative;
-    width: calc(100% - 5%);
-    height: 75vh;
-    margin: 0 auto;
+    width: 100%;
+    height: 100%;
 
     /* Backdrop */
     background-color: var(--gris-moyen);
     border: 3px solid var(--vert-neon);
-    box-shadow: 12px 8px 3.2px 6px var(--vert-pale);
+    box-shadow: 8px 8px 3.2px 5px var(--vert-pale);
     border-radius: 20px;
     padding: 20px;
 
