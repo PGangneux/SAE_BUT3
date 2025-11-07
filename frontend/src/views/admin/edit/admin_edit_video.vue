@@ -149,7 +149,7 @@ export default {
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
-        <div class="col-md-6">
+        <div class="col-md-6 scroller" style="width: 50%;">
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
@@ -211,7 +211,7 @@ export default {
                           <th class="btgrisv2  col">paramètre</th>
                       </tr>
                   </thead>
-                  <tbody class="tobodd scroller">
+                  <tbody class="tobodd">
                       <tr class="col" v-for="interview in this.dico_extrait['interviews']">
                           <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
                           <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
@@ -270,6 +270,7 @@ export default {
     </template>
 
 <style scoped>
+
 .migniature{
   height: 90%;
   width: 90%;
@@ -282,21 +283,7 @@ export default {
   height:  553px;
   width: 470px;
 }
-li>.card {
-  padding: 20px 50px 150px;
-  margin: 10px 10px 10px 10px;  
-}
 
-span{
-      min-width: 8em;
-}
-
-.scroller2 {
-  height: 100%;
-  overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
-  scrollbar-width: thin;
-}
 
 .pad{
   padding-top: 1em;
@@ -308,7 +295,6 @@ margin-top: 1em;
 margin-bottom: 1em;
 justify-content: center
 }
-
 
 .centrer{
 justify-content: center
@@ -325,20 +311,6 @@ justify-content: center
 .ultagger {
     list-style-type: none;
 
-}
-
-.scroller {
-    width: 300px;
-    height: 100px;
-    overflow-y: scroll;
-    scrollbar-color: var(---blanc) #A6A6A6;
-    scrollbar-width: thin;
-}
-
-ul {
-  display: flex;
-  list-style-type: none;
-  justify-content: space-between;
 }
 
 .grisetround{
@@ -386,5 +358,51 @@ option{
 label{
   color: var(--vert-neon);
 }
+
+
+li>.card {
+  padding: 20px 50px 150px;
+  margin: 10px 10px 10px 10px;  
+}
+
+span{
+      min-width: 8em;
+}
+ul {
+  display: flex;
+  list-style-type: none;
+  justify-content: space-between;
+}
+
+
+.scroller {
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    scrollbar-color: var(---blanc) #A6A6A6;
+    scrollbar-width: thin;
+}
+
+
+
+
+
+.scroller2 {
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-width: thin;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 </style>

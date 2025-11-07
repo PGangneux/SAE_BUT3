@@ -202,7 +202,7 @@ span{
 }
 
 .scroller2 {
-  height: 100%;
+  height: 100vh;
   overflow-y: scroll;
   scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;
@@ -239,7 +239,7 @@ justify-content: center
 
 .scroller {
     width: 300px;
-    height: 100px;
+    height: 100vh;
     overflow-y: scroll;
     scrollbar-color: var(---blanc) #A6A6A6;
     scrollbar-width: thin;

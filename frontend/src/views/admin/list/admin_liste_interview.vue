@@ -63,7 +63,7 @@ export default {
 
 <h1 class="text-center">Interview-Playlist</h1>
 
-<div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;">
+<div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px; height: 100%; ">
     
     <div class="col-md-4 main-trie">
 
@@ -103,7 +103,7 @@ export default {
     </div>
 
     <div class="col-md-6 recherche aggrandir">
-            <table class="scroller ultagger table tables  table-bordered">
+            <table class=" ultagger table tables  table-bordered">
                 <thead>
                     <tr>
                         <th class="btgrisv2" scope=" col">Nom interview</th>
@@ -136,7 +136,7 @@ export default {
 
 .scroller {
     width: 300px;
-    height: 100px;
+    height: 100vh;
     overflow-y: scroll;
     scrollbar-color: var(---blanc) #A6A6A6;
     scrollbar-width: thin;
