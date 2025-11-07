@@ -29,10 +29,8 @@ export default {
 
 
     async interview_current_extrait(){
-      console.log("interv extra", )
       this.selected = "playlists"
       this.videos = markRaw(await this.extrait.interviews)
-      console.log(this.videos)
     },
 
     async extraits_current_question(){
@@ -87,12 +85,10 @@ export default {
 
 
     async update_liste_video(video) {
-      console.log("test0", video)
 
       // maj du extrait_current ou interview_current selon le type de video
 
       if (video.extraits) {
-        console.log("test0.7")
         // c'est une interview
         /// console.log(video)
         this.interview_current.set(video);
@@ -101,12 +97,10 @@ export default {
         ///console.log((await video.extraits)[0])
         this.extrait_current.set((await video.extraits)[0]);
       } else {
-        console.log("test0.5")
         // c'est un extrait
         this.extrait_current.set(video);
         this.interview_current.set(null);
       }
-      console.log("test0.1")
       // recupération des nouveau extrait et interview
       this.extrait = await this.extrait_current.get();
       this.interview = await this.interview_current.get();
@@ -117,11 +111,13 @@ export default {
       videoStore.intervalId = null;
       videoStore.currentTime = 0;
 
-      console.log("test0.1")
-      
-      console.log("test0.2")
       this.$emit('update');
       this.videos = markRaw(await Extrait.list());
+
+      this.$refs.miniature_videos.forEach(child => {
+        child.update_miniature();
+      });
+
 
       
     },
@@ -136,7 +132,6 @@ export default {
     this.interview = toRaw(await this.interview_current.get());
     this.extrait = toRaw(await this.extrait_current.get());
     this.videos = markRaw(await Extrait.list());
-    console.log("interview", this.interview)
     if (this.interview) this.img_close = false;
 
 
@@ -170,9 +165,13 @@ export default {
             </div>
             <div>
                 <ul class="liste_video">
-                    <li v-for="video in videos">
+                    <li v-for="(video, index) in videos" :key="video.uuid">
                         <div>
-                            <miniature_video @click="update_liste_video(video)" :video="video" />
+                              <miniature_video 
+                                ref="miniature_videos" 
+                                @click="update_liste_video(video)"
+                                :video="video" 
+                              />
                           <div class="video_text">
                               <h4>{{ video.titre }}</h4>
                               <p>{{ video.description }}</p>

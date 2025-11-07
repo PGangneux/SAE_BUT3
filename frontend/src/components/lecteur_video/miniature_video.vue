@@ -15,8 +15,7 @@ export default {
     };
   },
   async mounted() {
-    this.url = await this.get_miniature(this.video);
-    this.duree = await this.get_duree(this.video);
+    await this.update_miniature()
   },
   methods: {
     async get_miniature(video) {
@@ -79,7 +78,23 @@ export default {
 
       return format_duree(time);
     },
+
+    async update_miniature(){
+      this.url = await this.get_miniature(this.video);
+      this.duree = await this.get_duree(this.video);
+    }
   },
+
+  watch: {
+    video: {
+      deep: true,
+      immediate: true,
+      handler() {
+        this.update_miniature();
+      }
+    }
+  }
+
 };
 </script>
 
