@@ -7,7 +7,7 @@ import Artiste from '../../model/artiste';
 
 export default {
   components: { miniature_video, },
-  emits: ["toggle_aside", 'update', "format_duree"],
+  emits: ["toggle_aside", 'update'],
   inject : ["extrait_current", "interview_current"],
   props: {
     liste_extraits_current_interview: {
