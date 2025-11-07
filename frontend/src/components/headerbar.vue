@@ -80,7 +80,7 @@ export default {
                     <RouterLink class="nav-link" to="/inscription">S'inscrire</RouterLink>
                 </li>
                 <li class="btn local" v-if="!isconnected">
-                    <RouterLink class="nav-link" to="/connection">Se Connecter</RouterLink>
+                    <RouterLink class="nav-link" to="/connexion">Se Connecter</RouterLink>
                 </li>
             </ul>
         </nav>
