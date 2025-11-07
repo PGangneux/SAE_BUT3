@@ -1,5 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,django,venv,vuejs
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,django,venv,vuejs
+backend
+frontend
+.github
 
 ### Django ###
 *.log
