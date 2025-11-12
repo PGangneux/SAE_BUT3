@@ -13,76 +13,111 @@ export default {
     },
     data() {
         return {
-            searchterm: "", // text de recherche
+            searchterm: "",
             interview_current: markRaw({
-                type: Interview,
-                value: null,
+            type: Interview,
+            value: null,
             }),
             extrait_current: markRaw({
-                type: Extrait,
-                value: null,
+            type: Extrait,
+            value: null,
             }),
+            //  Ajouter des flags de chargement
+            isLoadingInterview: false,
+            isLoadingExtrait: false,
         }
-    },
+        },
+
     provide() {
         return {
             searchterm: {
-                get: () => this.searchterm,
-                set: (value) => { this.searchterm = value }
+            get: () => this.searchterm,
+            set: (value) => { this.searchterm = value }
             },
+            
             interview_current: {
                 get: async () => {
-                    if (this.interview_current != null){
-                        // console.log("icicicicici")
-                        // console.log(this.interview_current)
-                        /// console.log("APP VUE Getting interview_current from provider...",this.interview_current);
-                        if (this.interview_current.value){
-                            // console.log("APP VUE interview_current exists:", this.interview_current);
-                            return this.interview_current;
-                        } else {
-                            const uuid = sessionStorage.getItem('interview_current');
-                            if (uuid != "null"){
-                                // console.log("avec uuid", uuid)
-                                let tmp =  markRaw(await Interview.detail(uuid));
-                                // console.log("APP VUE Fetched interview_current from sessionStorage:", tmp);
-                                return tmp;
-                            }
-                            else{
-                                // console.log("pas d'uuid", uuid)
-                                return null;
-                            }
-                            
+                    // Si déjà chargé, retourner directement
+                    if (this.interview_current.value) {
+                        console.log("déjà chargé")
+                        return this.interview_current;
+                    }
+                    
+                    // Si en cours de chargement, attendre
+                    if (this.isLoadingInterview) {
+                        console.log("en cours")
+                        // Attendre que le chargement soit terminé
+                        while (this.isLoadingInterview) {
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                        return this.interview_current;
+                    }
+                    
+                    // Charger une seule fois
+                    const uuid = sessionStorage.getItem('interview_current');
+                    if (uuid && uuid !== "null") {
+                        this.isLoadingInterview = true;
+                        console.log(uuid)
+                        try {
+                            let tmp = markRaw(await Interview.detail(uuid));
+                            this.interview_current = tmp;
+                            return tmp;
+                        } finally {
+                            this.isLoadingInterview = false;
                         }
                     }
                     else{
-                        // console.log("qkdqodqodqoz")
-                        return null
+                        console.error("pas d'uuid, repasse par l'acceuil pour choisir une video");
                     }
                     
+                    return null;
                 },
+                
                 set: (value) => {
                     this.interview_current = value ? markRaw(value) : null;
-                    sessionStorage.setItem('interview_current', this.interview_current ? this.interview_current.uuid: null);
+                    sessionStorage.setItem('interview_current', 
+                    this.interview_current?.uuid || null);
                 }
             },
+            
             extrait_current: {
                 get: async () => {
-
+                    // Même logique pour extrait
                     if (this.extrait_current.value) {
                         return this.extrait_current;
-                    } else {
-                        let tmp = markRaw(await Extrait.detail(sessionStorage.getItem('extrait_current')));
-                        return tmp;
-                    } 
+                    }
+                    
+                    if (this.isLoadingExtrait) {
+                        while (this.isLoadingExtrait) {
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                        return this.extrait_current;
+                    }
+                    
+                    const uuid = sessionStorage.getItem('extrait_current');
+                    if (uuid && uuid !== "null") {
+                        this.isLoadingExtrait = true;
+                        try {
+                            let tmp = markRaw(await Extrait.detail(uuid));
+                            this.extrait_current = tmp;
+                            return tmp;
+                        } finally {
+                            this.isLoadingExtrait = false;
+                        }
+                    }
+                    
+                    return null;
                 },
+                
                 set: (value) => {
                     this.extrait_current = value ? markRaw(value) : null;
-                    sessionStorage.setItem('extrait_current', this.extrait_current.uuid);
+                    sessionStorage.setItem('extrait_current', 
+                    this.extrait_current?.uuid || null);
                 }
-                },
+            },
         }
-    },
-};
+        },
+}
 </script>
 
 <template>
