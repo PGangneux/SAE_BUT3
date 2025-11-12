@@ -29,6 +29,8 @@ import page_admin_creer_video from "./views/admin/creer/admin_creer_video.vue";
 import page_admin_creer_interview from "./views/admin/creer/admin_creer_interview.vue";
 import page_admin_creer_client from "./views/admin//creer/admin_creer_user.vue";
 
+import page_supprimer from "./views/admin/supprimer.vue";
+
 // Lecteur Video Pages
 import lecteur_video from './components/lecteur_video/lecteur_video.vue';
 
@@ -64,6 +66,9 @@ const routes = [
     { path: "/admin/interview/creer/", component: page_admin_creer_interview },
     { path: "/admin/extrait/creer/", component: page_admin_creer_video },
 
+
+    { path: "/admin/:type/supprimer/:id", component: page_supprimer },
+    
 
 ];
 

@@ -129,6 +129,8 @@ export default {
                   </tbody>
               </table>
              
+              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+
             </div>
         </div>
       </div>
@@ -296,6 +298,11 @@ option{
 
 label{
   color: var(--vert-neon);
+}
+
+
+.button-blanc{
+    background-color: var(--blanc);
 }
 
 </style>
