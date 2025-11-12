@@ -1,10 +1,7 @@
 from django.contrib.auth.hashers import make_password
-from django.urls import reverse
 from rest_framework import serializers
 from ..serializers import Base
 from ..models import Utilisateur
-from ..errors import ValidatorUnique
-from neomodel.exceptions import UniqueProperty
 
 
 class UtilisateurSerializer(Base):

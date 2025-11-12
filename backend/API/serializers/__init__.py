@@ -156,3 +156,24 @@ from .recherches_questions import RecherchesQuestionsSerializer
 from .interviews import InterviewsSerializer, PositionInputSerializer
 from .tags_extrait import TagsExtraitRelationShipSerializer
 from .tags_interview import TagsInterviewRelationShipSerializer
+
+all = (
+    ThemeSerializer,
+    QuestionSerializer,
+    ExtraitSerializer,
+    InterviewSerializer,
+    ArtisteSerializer,
+    UtilisateurSerializer,
+    StyleMusicalSerializer,
+    NationSerializer,
+    TagSerializer,
+    StyleRelationShipSerializer,
+    RecherchesArtistesSerializer,
+    RegarderInterviewsSerializer,
+    RegarderExtraitsSerializer,
+    RecherchesQuestionsSerializer,
+    InterviewsSerializer,
+    PositionInputSerializer,
+    TagsExtraitRelationShipSerializer,
+    TagsInterviewRelationShipSerializer
+)

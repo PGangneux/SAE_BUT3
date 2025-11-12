@@ -20,15 +20,3 @@ class StyleMusicalSerializer(Base):
         Renvoie un lien propre vers les artistes :
         """
         return self.get_url('artiste-list', kwargs={'stylemusical_uuid': style_musical.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'un style musical
-        """
-        return super().create(validated_data)
-
-    def update(self, style_musical, validated_data):
-        """
-        Modification d'un style musical
-        """
-        return super().update(style_musical, validated_data)

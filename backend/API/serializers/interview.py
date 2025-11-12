@@ -31,15 +31,3 @@ class InterviewSerializer(Base):
         Renvoie un lien propre vers les tags :
         """
         return self.get_url('tag-list', kwargs={'interview_uuid': interview.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'une interview
-        """
-        return super().create(validated_data)
-
-    def update(self, interview, validated_data):
-        """
-        Modification d'une interview
-        """
-        return super().update(interview, validated_data)

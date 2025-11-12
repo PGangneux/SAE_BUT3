@@ -20,15 +20,3 @@ class NationSerializer(Base):
         Renvoie un lien propre vers les artistes :
         """
         return self.get_url('artiste-list', kwargs={'nation_uuid': nation.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'une nation
-        """
-        return super().create(validated_data)
-
-    def update(self, nation, validated_data):
-        """
-        Modification d'une nation
-        """
-        return super().update(nation, validated_data)

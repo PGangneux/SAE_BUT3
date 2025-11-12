@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework import serializers
 from ..serializers import RelationShipUtilisateur
 from ..models import Interview

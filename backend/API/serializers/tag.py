@@ -29,15 +29,3 @@ class TagSerializer(Base):
         Renvoie un lien propre vers les extraits :
         """
         return self.get_url("extrait-list", kwargs={"tag_uuid": tag.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'un tag
-        """
-        return super().create(validated_data)
-
-    def update(self, tag, validated_data):
-        """
-        Modification d'un tag
-        """
-        return super().update(tag, validated_data)

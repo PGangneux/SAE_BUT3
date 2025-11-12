@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
@@ -59,7 +58,7 @@ class ExtraitSerializer(Base):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))
+        return self.get_url('tag-list', kwargs={'extrait_uuid': extrait.uuid})
     
     def get_position(self, extrait):
         interview = self.context.get('interview')

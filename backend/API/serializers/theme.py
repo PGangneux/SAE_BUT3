@@ -21,15 +21,3 @@ class ThemeSerializer(Base):
         Renvoie un lien propre vers les questions :
         """
         return self.get_url('question-list', kwargs={'theme_uuid': theme.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'un theme
-        """
-        return super().create(validated_data)
-
-    def update(self, theme, validated_data):
-        """
-        Modification d'un theme
-        """
-        return super().update(theme, validated_data)
