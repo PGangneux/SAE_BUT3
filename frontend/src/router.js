@@ -1,75 +1,37 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import page_acceuil from "./views/acceuil.vue";
-import page_propos from "./views/a_propos.vue";
-import page_condition_general from "./views/condition_general.vue";
-import page_account from "./views/account.vue";
-import page_connexion from "./views/connexion.vue";
-import page_inscription from "./views/inscription.vue";
-import page_reset_password from "./views/reset_password.vue";
 
+// certaines pages  soient chargées légèrement en avance (par ex. la page de login ou la page admin),
+//{ 
+//  path: "/connection", 
+//  component: () => import(/* webpackPrefetch: true */ "./views/connection.vue") 
+//}
 
-
-
-//   ADMIN PAGES
-import page_admin from "./views/admin/admin_acceuil.vue";
-
-// liste admin
-import page_admin_listextrait from "./views/admin/list/admin_liste_extrait.vue";
-import page_admin_listuser from "./views/admin/list/admin_liste_user.vue";
-import page_admin_interview from "./views/admin/list/admin_liste_interview.vue";
-
-// editer admin
-import page_admin_edit_video from "./views/admin/edit/admin_edit_video.vue";
-import page_admin_edit_interview from "./views/admin/edit/admin_edit_interview.vue";
-import page_admin_details_client from "./views/admin//edit/admin_details_user.vue";
-
-// creer admin
-import page_admin_creer_video from "./views/admin/creer/admin_creer_video.vue";
-import page_admin_creer_interview from "./views/admin/creer/admin_creer_interview.vue";
-import page_admin_creer_client from "./views/admin//creer/admin_creer_user.vue";
-
-// Lecteur Video Pages
-import lecteur_video from './components/lecteur_video/lecteur_video.vue';
 
 const routes = [
-    { path: "/", component: page_acceuil },
-    { path: "/propos", component: page_propos },
-    { path: "/conditiongeneral", component: page_condition_general },
-    { path: "/account", component: page_account },
-    { path: "/connexion", component: page_connexion },
-    { path: "/inscription", component: page_inscription },
-    { path: "/reset-password", component: page_reset_password },
-    { path: "/lecteur_video/", component: lecteur_video, props: true },// Iuuid pour l'interview
+  // Pages principales
+  { path: "/", component: () => import("./views/acceuil.vue") },
+  { path: "/propos", component: () => import("./views/a_propos.vue") },
+  { path: "/conditiongeneral", component: () => import("./views/condition_general.vue") },
+  { path: "/account", component: () => import("./views/account.vue") },
+  { path: "/connexion", component: () => import("./views/connexion.vue") },
+  { path: "/inscription", component: () => import("./views/inscription.vue") },
+  { path: "/reset-password", component: () => import("./views/reset_password.vue") },
+  { path: "/lecteur_video/", component: () => import("./components/lecteur_video/lecteur_video.vue"), props: true },
 
-
-    
-    
-    { path: "/admin", component: page_admin },
-    
-    { path: "/admin/user", component: page_admin_listuser },
-    { path: "/admin/user/:id", component: page_admin_details_client },
-
-    
-    
-    { path: "/admin/interview", component: page_admin_interview },
-    { path: "/admin/interview/:id", component: page_admin_edit_interview },
-    
-    { path: "/admin/extrait", component: page_admin_listextrait },
-    { path: "/admin/extrait/:id", component: page_admin_edit_video },
-
-
-
-    { path: "/admin/user/creer/",    component: page_admin_creer_client },
-    { path: "/admin/extrait/creer/", component: page_admin_creer_interview },
-    { path: "/admin/extrait/creer/", component: page_admin_creer_video },
-
-
+  // Admin pages
+  { path: "/admin", component: () => import("./views/admin/admin_acceuil.vue") },
+  { path: "/admin/user", component: () => import("./views/admin/list/admin_liste_user.vue") },
+  { path: "/admin/user/:id", component: () => import("./views/admin/edit/admin_details_user.vue") },
+  { path: "/admin/interview", component: () => import("./views/admin/list/admin_liste_interview.vue") },
+  { path: "/admin/interview/:id", component: () => import("./views/admin/edit/admin_edit_interview.vue") },
+  { path: "/admin/extrait", component: () => import("./views/admin/list/admin_liste_extrait.vue") },
+  { path: "/admin/extrait/:id", component: () => import("./views/admin/edit/admin_edit_video.vue") },
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
 export default router;
