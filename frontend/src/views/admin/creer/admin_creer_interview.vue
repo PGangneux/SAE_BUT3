@@ -201,7 +201,7 @@ ul {
 
 .scroller2 {
 
-  height: 70vh;
+  height: 100vh;
   overflow-y: scroll;
   scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;

@@ -13,7 +13,8 @@ export default {
     },
     data() {
         return {
-            searchterm: "",
+            searchterm: "", // text de recherche
+            mindmap_chemin : markRaw([]),
             interview_current: markRaw({
             type: Interview,
             value: null,
@@ -34,7 +35,10 @@ export default {
             get: () => this.searchterm,
             set: (value) => { this.searchterm = value }
             },
-            
+            mindmap_chemin : {
+                get: () => this.mindmap_chemin,
+                set: (value) => { this.mindmap_chemin = value }
+            },
             interview_current: {
                 get: async () => {
                     // Si déjà chargé, retourner directement

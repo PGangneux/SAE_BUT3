@@ -1,11 +1,11 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendClassMap, LegendColorMap, mmget } from './mindmap_func.js';
+import { LegendClassMap, LegendColorMap, mmdraw_root , mmdraw_update } from './mindmap_func.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
     name: "comp_mindmap",
-    inject: ["searchterm"],
+    inject: ["searchterm","mindmap_chemin"],
     components: {
         mindmap_node
     },
@@ -29,7 +29,7 @@ export default {
     },
     async mounted() {
         this.centerMindmap();
-        mmget(this);
+        mmdraw_root(this);
     },
     computed: {
         searchValue: {
@@ -39,7 +39,7 @@ export default {
     watch: {
         searchValue(newVal) {
             console.log("Search term changed:", newVal);
-            mmget(this);
+            mmdraw_root(this);
         }
     },
     methods: {
@@ -64,7 +64,7 @@ export default {
             }
         },
         centerOnNode(node) {
-            const container = this.$el.querySelector('.mm_relative');
+            const container = this.$el;
             if (container) {
                 // Calculate target position to center the node
                 const targetOffx = container.clientWidth / 2 - node.x * this.scale;
@@ -163,12 +163,16 @@ export default {
             this.scale = newScale;
         },
         handleClick(node) {
-            console.log("mm click handle node");
-            this.chemin.push(markRaw(node));
-            console.log(this.chemin);
+            // console.log("mm click handle node");
             this.centerOnNode(node); // Center on the clicked node
-            mmget(this);
+            this.chemin.push(markRaw(node));
+            this.mindmap_chemin.set(this.chemin);
+            // console.log(this.chemin);
+            mmdraw_update(this);
         },
+        redraw_root(){
+            mmdraw_root(this);
+        }
     },
 };
 </script>
@@ -181,21 +185,22 @@ export default {
         @touchstart="startDragTouch" @touchend="stopDrag"
         @touchmove="doDragTouch"
         >
-        <button class="mm_fullscreenbtn" @click="toggleFullscreen">
+        <button class="mm_fullscreenbtn" @click="toggleFullscreen" @touchend="toggleFullscreen">
             <img :src="fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
                 :alt="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
                 class="fullscreen-icon">
         </button>
         <div class="mm_control_outer">
             <div class="mm_controls">
-                <button @click="scale += 0.2; scale = Math.min(5, scale)">+</button>
-                <button @click="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
-                <button @click="scale = 1">reset zoom</button>
-                <button @click="centerMindmap()">recenter</button>
+                <button @click="scale += 0.2; scale = Math.min(5, scale)" @touchend="scale += 0.2; scale = Math.min(5, scale)">+</button>
+                <button @click="scale -= 0.2; scale = Math.max(0.2, scale)" @touchend="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
+                <button @click="scale = 1" @touchend="scale = 1">reset zoom</button>
+                <button @click="centerOnNode(nodes[0])" @touchend="centerOnNode(nodes[0])">recenter</button>
+                <button @click="redraw_root" @touchend="redraw_root">redraw</button>
             </div>
             <div class="mm_legend_outer">
-                <button v-if="togglelegend" @click="togglelegend = false">></button>
-                <button v-else @click="togglelegend = true"><</button>
+                <button v-if="togglelegend" @click="togglelegend = false" @touchend="togglelegend = false;">></button>
+                <button v-else @click="togglelegend = true" @touchend="togglelegend = true;"><</button>
                 <transition name="slide">
                     <div class="mm_legend" v-if="togglelegend">
                         <div v-for="(nameproper, nameclass) in LegendClassMap">
@@ -210,7 +215,7 @@ export default {
         <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
         </div>
         <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
-            @click="handleClick(node);" class="mm_node" />
+            @click="handleClick(node);" @touchend="handleClick(node);" class="mm_node" />
     </div>
 </template>
 
@@ -283,6 +288,7 @@ export default {
     display: flex;
     flex-direction: column;
     z-index: 100;
+    align-items: flex-end
 }
 
 .mm_controls {
@@ -312,7 +318,7 @@ export default {
 .mm_legend_outer {
     display: flex;
     align-items: center;
-    justify-content: flex-end
+    justify-content: space-evenly;
 }
 
 .mm_legend_outer button {

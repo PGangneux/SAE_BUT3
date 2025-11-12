@@ -1,4 +1,5 @@
 import Utilisateur from "./utilisateur";
+import FetchError from "./errors/fetch_error";
 
 /**
  * Classe client faisant le lien avec l'API
@@ -186,24 +187,12 @@ export default class ClientAPI {
                 response = await fetch(url, opts);
             } else {
                 this.clear_tokens();
-                throw new Error('401 : Unauthorized (token expired or invalid)');
+                throw new FetchError(response.status, response.statusText, response);
             }
         }
 
         if (!response.ok) {
-            // essaie de donner des messages utiles
-            let texte;
-            try {
-                texte = await response.text();
-                // si c'est du JSON, parse pour message plus propre
-                try {
-                    const j = JSON.parse(texte);
-                    texte = JSON.stringify(j);
-                } catch {}
-            } catch {
-                texte = response.statusText;
-            }
-            throw new Error(`${response.status} : ${texte}`);
+            throw new FetchError(response.status, response.statusText, response);
         }
 
         // Si pas de contenu (204), retourne null
@@ -274,7 +263,7 @@ export default class ClientAPI {
             this.current_user = new Utilisateur(await this.get(res.utilisateur));
             return this.current_user;
         } catch (error) {
-            console.error(`Erreur HTTP ${error.message}`);
+            console.error(error.toString());
             return null;
         }
     }

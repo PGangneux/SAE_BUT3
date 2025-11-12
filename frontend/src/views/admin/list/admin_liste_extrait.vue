@@ -21,11 +21,6 @@ export default {
 
   async mounted() {
     this.extraits = markRaw(await Extrait.list());
-
-    
-
-    // console.log("liste des extrait")
-    // console.log(this.extraits)
   },
 }
 
@@ -44,7 +39,7 @@ export default {
     <comp_admin_trie_extrait/>
 
     <div class="col-md-9 aggrandir">
-      <ul class="scroller2  row">
+      <ul class="scroller2  row" >
         <li class="row carte" v-for="extrait in this.extraits">
             <comp_extrait :current_extrait=extrait></comp_extrait>
         </li>
@@ -97,7 +92,7 @@ ul {
 
 .scroller2 {
 
-  height: 100%;
+  height: 63vh;
   overflow-y: scroll;
   scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;
