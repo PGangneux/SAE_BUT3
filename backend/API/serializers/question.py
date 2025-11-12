@@ -1,15 +1,14 @@
-from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import UniqueProperty, DoesNotExist
+from neomodel.exceptions import DoesNotExist
+from ..serializers import Base
 from ..models import Question, Theme
-from ..errors import ValidatorUnique, NotFound
+from ..errors import NotFound
 
 
-class QuestionSerializer(serializers.Serializer):
+class QuestionSerializer(Base):
     """
     Sérializer du node Question
     """
-    uuid = serializers.CharField(read_only=True)
     texte = serializers.CharField(required=True)
 
     # Inputs
@@ -19,29 +18,28 @@ class QuestionSerializer(serializers.Serializer):
     theme = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(Question, *args, **kwargs)
+
     def get_theme(self, question):
         """
         Renvoie un lien propre vers le theme :
         """
         theme = question.theme.single()
-        return self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': theme.uuid})) if theme else None
+        return self.get_url('theme-detail', kwargs={'uuid': theme.uuid}) if theme else None
 
     def get_extraits(self, question):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))
+        return self.get_url('extrait-list', kwargs={'question_uuid': question.uuid})
 
     def create(self, validated_data):
         """
         Création d'une question
         """
         theme_uuid = validated_data.pop("theme_uuid", None)
-        question = Question(**validated_data)
-        try:
-            question.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        question = super().create(validated_data)
         if theme_uuid:
             try:
                 theme = Theme.nodes.get(uuid=theme_uuid)
@@ -50,23 +48,18 @@ class QuestionSerializer(serializers.Serializer):
                 raise NotFound(Theme)
         return question
 
-    def update(self, instance, validated_data):
+    def update(self, question, validated_data):
         """
         Modification d'une question
         """
         theme_uuid = validated_data.pop("theme_uuid", None)
-        for k, v in validated_data.items():
-            setattr(instance, k, v)
+        question = super().update(question, validated_data)
         try:
-            instance.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
-        try:
-            theme = instance.theme.single()
+            theme = question.theme.single()
             if theme:
-                instance.theme.disconnect(theme)
+                question.theme.disconnect(theme)
             if theme_uuid:
-                instance.theme.connect(Theme.nodes.get(uuid=theme_uuid))
+                question.theme.connect(Theme.nodes.get(uuid=theme_uuid))
         except DoesNotExist:
-                raise NotFound(Theme)
-        return instance
+            raise NotFound(Theme)
+        return question
