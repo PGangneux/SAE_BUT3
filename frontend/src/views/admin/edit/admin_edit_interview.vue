@@ -147,7 +147,8 @@ export default {
 </div>
 
 <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
+            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
+            <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
             <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
             <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
 </div>

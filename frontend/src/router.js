@@ -61,7 +61,7 @@ const routes = [
 
 
     { path: "/admin/user/creer/",    component: page_admin_creer_client },
-    { path: "/admin/extrait/creer/", component: page_admin_creer_interview },
+    { path: "/admin/interview/creer/", component: page_admin_creer_interview },
     { path: "/admin/extrait/creer/", component: page_admin_creer_video },
 
 

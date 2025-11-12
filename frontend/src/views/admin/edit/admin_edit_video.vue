@@ -218,6 +218,8 @@ export default {
                       </tr>
                   </tbody>
               </table>
+
+              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
              
             </div>
         </div>
@@ -225,6 +227,7 @@ export default {
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
+        <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 
@@ -401,7 +404,9 @@ ul {
 
 
 
-
+.button-blanc{
+    background-color: var(--blanc);
+}
 
 
 
