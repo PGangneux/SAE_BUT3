@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-10-15" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3240" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-10-22" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3240" locale="fr_FR">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
         <field id="tpd3" name="Nom" width="200" order="0"/>
@@ -34,7 +34,7 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="57" complete="0" expand="false">
+        <task id="0" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="57" complete="0" expand="true">
             <task id="53" name="structure page lecteur vidéo" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
             <task id="54" name="paramètres" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
             <task id="55" name="mode cinéma" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
@@ -57,12 +57,13 @@
             <task id="48" name="icon pip" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
             <task id="4" name="choix du lecteur dans le header" color="#8cb6ce" meeting="false" start="2025-11-05" duration="2" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="5" name="temps total extrait/interview dns aside" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false"/>
-            <task id="6" name="algo de recomendation" color="#8cb6ce" meeting="false" start="2025-11-21" duration="7" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="6" name="algo de recomendation" color="#8cb6ce" meeting="false" start="2025-12-02" duration="7" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="7" name="précharchement video" color="#8cb6ce" meeting="false" start="2025-11-11" duration="14" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="8" name="improve drag pip" color="#8cb6ce" meeting="false" start="2025-12-16" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="9" name="version phone" color="#8cb6ce" meeting="false" start="2026-01-06" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" priority="0" expand="true"/>
             <task id="10" name="si pas yt -&gt; vimeo vise versa" color="#8cb6ce" meeting="false" start="2025-12-02" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
         </task>
+        <task id="61" name="optimisation" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
         <task id="1" name="Accueil" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
             <task id="11" name="Mindmap" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             <task id="12" name="video recommander" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
