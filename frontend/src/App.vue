@@ -38,7 +38,7 @@ export default {
             interview_current: {
                 get: async () => {
                     // Si déjà chargé, retourner directement
-                    if (this.interview_current.value) {
+                    if (this.interview_current && this.interview_current.value) {
                         console.log("déjà chargé")
                         return this.interview_current;
                     }
