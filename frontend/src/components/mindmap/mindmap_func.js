@@ -146,6 +146,7 @@ function set_children_pos(vueobj, root, origin_angle) {
 function mmchemin_filter(vueobj) {
     // console.log("before olders prune", vueobj.chemin);
     // Validate depth and handle depth mismatches
+    let original_lenght = vueobj.chemin.length;
     if (vueobj.chemin.length > 0) {
         let lastElement = vueobj.chemin[vueobj.chemin.length - 1];
         let minDepth = lastElement.depth;
@@ -162,8 +163,10 @@ function mmchemin_filter(vueobj) {
         });
     }
     // Filter out mmRoot from chemin if present
+    let didchange = original_lenght != vueobj.chemin.length;
     vueobj.chemin = vueobj.chemin.filter(item => item.category !== mmRoot);
     // console.log("after olders prune", vueobj.chemin);
+    return didchange;
 }
 
 // mmreset - recreate the root node and reset everything
@@ -227,7 +230,8 @@ export function mmdraw_root(vueobj) {
 
 export function mmdraw_update(vueobj) {
     if (vueobj.chemin.length <= 0) return mmdraw_root(vueobj);
-    mmchemin_filter(vueobj);
+    let redraw = mmchemin_filter(vueobj);
+    if (redraw) return mmdraw_root(vueobj);
     const path = mmget_chemin_from_root(vueobj, vueobj.chemin[vueobj.chemin.length - 1]);
     console.log("mmdraw_update chemin path",path);
     mmget_onecat(vueobj, path[path.length - 1]);
