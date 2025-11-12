@@ -83,7 +83,6 @@ export default {
         this.duree = await this.get_duree(this.video, extraits);
         this.is_loading = false;
       }
-      console.log("is_loading", this.is_loading)
       
     }
   },
@@ -91,7 +90,6 @@ export default {
   watch: {
     video: {
       handler() {
-        console.log("video", this.video)
         this.update_miniature();
       },
       immediate: true 

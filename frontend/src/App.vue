@@ -39,13 +39,11 @@ export default {
                 get: async () => {
                     // Si déjà chargé, retourner directement
                     if (this.interview_current && this.interview_current.value) {
-                        console.log("déjà chargé")
                         return this.interview_current;
                     }
                     
                     // Si en cours de chargement, attendre
                     if (this.isLoadingInterview) {
-                        console.log("en cours")
                         // Attendre que le chargement soit terminé
                         while (this.isLoadingInterview) {
                             await new Promise(resolve => setTimeout(resolve, 50));
@@ -57,7 +55,6 @@ export default {
                     const uuid = sessionStorage.getItem('interview_current');
                     if (uuid && uuid !== "null") {
                         this.isLoadingInterview = true;
-                        console.log(uuid)
                         try {
                             let tmp = markRaw(await Interview.detail(uuid));
                             this.interview_current = tmp;
