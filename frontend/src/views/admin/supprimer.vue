@@ -33,7 +33,6 @@ export default {
     async mounted() {
         
 
-
         if (this.Element_Supp == null){
             const ObjectId = this.$route.params.id;
             this.ObjectType = this.$route.params.type;
@@ -59,8 +58,6 @@ export default {
                             console.log("whats")
                             break;
                     }
-
-
                 
             }else{
                 console.log("why")
