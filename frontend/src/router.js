@@ -4,7 +4,7 @@ import page_acceuil from "./views/acceuil.vue";
 import page_propos from "./views/a_propos.vue";
 import page_condition_general from "./views/condition_general.vue";
 import page_account from "./views/account.vue";
-import page_connection from "./views/connection.vue";
+import page_connexion from "./views/connexion.vue";
 import page_inscription from "./views/inscription.vue";
 import page_reset_password from "./views/reset_password.vue";
 
@@ -37,7 +37,7 @@ const routes = [
     { path: "/propos", component: page_propos },
     { path: "/conditiongeneral", component: page_condition_general },
     { path: "/account", component: page_account },
-    { path: "/connection", component: page_connection },
+    { path: "/connexion", component: page_connexion },
     { path: "/inscription", component: page_inscription },
     { path: "/reset-password", component: page_reset_password },
     { path: "/lecteur_video/", component: lecteur_video, props: true },// Iuuid pour l'interview

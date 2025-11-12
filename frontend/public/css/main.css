@@ -23,6 +23,7 @@ html, body {
     width: 100%;
     min-height: 100%;
     /* s’étend au moins sur la hauteur de la fenêtre, mais peut grandir */
+    overflow-x: hidden;
 }
 
 body {
