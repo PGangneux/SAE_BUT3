@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-10-22" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.2.3240" locale="fr_FR">
     <description/>
-    <view zooming-state="default:2" id="gantt-chart">
+    <view zooming-state="default:0" id="gantt-chart">
         <field id="tpd3" name="Nom" width="200" order="0"/>
         <field id="tpd4" name="Date de début" width="75" order="1"/>
         <field id="tpd5" name="Date de fin" width="75" order="2"/>
         <option id="filter.completedTasks" value="false"/>
+        <option id="color.recent"><![CDATA[#ffff33 #3333ff #33ff33]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Nom" width="210" order="0"/>
@@ -92,22 +93,66 @@
             </task>
         </task>
         <task id="30" name="header/footeur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-        <task id="31" name="API" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
-            <task id="42" name="gérer les erreurs des modèles dans les serializers" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="41" name="tests" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="40" name="refaire préfetcher frontend" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="39" name="choisir structure des urls de l'api" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="38" name="création view et urls API" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="37" name="création serializer de base" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="36" name="création des sérializers (ManyToMany)" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false"/>
-            <task id="35" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="34" name="insertion admin" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="33" name="insertion manuelle 1er extraits" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="32" name="création bd" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+        <task id="31" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="19" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
+            <task id="35" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
+                <depend id="33" type="2" difference="0" hardness="Strong"/>
+                <depend id="34" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="32" name="création modèle de la bd" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
+                <depend id="33" type="2" difference="0" hardness="Strong"/>
+                <depend id="34" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="33" name="insertion manuelle 1er extraits" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
+            <task id="34" name="insertion admin" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
+            <task id="37" name="création serializer de base" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
+                <depend id="38" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="38" name="création view et urls API" color="#8cb6ce" meeting="false" start="2025-10-21" duration="2" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
+            <task id="39" name="choisir structure des urls de l'api" meeting="false" start="2025-10-21" duration="1" complete="0" expand="true"/>
+            <task id="36" name="création des sérializers (ManyToMany)" meeting="false" start="2025-10-22" duration="2" complete="0" expand="false"/>
+            <task id="61" name="recherches" meeting="false" start="2025-10-24" duration="1" complete="0" expand="true"/>
+            <task id="40" name="refaire préfetcher frontend" meeting="false" start="2025-10-31" duration="2" complete="0" expand="true"/>
+            <task id="65" name="Tests" color="#000000" meeting="false" start="2025-11-04" duration="8" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true">
+                <task id="41" name="Tests de l'API" color="#8cb6ce" meeting="false" start="2025-11-04" duration="3" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
+                    <notes><![CDATA[Tests réalisés:
+
+- Models
+- Serializers
+- ModelViewSets
+- Urls
+
+
+Connexion non demandé pour les views]]></notes>
+                </task>
+                <task id="42" name="Gérer les erreurs des modèles dans les serializers" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+                <task id="64" name="Gérer les erreurs des viewsets" color="#8cb6ce" meeting="false" start="2025-11-06" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+                <task id="73" name="Mettre à jour les tests pour tenir compte de l'authentification et des permissions" color="#8cb6ce" meeting="false" start="2025-11-12" duration="2" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true"/>
+            </task>
+            <task id="66" name="Gestions des erreurs dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="63" name="Restructuration des sérializers" color="#8cb6ce" meeting="false" start="2025-11-10" duration="1" complete="0" thirdDate="2025-11-10" thirdDate-constraint="0" expand="true"/>
+            <task id="71" name="Restructuration des ModelViewSet" color="#8cb6ce" meeting="false" start="2025-11-10" duration="3" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true">
+                <depend id="74" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="74" name="Erreur connexion neo4j" color="#8cb6ce" meeting="false" start="2025-11-13" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true"/>
+            <task id="72" name="Ajout de l'authentifcation et des permissions sur les views" meeting="false" start="2025-11-10" duration="2" complete="0" expand="true">
+                <depend id="73" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="69" name="Connexion Frontend" color="#ffff33" meeting="false" start="2025-11-03" duration="5" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
+            <task id="67" name="Connexion d'un Utilisateur dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-03" duration="1" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true"/>
+            <task id="68" name="Modification du header lors de la connexion" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="70" name="Page de connexion" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
     </tasks>
-    <resources/>
-    <allocations/>
+    <resources>
+        <resource id="0" name="Pierre Gangneux" function="Default:1" contacts="" phone=""/>
+        <resource id="1" name="Baptiste Mignan" function="SoftwareDevelopment:2" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="0" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="69" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="31" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+    </allocations>
     <vacations/>
     <previous/>
     <roles roleset-name="Default"/>
