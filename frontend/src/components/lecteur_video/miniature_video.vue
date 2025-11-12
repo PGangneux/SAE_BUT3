@@ -12,16 +12,14 @@ export default {
     return { 
       url: null,
       duree: "00:00",
+      is_loading: false,
     };
   },
-  async mounted() {
-    await this.update_miniature()
-  },
   methods: {
-    async get_miniature(video) {
+    async get_miniature(video, extraits) {
       try {
         // Cas 1 : c’est un extrait
-        if (!video.extraits) {
+        if (!extraits) {
           return (
             video.url_miniature_yt ||
             (await video.get_url_miniature_vimeo())
@@ -29,7 +27,6 @@ export default {
         }
 
         // Cas 2 : c’est une interview
-        const extraits = await video.extraits;
         if (!extraits || extraits.length === 0) {
           console.warn(`Aucun extrait trouvé pour l’interview ${video.uuid}`);
           return null;
@@ -46,7 +43,7 @@ export default {
       }
     },
 
-    async get_duree(video) {
+    async get_duree(video, extraits) {
       function format_duree(duree_seconds) {
         const hours = Math.floor(duree_seconds / 3600);
         const minutes = Math.floor((duree_seconds % 3600) / 60);
@@ -62,9 +59,8 @@ export default {
 
       let time = 0;
       try {
-        if (video.extraits) {
+        if (extraits) {
           // Si c’est une interview
-          const extraits = await video.extraits;
           for (let extrait of extraits) {
             time += extrait.duree;
           }
@@ -80,20 +76,28 @@ export default {
     },
 
     async update_miniature(){
-      this.url = await this.get_miniature(this.video);
-      this.duree = await this.get_duree(this.video);
+      if (!this.is_loading){
+        this.is_loading = true;
+        const extraits = await this.video.extraits
+        this.url = await this.get_miniature(this.video, extraits);
+        this.duree = await this.get_duree(this.video, extraits);
+        this.is_loading = false;
+      }
+      console.log("is_loading", this.is_loading)
+      
     }
   },
 
   watch: {
     video: {
-      deep: true,
-      immediate: true,
       handler() {
+        console.log("video", this.video)
         this.update_miniature();
-      }
+      },
+      immediate: true 
     }
   }
+
 
 };
 </script>
