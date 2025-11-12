@@ -1,8 +1,9 @@
 from rest_framework import serializers
+from ..serializers import Base
 from ..models import Nation
 
 
-class NationSerializer(serializers.Serializer):
+class NationSerializer(Base):
     """
     Sérializer du node Nation
     """

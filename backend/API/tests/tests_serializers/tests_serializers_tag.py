@@ -1,6 +1,7 @@
 from django.test import RequestFactory
 
-from ...serializers import TagSerializer, ValidatorUnique
+from ...serializers import TagSerializer
+from ...errors import ValidatorUnique
 from ...models import Tag
 from ...tests import Neo4jTestCase
 

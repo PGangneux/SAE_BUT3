@@ -1,7 +1,8 @@
 from datetime import date
 from django.test import RequestFactory
 
-from ...serializers import ExtraitSerializer, ValidatorUnique, NotFound
+from ...serializers import ExtraitSerializer
+from ...errors import ValidatorUnique, NotFound
 from ...models import Extrait, Artiste, Question, Interview, Tag
 from ...tests import Neo4jTestCase
 

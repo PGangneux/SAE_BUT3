@@ -1,6 +1,7 @@
 from django.test import RequestFactory
 from uuid import uuid4
-from ...serializers import StyleRelationShipSerializer, ContextError, NotFound
+from ...serializers import StyleRelationShipSerializer
+from ...errors import ContextError, NotFound
 from ...models import Artiste, StyleMusical
 from ...tests import Neo4jTestCase
 

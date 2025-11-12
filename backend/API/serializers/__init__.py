@@ -4,6 +4,7 @@ from django.http import HttpRequest
 from rest_framework import serializers
 from neomodel.exceptions import UniqueProperty
 from ..errors import ValidatorUnique
+import re
 
 class Base(serializers.Serializer):
     uuid = serializers.CharField(read_only=True)
@@ -25,7 +26,12 @@ class Base(serializers.Serializer):
         try:
             instance.save()
         except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+            raise ValidatorUnique(
+                re.search(
+                    r"property\s+`(?P<prop>[^`]+)`\s*=",
+                    str(error.message), re.IGNORECASE
+                    ).group("prop")
+                )
         return instance
 
     def update(self, instance, validated_data) -> StructuredNode:
@@ -34,7 +40,12 @@ class Base(serializers.Serializer):
         try:
             instance.save()
         except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+            raise ValidatorUnique(
+                re.search(
+                    r"property\s+`(?P<prop>[^`]+)`\s*=",
+                    str(error.message), re.IGNORECASE
+                    ).group("prop")
+                )
         return instance
 
 
