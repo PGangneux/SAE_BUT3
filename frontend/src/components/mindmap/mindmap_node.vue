@@ -1,5 +1,5 @@
 <script>
-import { LegendClassMap, mmNode } from "./mindmap_func";
+import { LegendClassMap, mmNode } from "../../model/mindmap_func";
 
 export default {
     name: "mindmap_node",
@@ -35,7 +35,7 @@ export default {
 
             // If there's content, show it alongside the category
             if (this.node.content) {
-                const contentName = this.node.content.nom || this.node.content.titre || 'Sans nom';
+                const contentName = this.node.content.titre ;
                 return `${categoryName}: ${contentName}`;
             }
 
