@@ -1,28 +1,11 @@
-from rest_framework import viewsets
-from neomodel.exceptions import DoesNotExist
-from ..errors import NotFound
+from ..views import BaseModelViewSet
 from ..models import Utilisateur
 from ..serializers import UtilisateurSerializer
 
 
-class UtilisateurViewSet(viewsets.ModelViewSet):
+class UtilisateurViewSet(BaseModelViewSet):
     """
     Renvoie les utilisateurs
     """
-    serializer_class = UtilisateurSerializer
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        """
-        Récupération du QuerySet
-        """
-        return Utilisateur.nodes.all()
-    
-    def get_object(self):
-        """
-        Récupération de l'Objet
-        """
-        try:
-            return Utilisateur.nodes.get(uuid=self.kwargs[self.lookup_field])
-        except DoesNotExist:
-            raise NotFound(Utilisateur)
+    def __init__(self, **kwargs):
+        super().__init__(UtilisateurSerializer, Utilisateur, **kwargs)
