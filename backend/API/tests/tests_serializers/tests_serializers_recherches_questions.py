@@ -1,7 +1,8 @@
 from uuid import uuid4
 from django.test import RequestFactory
 
-from ...serializers import RecherchesQuestionsSerializer, ContextError, NotFound
+from ...serializers import RecherchesQuestionsSerializer
+from ...errors import ContextError, NotFound
 from ...models import Utilisateur, Question, Theme, Extrait
 from ...tests import Neo4jTestCase
 

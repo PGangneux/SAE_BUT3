@@ -1,7 +1,8 @@
 from django.test import RequestFactory
 from django.contrib.auth.hashers import check_password
 
-from ...serializers import UtilisateurSerializer, ValidatorUnique
+from ...serializers import UtilisateurSerializer
+from ...errors import ValidatorUnique
 from ...models import Utilisateur
 from ...tests import Neo4jTestCase
 
