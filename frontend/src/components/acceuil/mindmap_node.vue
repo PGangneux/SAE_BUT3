@@ -109,6 +109,9 @@ export default {
 
 <template>
     <div class="mindmap-node" :style="node.getStyle(scale, offx, offy)">
+    <div>
+        {{  this.node.content }}
+    </div>
         <div v-if="node.loading" class="loading-spinner">
             <img src="/imgs/spinner.gif" alt="Loading..." />
         </div>
@@ -118,7 +121,7 @@ export default {
 
             <!-- Show content name if available -->
             <p v-if="node.content" class="content-name">
-                {{ node.content.titre || 'Sans nom' }}
+                {{ node.content.name || 'Sans nom' }}
             </p>
 
             <!-- Show video type badge for Interview/Extrait -->

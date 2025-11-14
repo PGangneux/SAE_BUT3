@@ -7,7 +7,7 @@ import Question from "./question.js";
 import StyleMusical from "./style_musical.js";
 import Tag from "./tag.js";
 import Theme from "./theme.js";
-import { videoStore } from "./model/videoStore";
+import { videoStore } from "./videoStore";
 import router from "../router.js";
 
 class mmRoot {
@@ -111,20 +111,18 @@ export class mmNode {
     }
 }
 
-// question enable check
-function mmcheckquestionsearch(vueobj){
-
-}
-
 // check video
 function mmcheckvideo(vueobj){
     if (vueobj.chemin.length == 0) return;
     let last = vueobj.chemin[vueobj.chemin.length-1];
-    if (last.category == Extrait && last.content){
+    if ((last.category == Extrait || last.category == Interview) && last.content){
         videoStore.uuid = last.content.uuid;
-        router.go(("/lecteur_video/"));
-        return true;
+        vueobj.$router.push({ 
+            path: "/lecteur_video/"
+        });
+        throw true;
     } 
+    return
 }
 
 // pos the children of a node in a circle 
@@ -163,6 +161,7 @@ function set_children_pos(vueobj, root, origin_angle) {
 function mmchemin_filter(vueobj) {
     // console.log("before olders prune", vueobj.chemin);
     // Validate depth and handle depth mismatches
+    if (mmcheckvideo(vueobj)) return true,false;
     let original_lenght = vueobj.chemin.length;
     if (vueobj.chemin.length > 0) {
         let lastElement = vueobj.chemin[vueobj.chemin.length - 1];
@@ -183,7 +182,7 @@ function mmchemin_filter(vueobj) {
     let didchange = original_lenght != vueobj.chemin.length;
     vueobj.chemin = vueobj.chemin.filter(item => item.category !== mmRoot);
     // console.log("after olders prune", vueobj.chemin);
-    return didchange;
+    return false , didchange;
 }
 
 // mmreset - recreate the root node and reset everything
@@ -202,6 +201,16 @@ function mmreset(vueobj) {
             childnode: tmp_child,
             angle: null
         });
+    }
+    if (vueobj.searchval){
+        for (const cat of [Question,Extrait,Interview]) {
+        let tmp_child = new mmNode(0, 0, 2, cat, null);
+        vueobj.nodes.push(markRaw(tmp_child));
+        root.childrens.push({
+            childnode: tmp_child,
+            angle: null
+        });
+    }
     }
     // put default circle position + links
     set_children_pos(vueobj, root, null);
@@ -237,7 +246,8 @@ function mmget_chemin_from_root(vueobj, chemin_node) {
 
 export function mmdraw_root(vueobj) {
     mmreset(vueobj);
-    mmchemin_filter(vueobj);
+    let changevideo , changepath = mmchemin_filter(vueobj);
+    if (changevideo) return;
     let path = mmget_chemin_from_root(vueobj, vueobj.chemin[vueobj.chemin.length - 1]);
     console.log("mmdraw_root chemin path",path);
     for (const cheminpath of path) {
@@ -247,8 +257,9 @@ export function mmdraw_root(vueobj) {
 
 export function mmdraw_update(vueobj) {
     if (vueobj.chemin.length <= 0) return mmdraw_root(vueobj);
-    let redraw = mmchemin_filter(vueobj);
-    if (redraw) return mmdraw_root(vueobj);
+    let changevideo , changepath = mmchemin_filter(vueobj);
+    if (changevideo) return;
+    if (changepath) return mmdraw_root(vueobj);
     const path = mmget_chemin_from_root(vueobj, vueobj.chemin[vueobj.chemin.length - 1]);
     console.log("mmdraw_update chemin path",path);
     mmget_onecat(vueobj, path[path.length - 1]);
@@ -277,7 +288,7 @@ function mmget_onecat(vueobj, cheminnode) {
                 angle: null
             });
         }
-        Extrait.list().then(extraits => {
+        (vueobj.searchval ? Extrait.search(vueobj.searchval) : Extrait.list()).then(extraits => {
             for (let index = 0; index < extraits.length && index < 5 && node.childrens.length < 8; index++) {
                 let tmp_child = new mmNode(node.x, node.y, node.depth + 1, Extrait, extraits[index]);
                 vueobj.nodes.push(markRaw(tmp_child));
