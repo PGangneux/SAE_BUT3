@@ -308,7 +308,7 @@ function mmget_onecat(vueobj, cheminnode) {
         // Current node is a category - add content nodes using category.list()
         node.loading = true;
         
-        node.category.list().then(contentList => {
+        (vueobj.searchval ? node.category.search(vueobj.searchval) : node.category.list()).then(contentList => {
             console.log("getting detail from category", node.category, contentList);
             for (const element of contentList.slice(0, 5)) {
                 let tmp_child = new mmNode(node.x, node.y, node.depth + 1, node.category, element);
