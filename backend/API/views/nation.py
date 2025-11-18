@@ -1,29 +1,11 @@
-from neomodel import db
-from rest_framework import viewsets
-from neomodel.exceptions import DoesNotExist
-from ..errors import NotFound
+from ..views import BaseModelViewSet
 from ..models import Nation
 from ..serializers import NationSerializer
 
 
-class NationViewSet(viewsets.ModelViewSet):
+class NationViewSet(BaseModelViewSet):
     """
     Renvoie les Nations
     """
-    serializer_class = NationSerializer
-    lookup_field = 'uuid'
-
-    def get_queryset(self):
-        """
-        Récupération du QuerySet
-        """
-        return Nation.nodes.all()
-    
-    def get_object(self):
-        """
-        Récupération de l'Objet
-        """
-        try:
-            return Nation.nodes.get(uuid=self.kwargs[self.lookup_field])
-        except DoesNotExist:
-            raise NotFound(Nation)
+    def __init__(self, **kwargs):
+        super().__init__(NationSerializer, Nation, **kwargs)
