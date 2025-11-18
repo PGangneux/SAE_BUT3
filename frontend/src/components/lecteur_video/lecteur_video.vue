@@ -3,14 +3,13 @@ import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import timecode from "./timecode.vue";
-import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
 
 
 export default {
   name: "page_lecteur_video",
   inject : ["extrait_current", "interview_current"],
-  components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
+  components: { iframe_lecture_video, bar_liste_video, timecode },
 
   data() {
     return {
@@ -238,10 +237,6 @@ main {
   padding-left: 2%;
   padding-right: 2%;
 }
-
-
-
-
 
 
 

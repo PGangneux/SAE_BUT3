@@ -1,5 +1,6 @@
 from django.test import RequestFactory
-from ...serializers import ArtisteSerializer, ValidatorUnique, NotFound
+from ...serializers import ArtisteSerializer
+from ...errors import ValidatorUnique, NotFound
 from ...models import Artiste, Nation
 from ...tests import Neo4jTestCase
 

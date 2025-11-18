@@ -1,6 +1,7 @@
 from django.test import RequestFactory
 
-from ...serializers import QuestionSerializer, ValidatorUnique, NotFound
+from ...serializers import QuestionSerializer
+from ...errors import ValidatorUnique, NotFound
 from ...models import Question, Theme
 from ...tests import Neo4jTestCase
 

@@ -1,15 +1,14 @@
-from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist, UniqueProperty
-from ..errors import ValidatorUnique, NotFound
+from neomodel.exceptions import DoesNotExist
+from ..errors import  NotFound
 from ..models import Artiste, Nation
+from ..serializers import Base
 
 
-class ArtisteSerializer(serializers.Serializer):
+class ArtisteSerializer(Base):
     """
     Sérializer du node Artiste
     """
-    uuid = serializers.CharField(read_only=True)
     name = serializers.CharField(required=True)
     info = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
@@ -21,35 +20,34 @@ class ArtisteSerializer(serializers.Serializer):
     styles = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(Artiste, *args, **kwargs)
+
     def get_nation(self, artiste):
         """
         Renvoie un lien propre vers la nation :
         """
         nation = artiste.nationalite.single()
-        return self.context.get('request').build_absolute_uri(reverse('nation-detail', kwargs={'uuid': nation.uuid})) if nation else None 
+        return self.get_url('nation-detail', kwargs={'uuid': nation.uuid}) if nation else None 
 
     def get_styles(self, artiste):
         """
         Renvoie un lien propre vers les styles :
         """
-        return self.context.get('request').build_absolute_uri(reverse('style-list', kwargs={'artiste_uuid': artiste.uuid}))
+        return self.get_url('style-list', kwargs={'artiste_uuid': artiste.uuid})
 
     def get_extraits(self, artiste):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'artiste_uuid': artiste.uuid}))
+        return self.get_url('extrait-list', {'artiste_uuid': artiste.uuid})
 
     def create(self, validated_data):
         """
         Création d'un artiste
         """
         nation_uuid = validated_data.pop('nation_uuid', None)
-        artiste = Artiste(**validated_data)
-        try:
-            artiste.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        artiste = super().create(validated_data)
         if nation_uuid is not None:
             try: 
                 artiste.nationalite.connect(Nation.nodes.get(uuid=nation_uuid))
@@ -62,12 +60,7 @@ class ArtisteSerializer(serializers.Serializer):
         Modification d'un artiste
         """
         nation_uuid = validated_data.pop('nation_uuid', None)
-        for k, v in validated_data.items():
-            setattr(artiste, k, v)
-        try:
-            artiste.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        artiste = super().update(artiste, validated_data)
         if nation_uuid is not None:
             try:
                 if artiste.nationalite:

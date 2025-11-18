@@ -2,7 +2,7 @@ from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
     DateTimeProperty, ZeroOrMore, BooleanProperty,
-    ZeroOrOne, DateTimeFormatProperty
+    ZeroOrOne
 )
 from datetime import date
 
