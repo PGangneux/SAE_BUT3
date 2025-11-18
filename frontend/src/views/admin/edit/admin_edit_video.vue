@@ -10,6 +10,9 @@ import Extrait from "../../../model/extrait";
 
 export default {
   name: "page_admin_detail_video",
+
+
+
   components: {
     comp_baradmin,
     comp_popup,
@@ -110,7 +113,7 @@ export default {
 
     this.taillelist = this.dico_extrait['tags'].length
 
-   
+
 
   //  // console.log(this.dico_extrait['artiste']);
   //  // console.log(this.dico_extrait['question']);
