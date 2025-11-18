@@ -86,6 +86,10 @@ export default {
       
     }
   },
+  mounted() {
+    console.log("MOUNT miniature", this.video.uuid)
+  },
+
 
   watch: {
     video: {
