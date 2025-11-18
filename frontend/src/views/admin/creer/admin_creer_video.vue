@@ -139,7 +139,6 @@ export default {
       <div class="row pad"  style="--bs-gutter-x: 0em;">
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
       </div>
 
     </form>

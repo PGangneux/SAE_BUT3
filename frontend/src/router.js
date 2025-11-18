@@ -27,6 +27,20 @@ const routes = [
   { path: "/admin/interview/:id", component: () => import("./views/admin/edit/admin_edit_interview.vue") },
   { path: "/admin/extrait", component: () => import("./views/admin/list/admin_liste_extrait.vue") },
   { path: "/admin/extrait/:id", component: () => import("./views/admin/edit/admin_edit_video.vue") },
+
+  // creer admin
+    { path: "/admin/extrait/:id",  },
+    { path: "/admin/extrait/:id",  },
+    { path: "/admin/extrait/:id",  },
+    { path: "/admin/extrait/:id",  },
+
+
+    { path: "/admin/user/creer/",         component: () => import("./views/admin//creer/admin_creer_user.vue")},
+    { path: "/admin/interview/creer/",    component: () => import("./views/admin/creer/admin_creer_interview.vue")},
+    { path: "/admin/extrait/creer/",      component: () => import("./views/admin/creer/admin_creer_video.vue")},
+    { path: "/admin/:type/supprimer/:id", component: () => import("./views/admin/supprimer.vue")},
+
+
 ];
 
 const router = createRouter({
