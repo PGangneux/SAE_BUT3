@@ -14,14 +14,14 @@ class Base(serializers.Serializer):
 
     def __init__(self, Node: StructuredNode, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.Node = Node
+        self.Node: StructuredNode = Node
 
     def get_url(self, url_name: str, kwargs:dict) -> str:
         request: HttpRequest = self.context.get('request')
         return request.build_absolute_uri(reverse(url_name, kwargs=kwargs))
 
-    def create(self, validated_data) -> StructuredNode:
-        instance = self.Node(**validated_data)
+    def create(self, validated_data: dict) -> StructuredNode:
+        instance: StructuredNode = self.Node(**validated_data)
         try:
             instance.save()
         except UniqueProperty as error:
@@ -33,7 +33,7 @@ class Base(serializers.Serializer):
                 )
         return instance
 
-    def update(self, instance, validated_data) -> StructuredNode:
+    def update(self, instance: StructuredNode, validated_data: dict) -> StructuredNode:
         for k, v in validated_data.items():
             setattr(instance, k, v)
         try:

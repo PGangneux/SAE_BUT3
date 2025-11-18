@@ -3,7 +3,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
 from django.contrib.auth.hashers import make_password
-from ..models import Artiste, Extrait, Interview, Utilisateur
+from ..models import Artiste, Extrait, Interview, Nation, Question, StyleMusical, Tag, Theme, Utilisateur
 from ..tests import Neo4jTestCase
 
 class URLsAPITests(Neo4jTestCase):
@@ -25,57 +25,79 @@ class URLsAPITests(Neo4jTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_theme_urls(self):
+        self.theme: Theme = Theme(name="Test").save()
         self.assertEqual(self.client.get(reverse('theme-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('theme-detail', kwargs={'uuid': self.theme.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('theme-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
-        # Nested theme questions
-        self.assertEqual(self.client.get(reverse('question-list', kwargs={'theme_uuid': self.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('question-list', kwargs={'theme_uuid': self.theme.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('question-list', kwargs={'theme_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_question_urls(self):
+        self.question: Question = Question(texte="Test").save()
         self.assertEqual(self.client.get(reverse('question-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('question-detail', kwargs={'uuid': self.question.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('question-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
-        # Nested question extraits
-        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'question_uuid': self.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'question_uuid': self.question.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'question_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_extrait_urls(self):
-        self.extrait = Extrait(duree=120).save()
+        self.extrait: Extrait = Extrait(duree=120).save()
         self.assertEqual(self.client.get(reverse('extrait-list')).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('extrait-detail', kwargs={'uuid': self.extrait.uuid})).status_code, status.HTTP_200_OK)
-        # Nested extrait relationships
+        self.assertEqual(self.client.get(reverse('extrait-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('interview-list', kwargs={'extrait_uuid': self.extrait.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('interview-list', kwargs={'extrait_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('tag-list', kwargs={'extrait_uuid': self.extrait.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('tag-list', kwargs={'extrait_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_interview_urls(self):
-        self.interview = Interview(titre=f"Test{uuid4()}").save()
+        self.interview: Interview = Interview(titre="Test").save()
         self.assertEqual(self.client.get(reverse('interview-list')).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('interview-detail', kwargs={'uuid': self.interview.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('interview-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'interview_uuid': self.interview.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'interview_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('tag-list', kwargs={'interview_uuid': self.interview.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('tag-list', kwargs={'interview_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_artiste_urls(self):
-        self.artiste = Artiste(name="Test").save()
+        self.artiste: Artiste = Artiste(name="Test").save()
         self.assertEqual(self.client.get(reverse('artiste-list')).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('artiste-detail', kwargs={'uuid': self.artiste.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'artiste_uuid': self.artiste.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'artiste_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('style-list', kwargs={'artiste_uuid': self.artiste.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('style-list', kwargs={'artiste_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_styles_musical_urls(self):
+        self.style_musical: StyleMusical = StyleMusical(name="Test").save()
         self.assertEqual(self.client.get(reverse('style-musical-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('style-musical-detail', kwargs={'uuid': self.style_musical.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('style-musical-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'stylemusical_uuid': self.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'stylemusical_uuid': self.style_musical.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'stylemusical_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_nation_urls(self):
+        self.nation: Nation = Nation(name="Test").save()
         self.assertEqual(self.client.get(reverse('nation-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('nation-detail', kwargs={'uuid': self.nation.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('nation-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'nation_uuid': self.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'nation_uuid': self.nation.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'nation_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_tag_urls(self):
+        self.tag: Tag = Tag(name="Test").save()
         self.assertEqual(self.client.get(reverse('tag-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('tag-detail', kwargs={'uuid': self.tag.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('tag-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
-        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'tag_uuid': self.uuid})).status_code, status.HTTP_200_OK)
-        self.assertEqual(self.client.get(reverse('interview-list', kwargs={'tag_uuid': self.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'tag_uuid': self.tag.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'tag_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(self.client.get(reverse('interview-list', kwargs={'tag_uuid': self.tag.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('interview-list', kwargs={'tag_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
 
     def test_utilisateur_urls(self):
-        self.utilisateur = Utilisateur(
+        self.utilisateur: Utilisateur = Utilisateur(
             pseudo=f"user_{uuid4()}",
             prenom=f"Dupond {uuid4()} du nom",
             nom=f"de l'arbre à {uuid4} feuilles",
@@ -83,8 +105,13 @@ class URLsAPITests(Neo4jTestCase):
             password=make_password("password123")  # mot de passe hashé
         ).save()
         self.assertEqual(self.client.get(reverse('utilisateur-list')).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('utilisateur-detail', kwargs={'uuid': self.utilisateur.uuid})).status_code, status.HTTP_200_OK)
         self.assertEqual(self.client.get(reverse('utilisateur-detail', kwargs={'uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('artiste-list', kwargs={'utilisateur_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('interview-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('interview-list', kwargs={'utilisateur_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('extrait-list', kwargs={'utilisateur_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(self.client.get(reverse('question-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})).status_code, status.HTTP_200_OK)
+        self.assertEqual(self.client.get(reverse('question-list', kwargs={'utilisateur_uuid': self.uuid})).status_code, status.HTTP_404_NOT_FOUND)
