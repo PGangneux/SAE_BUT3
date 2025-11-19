@@ -6,7 +6,7 @@ RUN apt update && apt install -y build-essential git curl wget unzip zip
 
 RUN mkdir /app
 WORKDIR /app
-COPY ../backend/requirements.txt /app/
+COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
