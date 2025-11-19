@@ -7,6 +7,7 @@
 
 <script>
 export default {
+  name: 'miniature_video',
   props: ["video"],
   data() {
     return { 
