@@ -2,6 +2,8 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
+import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
+
 import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
@@ -12,6 +14,7 @@ export default {
   name: "page_admin_detail_video",
   components: {
     comp_baradmin,
+    popup_valider,
     comp_popup,
 
   },data() {
@@ -21,7 +24,12 @@ export default {
             dico_extrait:{},
             taillelist:Array,
             thumbnail: '/imgs/width551.png',
+
+            Element_Creer: {
+              type:Object,
+            },
             popup: false,
+            popup2:true,
         };
     },
     
@@ -29,10 +37,40 @@ export default {
 
   methods: {
 
+    async enregistrer(){
+      let dicocreation = {
+        "titre"         : document.getElementById("question").value, 
+        "description"   : document.getElementById("description").value, 
+        "youtube_url"   : document.getElementById("youtube").value, 
+        "vimeo_url"     : document.getElementById("vimeo").value, 
+        "uploaded_at"   : document.getElementById("date").value, 
+        "artiste"       : document.getElementById("inputartist").value, 
+        "question"      : document.getElementById("question").value,
+        
+        "interviews"    : document.getElementById("in").value, 
+        "tags"          : document.getElementById("in").value,
+        "position"      : document.getElementById("in").value,
+        "artiste_uuid"  : document.getElementById("in").value,
+        "question_uuid" : document.getElementById("in").value,
+        "duree"         : document.getElementById("in").value, 
+      };
+
+
+      document.getElementById("in").value;
+
+
+      this.Element_Creer = await new Extrait().create()
+      this.popup2 =true;
+    },
 
     popupchange(){
       this.popup = !this.popup
       console.log(this.popup)
+    },
+
+    popupchange2(){
+      this.popup2 = !this.popup2
+      console.log(this.popup2)
     }
 
 
@@ -82,7 +120,7 @@ export default {
             <div class="form-control colovert">
               <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
               <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" />
+              <input class="col" type="date" lang="fr" id="date" name="name4" />
               <!-- rendre jolie TODO -->
             </div>
           </div>
@@ -90,7 +128,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" placeholder="youtube_url">
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url">
             </div>
           </div>
             
@@ -98,14 +136,14 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" placeholder="vimeo_url" >
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" >
               </div>
           </div>
           
 
             <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
               </div>
             </div>
 
@@ -137,7 +175,7 @@ export default {
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button  type="button" @click="enregistrer"  class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
       </div>
 
@@ -177,6 +215,9 @@ export default {
    
 
     <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    
+    <div v-if="popup2 === true">  <popup_valider  v-on:ecoutepopup2="popupchange2" /> </div>
+
 
     </template>
 

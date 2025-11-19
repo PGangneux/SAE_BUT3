@@ -4,12 +4,21 @@ import Tags from '../../model/tag.js';
 
 
 import Interview from '../../model/interview.js';
+import Extait from '../../model/extrait.js';
+
 
 export default {
-    name: "comp_admin_edit_popup",
+    name: "popup_valider",
     props: {
+        Element_Creer: {
+            type:Object,
+        },
         popup2: Boolean
 
+    },data(){
+        return {
+            typefichier:null,
+        }
     },
     methods: {
         sendData () {
@@ -20,23 +29,29 @@ export default {
     emits : [ "ecoutepopup2"],   
     
     
-    async mounted() {
-    this.interviews = markRaw(await Interview.list());
-    this.tags = markRaw(await Tags.list())
-
-    try {
-        for (let interview of this.interviews) {
-            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits).length, "tags": markRaw(await interview.tags)};
-            // console.log(markRaw(this.dico_interviews));
+    computed: {
+        typefichierfunc: {
+            get() {
+                if(this.typefichier != null){
+                    return this.typefichier;
+                }else if (this.typefichier == null){
+                    return '2s';
+                }else{
+                    return 'erreur...';
+                }
+                
+            },
         }
-
-    } catch (error) {
-        console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
-    }
-    
-
     },
-    
+
+    async mounted() {
+        console.log(this.$route.path)
+        this.typefichier=this.$route.path.split("/")[2]
+        console.log(this.typefichier)
+
+        console.log(this.Element_Creer)
+
+    }
 };
 
 
@@ -51,19 +66,16 @@ export default {
 
 <div class="grisee allmighty trie-tagsfoncer row">
     <div class="col collumpopu ">
+        <h1> Etes vous sur d'ajoutez {{  }} dans {{ typefichierfunc }} </h1>
         
         <div class="container row fullwith" style="max-height: 4em;">
-            
+            <button> Yes </button>
+            <button> No </button>
         </div>
 
-        <div class="row  trie-tags fullwith">
-
-        </div>
-    </div>
-
-    <div class="col collumpopu ">
 
     </div>
+
     <div class="col collx">
         <div class="row">
             <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
