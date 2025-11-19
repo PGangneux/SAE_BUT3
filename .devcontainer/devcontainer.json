@@ -1,0 +1,12 @@
+{
+    "name": "SAE Devcontainer",
+    "dockerComposeFile": "docker-compose.yml", 
+    "service": "devcontainer",
+    "workspaceFolder": "/workspace",
+    "forwardPorts": [
+        "neo4j:7474",
+        "neo4j:7687",
+        "test-neo4j:17474",
+        "test-neo4j:17687"
+    ]
+}

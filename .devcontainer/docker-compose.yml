@@ -1,0 +1,16 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace
+    command: sleep infinity
+  neo4j:
+    image: neo4j:latest
+    environment:
+      NEO4J_AUTH: neo4j/neo4jpw4neo4j
+  test-neo4j:
+    image: neo4j:latest
+    environment:
+      NEO4J_AUTH: neo4j/testtest

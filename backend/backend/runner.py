@@ -3,7 +3,7 @@ from neomodel import db, config
 from API.management.commands.install_labels import Command as install_labels
 from API.management.commands.basic_load_bd import Command as basic_load_bd
 
-TEST_BOLT_URL = "bolt://neo4j:testtest@localhost:17687"
+TEST_BOLT_URL = "bolt://test-neo4j:testtest@localhost:17687"
 
 class CustomTestRunner(DiscoverRunner):
     def setup_test_environment(self, **kwargs):

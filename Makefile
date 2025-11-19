@@ -1,10 +1,10 @@
 APP = API
 manage = ./backend/manage.py
 venv = venv/bin
-python = ${venv}/python
-pip = ${venv}/pip
+python = python
+pip = pip
 npm = npm --prefix ./frontend
-coverage = $(venv)/coverage
+coverage = coverage
 
 .PHONY: install migration tests coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
 
