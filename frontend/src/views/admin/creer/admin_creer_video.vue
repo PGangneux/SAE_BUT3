@@ -109,7 +109,7 @@ export default {
                   <option value="option2"> Question 2</option>
                   <option value="option3"> Question 3</option>
                 </select>
-                <button> creer Question</button>
+                <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
 
@@ -123,7 +123,7 @@ export default {
                   <option value="option2"> Artiste 2</option>
                   <option value="option3"> Artiste 3</option>
                 </select>
-                <button> creer Artiste</button>
+                <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
           </div>
 
@@ -133,7 +133,7 @@ export default {
                 <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
                 Date : 
               </span>
-              <input class="col form-control" type="date" lang="fr" id="date" name="name4" />
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" />
             </div>
           </div>
 
@@ -154,7 +154,7 @@ export default {
           
 
             <div class="row"  style="--bs-gutter-x: 0em;">
-              <div class="form-group">
+              <div class="input-group">
                 <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
               </div>
             </div>
@@ -195,7 +195,7 @@ export default {
     
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
-      <button> Creer Tags</button>
+      <button> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
        <div class="recherche">
             <div class="search-bar">
                 <div class="input-group">
@@ -216,13 +216,16 @@ export default {
                 <div class="row">
                   <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
                   <p class="col">ssssssssss</p>
+                  <button> - </button>
                 </div>
             </li>
         </ul>
 
         <ul v-else-if="this.taillelist == 0 " class="col">
             <li class="row"> 
-                <p  class="col">vide</p>
+              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+              <p  class="col">vide</p>
+              <button class="col bt" ><img src="/imgs/remove.svg" class="col" alt="labelle tags" height="20" width="20"> </button>
             </li>
         </ul>
 
