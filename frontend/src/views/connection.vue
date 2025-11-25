@@ -55,8 +55,4 @@ export default {
 .local label {
     color : var(--blanc);
 }
-.vert-neon { 
-    color : var(--vert-neon);
-    justify-self: center;
-}
 </style>

@@ -73,13 +73,6 @@ export default {
 </template>
 
 <style scoped>
-.vert-neon {
-    color: var(--vert-neon);
-    text-align: center;
-    margin: 0;
-    padding: 1rem 0;
-    text-shadow: 0 0 10px var(--vert-neon);
-}
 .mini {
     width: 90%;
     height: auto;
