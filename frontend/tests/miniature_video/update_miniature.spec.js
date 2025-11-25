@@ -31,26 +31,4 @@ test("update_miniature met à jour url et duree", async () => {
 })
 
 
-test("update_miniature avec is_loading à true", async () => {
-  const mockVideo = {
-    uuid: '1234-5678',
-    extraits: Promise.resolve([]),
-    url_miniature_yt: null,
-    duree: 0,
-  }
 
-  const wrapper = shallowMount(miniature_video, {
-    props: { video: mockVideo }
-  })
-
-  // On force is_loading à true
-  wrapper.vm.is_loading = true
-
-  // On appelle update_miniature
-  await wrapper.vm.update_miniature()
-
-  // Comme is_loading était true, rien ne doit changer
-  expect(wrapper.vm.is_loading).toBe(true)
-  expect(wrapper.vm.url).toBe(null)
-  expect(wrapper.vm.duree).toBe("00:00")
-})

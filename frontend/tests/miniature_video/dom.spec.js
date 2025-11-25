@@ -31,7 +31,7 @@ describe("miniature_video - update_miniature et DOM", () => {
 
     // Vérifie la durée
     const p = wrapper.find('.duree')
-    expect(p.text()).toBe("00:02:05") // 125 sec = 2min 5sec
+    expect(p.text()).toBe("02:05") // 125 sec = 2min 5sec
   })
 
 

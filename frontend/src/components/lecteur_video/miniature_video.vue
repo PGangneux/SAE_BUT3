@@ -77,18 +77,14 @@ export default {
     },
 
     async update_miniature(){
-      if (!this.is_loading){
-        this.is_loading = true;
-        const extraits = await this.video.extraits
-        this.url = await this.get_miniature(this.video, extraits);
-        this.duree = await this.get_duree(this.video, extraits);
-        this.is_loading = false;
-      }
+
+      const extraits = await this.video.extraits
+      this.url = await this.get_miniature(this.video, extraits);
+      this.duree = await this.get_duree(this.video, extraits);
+      this.is_loading = false;
+      
       
     }
-  },
-  mounted() {
-    console.log("MOUNT miniature", this.video.uuid)
   },
 
 
