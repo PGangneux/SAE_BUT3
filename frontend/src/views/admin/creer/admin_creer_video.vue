@@ -101,27 +101,39 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question"/>
+
+                <select id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                  <!-- utiliser js TODO -->
+                  <option value=""> > </option>
+                  <option value="option1"> Question 1</option> 
+                  <option value="option2"> Question 2</option>
+                  <option value="option3"> Question 3</option>
+                </select>
+                <button> creer Question</button>
             </div>
           </div>
 
-          <div class="input-group mb-3" >
-            <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" />
+          <div class="row"  style="--bs-gutter-x: 0em;">
+              <div class="input-group mb-3" >
+                <span class="input-group-text colovert" >Artiste :</span>
+                <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                  <!-- utiliser js TODO -->
+                  <option value=""> > </option>
+                  <option value="option1"> Artiste 1</option> 
+                  <option value="option2"> Artiste 2</option>
+                  <option value="option3"> Artiste 3</option>
+                </select>
+                <button> creer Artiste</button>
+              </div>
+          </div>
 
-            <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-              <!-- utiliser js TODO -->
-              <option value=""> > </option>
-              <option value="option1"> Artiste 1</option> 
-              <option value="option2"> Artiste 2</option>
-              <option value="option3"> Artiste 3</option>
-            </select>
-
-            <div class="form-control colovert">
-              <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
-              <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="date" name="name4" />
-              <!-- rendre jolie TODO -->
+          <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class="input-group mb-3 ">
+              <span class="input-group-text colovert" >  
+                <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
+                Date : 
+              </span>
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" />
             </div>
           </div>
 
@@ -183,6 +195,20 @@ export default {
     
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+      <button> Creer Tags</button>
+       <div class="recherche">
+            <div class="search-bar">
+                <div class="input-group">
+                    <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </RouterLink>
+                </div>
+            </div>
+      </div>
+
+
+
       <div class="row">
 
         <ul v-if="this.taillelist.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
