@@ -46,7 +46,7 @@ class Interview(StructuredNode):
     Noeud Interview
     """
     uuid = UniqueIdProperty()
-    titre = StringProperty(index=True, db_property='name')
+    titre = StringProperty(index=True)
     date = DateProperty(index=True)
     occasion = StringProperty()
     description = StringProperty()
@@ -60,7 +60,7 @@ class Extrait(StructuredNode):
     Noeud Extrait
     """
     uuid = UniqueIdProperty()
-    titre = StringProperty(db_property='name')
+    titre = StringProperty()
     description = StringProperty()
     youtube_url = StringProperty(unique_index=True)
     vimeo_url = StringProperty(unique_index=True)

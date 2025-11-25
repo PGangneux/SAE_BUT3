@@ -21,27 +21,45 @@ class BaseGenericViewSet(GenericViewSet):
         self.search_field: str = search_field
 
     def get_nodeset(self) -> NodeSet:
+        """Récupère le nodeset de la view, même chose qu'un queryset mais pour neomodel
+
+        Returns:
+            NodeSet: ensemble de structurenode du modèle
+        """
         return self.model_class.nodes
 
     def get_queryset(self) -> QuerySet:
+        """Récupère le queryset de la view
+
+        Raises:
+            ConnexionDB: La base de données n'est pas disponible
+
+        Returns:
+            QuerySet: queryset filtrer et ordonner
+        """
         queryset: NodeSet = self.get_nodeset()
         request: HttpRequest = self.request
+        # Recherche (search)
+        if self.search_field:
+            queryset = self.search_nodeset(queryset, request.GET.get('search', '').strip())
+        # Ordonne (order)
+        queryset = self.order_nodeset(queryset, request.GET.get('order', '').strip())
         try:
-            if self.search_field:
-                search: str = request.GET.get('search', '').strip()
-                for term in search.split(','):
-                    if term:
-                        # Le search field n'étant pas identique,
-                        # il est nécessaire de filtrer ainsi
-                        queryset = queryset.filter(
-                            **{f'{self.search_field}__icontains': term}
-                        )
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
         except ServiceUnavailable: # pragma: no cover
             raise ConnexionDB() # pragma: no cover
     
     def get_object(self) -> StructuredNode:
+        """Récupère l'objet dans le nodeset
+
+        Raises:
+            NotFound: L'objet rechercher n'a pas été trouvé
+            ConnexionDB: La base de données n'est pas disponnible
+
+        Returns:
+            StructuredNode: Intance rechercher
+        """
         try:
             return self.get_nodeset().get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
@@ -49,3 +67,35 @@ class BaseGenericViewSet(GenericViewSet):
         # Dans le cas ou la base de données était inaccessible
         except ServiceUnavailable: # pragma: no cover
             raise ConnexionDB() # pragma: no cover
+    
+    def search_nodeset(self, nodeset: NodeSet, search: str) -> NodeSet:
+        """Filtre le nodeset en fonction de la recherche
+
+        Args:
+            nodeset (NodeSet): nodeset dans lequel on effectue la recherche
+            search (str): champ recherche
+
+        Returns:
+            NodeSet: nodeset filtré
+        """
+        for term in search.split(','):
+            if term:
+                # Le search field n'étant pas identique,
+                # il est nécessaire de filtrer ainsi
+                nodeset = nodeset.filter(**{f'{self.search_field}__icontains': term})
+        return nodeset
+
+    def order_nodeset(self, nodeset: NodeSet, order: str) -> NodeSet:
+        """Ordonne le nodeset en fonction du champ renseigner
+
+        Args:
+            nodeset (NodeSet): nodeset que l'on ordonne
+            order (str): champ sur lequel on ordonne
+
+        Returns:
+            NodeSet: nodeset ordonné
+        """
+        print(order)
+        if order != '':
+            nodeset = nodeset.order_by(order)
+        return nodeset
