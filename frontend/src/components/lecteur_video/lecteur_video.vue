@@ -29,10 +29,10 @@ export default {
   },
 
   async mounted() {
+    await this.update();
     if (this.$refs.iframe) {
       videoStore.iframeComponent = this.$refs.iframe;
     }
-    await this.update();
   },
 
   beforeUnmount() {
@@ -60,6 +60,7 @@ export default {
 
       if (this.interview != null){ 
         this.liste_extraits = markRaw(await this.interview.extraits);
+        console.log("liste des ectraits", this.liste_extraits)
         if (!this.extrait){
           this.extrait = this.liste_extraits[0];
           this.extrait_current.set(this.liste_extraits[0]);
@@ -78,6 +79,7 @@ export default {
 
     picture_in_picture() {
       videoStore.isPictureInPicture = true;
+      console.log("iframe", videoStore.iframeComponent)
       videoStore.iframeComponent.set_url(videoStore.lecteur);
       this.$router.push("/");
     },
@@ -122,6 +124,9 @@ export default {
       }
       
       let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position;
+
+      console.log("index", index)
+      console.log("nb extraist", this.liste_extraits.length -1)
       
       if (index < this.liste_extraits.length - 1) {
         let next_extrait = this.liste_extraits[index + 1];
