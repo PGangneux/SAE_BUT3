@@ -168,10 +168,8 @@ export default {
       await nextTick();
       if (videoStore.url.includes("youtube") || videoStore.url.includes("youtu.be")) {
         const id = this.get_YT_videoId(videoStore.url);
-        console.log("tetstt")
         await this.initYouTube(id);
       } else {
-        console.log("tetstt22222")
         await this.initVimeo();
       }
     },
