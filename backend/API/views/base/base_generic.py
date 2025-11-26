@@ -118,8 +118,7 @@ class BaseGenericViewSet(GenericViewSet):
                 # Ordonner le queryset
                 ord = "head([($n)"
                 for i in range(len(field_list)-2):
-                    ord += f"-[:{field_list[i].upper()}]\
-                        {"-()" if i < len(field_list)-2 else ""}"
+                    ord += f"-[:{field_list[i].upper()}]{"-()" if i < len(field_list)-2 else ""}"
                 ord += f"-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
                 ordering.append(
                     RawCypher(
