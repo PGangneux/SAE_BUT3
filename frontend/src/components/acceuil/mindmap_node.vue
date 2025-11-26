@@ -35,22 +35,22 @@ export default {
     },
     methods: {
         getStyle() {
-                const size = 100 * this.scale;
-                const sizetext = 20 * this.scale;
-                const scaledX = this.node.x * this.scale;
-                const scaledY = this.node.y * this.scale;
-                return {
-                    "width": size + "px",
-                    "left": (scaledX + this.offx) + "px",
-                    "top": (scaledY + this.offy) + "px",
-                    "font-size": sizetext + "px",
-                    "line-height": size + "px",
-                };
-            },
+            const size = 100 * this.scale;
+            const sizetext = 20 * this.scale;
+            const scaledX = this.node.x * this.scale;
+            const scaledY = this.node.y * this.scale;
+            return {
+                "width": size + "px",
+                "left": (scaledX + this.offx) + "px",
+                "top": (scaledY + this.offy) + "px",
+                "font-size": sizetext + "px",
+                "line-height": size + "px",
+            };
+        },
 
         async get_miniature() {
             console.log(this.node.content);
-            
+
             console.log("get_miniature 1a");
             if (!this.node.content) return null;
             console.log("get_miniature 1b");
@@ -115,37 +115,67 @@ export default {
 </script>
 
 <template>
-    <div class="mindmap_node" :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'}`" :style="getStyle()">
-        <div style="display: none;">
-            {{  this.node.content }}
-        </div>
-        <div v-if="node.loading" class="loading-spinner">
-            <img src="/imgs/spinner.gif" alt="Loading..." />
-        </div>
-        <div v-else class="node-content">
-            <p class="category-name">{{ LegendClassMap[node.category.name] }}</p>
-            <p v-if="node.content" class="content-name">
-                {{ node.content.name || node.content.titre || 'Sans nom' }}
-            </p>
-            <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
-                class="video-badge">
-                {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
+    <Transition name="node-scale" appear>
+        <div class="mindmap_node"
+            :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'}`"
+            :style="getStyle()">
+            <div style="display: none;">
+                {{ this.node.content }}
             </div>
-            <div v-if="isVideoContent" class="thumbnail-container">
-                <div v-if="thumbnailLoading" class="thumbnail-loading">
-                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
+            <div v-if="node.loading" class="loading-spinner">
+                <img src="/imgs/spinner.gif" alt="Loading..." />
+            </div>
+            <div v-else class="node-content">
+                <p class="category-name">{{ LegendClassMap[node.category.name] }}</p>
+                <p v-if="node.content" class="content-name">
+                    {{ node.content.name || node.content.titre || 'Sans nom' }}
+                </p>
+                <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
+                    class="video-badge">
+                    {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
                 </div>
-                <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
-                    @error="thumbnailUrl = null" />
-                <div v-else class="no-thumbnail">
-                    <img src="/imgs/close.svg" alt="erreur image">
+                <div v-if="isVideoContent" class="thumbnail-container">
+                    <div v-if="thumbnailLoading" class="thumbnail-loading">
+                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
+                    </div>
+                    <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
+                        @error="thumbnailUrl = null" />
+                    <div v-else class="no-thumbnail">
+                        <img src="/imgs/close.svg" alt="erreur image">
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </Transition>
 </template>
 
 <style scoped>
+/* Transition styles */
+.node-scale-enter-active,
+.node-scale-leave-active {
+    transition: all 0.5s ease;
+}
+
+.node-scale-enter-from {
+    transform: scale(0);
+    opacity: 0;
+}
+
+.node-scale-enter-to {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.node-scale-leave-from {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.node-scale-leave-to {
+    transform: scale(0);
+    opacity: 0;
+}
+
 /* Nodes */
 .mindmap_node {
     position: absolute;
@@ -167,25 +197,49 @@ export default {
     box-shadow: 0 0 25px var(--vert-neon);
 }
 
-.mindmap_nodeSquircle {
-    
-}
+.mindmap_nodeSquircle {}
 
-.mindmap_nodeRound{
+.mindmap_nodeRound {
     aspect-ratio: 1;
     border-radius: 50%;
-    
+
 }
 
-.mmLegendColorMapmmRoot         {background-color : #fff ;}
-.mmLegendColorMapArtiste        {background-color : #A0522D ;}
-.mmLegendColorMapExtrait        {background-color : #941C1C ;}
-.mmLegendColorMapInterview      {background-color : #9747FF ;}
-.mmLegendColorMapNation         {background-color : #c24e00ff ;}
-.mmLegendColorMapQuestion       {background-color : #FFCD06 ;}
-.mmLegendColorMapStyleMusical   {background-color : #010582 ;}
-.mmLegendColorMapTag            {background-color : #02b360ff ;}
-.mmLegendColorMapTheme          {background-color : #016969ff ;}
+.mmLegendColorMapmmRoot {
+    background-color: #fff;
+}
+
+.mmLegendColorMapArtiste {
+    background-color: #A0522D;
+}
+
+.mmLegendColorMapExtrait {
+    background-color: #941C1C;
+}
+
+.mmLegendColorMapInterview {
+    background-color: #9747FF;
+}
+
+.mmLegendColorMapNation {
+    background-color: #c24e00ff;
+}
+
+.mmLegendColorMapQuestion {
+    background-color: #FFCD06;
+}
+
+.mmLegendColorMapStyleMusical {
+    background-color: #010582;
+}
+
+.mmLegendColorMapTag {
+    background-color: #02b360ff;
+}
+
+.mmLegendColorMapTheme {
+    background-color: #016969ff;
+}
 
 
 
