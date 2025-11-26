@@ -1,5 +1,5 @@
 <script>
-import { LegendClassMap, mmNode } from "../../model/mindmap_func";
+import { LegendClassMap, mmNode } from "../../model/mindmap/mindmap_func";
 
 export default {
     name: "mindmap_node",
@@ -29,48 +29,61 @@ export default {
         };
     },
     computed: {
-        displayName() {
-            // Always show the category name
-            const categoryName = this.LegendClassMap[this.node.category.name] || this.node.category.name;
-
-            // If there's content, show it alongside the category
-            if (this.node.content) {
-                const contentName = this.node.content.titre ;
-                return `${categoryName}: ${contentName}`;
-            }
-
-            // If no content, just show the category
-            return categoryName;
-        },
         isVideoContent() {
-            return this.node.content &&
-                (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
+            return this.node.content && (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
         }
     },
     methods: {
-        async get_miniature(video) {
-            if (!video) return null;
+        getStyle() {
+                const size = 100 * this.scale;
+                const sizetext = 20 * this.scale;
+                const scaledX = this.node.x * this.scale;
+                const scaledY = this.node.y * this.scale;
+                return {
+                    "width": size + "px",
+                    "left": (scaledX + this.offx) + "px",
+                    "top": (scaledY + this.offy) + "px",
+                    "font-size": sizetext + "px",
+                    "line-height": size + "px",
+                };
+            },
+
+        async get_miniature() {
+            console.log(this.node.content);
+            
+            console.log("get_miniature 1a");
+            if (!this.node.content) return null;
+            console.log("get_miniature 1b");
+            if (this.thumbnailUrl) return this.thumbnailUrl;
+            console.log("get_miniature 1c");
+            // if (this.thumbnailLoading) return;
+            console.log("get_miniature 1d");
+            console.log("get_miniature 2");
+
 
             try {
                 // Cas 1 : c'est un extrait
-                if (!video.extraits) {
-                    return (
-                        video.url_miniature_yt ||
-                        (await video.get_url_miniature_vimeo())
+                if (this.node.category.name === 'Extrait') {
+                    console.log("get_miniature 3 extrait");
+                    console.log(this.node.content);
+                    return (this.node.content.url_miniature_yt
+                        /// await video.get_url_miniature_vimeo() || 
                     );
                 }
 
                 // Cas 2 : c'est une interview
-                const extraits = await video.extraits;
+                const extraits = await this.node.content.extraits;
                 if (!extraits || extraits.length === 0) {
-                    console.warn(`Aucun extrait trouvé pour l'interview ${video.uuid}`);
+                    console.warn(`Aucun extrait trouvé pour l'interview ${this.node.content}`);
                     return null;
                 }
 
                 const firstExtrait = extraits[0];
+                console.log("get_miniature 3 interview");
+
                 return (
-                    firstExtrait.url_miniature_yt ||
-                    (await firstExtrait.get_url_miniature_vimeo())
+                    firstExtrait.url_miniature_yt
+                    /// await firstExtrait.get_url_miniature_vimeo() || 
                 );
 
             } catch (err) {
@@ -78,59 +91,46 @@ export default {
                 return null;
             }
         },
-
-        async loadThumbnail() {
-            if (!this.isVideoContent) return;
-
-            this.thumbnailLoading = true;
-            this.thumbnailUrl = await this.get_miniature(this.node.content);
-            this.thumbnailLoading = false;
-        }
-    },
-    mounted() {
-        if (this.isVideoContent) {
-            this.loadThumbnail();
-        }
     },
     watch: {
-        'node.content': {
-            handler() {
+        'node.loading': {
+            async handler() {
                 if (this.isVideoContent) {
-                    this.loadThumbnail();
-                } else {
-                    this.thumbnailUrl = null;
+                    this.thumbnailLoading = true;
+                    this.thumbnailUrl = await this.get_miniature();
+                    this.thumbnailLoading = false;
                 }
             },
             deep: true
         }
-    }
+    },
+    async mounted() {
+        if (this.isVideoContent) {
+            this.thumbnailLoading = true;
+            this.thumbnailUrl = await this.get_miniature();
+            this.thumbnailLoading = false;
+        }
+    },
 }
 </script>
 
 <template>
-    <div class="mindmap-node" :style="node.getStyle(scale, offx, offy)">
-    <div>
-        {{  this.node.content }}
-    </div>
+    <div class="mindmap_node" :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'}`" :style="getStyle()">
+        <div style="display: none;">
+            {{  this.node.content }}
+        </div>
         <div v-if="node.loading" class="loading-spinner">
             <img src="/imgs/spinner.gif" alt="Loading..." />
         </div>
         <div v-else class="node-content">
-            <!-- Always show category name -->
             <p class="category-name">{{ LegendClassMap[node.category.name] }}</p>
-
-            <!-- Show content name if available -->
             <p v-if="node.content" class="content-name">
-                {{ node.content.name || 'Sans nom' }}
+                {{ node.content.name || node.content.titre || 'Sans nom' }}
             </p>
-
-            <!-- Show video type badge for Interview/Extrait -->
             <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
                 class="video-badge">
                 {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
             </div>
-
-            <!-- Thumbnail with loading state -->
             <div v-if="isVideoContent" class="thumbnail-container">
                 <div v-if="thumbnailLoading" class="thumbnail-loading">
                     <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
@@ -138,7 +138,7 @@ export default {
                 <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
                     @error="thumbnailUrl = null" />
                 <div v-else class="no-thumbnail">
-                    📹
+                    <img src="/imgs/close.svg" alt="erreur image">
                 </div>
             </div>
         </div>
@@ -146,19 +146,48 @@ export default {
 </template>
 
 <style scoped>
-.mindmap-node {
+/* Nodes */
+.mindmap_node {
     position: absolute;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: white;
-    font-weight: bold;
-    overflow: hidden;
+    /* font-weight: bold; */
+    /* overflow: hidden; */
+    cursor: pointer;
+    z-index: 5;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
+
+.mindmap_node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px var(--vert-neon);
+}
+
+.mindmap_nodeSquircle {
+    
+}
+
+.mindmap_nodeRound{
+    aspect-ratio: 1;
+    border-radius: 50%;
+    
+}
+
+.mmLegendColorMapmmRoot         {background-color : #fff ;}
+.mmLegendColorMapArtiste        {background-color : #A0522D ;}
+.mmLegendColorMapExtrait        {background-color : #941C1C ;}
+.mmLegendColorMapInterview      {background-color : #9747FF ;}
+.mmLegendColorMapNation         {background-color : #c24e00ff ;}
+.mmLegendColorMapQuestion       {background-color : #FFCD06 ;}
+.mmLegendColorMapStyleMusical   {background-color : #010582 ;}
+.mmLegendColorMapTag            {background-color : #02b360ff ;}
+.mmLegendColorMapTheme          {background-color : #016969ff ;}
+
+
 
 .loading-spinner {
     display: flex;

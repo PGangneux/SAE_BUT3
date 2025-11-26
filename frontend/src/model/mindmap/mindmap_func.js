@@ -1,14 +1,14 @@
 import { markRaw } from 'vue';
-import Artiste from "./artiste.js";
-import Extrait from "./extrait.js";
-import Interview from "./interview.js";
-import Nation from "./nation.js";
-import Question from "./question.js";
-import StyleMusical from "./style_musical.js";
-import Tag from "./tag.js";
-import Theme from "./theme.js";
-import { videoStore } from "./videoStore";
-import router from "../router.js";
+import Artiste from "../artiste.js";
+import Extrait from "../extrait.js";
+import Interview from "../interview.js";
+import Nation from "../nation.js";
+import Question from "../question.js";
+import StyleMusical from "../style_musical.js";
+import Tag from "../tag.js";
+import Theme from "../theme.js";
+import { videoStore } from "../videoStore.js";
+import router from "../../router.js";
 
 class mmRoot {
 }
@@ -23,18 +23,6 @@ export const LegendClassMap = {
     "Tag": "Tag",
     "Theme": "Thème",
 }
-
-export const LegendColorMap = {
-    "mmRoot": "#fff",
-    "Artiste": "#A0522D",
-    "Extrait": "#941C1C",
-    "Interview": "#9747FF",
-    "Nation": "#c24e00ff",
-    "Question": "#FFCD06",
-    "StyleMusical": "#010582",
-    "Tag": "#02b360ff",
-    "Theme": "#016969ff",
-};
 
 const categorys = [
     Artiste,
@@ -92,22 +80,6 @@ export class mmNode {
         this.category = category;
         this.content = content;
         this.loading = false;
-    }
-
-    getStyle(scale, baseOffsetX, baseOffsetY) {
-        const size = 100 * scale;
-        const sizetext = 20 * scale;
-        const scaledX = this.x * scale;
-        const scaledY = this.y * scale;
-
-        /// "width": size + "px",
-        return {
-            "background-color": LegendColorMap[this.category.name] || "#000000",
-            "left": (scaledX + baseOffsetX) + "px",
-            "top": (scaledY + baseOffsetY) + "px",
-            "font-size": sizetext + "px",
-            "line-height": size + "px",
-        };
     }
 }
 

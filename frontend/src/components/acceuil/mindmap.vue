@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendClassMap, LegendColorMap, mmdraw_root , mmdraw_update } from '../../model/mindmap_func.js';
+import { LegendClassMap, mmdraw_root , mmdraw_update } from '../../model/mindmap/mindmap_func.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
@@ -11,7 +11,6 @@ export default {
     },
     data() {
         return {
-            LegendColorMap: LegendColorMap,
             LegendClassMap: LegendClassMap,
             linkages: [],
             nodes: [],
@@ -175,7 +174,7 @@ export default {
         },
         redraw_root(){
             mmdraw_root(this);
-        }
+        },
     },
 };
 </script>
@@ -208,7 +207,7 @@ export default {
                     <div class="mm_legend" v-if="togglelegend">
                         <div v-for="(nameproper, nameclass) in LegendClassMap">
                             <div class="mm_legend_cercle"
-                                :style="{ backgroundColor: LegendColorMap[nameclass] }"></div>
+                                :class="`mmLegendColorMap${nameclass}`"></div>
                             <p>{{ nameproper }}</p>
                         </div>
                     </div>
@@ -218,19 +217,20 @@ export default {
         <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
         </div>
         <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
-            @click="handleClick(node);" @touchend="handleClick(node);" class="mm_node" />
+            @click="handleClick(node);" @touchend="handleClick(node);" />
     </div>
 </template>
 
 <style scoped>
-/* Main container */
-.vert-neon {
-    color: var(--vert-neon);
-    text-align: center;
-    margin: 0;
-    padding: 1rem 0;
-    text-shadow: 0 0 10px var(--vert-neon);
-}
+.mmLegendColorMapmmRoot         {background-color : #fff ;}
+.mmLegendColorMapArtiste        {background-color : #A0522D ;}
+.mmLegendColorMapExtrait        {background-color : #941C1C ;}
+.mmLegendColorMapInterview      {background-color : #9747FF ;}
+.mmLegendColorMapNation         {background-color : #c24e00ff ;}
+.mmLegendColorMapQuestion       {background-color : #FFCD06 ;}
+.mmLegendColorMapStyleMusical   {background-color : #010582 ;}
+.mmLegendColorMapTag            {background-color : #02b360ff ;}
+.mmLegendColorMapTheme          {background-color : #016969ff ;}
 
 /* Mindmap container with backdrop */
 .mm_relative {
@@ -420,21 +420,6 @@ export default {
     transform-origin: 0 0;
     pointer-events: none;
     z-index: 2;
-}
-
-/* Nodes */
-.mm_node {
-    position: absolute;
-    border-radius: 100%;
-    cursor: pointer;
-    z-index: 5;
-    text-align: center;
-    color: var(--blanc);
-}
-
-.mm_node:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 25px var(--vert-neon);
 }
 
 /* Toggle buttons for legend */
