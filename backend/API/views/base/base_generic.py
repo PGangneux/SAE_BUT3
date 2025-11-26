@@ -104,13 +104,18 @@ class BaseGenericViewSet(GenericViewSet):
                 # erreur non fatal dans le terminal
                 # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
                 field_list = term.split('__')
+
+                # Sens de l'ordre
+                sens = "DESC" if field_list[0][0] == "-" else "ASC"
+                if sens == "DESC": field_list[0] = field_list[0][1:]
+
                 # Dernière relation
                 relationship = field_list[-2]
+
                 # Field d'ordering
                 field = field_list[-1]
-                sens = "DESC" if field_list[0][0] == "-" else "ASC"
-                if sens == "DESC":
-                    field_list[0] = field_list[0][1:]
+                
+                # Ordonner le queryset
                 ord = "head([($n)"
                 for i in range(len(field_list)-2):
                     ord += f"-[:{field_list[i].upper()}]\
