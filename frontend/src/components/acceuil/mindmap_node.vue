@@ -19,25 +19,45 @@ export default {
             thumbnailUrl: null,
             thumbnailLoading: false,
             isAppearing: true,
+            // Default dimensions for different node types
+            nodeDimensions: {
+                default: { width: 100, height: 100 },
+                squircle: { width: 300, height: 150 }, // Adjust based on your design
+                round: { width: 100, height: 100 }
+            }
         };
     },
     computed: {
         isVideoContent() {
             return this.node.content && (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
+        },
+        currentNodeDimensions() {
+            if (this.isVideoContent) {
+                return this.nodeDimensions.squircle;
+            }
+            return this.nodeDimensions.round;
         }
     },
     methods: {
         getStyle() {
-            const size = 100 * this.mminfo.scale;
+            const baseWidth = this.currentNodeDimensions.width;
+            const baseHeight = this.currentNodeDimensions.height;
+            
+            const scaledWidth = baseWidth * this.mminfo.scale;
+            const scaledHeight = baseHeight * this.mminfo.scale;
             const sizetext = 20 * this.mminfo.scale;
-            const scaledX = this.node.x * this.mminfo.scale;
-            const scaledY = this.node.y * this.mminfo.scale;
+            
+            // Calculate position - adjust for node center
+            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth / 2);
+            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight / 2);
+            
             return {
-                "width": size + "px",
                 "left": (scaledX + this.mminfo.offx) + "px",
                 "top": (scaledY + this.mminfo.offy) + "px",
+                "width": scaledWidth + "px",
+                "height": scaledHeight + "px",
                 "font-size": sizetext + "px",
-                "line-height": size + "px",
+                "line-height": (scaledHeight * 0.8) + "px", // Adjust line-height based on height
             };
         },
 
@@ -105,39 +125,57 @@ export default {
         <div style="display: none;">
             {{ this.node }}
         </div>
-        <div v-if="node.loading" class="loading-spinner">
+        <template v-if="node.loading" class="mm_node_loading-spinner">
             <img src="/imgs/spinner.gif" alt="Loading..." />
-        </div>
-        <div v-else class="node-content">
-            <p class="category-name">{{ mmLegendClassMap[node.category.name] }}</p>
-            <p v-if="node.content" class="content-name">
-                {{ node.content.name || node.content.titre || 'Sans nom' }}
-            </p>
-            <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
-                class="video-badge">
-                {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
-            </div>
-            <div v-if="isVideoContent" class="thumbnail-container">
-                <div v-if="thumbnailLoading" class="thumbnail-loading">
-                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
+        </template>
+        <template v-else>
+            <template v-if="!node.content">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">{{ mmLegendClassMap[node.category.name] }}</p>
                 </div>
-                <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
-                    @error="thumbnailUrl = null" />
-                <div v-else class="no-thumbnail">
-                    <img src="/imgs/close.svg" alt="erreur image">
+            </template>
+            <template v-else-if="node.content && !isVideoContent">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">
+                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                    </p>
+                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
                 </div>
-            </div>
-        </div>
+            </template>
+            <template v-if="node.content && isVideoContent">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">
+                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                    </p>
+                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
+                    <div class="mm_node_description">
+                        <p>uploaded_at : {{ this.node.content.uploaded_at }}</p>
+                        <p>duree : {{ this.node.content.duree }}</p>
+                    </div>
+                </div>
+                <div class="mm_node_preview">
+                    <template v-if="thumbnailLoading">
+                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
+                    </template>
+                    <template v-else-if="thumbnailUrl">
+                        <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                    </template>
+                    <template v-else>
+                        <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
+                    </template>
+                </div>
+                </template>
+        </template>
     </div>
 </template>
 
 <style scoped>
-/* Nodes */
 .mm_node {
     position: absolute;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
     text-align: center;
     color: white;
     cursor: pointer;
@@ -147,6 +185,8 @@ export default {
     transition: transform 0.5s ease, opacity 0.5s ease;
     transform: scale(0);
     opacity: 0;
+    overflow: hidden;
+    /* Remove fixed max-height as it's now controlled by dimensions */
 }
 
 .mm_node:not(.mm_node_appearing) {
@@ -166,95 +206,88 @@ export default {
 .mm_nodeRound {
     aspect-ratio: 1;
     border-radius: 50%;
-
 }
 
-
-.loading-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-.loading-spinner img {
-    width: 50%;
-    height: 50%;
-}
-
-.node-content {
-    width: 100%;
-    height: 100%;
+/* Node content layout title subtitle description */
+.mm_node_content {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 12px;
     box-sizing: border-box;
-    gap: 4px;
+    overflow: hidden;
 }
 
-.category-name {
+.mm_node_title {
     font-size: 0.9em;
-    margin: 0;
+    margin: 0 0 4px 0;
     line-height: 1.1;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.content-name {
+.mm_node_subtitle {
     font-size: 0.7em;
-    margin: 0;
+    margin: 0 0 8px 0;
     line-height: 1;
     opacity: 0.9;
     font-weight: normal;
 }
 
-.video-badge {
-    font-size: 0.6em;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin: 2px 0;
+.mm_node_description {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px;
+    margin-top: 4px;
 }
 
-.thumbnail-container {
-    width: 80%;
-    height: 40%;
+.mm_node_description p {
+    font-size: 0.6em;
+    margin: 2px 0;
+    line-height: 1.2;
+    opacity: 0.8;
+}
+
+/* Preview/thumbnail section */
+.mm_node_preview {
+    width: auto;
+    min-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 8px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.thumbnail {
-    width: 100%;
+.mm_node_thumbnail {
     height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.thumbnail-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+.mm_node_loading-spinner {
     height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
 }
 
-.thumbnail-spinner {
-    width: 50%;
-    height: 50%;
-}
-
-.no-thumbnail {
-    font-size: 1.5em;
+.mm_node_no-thumbnail {
+    height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
     opacity: 0.7;
-}
-
-/* Responsive text sizing based on scale */
-.node-content {
-    font-size: calc(0.8em * v-bind('scale'));
+    padding: 20%;
+    box-sizing: border-box;
 }
 </style>
