@@ -1,40 +1,36 @@
 <script>
-import { onMounted, onBeforeUnmount, ref, nextTick, getCurrentInstance } from "vue";
+
 import { videoStore } from "../../model/videoStore";
-import { markRaw } from 'vue';
-
-const YT_API_URL = "https://www.youtube.com/iframe_api";
-
-
+import { nextTick } from 'vue';
 
 export default {
-
+  name: 'iframe_lecture_video',
   
+  emits: ['lancement_prochaine_video'],
 
-  setup(_,{ expose, emit }) {
+  data() {
+    return {
+      player: null
+    };
+  },
 
-    //const instance = getCurrentInstance(); // récupère l'intance du iframe
-    const player = ref(null);
-    /// console.log(videoStore.url, "videostore")
-    /// console.log(videoStore, "videostore")
-    
-    // Charger l’API YouTube une seule fois globalement
-    function loadYouTubeAPI() {
+  methods: {
+    loadYouTubeAPI() {
       if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
 
       if (!window._ytApiPromise) {
         window._ytApiPromise = new Promise((resolve) => {
           const tag = document.createElement("script");
-          tag.src = YT_API_URL;
+          tag.src = "https://www.youtube.com/iframe_api";
           window.onYouTubeIframeAPIReady = () => resolve(window.YT);
           document.head.appendChild(tag);
         });
       }
 
       return window._ytApiPromise;
-    }
+    },
 
-    function get_YT_videoId(url) {
+    get_YT_videoId(url) {
       try {
         const u = new URL(url);
         if (u.hostname === "youtu.be") return u.pathname.slice(1);
@@ -46,38 +42,38 @@ export default {
         console.warn("URL YouTube invalide :", url);
       }
       return null;
-    }    
+    },
 
-    function startTracking() {
+    startTracking() {
       videoStore.intervalId = setInterval(() => {
-        if (player.value && typeof player.value.getCurrentTime === "function") {
-          videoStore.currentTime = player.value.getCurrentTime();
+        if (this.player && typeof this.player.getCurrentTime === "function") {
+          videoStore.currentTime = this.player.getCurrentTime();
         }
       }, 1000);
-    }
+    },
 
-    function stopTracking() {
+    stopTracking() {
       if (videoStore.intervalId) {
         clearInterval(videoStore.intervalId);
         videoStore.intervalId = null;
       }
-    }
+    },
 
-    function reset_old_lecteur() {
-      //  Nettoyer l'ancien player
-      if (player.value) {
-        if (typeof player.value.destroy === 'function') {
-          player.value.destroy();
+    reset_old_lecteur() {
+      if (this.player) {
+        if (typeof this.player.destroy === 'function') {
+          this.player.destroy();
         }
-        player.value = null;
+        this.player = null;
       }
-    }
+    },
 
-    async function initYouTube(videoId) {
-      reset_old_lecteur()
-      const YT = await loadYouTubeAPI();
+    async initYouTube(videoId) {
+      this.reset_old_lecteur();
+      const YT = await this.loadYouTubeAPI();
       await nextTick();
-      player.value = new YT.Player("player", {
+      
+      this.player = new YT.Player("player", {
         videoId,
         events: {
           onReady: (event) => {
@@ -90,23 +86,24 @@ export default {
           onStateChange: (event) => {
             if (event.data === YT.PlayerState.PLAYING) {
               videoStore.isPlaying = true;
-              startTracking();
+              this.startTracking();
             }
             if (event.data === YT.PlayerState.PAUSED) {
               videoStore.isPlaying = false;
-              stopTracking();
+              this.stopTracking();
             }
-            if (event.data === YT.PlayerState.ENDED) emit('lancement_prochaine_video');
+            if (event.data === YT.PlayerState.ENDED) {
+              this.$emit('lancement_prochaine_video');
+            }
           },
         },
       });
+    },
 
-
-    }
-
-    async function initVimeo() {
-      stopTracking()
-      reset_old_lecteur()
+    async initVimeo() {
+      this.stopTracking();
+      this.reset_old_lecteur();
+      
       // Charger Vimeo API si pas encore là
       if (!window.Vimeo || !window.Vimeo.Player) {
         await new Promise((resolve) => {
@@ -129,7 +126,6 @@ export default {
       iframe.style.height = "100%";
       container.appendChild(iframe);
 
-
       // Créer le player
       const vimeoPlayer = new window.Vimeo.Player(iframe);
 
@@ -140,6 +136,7 @@ export default {
         console.error("Vimeo jamais prêt :", e);
         return;
       }
+
       // Synchroniser l'état
       if (videoStore.currentTime) {
         try {
@@ -154,64 +151,49 @@ export default {
 
       // Écoute des événements
       vimeoPlayer.on("timeupdate", ({ seconds }) => {
-        videoStore.currentTime = seconds; 
+        videoStore.currentTime = seconds;
       });
       vimeoPlayer.on("play", () => (videoStore.isPlaying = true));
       vimeoPlayer.on("pause", () => (videoStore.isPlaying = false));
       vimeoPlayer.on("ended", () => {
         videoStore.currentTime = 0;
-        emit('lancement_prochaine_video');
+        this.$emit('lancement_prochaine_video');
       });
 
-      player.value = vimeoPlayer;
-    }
+      this.player = vimeoPlayer;
+    },
 
-    async function update_player() {
+    async update_player() {
+      console.log("update")
       await nextTick();
-      if (videoStore.url.includes("youtube")) {
-        const id = get_YT_videoId(videoStore.url);
-        await initYouTube(id);
+      if (videoStore.url.includes("youtube") || videoStore.url.includes("youtu.be")) {
+        const id = this.get_YT_videoId(videoStore.url);
+        await this.initYouTube(id);
       } else {
-        await initVimeo();
+        await this.initVimeo();
       }
-    }
+    },
 
-    function set_url(lecteur) {
+    set_url(lecteur) {
       videoStore.url = (lecteur === 'YouTube') ? videoStore.url_yt : videoStore.url_vimeo;
-      this.update_player()
+      this.update_player();
     }
-
-    onMounted(async () => {
-      await nextTick();
-      if (videoStore.url.includes("youtube")) {
-        const id = get_YT_videoId(videoStore.url);
-        await initYouTube(id);
-      } else {
-
-        await initVimeo();
-      }
-
-
-      //videoStore.iframeComponent = instance.proxy
-      /// console.log("iframeComponent", videoStore.iframeComponent)
-
-
-    });
-
-
-
-    onBeforeUnmount(() => {
-      if (player.value && player.value.destroy) player.value.destroy();
-      stopTracking();
-    });
-
-    expose({
-      update_player,
-      set_url,
-    });
-
-    return {};
   },
+
+  async mounted() {
+    await nextTick();
+    if (videoStore.url.includes("youtube")) {
+      const id = this.get_YT_videoId(videoStore.url);
+      await this.initYouTube(id);
+    } else {
+      await this.initVimeo();
+    }
+  },
+
+  beforeUnmount() {
+    if (this.player && this.player.destroy) this.player.destroy();
+    this.stopTracking();
+  }
 };
 </script>
 

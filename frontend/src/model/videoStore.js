@@ -13,4 +13,5 @@ export const videoStore = reactive({
   intervalId: null,
   set_url: null,
   iframeComponent: null, // on stockera ici une instance du composant iframe
+  chemin : [], // chemin de point d'entrer (list de mmNode ; do node.content?)
 });

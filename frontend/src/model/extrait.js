@@ -42,7 +42,7 @@ export default class Extrait extends Model {
 
     static get endpoint() { return "extraits"; }
 
-    get titre() { return this.#titre; }
+    get titre() {return this.#titre; }
     set titre(value) { this.#titre = this.validateString(value, "titre"); }
 
     get description() { return this.#description; }

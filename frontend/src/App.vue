@@ -37,7 +37,7 @@ export default {
             },
             mindmap_chemin : {
                 get: () => this.mindmap_chemin,
-                set: (value) => { this.mindmap_chemin = value }
+                set: (value) => { this.mindmap_chemin = value ; videoStore.chemin = value ; }
             },
             interview_current: {
                 get: async () => {
