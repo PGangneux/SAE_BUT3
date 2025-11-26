@@ -66,9 +66,6 @@ export default {
 .local label {
     color : var(--blanc);
 }
-.vert-neon { 
-    color : var(--vert-neon);
-}
 .border-vert-neon {
     border-color : var(--vert-neon) !important;
     opacity: 1;
