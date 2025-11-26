@@ -32,20 +32,22 @@ function mmcheckvideo(mminfo) {
     pos the children of a node in a circle
  * @param {mmInfo} mminfo mminfo  
     @param {mmNode} root the root node to witch the children has been added
- * @return {boolean} if there is a goto video or not
 */
 function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
+    // est ce que c'est mmroot ou pas 
+    const isRoot = root.category == mmRoot;
     // distance entre root et enfant ;
-    // on a un cercle de 360° , et on doit divisier ca par le nombre d"enfants (moins le trait d"origine) 
-    let nb_child = root.childrens.length + (root.origin_angle ? 2 : 0);
-    let angle_per_child = (360 / nb_child);
+    // on a un cercle de 360°/180° si root , et on doit divisier ca par le nombre d"enfants (moins le trait d"origine) 
+    let nb_child = root.childrens.length -1;
+    let angle_per_child = ((isRoot ? 360 : 180) / nb_child);
     // so the distance is inversly proportional to the number of angle_per_child
-    let taille_max_node = 300; // TODO : compute that 
+    const baseDistance = 400; // Base distance at depth 1
+    const taille_max_node = baseDistance * Math.pow(1.2, root.depth - 1)
     let distance = taille_max_node + (1 / angle_per_child) * taille_max_node;
-    // we iterate over an angle
-    let current_angle = root.origin_angle || 0;
+    // we iterate over an angle ,  for root else half of arc
+    let current_angle = isRoot ? 0 : root.origin_angle - (isRoot ? 360 : 180) / 2;
     let base_rootx = root.x - 25 * mminfo.scale;
     let base_rooty = root.y - 25 * mminfo.scale;
     for (let index = 0; index < root.childrens.length; index++) {
@@ -54,12 +56,13 @@ function set_children_pos(mminfo, root) {
 
         child.x = base_rootx + Math.cos(angleRad) * distance;
         child.y = base_rooty + Math.sin(angleRad) * distance;
-        root.childrens[index].angle = current_angle;
+        child.angle = current_angle;
         // create link
         // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
         // advance the angle
         current_angle += angle_per_child;
     }
+    console.log(`Positioned ${nb_child} children around ${isRoot ? 'root' : root.category.name} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
     // console.log("set_children",root.childrens);
 }
 
@@ -93,6 +96,24 @@ function mmchemin_filter(mminfo) {
 }
 
 /**
+    utils to create a child node
+ * @param {mmInfo} mminfo mminfo  
+ * @param {mmNode} node the parent node  
+ * @param {class} category the class of node  
+ * @param {class} content the content instance of class category  
+ * @return {mmNode} the created child
+*/
+function mmcreateChildNode(mminfo, node, category,content) {
+    const thickness_base = (mminfo.chemin.length + 1) * 3;
+    const tmp_child = new mmNode(node.x, node.y, node.depth + 1, category, content);
+    mminfo.nodes.push(markRaw(tmp_child));
+    node.childrens.push(markRaw(tmp_child));
+    mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
+    set_children_pos(mminfo, node);
+    return tmp_child;
+}
+
+/**
     recreate the root node and reset everything
  * @param {mmInfo} mminfo mminfo  
 */
@@ -101,28 +122,16 @@ function mmreset(mminfo) {
     mminfo.nodes = [];
     mminfo.linkages = [];
     // create root
-    let root = new mmNode(0, 0, 1, null, mmRoot, null);
+    let root = new mmNode(0, 0, 1, mmRoot, null);
     mminfo.nodes.push(root);
-    let thickness_base = (mminfo.chemin.length + 1) * 3;
-
+    
     // put defaults
     for (const cat of mmCategorysDefault) {
-        let tmp_child = new mmNode(0, 0, 2, 0, cat, null);
-        mminfo.nodes.push(markRaw(tmp_child));
-        root.childrens.push(markRaw(tmp_child));
-        mminfo.linkages.push(new mmLinkage(root, tmp_child, thickness_base * (1 / root.depth)));
-
-        // put default circle position + links
-        set_children_pos(mminfo, root);
+        mmcreateChildNode(mminfo,root,cat,null);
     }
     if (mminfo.searchval) {
         for (const cat of mmCategorysSearch) {
-            let tmp_child = new mmNode(0, 0, 2, 0, cat, null);
-            mminfo.nodes.push(markRaw(tmp_child));
-            root.childrens.push(markRaw(tmp_child));
-            mminfo.linkages.push(new mmLinkage(root, tmp_child, thickness_base * (1 / root.depth)));
-
-            set_children_pos(mminfo, root);
+            mmcreateChildNode(mminfo,root,cat,null);
         }
     }
 }
@@ -131,13 +140,13 @@ function mmreset(mminfo) {
     redraw everynode from root
  * @param {mmInfo} mminfo mminfo  
 */
-export function mmdraw_root(mminfo) {
+export async function mmdraw_root(mminfo) {
     mmreset(mminfo);
     let changevideo, changepath = mmchemin_filter(mminfo);
     if (changevideo) return;
     console.log("mmdraw_root chemin path", mminfo.chemin);
     for (const cheminpath of mminfo.chemin) {
-        mmget_onecat(mminfo, cheminpath);
+        await mmget_onecat(mminfo, cheminpath);
     }
 }
 
@@ -145,20 +154,21 @@ export function mmdraw_root(mminfo) {
     redraw an update
  * @param {mmInfo} mminfo mminfo  
 */
-export function mmdraw_update(mminfo) {
+export async function mmdraw_update(mminfo) {
     if (mminfo.chemin.length <= 0) return mmdraw_root(mminfo);
     let changevideo, changepath = mmchemin_filter(mminfo);
     if (changevideo) return;
     if (changepath) return mmdraw_root(mminfo);
     console.log("mmdraw_update chemin path", mminfo.chemin);
-    mmget_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
+    await mmget_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
 }
 
-function mmget_onecat(mminfo, cheminnode) {
-    console.log("mmget_onecat", cheminnode);
-    let node = cheminnode;
-    let thickness_base = (mminfo.chemin.length + 1) * 3;
+async function mmget_onecat(mminfo, node) {
+    console.log("mmget_onecat", node);
 
+    // failsafe videonode
+    // normally we should have goto video before
+    if (node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')) return;
     // Get categories that are NOT in the current path
     const currentPathCategories = mminfo.chemin.map(item => item.category.name);
     const availableCategories = mmCategorysDefault.filter(cat =>
@@ -170,22 +180,14 @@ function mmget_onecat(mminfo, cheminnode) {
         console.log("Adding category nodes to content node");
         node.loading = true;
         // TODO : use mmCheminMap
-        for (const element of availableCategories) {
-            let tmp_child = new mmNode(node.x, node.y, node.depth + 1, 0, element, null);
-            mminfo.nodes.push(markRaw(tmp_child));
-            node.childrens.push(markRaw(tmp_child));
-            mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
-
-            set_children_pos(mminfo, node);
+        for (const cat of availableCategories) {
+            mmcreateChildNode(mminfo,node,cat,null);
+            // await new Promise(resolve => { setTimeout(resolve, 1000); });
         }
-        (mminfo.searchval ? Extrait.search(mminfo.searchval) : Extrait.list()).then(extraits => {
+        (mminfo.searchval ? Extrait.search(mminfo.searchval) : Extrait.list()).then(async extraits => {
             for (let index = 0; index < extraits.length && index < 5 && node.childrens.length < 8; index++) {
-                let tmp_child = new mmNode(node.x, node.y, node.depth + 1, 0, Extrait, extraits[index]);
-                mminfo.nodes.push(markRaw(tmp_child));
-                node.childrens.push(markRaw(tmp_child));
-                mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
-
-                set_children_pos(mminfo, node);
+                mmcreateChildNode(mminfo,node,Extrait,extraits[index]);
+                // await new Promise(resolve => { setTimeout(resolve, 1000); });
             }
             node.loading = false;
         }).catch(error => {
@@ -197,15 +199,11 @@ function mmget_onecat(mminfo, cheminnode) {
         // Current node is a category - add content nodes using category.list()
         node.loading = true;
 
-        (mminfo.searchval ? node.category.search(mminfo.searchval) : node.category.list()).then(contentList => {
+        (mminfo.searchval ? node.category.search(mminfo.searchval) : node.category.list()).then(async contentList => {
             console.log("getting detail from category", node.category, contentList);
             for (const element of contentList.slice(0, 5)) {
-                let tmp_child = new mmNode(node.x, node.y, node.depth + 1, 0, node.category, element);
-                mminfo.nodes.push(markRaw(tmp_child));
-                node.childrens.push(markRaw(tmp_child));
-                mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
-
-                set_children_pos(mminfo, node);
+                mmcreateChildNode(mminfo,node,node.category,element);
+                // await new Promise(resolve => { setTimeout(resolve, 1000); });
             }
             node.loading = false;
         }).catch(error => {

@@ -72,7 +72,7 @@ export class mmLinkage {
             "left": (scaledStartX + baseOffsetX + 50 * scale) + "px", // 50 * scale to center (half of node size)
             "top": (scaledStartY + baseOffsetY + 50 * scale) + "px", // 50 * scale to center
             "transform": `rotate(${angle}deg)`,
-            "transform-origin": "0 50%", // TOOD : put in css
+            "transform-origin": "0 50%",
         };
     }
 }
@@ -86,11 +86,11 @@ export class mmNode {
     category;
     content;
     loading;
-    constructor(x, y, depth, origin_angle, category, content) {
+    constructor(x, y, depth, category, content) {
         this.x = x;
         this.y = y;
         this.depth = depth;
-        this.origin_angle = origin_angle;
+        this.origin_angle = null;
         this.childrens = [];
         this.category = category;
         this.content = content;

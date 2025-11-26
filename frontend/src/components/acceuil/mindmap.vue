@@ -12,16 +12,14 @@ export default {
     },
     data() {
         let inter = this.interview_current;
-        let ext = this.extrait_current;
-        console.log(inter,ext);
-        
+        let ext = this.extrait_current;        
         return {
             mmLegendClassMap: mmLegendClassMap,
             mminfo : new mmInfo(inter,ext),
             searchval : "",
         };
     },
-    mounted() {
+    async mounted() {
         this.centerMindmap();
         this.searchval = this.searchterm.get();
         this.mminfo.searchval = this.searchval;

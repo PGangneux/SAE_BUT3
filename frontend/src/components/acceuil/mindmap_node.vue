@@ -64,6 +64,7 @@ export default {
         async get_miniature() {
             if (!this.node.content) return null;
             if (this.thumbnailUrl) return this.thumbnailUrl;
+            // await new Promise(resolve => { setTimeout(resolve, 1000); });
 
             try {
                 // Cas 1 : c'est un extrait
@@ -98,22 +99,32 @@ export default {
             async handler() {
                 if (this.isVideoContent) {
                     this.thumbnailLoading = true;
-                    this.thumbnailUrl = await this.get_miniature();
-                    this.thumbnailLoading = false;
+                    this.get_miniature().then(value => {
+                        this.thumbnailUrl = value;
+                        this.thumbnailLoading = false;
+                    }).catch(error => {
+                        console.error(error);
+                        this.thumbnailLoading = false;
+                    });
                 }
             },
             deep: true
         }
     },
     async mounted() {
-        if (this.isVideoContent) {
-            this.thumbnailLoading = true;
-            this.thumbnailUrl = await this.get_miniature();
-            this.thumbnailLoading = false;
-        }
         setTimeout(() => {
             this.isAppearing = false;
         }, 50);
+        if (this.isVideoContent) {
+            this.thumbnailLoading = true;
+            this.get_miniature().then(value => {
+                this.thumbnailUrl = value;
+                this.thumbnailLoading = false;
+            }).catch(error => {
+                console.error(error);
+                this.thumbnailLoading = false;
+            });
+        }
     },
 }
 </script>
