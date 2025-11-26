@@ -29,7 +29,7 @@ export default {
               type:Object,
             },
             popup: false,
-            popup2:true,
+            popup2:false,
         };
     },
     
