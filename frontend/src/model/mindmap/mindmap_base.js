@@ -113,7 +113,10 @@ export class mmInfo {
     clickTimer;
     dragging;
     searchval;
-    constructor() {
+
+    interview_current;
+    extrait_current;
+    constructor(interview_current,extrait_current) {
         this.linkages = [];
         this.nodes = [];
         this.chemin = [];
@@ -128,5 +131,8 @@ export class mmInfo {
         this.clickTimer = null;
         this.dragging = false;
         this.searchval = "";
+
+        this.interview_current = interview_current;
+        this.extrait_current = extrait_current;
     }
 }

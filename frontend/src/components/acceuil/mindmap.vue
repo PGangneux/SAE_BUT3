@@ -6,14 +6,18 @@ import mindmap_node from './mindmap_node.vue';
 
 export default {
     name: "comp_mindmap",
-    inject: ["searchterm","mindmap_chemin"],
+    inject: ["searchterm","mindmap_chemin","interview_current","extrait_current"],
     components: {
         mindmap_node
     },
     data() {
+        let inter = this.interview_current;
+        let ext = this.extrait_current;
+        console.log(inter,ext);
+        
         return {
             mmLegendClassMap: mmLegendClassMap,
-            mminfo : new mmInfo(),
+            mminfo : new mmInfo(inter,ext),
             searchval : "",
         };
     },

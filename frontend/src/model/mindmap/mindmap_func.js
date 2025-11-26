@@ -2,7 +2,6 @@ import { markRaw } from "vue";
 import { mmRoot, mmCategorysDefault, mmCategorysSearch, mmLinkage, mmNode, mmInfo } from "./mindmap_base.js";
 import Extrait from "../extrait.js";
 import Interview from "../interview.js";
-import { videoStore } from "../videoStore.js";
 import router from "../../router.js";
 
 /**
@@ -13,8 +12,14 @@ import router from "../../router.js";
 function mmcheckvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if ((last.category == Extrait || last.category == Interview) && last.content) {
-        videoStore.uuid = last.content.uuid;
+    if (last.category == Extrait && last.content){
+        mminfo.extrait_current.set(last.content);
+        router.push({
+            path: "/lecteur_video/"
+        });
+        return true;
+    } else if (last.category == Interview && last.content){
+        mminfo.interview_current.set(last.content);
         router.push({
             path: "/lecteur_video/"
         });
