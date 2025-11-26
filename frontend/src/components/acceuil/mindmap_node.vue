@@ -49,23 +49,23 @@ export default {
         },
 
         async get_miniature() {
-            console.log(this.node.content);
+            //// console.log(this.node.content);
 
-            console.log("get_miniature 1a");
+            //// console.log("get_miniature 1a");
             if (!this.node.content) return null;
-            console.log("get_miniature 1b");
+            //// console.log("get_miniature 1b");
             if (this.thumbnailUrl) return this.thumbnailUrl;
-            console.log("get_miniature 1c");
+            //// console.log("get_miniature 1c");
             // if (this.thumbnailLoading) return;
-            console.log("get_miniature 1d");
-            console.log("get_miniature 2");
+            //// console.log("get_miniature 1d");
+            //// console.log("get_miniature 2");
 
 
             try {
                 // Cas 1 : c'est un extrait
                 if (this.node.category.name === 'Extrait') {
-                    console.log("get_miniature 3 extrait");
-                    console.log(this.node.content);
+                    //// console.log("get_miniature 3 extrait");
+                    //// console.log(this.node.content);
                     return (this.node.content.url_miniature_yt
                         /// await video.get_url_miniature_vimeo() || 
                     );
@@ -79,7 +79,7 @@ export default {
                 }
 
                 const firstExtrait = extraits[0];
-                console.log("get_miniature 3 interview");
+                //// console.log("get_miniature 3 interview");
 
                 return (
                     firstExtrait.url_miniature_yt
