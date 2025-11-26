@@ -2,7 +2,7 @@ import Utilisateur from "./utilisateur";
 import FetchError from "./errors/fetch_error";
 
 /**
- * Classe client faisant le lien avec l'API
+ * Classe client faisant le lien avec l'api
  */
 export default class ClientAPI {
     static BASE_URL = 'http://localhost:8000/';
@@ -44,14 +44,14 @@ export default class ClientAPI {
     }
 
     /**
-     * Récupère le dictionnaire des endpoints de l'API
+     * Récupère le dictionnaire des endpoints de l'api
      * Si nom de endpoint renseigner, renvoie url du endpoint
      * @param {string} endpoint 
      * @returns {Promise<Record<string, string>|string>}
      */
     static async endpoints(endpoint) {
         if (!this.#endpoints) {
-            this.#endpoints = await this.get(`${this.BASE_URL}API/`);
+            this.#endpoints = await this.get(`${this.BASE_URL}api/`);
         }
         return endpoint ? this.#endpoints[endpoint] : this.#endpoints;
     }
@@ -128,14 +128,14 @@ export default class ClientAPI {
     /**
      * Tente de refresh l'access token à partir du refresh token.
      * Retourne true si succès, false sinon.
-     * IMPORTANT: endpoint utilisé: /API/token/refresh/
+     * IMPORTANT: endpoint utilisé: /api/token/refresh/
      * @returns {Promise<boolean>}
      */
     static async tryRefresh() {
         const refresh = this.get_refresh_token();
         if (!refresh) return false;
         try {
-            const res = await fetch(`${this.BASE_URL}API/login/refresh/`, {
+            const res = await fetch(`${this.BASE_URL}api/login/refresh/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                 body: JSON.stringify({ refresh: refresh })
@@ -246,7 +246,7 @@ export default class ClientAPI {
     }
 
     /**
-     * Connecte un utilisateur avec son pseudo ou son e-mail et son password à l'API
+     * Connecte un utilisateur avec son pseudo ou son e-mail et son password à l'api
      * @param {string} pseudo_email 
      * @param {string} password 
      * @returns {Promise<Utilisateur>}
@@ -254,7 +254,7 @@ export default class ClientAPI {
     static async connectAPI(pseudo_email, password) {
         try {
             const res = await this.post(
-                `${this.BASE_URL}API/login/`,
+                `${this.BASE_URL}api/login/`,
                 JSON.stringify(
                     {'identifiant': pseudo_email, 'password': password}
                 )
