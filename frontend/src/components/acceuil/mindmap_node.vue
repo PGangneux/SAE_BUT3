@@ -8,9 +8,9 @@ export default {
             type: mmNode,
             required: true,
         },
-        mminfo : {
-            type : mmInfo,
-            required : true,
+        mminfo: {
+            type: mmInfo,
+            required: true,
         }
     },
     data() {
@@ -99,41 +99,41 @@ export default {
 </script>
 
 <template>
-        <div class="mindmap_node"
-            :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'appearing' : ''}`"
-            :style="getStyle()">
-            <div style="display: none;">
-                {{ this.node }}
+    <div class="mm_node"
+        :class="`mmLegendColorMap${node.category.name} mm_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
+        :style="getStyle()">
+        <div style="display: none;">
+            {{ this.node }}
+        </div>
+        <div v-if="node.loading" class="loading-spinner">
+            <img src="/imgs/spinner.gif" alt="Loading..." />
+        </div>
+        <div v-else class="node-content">
+            <p class="category-name">{{ mmLegendClassMap[node.category.name] }}</p>
+            <p v-if="node.content" class="content-name">
+                {{ node.content.name || node.content.titre || 'Sans nom' }}
+            </p>
+            <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
+                class="video-badge">
+                {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
             </div>
-            <div v-if="node.loading" class="loading-spinner">
-                <img src="/imgs/spinner.gif" alt="Loading..." />
-            </div>
-            <div v-else class="node-content">
-                <p class="category-name">{{ mmLegendClassMap[node.category.name] }}</p>
-                <p v-if="node.content" class="content-name">
-                    {{ node.content.name || node.content.titre || 'Sans nom' }}
-                </p>
-                <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
-                    class="video-badge">
-                    {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
+            <div v-if="isVideoContent" class="thumbnail-container">
+                <div v-if="thumbnailLoading" class="thumbnail-loading">
+                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
                 </div>
-                <div v-if="isVideoContent" class="thumbnail-container">
-                    <div v-if="thumbnailLoading" class="thumbnail-loading">
-                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
-                    </div>
-                    <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
-                        @error="thumbnailUrl = null" />
-                    <div v-else class="no-thumbnail">
-                        <img src="/imgs/close.svg" alt="erreur image">
-                    </div>
+                <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
+                    @error="thumbnailUrl = null" />
+                <div v-else class="no-thumbnail">
+                    <img src="/imgs/close.svg" alt="erreur image">
                 </div>
             </div>
         </div>
+    </div>
 </template>
 
 <style scoped>
 /* Nodes */
-.mindmap_node {
+.mm_node {
     position: absolute;
     display: flex;
     align-items: center;
@@ -149,60 +149,25 @@ export default {
     opacity: 0;
 }
 
-.mindmap_node:not(.appearing) {
+.mm_node:not(.mm_node_appearing) {
     transform: scale(1);
     opacity: 1;
 }
 
-.mindmap_node:hover {
+.mm_node:hover {
     transform: scale(1.08);
     box-shadow: 0 0 25px var(--vert-neon);
 }
 
-.mindmap_nodeSquircle {}
+.mm_nodeSquircle {
+    border-radius: 10%;
+}
 
-.mindmap_nodeRound {
+.mm_nodeRound {
     aspect-ratio: 1;
     border-radius: 50%;
 
 }
-
-.mmLegendColorMapmmRoot {
-    background-color: #fff;
-}
-
-.mmLegendColorMapArtiste {
-    background-color: #A0522D;
-}
-
-.mmLegendColorMapExtrait {
-    background-color: #941C1C;
-}
-
-.mmLegendColorMapInterview {
-    background-color: #9747FF;
-}
-
-.mmLegendColorMapNation {
-    background-color: #c24e00ff;
-}
-
-.mmLegendColorMapQuestion {
-    background-color: #FFCD06;
-}
-
-.mmLegendColorMapStyleMusical {
-    background-color: #010582;
-}
-
-.mmLegendColorMapTag {
-    background-color: #02b360ff;
-}
-
-.mmLegendColorMapTheme {
-    background-color: #016969ff;
-}
-
 
 
 .loading-spinner {
