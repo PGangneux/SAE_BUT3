@@ -1,6 +1,7 @@
 <script>
-import { markRaw } from 'vue';
-import { LegendClassMap, mmdraw_root , mmdraw_update } from '../../model/mindmap/mindmap_func.js';
+// import { markRaw } from 'vue';
+import { mmdraw_root , mmdraw_update } from '../../model/mindmap/mindmap_func.js';
+import { mmLegendClassMap , mmInfo } from '../../model/mindmap/mindmap_base.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
@@ -11,26 +12,16 @@ export default {
     },
     data() {
         return {
-            LegendClassMap: LegendClassMap,
-            linkages: [],
-            nodes: [],
-            chemin: [],
-            fullscreen: false,
-            togglelegend: true,
-            scale: 1,
-            offx: 0,
-            offy: 0,
-            dragging: false,
-            lastMouseX: 0,
-            lastMouseY: 0,
-            clickTimer: null, // For click-and-hold functionality
+            mmLegendClassMap: mmLegendClassMap,
+            mminfo : new mmInfo(),
             searchval : "",
         };
     },
-    async mounted() {
+    mounted() {
         this.centerMindmap();
         this.searchval = this.searchterm.get();
-        mmdraw_root(this);
+        this.mminfo.searchval = this.searchval;
+        mmdraw_root(this.mminfo);
     },
     computed: {
         searchValue: {
@@ -39,16 +30,18 @@ export default {
     },
     watch: {
         searchValue(newVal) {
-            console.log("Search term changed:", newVal);
+            // console.log("Search term changed:", newVal);
+            this.centerMindmap();
             this.searchval = newVal;
-            mmdraw_root(this);
+            this.mminfo.searchval = this.searchval;
+            mmdraw_root(this.mminfo);
         }
     },
     methods: {
         toggleFullscreen() {
-            this.fullscreen = !this.fullscreen;
+            this.mminfo.fullscreen = !this.mminfo.fullscreen;
             const element = this.$el;
-            if (this.fullscreen) {
+            if (this.mminfo.fullscreen) {
                 if (element.requestFullscreen) {
                     element.requestFullscreen();
                 }
@@ -61,24 +54,24 @@ export default {
         centerMindmap() {
             const container = this.$el;
             if (container) {
-                this.offx = container.clientWidth / 2;
-                this.offy = container.clientHeight / 2;
+                this.mminfo.offx = container.clientWidth / 2;
+                this.mminfo.offy = container.clientHeight / 2;
             }
         },
         centerOnNode(node) {
             const container = this.$el;
             if (container) {
                 // Calculate target position to center the node
-                const targetOffx = container.clientWidth / 2 - node.x * this.scale;
-                const targetOffy = container.clientHeight / 2 - node.y * this.scale;
+                const targetOffx = container.clientWidth / 2 - node.x * this.mminfo.scale;
+                const targetOffy = container.clientHeight / 2 - node.y * this.mminfo.scale;
 
                 // Animate over 1 second (1000ms)
                 this.animateToPosition(targetOffx, targetOffy, 1000);
             }
         },
         animateToPosition(targetOffx, targetOffy, duration) {
-            const startOffx = this.offx;
-            const startOffy = this.offy;
+            const startOffx = this.mminfo.offx;
+            const startOffy = this.mminfo.offy;
             const startTime = performance.now();
             
             const animate = (currentTime) => {
@@ -88,8 +81,8 @@ export default {
                 // Easing function for smooth animation
                 const easeProgress = this.easeInOutCubic(progress);
                 
-                this.offx = startOffx + (targetOffx - startOffx) * easeProgress;
-                this.offy = startOffy + (targetOffy - startOffy) * easeProgress;
+                this.mminfo.offx = startOffx + (targetOffx - startOffx) * easeProgress;
+                this.mminfo.offy = startOffy + (targetOffy - startOffy) * easeProgress;
                 
                 // Force hover state update by triggering a small, non-visible change
                 if (progress < 1) {
@@ -106,74 +99,72 @@ export default {
             return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         },
         startDrag(event) {
-            this.dragging = true;
-            this.lastMouseX = event.clientX;
-            this.lastMouseY = event.clientY;
+            this.mminfo.dragging = true;
+            this.mminfo.lastMouseX = event.clientX;
+            this.mminfo.lastMouseY = event.clientY;
             event.preventDefault();
         },
         doDrag(event) {
-            if (!this.dragging) return;
+            if (!this.mminfo.dragging) return;
 
-            const deltaX = event.clientX - this.lastMouseX;
-            const deltaY = event.clientY - this.lastMouseY;
+            const deltaX = event.clientX - this.mminfo.lastMouseX;
+            const deltaY = event.clientY - this.mminfo.lastMouseY;
 
-            this.offx += deltaX;
-            this.offy += deltaY;
+            this.mminfo.offx += deltaX;
+            this.mminfo.offy += deltaY;
 
-            this.lastMouseX = event.clientX;
-            this.lastMouseY = event.clientY;
+            this.mminfo.lastMouseX = event.clientX;
+            this.mminfo.lastMouseY = event.clientY;
         },
         stopDrag() {
-            this.dragging = false;
+            this.mminfo.dragging = false;
         },
         startDragTouch(event) {
-            this.dragging = true;
+            this.mminfo.dragging = true;
             const touch = event.touches[0];
-            this.lastMouseX = touch.clientX;
-            this.lastMouseY = touch.clientY;
+            this.mminfo.lastMouseX = touch.clientX;
+            this.mminfo.lastMouseY = touch.clientY;
             event.preventDefault();
         },
         doDragTouch(event) {
-            if (!this.dragging) return;
+            if (!this.mminfo.dragging) return;
             
             const touch = event.touches[0];
-            const deltaX = touch.clientX - this.lastMouseX;
-            const deltaY = touch.clientY - this.lastMouseY;
+            const deltaX = touch.clientX - this.mminfo.lastMouseX; // TODO : same as startDrag
+            const deltaY = touch.clientY - this.mminfo.lastMouseY;
             
-            this.offx += deltaX;
-            this.offy += deltaY;
+            this.mminfo.offx += deltaX;
+            this.mminfo.offy += deltaY;
             
-            this.lastMouseX = touch.clientX;
-            this.lastMouseY = touch.clientY;
+            this.mminfo.lastMouseX = touch.clientX;
+            this.mminfo.lastMouseY = touch.clientY;
             
             event.preventDefault();
         },
         handleWheel(event) {
             event.preventDefault();
             const delta = -Math.sign(event.deltaY) * 0.1;
-            const newScale = Math.max(0.1, Math.min(3, this.scale + delta));
+            const newScale = Math.max(0.1, Math.min(3, this.mminfo.scale + delta));
 
             // Adjust offsets to zoom toward mouse position
             const rect = event.currentTarget.getBoundingClientRect();
             const mouseX = event.clientX - rect.left;
             const mouseY = event.clientY - rect.top;
 
-            const scaleFactor = newScale / this.scale;
-            this.offx = mouseX - (mouseX - this.offx) * scaleFactor;
-            this.offy = mouseY - (mouseY - this.offy) * scaleFactor;
+            const scaleFactor = newScale / this.mminfo.scale;
+            this.mminfo.offx = mouseX - (mouseX - this.mminfo.offx) * scaleFactor;
+            this.mminfo.offy = mouseY - (mouseY - this.mminfo.offy) * scaleFactor;
 
-            this.scale = newScale;
+            this.mminfo.scale = newScale;
         },
         handleClick(node) {
-            // console.log("mm click handle node");
-            this.centerOnNode(node); // Center on the clicked node
-            this.chemin.push(markRaw(node));
-            this.mindmap_chemin.set(this.chemin);
-            // console.log(this.chemin);
-            mmdraw_update(this);
+            this.centerOnNode(node);
+            this.mminfo.chemin.push(node);
+            this.mindmap_chemin.set(this.mminfo.chemin);
+            mmdraw_update(this.mminfo);
         },
         redraw_root(){
-            mmdraw_root(this);
+            mmdraw_root(this.mminfo);
         },
     },
 };
@@ -188,24 +179,25 @@ export default {
         @touchmove="doDragTouch"
         >
         <button class="mm_fullscreenbtn" @click="toggleFullscreen" @touchend="toggleFullscreen">
-            <img :src="fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
-                :alt="fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
+            <img :src="this.mminfo.fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
+                :alt="this.mminfo.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
                 class="fullscreen-icon">
         </button>
         <div class="mm_control_outer">
             <div class="mm_controls">
-                <button @click="scale += 0.2; scale = Math.min(5, scale)" @touchend="scale += 0.2; scale = Math.min(5, scale)">+</button>
-                <button @click="scale -= 0.2; scale = Math.max(0.2, scale)" @touchend="scale -= 0.2; scale = Math.max(0.2, scale)">-</button>
-                <button @click="scale = 1" @touchend="scale = 1">reset zoom</button>
-                <button @click="centerOnNode(nodes[0])" @touchend="centerOnNode(nodes[0])">recenter</button>
-                <button @click="redraw_root" @touchend="redraw_root">redraw</button>
+                <!-- TODO : refactor to func zoom -->
+                <button @click="this.mminfo.scale += 0.2; this.mminfo.scale = Math.min(5, this.mminfo.scale)" @touchend="this.mminfo.scale += 0.2; this.mminfo.scale = Math.min(5, this.mminfo.scale)">+</button>
+                <button @click="this.mminfo.scale -= 0.2; this.mminfo.scale = Math.max(0.2, this.mminfo.scale)" @touchend="this.mminfo.scale -= 0.2; this.mminfo.scale = Math.max(0.2, this.mminfo.scale)">-</button>
+                <button @click="this.mminfo.scale = 1" @touchend="this.mminfo.scale = 1">reset zoom</button>
+                <button @click="centerOnNode(this.mminfo.nodes[0])" @touchend="centerOnNode(this.mminfo.nodes[0])">recenter</button>
+                <button @click="redraw_root()" @touchend="redraw_root()">redraw</button>
             </div>
             <div class="mm_legend_outer">
-                <button v-if="togglelegend" @click="togglelegend = false" @touchend="togglelegend = false;">></button>
-                <button v-else @click="togglelegend = true" @touchend="togglelegend = true;"><</button>
+                <button v-if="mminfo.togglelegend" @click="mminfo.togglelegend = false" @touchend="mminfo.togglelegend = false;">></button>
+                <button v-else @click="mminfo.togglelegend = true" @touchend="mminfo.togglelegend = true;"><</button>
                 <transition name="slide">
-                    <div class="mm_legend" v-if="togglelegend">
-                        <div v-for="(nameproper, nameclass) in LegendClassMap">
+                    <div class="mm_legend" v-if="mminfo.togglelegend">
+                        <div v-for="(nameproper, nameclass) in mmLegendClassMap">
                             <div class="mm_legend_cercle"
                                 :class="`mmLegendColorMap${nameclass}`"></div>
                             <p>{{ nameproper }}</p>
@@ -214,9 +206,9 @@ export default {
                 </transition>
             </div>
         </div>
-        <div v-for="link in linkages" :key="link.id" :style="link.getStyle(scale, offx, offy)" class="mm_link">
+        <div v-for="link in mminfo.linkages" :key="link.id" :style="link.getStyle(this.mminfo.scale, this.mminfo.offx, this.mminfo.offy)" class="mm_link">
         </div>
-        <mindmap_node v-for="node in nodes" :node="node" :scale="scale" :offx="offx" :offy="offy"
+        <mindmap_node v-for="node in mminfo.nodes" :node="node" :mminfo="this.mminfo"
             @click="handleClick(node);" @touchend="handleClick(node);" />
     </div>
 </template>

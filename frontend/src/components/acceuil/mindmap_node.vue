@@ -1,5 +1,5 @@
 <script>
-import { LegendClassMap, mmNode } from "../../model/mindmap/mindmap_func";
+import { mmInfo, mmLegendClassMap, mmNode } from "../../model/mindmap/mindmap_base.js";
 
 export default {
     name: "mindmap_node",
@@ -8,22 +8,14 @@ export default {
             type: mmNode,
             required: true,
         },
-        scale: {
-            type: Number,
-            required: true,
-        },
-        offx: {
-            type: Number,
-            required: true,
-        },
-        offy: {
-            type: Number,
-            required: true,
-        },
+        mminfo : {
+            type : mmInfo,
+            required : true,
+        }
     },
     data() {
         return {
-            LegendClassMap: LegendClassMap,
+            mmLegendClassMap: mmLegendClassMap,
             thumbnailUrl: null,
             thumbnailLoading: false,
         };
@@ -35,37 +27,26 @@ export default {
     },
     methods: {
         getStyle() {
-            const size = 100 * this.scale;
-            const sizetext = 20 * this.scale;
-            const scaledX = this.node.x * this.scale;
-            const scaledY = this.node.y * this.scale;
+            const size = 100 * this.mminfo.scale;
+            const sizetext = 20 * this.mminfo.scale;
+            const scaledX = this.node.x * this.mminfo.scale;
+            const scaledY = this.node.y * this.mminfo.scale;
             return {
                 "width": size + "px",
-                "left": (scaledX + this.offx) + "px",
-                "top": (scaledY + this.offy) + "px",
+                "left": (scaledX + this.mminfo.offx) + "px",
+                "top": (scaledY + this.mminfo.offy) + "px",
                 "font-size": sizetext + "px",
                 "line-height": size + "px",
             };
         },
 
         async get_miniature() {
-            //// console.log(this.node.content);
-
-            //// console.log("get_miniature 1a");
             if (!this.node.content) return null;
-            //// console.log("get_miniature 1b");
             if (this.thumbnailUrl) return this.thumbnailUrl;
-            //// console.log("get_miniature 1c");
-            // if (this.thumbnailLoading) return;
-            //// console.log("get_miniature 1d");
-            //// console.log("get_miniature 2");
-
 
             try {
                 // Cas 1 : c'est un extrait
                 if (this.node.category.name === 'Extrait') {
-                    //// console.log("get_miniature 3 extrait");
-                    //// console.log(this.node.content);
                     return (this.node.content.url_miniature_yt
                         /// await video.get_url_miniature_vimeo() || 
                     );
@@ -79,7 +60,6 @@ export default {
                 }
 
                 const firstExtrait = extraits[0];
-                //// console.log("get_miniature 3 interview");
 
                 return (
                     firstExtrait.url_miniature_yt
@@ -120,13 +100,13 @@ export default {
             :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'}`"
             :style="getStyle()">
             <div style="display: none;">
-                {{ this.node.content }}
+                {{ this.node }}
             </div>
             <div v-if="node.loading" class="loading-spinner">
                 <img src="/imgs/spinner.gif" alt="Loading..." />
             </div>
             <div v-else class="node-content">
-                <p class="category-name">{{ LegendClassMap[node.category.name] }}</p>
+                <p class="category-name">{{ mmLegendClassMap[node.category.name] }}</p>
                 <p v-if="node.content" class="content-name">
                     {{ node.content.name || node.content.titre || 'Sans nom' }}
                 </p>
