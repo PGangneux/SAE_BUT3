@@ -1,5 +1,11 @@
 <script>
+import { markRaw } from 'vue';
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+
+import Tags from '../../model/tag.js';
+import Artistes from '../../model/artiste.js';
+import Questions from '../../model/question.js';
+
 
 
 export default {
@@ -10,11 +16,36 @@ export default {
     },
     data() {
         return {
+
+            Tags:{type:Tags},
+            dico_tags:{},
+
+
+            Questions : {type:Questions},
+            dico_questions:{},
+            
+            Artistes : {type:Artistes},
+            dico_artistes:{},
+
             listfictive:["a","a","b"],
             
             
         };
-    }
+    },
+    async mounted() {
+    // console.log("mounted admin interview list");
+    this.Questions = markRaw(await Questions.list());
+    this.Artistes = markRaw(await Artistes.list());
+    this.Tags = markRaw(await Tags.list());
+
+    this.totalquestion = this.Questions.length
+    this.totalartiste = this.Artistes.length
+    this.totaltag = this.Tags.length
+    
+
+    console.log(this.Artistes)
+
+  },
 
 };
 </script>
@@ -34,7 +65,7 @@ export default {
 
             <section class="col input-group mb-3">
                 <span class=" col input-group-text colovert">nb Questions total</span>
-                <span class=" col input-group-text">nb Questions total</span>
+                <span class=" col input-group-text">{{this.totalquestion}}</span>
             </section>
 
             <section class="col input-group mb-3">
@@ -59,10 +90,10 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.listfictive">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
+                      <tr class="col" v-for="question in this.Questions">
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ question.texte }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
                         </tr>
                   </tbody>
               </table>
@@ -78,17 +109,17 @@ export default {
 
             <section class="col input-group mb-3">
                 <span class=" col input-group-text colovert">nb Tags total</span>
-                <span class=" col input-group-text">nb Tags total</span>
+                <span class=" col input-group-text">{{this.totaltag}}</span>
             </section>
 
             <section class="col input-group mb-3">
-                <label for="cheese" class="col input-group-text colovert">nb Tags utiliser</label>
-                <p class="col textfield form-control" >nb Tags utiliser</p>
+                 <span class=" col input-group-text colovert">nb Tags utiliser</span>
+                 <span class=" col input-group-text">nb Tags utiliser</span>
             </section>
 
             <section class="col input-group mb-3">
-                <label for="cheese" class="col input-group-text colovert">nb Tags non utiliser</label>
-                <p class="col textfield form-control" >nb Tags non utiliser</p>
+                <span class=" col input-group-text colovert"> nb Tags non utiliser </span>
+                <span class=" col input-group-text"> nb Tags non utiliser</span>
             </section>
         </section>
 
@@ -102,10 +133,10 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.listfictive">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
+                      <tr class="col" v-for="tag in this.Tags">
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ tag.name }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
                         </tr>
                   </tbody>
             </table>
@@ -118,18 +149,18 @@ export default {
         <section class="row">
 
             <section class="col input-group mb-3">
-                <label for="cheese" class="col input-group-text colovert">nb Artistes total</label>
-                <p class="col textfield form-control">nb Artistes total</p>
+                <span class=" col input-group-text colovert"> nb Artistes total</span>
+                <span class=" col input-group-text ">{{ this.Artistes.length }}</span>
             </section>
 
             <section class="col input-group mb-3">
-                <label for="cheese" class="col input-group-text colovert">nb Artistes utiliser</label>
-                <p class="col textfield form-control ">nb Artistes utiliser</p>
+                <span class=" col input-group-text colovert">nb Artistes utiliser</span>
+                <span class=" col input-group-text ">nb Artistes utiliser</span>
             </section>
 
             <section class="col input-group mb-3">
-                <label for="cheese" class="col input-group-text colovert">nb Artistes non utiliser</label>
-                <p class="col textfield form-control">nb Artistes non utiliser</p>
+                <span class=" col input-group-text colovert">nb Artistes non utiliser</span>
+                <span class=" col input-group-text ">nb Artistes non utiliser</span>
             </section>
 
         </section>
@@ -146,12 +177,12 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.listfictive">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
+                      <tr class="col" v-for="artiste in this.Artistes">
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ artiste.name }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
                         </tr>
                   </tbody>
             </table>
