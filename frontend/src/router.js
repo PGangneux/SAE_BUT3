@@ -28,9 +28,9 @@ const routes = [
   { path: "/admin/extrait", component: () => import("./views/admin/list/admin_liste_extrait.vue") },
   { path: "/admin/extrait/:id", component: () => import("./views/admin/edit/admin_edit_video.vue") },
 
-  { path: "/admin/autres", component: () => import("./views/admin/edit/admin_edit_video.vue") },
+  { path: "/admin/autres", component: () => import("./views/admin/autres.vue") },
 
-  // creer admin
+  // creer admin 
     { path: "/admin/extrait/:id",  },
     { path: "/admin/extrait/:id",  },
     { path: "/admin/extrait/:id",  },
