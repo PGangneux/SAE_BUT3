@@ -96,15 +96,18 @@ class BaseGenericViewSet(GenericViewSet):
             NodeSet: nodeset ordonné
         """
         print(order)
-        ordering = []
         if order != '':
+            ordering = []
             for term in order.split(','):
-                if '__' in term: # Fonctionne d'après de brefs tests
+                if '__' in term:
+                    # En cas de relationship ou/et field non présent,
+                    # erreur non fatal dans le terminal
+                    # Prévoir une situtation où la relation et/ou le field n'existe pas
+                    # Prévoir une solution où plus d'un __
                     relationship, field = term.split('__')
                     sens = "DESC" if relationship[0] == "-" else "ASC"
                     if sens == "DESC":
                         relationship = relationship[1:]
-                    # relationship = self.model_class.__getattr__(relationship)
                     ordering.append(
                         RawCypher(
                             # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
@@ -112,7 +115,11 @@ class BaseGenericViewSet(GenericViewSet):
                         )
                     )
 
-                elif '|' in term: # À tester
+                elif '|' in term:
+                    # En cas de relationship ou/et field non présent,
+                    # erreur non fatal dans le terminal
+                    # Prévoir une situtation où la relation et/ou le field n'existe pas
+                    # Prévoir une solution où plus d'un |
                     relationship, field = term.split('|')
                     sens = "DESC" if relationship[0] == "-" else "ASC"
                     if sens == "DESC":
@@ -124,7 +131,8 @@ class BaseGenericViewSet(GenericViewSet):
                         )
                     )
 
-                else: # Fonctionne
+                else:
+                    # Fonctionnement classique.
                     ordering.append(term)
 
             nodeset = nodeset.order_by(*ordering)
