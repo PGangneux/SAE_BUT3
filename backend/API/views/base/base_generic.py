@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
 from neomodel.exceptions import DoesNotExist
-from neomodel.sync_.match import NodeSet
+from neomodel.sync_.match import NodeSet, RawCypher
 from neomodel import StructuredNode
 from neo4j.exceptions import ServiceUnavailable
 from ...errors import NotFound, ConnexionDB
@@ -80,7 +80,7 @@ class BaseGenericViewSet(GenericViewSet):
         """
         for term in search.split(','):
             if term:
-                # Le search field n'étant pas identique,
+                # Le search field n'étant pas identique pour tous les models,
                 # il est nécessaire de filtrer ainsi
                 nodeset = nodeset.filter(**{f'{self.search_field}__icontains': term})
         return nodeset
@@ -96,6 +96,36 @@ class BaseGenericViewSet(GenericViewSet):
             NodeSet: nodeset ordonné
         """
         print(order)
+        ordering = []
         if order != '':
-            nodeset = nodeset.order_by(order)
+            for term in order.split(','):
+                if '__' in term: # Fonctionne d'après de brefs tests
+                    relationship, field = term.split('__')
+                    sens = "DESC" if relationship[0] == "-" else "ASC"
+                    if sens == "DESC":
+                        relationship = relationship[1:]
+                    # relationship = self.model_class.__getattr__(relationship)
+                    ordering.append(
+                        RawCypher(
+                            # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
+                            f"head([($n)-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
+                        )
+                    )
+
+                elif '|' in term: # À tester
+                    relationship, field = term.split('|')
+                    sens = "DESC" if relationship[0] == "-" else "ASC"
+                    if sens == "DESC":
+                        relationship = relationship[1:]
+                    ordering.append(
+                        RawCypher(
+                            # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
+                            f"head([($n)-[r:{relationship.upper()}]-(s) | r.{field}]) {sens}"
+                        )
+                    )
+
+                else: # Fonctionne
+                    ordering.append(term)
+
+            nodeset = nodeset.order_by(*ordering)
         return nodeset
