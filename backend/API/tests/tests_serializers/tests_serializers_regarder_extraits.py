@@ -1,7 +1,8 @@
 from datetime import datetime
 from django.test import RequestFactory
 from uuid import uuid4
-from ...serializers import RegarderExtraitsSerializer, ContextError, NotFound
+from ...serializers import RegarderExtraitsSerializer
+from ...errors import ContextError, NotFound
 from ...models import Utilisateur, Extrait, Artiste, Question, Interview, Tag
 from ...tests import Neo4jTestCase
 

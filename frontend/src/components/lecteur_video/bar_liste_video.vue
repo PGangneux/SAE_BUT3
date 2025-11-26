@@ -24,11 +24,12 @@ export default {
 
     };
   },
+
   methods : {
 
 
     async interview_current_extrait(){
-      this.selected = "extrait_in_playlists"
+      this.selected = "playlists"
       this.videos = markRaw(await this.extrait.interviews)
     },
 
@@ -79,6 +80,7 @@ export default {
 
       this.videos = markRaw(artiste_videos);
     },
+    
 
 
 
@@ -99,7 +101,6 @@ export default {
         this.extrait_current.set(video);
         this.interview_current.set(null);
       }
-
       // recupération des nouveau extrait et interview
       this.extrait = await this.extrait_current.get();
       this.interview = await this.interview_current.get();
@@ -112,7 +113,18 @@ export default {
 
       this.$emit('update');
       this.videos = markRaw(await Extrait.list());
+
+      this.$refs.miniature_videos.forEach(child => {
+        child.update_miniature();
+      });
+
+
+      
     },
+
+
+    
+
 
 
   },
@@ -120,8 +132,8 @@ export default {
     this.interview = toRaw(await this.interview_current.get());
     this.extrait = toRaw(await this.extrait_current.get());
     this.videos = markRaw(await Extrait.list());
-    /// console.log("interview", this.interview)
     if (this.interview) this.img_close = false;
+
 
   },
 
@@ -137,7 +149,7 @@ export default {
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <!--si la video est un extrait-->
-              <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'extrait_in_playlists'}">Playlists</li>
+              <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'playlists'}">Playlists</li>
               
             </ul>
             
@@ -153,12 +165,14 @@ export default {
             </div>
             <div>
                 <ul class="liste_video">
-                    <li v-for="video in videos">
-                        <div v-if="video.uuid != current_extrait?.uuid">
-                            
-                            <miniature_video v-if="this.interview" @click="update_liste_video(video)" :video="video" />
-                            <miniature_video v-else @click="update_liste_video(video)" :video="video" />
-                          <div>
+                    <li v-for="(video, index) in videos" :key="video.uuid">
+                        <div>
+                              <miniature_video 
+                                ref="miniature_videos" 
+                                @click="update_liste_video(video)"
+                                :video="video" 
+                              />
+                          <div class="video_text">
                               <h4>{{ video.titre }}</h4>
                               <p>{{ video.description }}</p>
                               
@@ -264,21 +278,22 @@ main {
   display: flex;  
 }
 
-.liste_video img, .liste_video a{
-  display: block;
-  width: 30%;
-  height: 30%;
 
-  border-radius: 20px;
-  object-fit: cover;
-  background-color: var(--gris-moyen);
-}
 
 .liste_video a{
     width: 55%;
     height: 55%;
     margin-right: 1em;
     margin-bottom: 2em;
+}
+
+.video_text{
+  padding-right: 5%;
+  flex-grow: 1;
+}
+
+p, h4{
+  margin: 0;
 }
 
 

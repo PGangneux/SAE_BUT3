@@ -3,14 +3,13 @@ import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import timecode from "./timecode.vue";
-import parametres from './parametres.vue';
 import { videoStore } from "../../model/videoStore";
 
 
 export default {
   name: "page_lecteur_video",
   inject : ["extrait_current", "interview_current"],
-  components: { iframe_lecture_video, bar_liste_video, parametres, timecode },
+  components: { iframe_lecture_video, bar_liste_video, timecode },
 
   data() {
     return {
@@ -46,6 +45,7 @@ export default {
   beforeUnmount() {
     window.removeEventListener('resize', this.updatePopupPosition);
   },
+
 
 
   methods: {
@@ -144,14 +144,17 @@ export default {
       if (index < this.liste_extraits.length-1) {
         let next_extrait = this.liste_extraits[index + 1];
         // réinitialiser le temps de la vidéo
-        //videoStore.currentTime = 0;
+        videoStore.currentTime = 0;
+        
         // lancer la prochaine vidéo
         await this.redirect_extrait(next_extrait);
 
       } else {
         // console.log("Fin de la liste des extraits de l'interview");
       }
-    }
+    },
+
+    
 
   },
 
@@ -234,10 +237,6 @@ main {
   padding-left: 2%;
   padding-right: 2%;
 }
-
-
-
-
 
 
 

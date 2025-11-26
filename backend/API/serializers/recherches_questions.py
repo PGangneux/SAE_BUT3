@@ -1,79 +1,30 @@
-from datetime import datetime
-from django.urls import reverse
 from rest_framework import serializers
-from neomodel import db
-from neomodel.exceptions import DoesNotExist
-from ..models import Question, Utilisateur
-from ..errors import NotFound, ContextError
+from ..serializers import RelationShipUtilisateur
+from ..models import Question
 
 
-class RecherchesQuestionsSerializer(serializers.Serializer):
+class RecherchesQuestionsSerializer(RelationShipUtilisateur):
     """
     Sérializer RelationShip recherches_questions (Utilisateur <-> Question)
     """
-    uuid = serializers.CharField(required=True)
 
     # Outputs
-    date_heure = serializers.SerializerMethodField(read_only=True)
     texte = serializers.CharField(read_only=True)
     theme = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
-    def get_date_heure(self, question):
-        """
-        Renvoie la date et l'heure :
-        """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise ContextError(Utilisateur)
-        query = "MATCH (i:Question {uuid:$question})<-[r:RECHERCHES_QUESTIONS]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
-        res = db.cypher_query(query, {'question': question.uuid, 'utilisateur': utilisateur.uuid})[0][0]
-        return datetime.fromtimestamp(res[0].get('date_heure')).isoformat()
+    def __init__(self, *args, **kwargs):
+        super().__init__(Question, 'recherches_questions', *args, **kwargs)
 
     def get_theme(self, question):
         """
         Renvoie un lien propre vers le theme :
         """
         theme = question.theme.single()
-        return self.context.get('request').build_absolute_uri(reverse('theme-detail', kwargs={'uuid': theme.uuid})) if theme else None
+        return self.get_url('theme-detail', kwargs={'uuid': theme.uuid}) if theme else None
 
     def get_extraits(self, question):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'question_uuid': question.uuid}))
-
-    def create(self, validated_data):
-        """
-        Connecte une question à un utilisateur
-        """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise ContextError(Utilisateur)
-
-        question_uuid = validated_data['uuid']
-        try:
-            question = Question.nodes.get(uuid=question_uuid)
-        except DoesNotExist:
-            raise NotFound(Question)
-
-        if not utilisateur.recherches_questions.is_connected(question):
-            utilisateur.recherches_questions.connect(question)
-
-        return question
-
-    def delete(self, question_uuid):
-        """
-        Déconnecte une question d’un utilisateur
-        """
-        utilisateur = self.context.get('utilisateur')
-        if not utilisateur:
-            raise ContextError(Utilisateur)
-
-        try:
-            question = Question.nodes.get(uuid=question_uuid)
-        except DoesNotExist:
-            raise NotFound(Question)
-
-        utilisateur.recherches_questions.disconnect(question)
-        return question
+        return self.get_url('extrait-list', kwargs={'question_uuid': question.uuid})

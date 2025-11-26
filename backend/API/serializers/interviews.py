@@ -1,15 +1,12 @@
-from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist
-from ..errors import NotFound, ContextError
+from ..serializers import RelationShipBase
 from ..models import Extrait, Interview
 
 
-class InterviewsSerializer(serializers.Serializer):
+class InterviewsSerializer(RelationShipBase):
     """
     Sérializer RelationShip interviews (Extrait <-> Interview)
     """
-    uuid = serializers.CharField(required=True)
     position = serializers.IntegerField(write_only=True, required=True)
 
     # Outputs
@@ -21,53 +18,21 @@ class InterviewsSerializer(serializers.Serializer):
     extraits = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(Interview, Extrait, 'interviews', *args, **kwargs)
+
     def get_extraits(self, interview):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'interview_uuid': interview.uuid}))
+        return self.get_url('extrait-list', kwargs={'interview_uuid': interview.uuid})
 
     def get_tags(self, interview):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'interview_uuid': interview.uuid}))
+        return self.get_url('tag-list', kwargs={'interview_uuid': interview.uuid})
 
-    def create(self, validated_data):
-        """
-        Connecte une interview à un extrait
-        """
-        extrait = self.context.get('extrait')
-        if not extrait:
-            raise ContextError(Extrait)
-
-        interview_uuid = validated_data['uuid']
-        position = validated_data['position']
-        try:
-            interview = Interview.nodes.get(uuid=interview_uuid)
-        except DoesNotExist:
-            raise NotFound(Interview)
-
-        if not extrait.interviews.is_connected(interview):
-            extrait.interviews.connect(interview, {'position': position})
-
-        return interview
-
-    def delete(self, interview_uuid):
-        """
-        Déconnecte une inteview d’un extrait
-        """
-        extrait = self.context.get('extrait')
-        if not extrait:
-            raise ContextError(Extrait)
-
-        try:
-            interview = Interview.nodes.get(uuid=interview_uuid)
-        except DoesNotExist:
-            raise NotFound(Interview)
-
-        extrait.interviews.disconnect(interview)
-        return interview
 
 class PositionInputSerializer(serializers.Serializer):
     """

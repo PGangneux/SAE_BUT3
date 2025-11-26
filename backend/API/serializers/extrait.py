@@ -1,16 +1,15 @@
-from django.urls import reverse
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist, UniqueProperty
+from neomodel.exceptions import DoesNotExist
 from neomodel import db
-from ..errors import ValidatorUnique, NotFound
+from ..serializers import Base
+from ..errors import NotFound
 from ..models import Artiste, Extrait, Question
 
 
-class ExtraitSerializer(serializers.Serializer):
+class ExtraitSerializer(Base):
     """
     Sérializer du node Extrait
     """
-    uuid = serializers.CharField(read_only=True)
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     youtube_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
@@ -31,7 +30,7 @@ class ExtraitSerializer(serializers.Serializer):
 
     def __init__(self, *args, **kwargs):
         """Retire le champ `position` si aucune interview n'est dans le contexte."""
-        super().__init__(*args, **kwargs)
+        super().__init__(Extrait, *args, **kwargs)
         if not self.context.get("interview"):
             self.fields.pop("position", None)
 
@@ -40,26 +39,26 @@ class ExtraitSerializer(serializers.Serializer):
         Renvoie un lien propre vers l'artiste :
         """
         artiste = extrait.interviewer.single()
-        return self.context.get('request').build_absolute_uri(reverse('artiste-detail', kwargs={'uuid': artiste.uuid})) if artiste else None
+        return self.get_url('artiste-detail', kwargs={'uuid': artiste.uuid}) if artiste else None
 
     def get_question(self, extrait):
         """
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return self.context.get('request').build_absolute_uri(reverse('question-detail', kwargs={'uuid': question.uuid})) if question else None
+        return self.get_url('question-detail', kwargs={'uuid': question.uuid}) if question else None
 
     def get_interviews(self, extrait):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'extrait_uuid': extrait.uuid}))
+        return self.get_url('interview-list', kwargs={'extrait_uuid': extrait.uuid})
 
     def get_tags(self, extrait):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.context.get('request').build_absolute_uri(reverse('tag-list', kwargs={'extrait_uuid': extrait.uuid}))
+        return self.get_url('tag-list', kwargs={'extrait_uuid': extrait.uuid})
     
     def get_position(self, extrait):
         interview = self.context.get('interview')
@@ -75,11 +74,7 @@ class ExtraitSerializer(serializers.Serializer):
         artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 
-        extrait = Extrait(**validated_data)
-        try:
-            extrait.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        extrait = super().create(validated_data)
 
         if artiste_uuid:
             try:
@@ -104,13 +99,7 @@ class ExtraitSerializer(serializers.Serializer):
         artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop('question_uuid', None)
 
-        # update props
-        for k, v in validated_data.items():
-            setattr(extrait, k, v)
-        try:
-            extrait.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        extrait = super().update(extrait, validated_data)
 
         # update question relation if provided
         if question_uuid is not None:

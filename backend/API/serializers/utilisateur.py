@@ -1,16 +1,13 @@
 from django.contrib.auth.hashers import make_password
-from django.urls import reverse
 from rest_framework import serializers
+from ..serializers import Base
 from ..models import Utilisateur
-from ..errors import ValidatorUnique
-from neomodel.exceptions import UniqueProperty
 
 
-class UtilisateurSerializer(serializers.Serializer):
+class UtilisateurSerializer(Base):
     """
     Sérializer du node Utilisateur
     """
-    uuid = serializers.CharField(read_only=True)
     pseudo = serializers.CharField(required=True)
     prenom = serializers.CharField(required=True)
     nom = serializers.CharField(required=True)
@@ -24,29 +21,32 @@ class UtilisateurSerializer(serializers.Serializer):
     regarder_extraits = serializers.SerializerMethodField(read_only=True)
     recherches_questions = serializers.SerializerMethodField(read_only=True)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(Utilisateur, *args, **kwargs)
+
     def get_recherches_artistes(self, utilisateur):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return self.context.get('request').build_absolute_uri(reverse('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        return self.get_url('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
 
     def get_regarder_interviews(self, utilisateur):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return self.context.get('request').build_absolute_uri(reverse('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        return self.get_url('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
 
     def get_regarder_extraits(self, utilisateur):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.context.get('request').build_absolute_uri(reverse('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        return self.get_url('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
 
     def get_recherches_questions(self, utilisateur):
         """
         Renvoie un lien propre vers les questions :
         """
-        return self.context.get('request').build_absolute_uri(reverse('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid}))
+        return self.get_url('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
 
     def create(self, validated_data):
         """
@@ -54,10 +54,7 @@ class UtilisateurSerializer(serializers.Serializer):
         """
         # hash password
         validated_data['password'] = make_password(validated_data.pop('password'))
-        try:
-            return Utilisateur(**validated_data).save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+        return super().create(validated_data)
 
 
     def update(self, utilisateur, validated_data):
@@ -67,10 +64,5 @@ class UtilisateurSerializer(serializers.Serializer):
         # hash password
         pwd = validated_data.pop('password', None)
         if pwd:
-            utilisateur.password = make_password(pwd)
-        for k, v in validated_data.items():
-            setattr(utilisateur, k, v)
-        try:
-            return utilisateur.save()
-        except UniqueProperty as error:
-            raise ValidatorUnique(error.message)
+            validated_data['password'] = make_password(pwd)
+        return super().update(utilisateur, validated_data)

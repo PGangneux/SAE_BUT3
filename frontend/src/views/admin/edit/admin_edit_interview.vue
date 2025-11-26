@@ -4,7 +4,7 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
 
 import Interview from '../../../model/interview.js';
-import Extrait from "../../../model/extrait";
+import Extrait from "../../../model/extrait.js";
 
 export default {
     name: "page_admin_edit_interview",
@@ -17,7 +17,6 @@ export default {
             Extraitlist : [],
             current_interview:{type:Interview},
             current_list_extraits:{type:Extrait},
-            dico_extrait:{},
             taillelist1:0,   
             taillelist2:0, 
     };
@@ -202,7 +201,7 @@ ul {
 
 .scroller2 {
 
-  height: 100%;
+  height: 70vh;
   overflow-y: scroll;
   scrollbar-color: var(---blanc) #A6A6A6;
   scrollbar-width: thin;

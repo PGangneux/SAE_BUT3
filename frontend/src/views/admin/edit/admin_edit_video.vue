@@ -145,11 +145,11 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
-        <div class="col-md-6">
+        <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
@@ -199,9 +199,9 @@ export default {
               </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
               </h1>
              
               <table class="ultagger table tables table-striped">
@@ -211,7 +211,7 @@ export default {
                           <th class="btgrisv2  col">paramètre</th>
                       </tr>
                   </thead>
-                  <tbody class="tobodd scroller">
+                  <tbody class="tobodd">
                       <tr class="col" v-for="interview in this.dico_extrait['interviews']">
                           <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
                           <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
@@ -236,11 +236,11 @@ export default {
       <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
       <div class="row">
 
-        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
             <li v-for="tag in dico_extrait.tags " class="col">
-                <div class="row">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-                  <p class="col">{{ tag.name }}</p>
+                <div class="row" style="--bs-gutter-x: 0rem;">
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50" style="max-width: 5em;">
+                  <p class="col" style="text-align: center; max-width:max-content; align-content: center; ">{{ tag.name }}</p>
                 </div>
             </li>
         </ul>
@@ -270,6 +270,7 @@ export default {
     </template>
 
 <style scoped>
+
 .migniature{
   height: 90%;
   width: 90%;
@@ -282,21 +283,7 @@ export default {
   height:  553px;
   width: 470px;
 }
-li>.card {
-  padding: 20px 50px 150px;
-  margin: 10px 10px 10px 10px;  
-}
 
-span{
-      min-width: 8em;
-}
-
-.scroller2 {
-  height: 100%;
-  overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
-  scrollbar-width: thin;
-}
 
 .pad{
   padding-top: 1em;
@@ -309,7 +296,6 @@ margin-bottom: 1em;
 justify-content: center
 }
 
-
 .centrer{
 justify-content: center
 }
@@ -319,26 +305,13 @@ justify-content: center
 }
 
 .tables{
-    width: 100%;
+  height: 1em;
+  width: 100%;
 }
 
 .ultagger {
     list-style-type: none;
 
-}
-
-.scroller {
-    width: 300px;
-    height: 100px;
-    overflow-y: scroll;
-    scrollbar-color: var(---blanc) #A6A6A6;
-    scrollbar-width: thin;
-}
-
-ul {
-  display: flex;
-  list-style-type: none;
-  justify-content: space-between;
 }
 
 .grisetround{
@@ -377,6 +350,9 @@ ul {
   border: solid 3px;
   border-color: var(--vert-neon);
   border-radius: 2em;
+
+  height: 100%;
+  width: 100%;
 }
 
 option{
@@ -386,5 +362,51 @@ option{
 label{
   color: var(--vert-neon);
 }
+
+
+li>.card {
+  padding: 20px 50px 150px;
+  margin: 10px 10px 10px 10px;  
+}
+
+span{
+      min-width: 8em;
+}
+ul {
+  display: flex;
+  list-style-type: none;
+  justify-content: space-between;
+}
+
+
+.scroller {
+    width: 100%;
+    height: 100vh;
+    overflow-y: scroll;
+    scrollbar-color: var(---blanc) #A6A6A6;
+    scrollbar-width: thin;
+}
+
+
+
+
+
+.scroller2 {
+  height: 100vh;
+  overflow-y: scroll;
+  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-width: thin;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 </style>
