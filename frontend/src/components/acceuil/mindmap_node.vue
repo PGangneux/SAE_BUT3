@@ -18,6 +18,7 @@ export default {
             mmLegendClassMap: mmLegendClassMap,
             thumbnailUrl: null,
             thumbnailLoading: false,
+            isAppearing: true,
         };
     },
     computed: {
@@ -90,14 +91,16 @@ export default {
             this.thumbnailUrl = await this.get_miniature();
             this.thumbnailLoading = false;
         }
+        setTimeout(() => {
+            this.isAppearing = false;
+        }, 50);
     },
 }
 </script>
 
 <template>
-    <Transition name="node-scale" appear>
         <div class="mindmap_node"
-            :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'}`"
+            :class="`mmLegendColorMap${node.category.name} mindmap_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'appearing' : ''}`"
             :style="getStyle()">
             <div style="display: none;">
                 {{ this.node }}
@@ -126,36 +129,9 @@ export default {
                 </div>
             </div>
         </div>
-    </Transition>
 </template>
 
 <style scoped>
-/* Transition styles */
-.node-scale-enter-active,
-.node-scale-leave-active {
-    transition: all 0.5s ease;
-}
-
-.node-scale-enter-from {
-    transform: scale(0);
-    opacity: 0;
-}
-
-.node-scale-enter-to {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.node-scale-leave-from {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.node-scale-leave-to {
-    transform: scale(0);
-    opacity: 0;
-}
-
 /* Nodes */
 .mindmap_node {
     position: absolute;
@@ -164,12 +140,18 @@ export default {
     justify-content: center;
     text-align: center;
     color: white;
-    /* font-weight: bold; */
-    /* overflow: hidden; */
     cursor: pointer;
     z-index: 5;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    transform: scale(0);
+    opacity: 0;
+}
+
+.mindmap_node:not(.appearing) {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .mindmap_node:hover {
