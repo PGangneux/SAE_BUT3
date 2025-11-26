@@ -43,7 +43,9 @@ class BaseGenericViewSet(GenericViewSet):
         if self.search_field:
             queryset = self.search_nodeset(queryset, request.GET.get('search', '').strip())
         # Ordonne (order)
-        queryset = self.order_nodeset(queryset, request.GET.get('order', '').strip())
+        order = request.GET.get('order', '').strip()
+        if order != '':
+            queryset = self.order_nodeset(queryset, order)
         try:
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
@@ -95,45 +97,48 @@ class BaseGenericViewSet(GenericViewSet):
         Returns:
             NodeSet: nodeset ordonné
         """
-        print(order)
-        if order != '':
-            ordering = []
-            for term in order.split(','):
-                if '__' in term:
-                    # En cas de relationship ou/et field non présent,
-                    # erreur non fatal dans le terminal
-                    # Prévoir une situtation où la relation et/ou le field n'existe pas
-                    # Prévoir une solution où plus d'un __
-                    relationship, field = term.split('__')
-                    sens = "DESC" if relationship[0] == "-" else "ASC"
-                    if sens == "DESC":
-                        relationship = relationship[1:]
-                    ordering.append(
-                        RawCypher(
-                            # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
-                            f"head([($n)-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
-                        )
+        ordering = []
+        for term in order.split(','):
+            if '__' in term:
+                # En cas de relationship ou/et field non présent,
+                # erreur non fatal dans le terminal
+                # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
+                field_list = term.split('__')
+                # Dernière relation
+                relationship = field_list[-2]
+                # Field d'ordering
+                field = field_list[-1]
+                sens = "DESC" if field_list[0][0] == "-" else "ASC"
+                if sens == "DESC":
+                    field_list[0] = field_list[0][1:]
+                ord = "head([($n)"
+                for i in range(len(field_list)-2):
+                    ord += f"-[:{field_list[i].upper()}]\
+                        {"-()" if i < len(field_list)-2 else ""}"
+                ord += f"-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
+                ordering.append(
+                    RawCypher(
+                        ord
                     )
+                )
 
-                elif '|' in term:
-                    # En cas de relationship ou/et field non présent,
-                    # erreur non fatal dans le terminal
-                    # Prévoir une situtation où la relation et/ou le field n'existe pas
-                    # Prévoir une solution où plus d'un |
-                    relationship, field = term.split('|')
-                    sens = "DESC" if relationship[0] == "-" else "ASC"
-                    if sens == "DESC":
-                        relationship = relationship[1:]
-                    ordering.append(
-                        RawCypher(
-                            # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
-                            f"head([($n)-[r:{relationship.upper()}]-(s) | r.{field}]) {sens}"
-                        )
+            elif '|' in term:
+                # En cas de relationship ou/et field non présent,
+                # erreur non fatal dans le terminal
+                # Prévoir une situtation où la relation et/ou le field n'existe pas
+                # Prévoir une solution où plus d'un |
+                relationship, field = term.split('|')
+                sens = "DESC" if relationship[0] == "-" else "ASC"
+                if sens == "DESC":
+                    relationship = relationship[1:]
+                ordering.append(
+                    RawCypher(
+                        # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
+                        f"head([($n)-[r:{relationship.upper()}]-(s) | r.{field}]) {sens}"
                     )
+                )
 
-                else:
-                    # Fonctionnement classique.
-                    ordering.append(term)
-
-            nodeset = nodeset.order_by(*ordering)
-        return nodeset
+            else:
+                # Fonctionnement classique.
+                ordering.append(term)
+        return nodeset.order_by(*ordering)
