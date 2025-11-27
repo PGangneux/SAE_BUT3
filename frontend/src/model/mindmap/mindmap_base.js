@@ -25,7 +25,6 @@ export const mmCategorysDefault = [
     Artiste,
     Nation,
     StyleMusical,
-    Tag,
     Theme,
 ]
 
