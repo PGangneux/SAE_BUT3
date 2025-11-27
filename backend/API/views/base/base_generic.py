@@ -52,7 +52,12 @@ class BaseGenericViewSet(GenericViewSet):
         # Pagination (size) (page)
         size = request.GET.get('size', None)
         if size:
-            self.pagination(queryset, int(size), int(request.GET.get('page', 0)))
+            queryset = self.pagination_nodeset(queryset, int(size), int(request.GET.get('page', 0)))
+
+        # Skip les premiers éléments (skip)
+        skip = request.GET.get('skip', None)
+        if skip:
+            queryset = self.skip_nodeset(queryset, int(skip))
         try:
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
@@ -154,7 +159,12 @@ class BaseGenericViewSet(GenericViewSet):
                 ordering.append(term)
         return nodeset.order_by(*ordering)
 
-    def pagination(self, nodeset: NodeSet, size: int, page: int):
+    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
         # Pagination commence à la page 1
         if (page) < 1: page = 1
+        if size < 1: return nodeset
         return nodeset[(page-1)*size:page*size]
+
+    def skip_nodeset(self, nodeset: NodeSet, skip: int):
+        if skip < 0: skip = 0
+        return nodeset[skip:]
