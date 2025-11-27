@@ -142,138 +142,254 @@ export default {
 
 </script>
 
-<template>
-    <comp_baradmin/>
+    <template>
 
-    <form action="" class="row" style="--bs-gutter-x: 0em;">
 
-      <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
-          <img :src="thumbnail" class="migniature" alt="migniature">
-        </RouterLink>
-
-        <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
-          <div class="row"  style="--bs-gutter-x: 0em;">
-            <div class=" input-group mb-3" >
-                <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.dico_extrait['question']"  />
-            </div>
-          </div>
-
-          <div class="input-group mb-3" >
-            <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.dico_extrait['artiste']" />
-
-            <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-              <!-- utiliser js TODO -->
-              <option value=""> > </option>
-              <option value="option1"> Artiste 1</option> 
-              <option value="option2"> Artiste 2</option>
-              <option value="option3"> Artiste 3</option>
-            </select>
-
-            <div class="form-control colovert">
-              <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
-              <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" :value="this.current_extrait.uploaded_at"/>
-              <!-- rendre jolie TODO -->
-            </div>
-          </div>
+        <form action="" class="row" style="--bs-gutter-x: 0em;">
 
           <div class="row"  style="--bs-gutter-x: 0em;">
-            <div class="input-group mb-3 ">
-              <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" placeholder="youtube_url" v-model="youtubeUrl">
-            </div>
-          </div>
-            
+            <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+              <img :src="thumbnail" class="migniature" alt="migniature">
+            </RouterLink>
 
-          <div class="row"  style="--bs-gutter-x: 0em;">
-              <div class="input-group mb-3 ">
-                <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" placeholder="vimeo_url" v-model="vimeoUrl">
-              </div>
-          </div>
-          
+            <div class="col-md-6">
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                <div class=" input-group mb-3" >
+                    <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-            <div class="row"  style="--bs-gutter-x: 0em;">
-              <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="description"></textarea>
-              </div>
-            </div>
-
-            <div class="row" style="margin-right: 0em; margin-left: 0em;">
-              <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
-              </h1>
-             
-              <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Nom Playlist</th>
-                          <th class="btgrisv2  col">paramètre</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                      </tr>
-                  </tbody>
-              </table>
-
-              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-             
-            </div>
-        </div>
-      </div>
-
-
-      <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
-      </div>
-
-    </form>
-    
-    <div class="row grisee "  style="--bs-gutter-x: 0em;">
-      <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
-      <div class="row">
-
-        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
-            <li v-for="tag in dico_extrait.tags " class="col">
-                <div class="row" style="--bs-gutter-x: 0rem;">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50" style="max-width: 5em;">
-                  <p class="col" style="text-align: center; max-width:max-content; align-content: center; ">{{ tag.name }}</p>
+                    <select id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                      <!-- utiliser js TODO -->
+                      <option value=""> > </option>
+                      <option value="option1"> Question 1</option> 
+                      <option value="option2"> Question 2</option>
+                      <option value="option3"> Question 3</option>
+                    </select>
+                    <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
                 </div>
-            </li>
-        </ul>
+              </div>
 
-        <ul v-else-if="this.taillelist == 0 " class="col">
-            <li class="row"> 
-                <p  class="col">vide</p>
-            </li>
-        </ul>
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                  <div class="input-group mb-3" >
+                    <span class="input-group-text colovert" >Artiste :</span>
+                    <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                      <!-- utiliser js TODO -->
+                      <option value=""> > </option>
+                      <option value="option1"> Artiste 1</option> 
+                      <option value="option2"> Artiste 2</option>
+                      <option value="option3"> Artiste 3</option>
+                    </select>
+                    <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+                  </div>
+              </div>
 
-        <ul v-else class="col">
-            <li> 
-                <p  class="col">erreur de Chargement</p>
-            </li>
-        </ul>        
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                <div class="input-group mb-3 ">
+                  <span class="input-group-text colovert" >  
+                    <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
+                    Date : 
+                  </span>
+                  <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" />
+                </div>
+              </div>
+
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                <div class="input-group mb-3 ">
+                  <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
+                  <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url">
+                </div>
+              </div>
+                
+
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                  <div class="input-group mb-3 ">
+                    <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
+                    <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" >
+                  </div>
+              </div>
+              
+
+                <div class="row"  style="--bs-gutter-x: 0em;">
+                  <div class="input-group">
+                    <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <h1 class="row pcentrer"> Tableau des Playlist
+                    <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+                  </h1>
+                
+                  <table class="ultagger table tables table-striped">
+                      <thead>
+                          <tr>
+                              <th class="btgrisv2  col">Nom Playlist</th>
+                              <th class="btgrisv2  col">paramètre</th>
+                          </tr>
+                      </thead>
+                      <tbody class="tobodd scroller">
+                          <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                              <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
+                              <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                
+                  <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+
+                </div>
+                
 
 
 
 
-      </div>
-    </div>
-    
-   
 
-    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
 
-    </template>
+
+
+
+            <div class="col-md-6 " style="width: 65%; height: 33vh;">
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                <div class=" input-group mb-3" >
+                    <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
+                    <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.dico_extrait['question']"  />
+                </div>
+              </div>
+
+              <div class="input-group mb-3" >
+                <span class="input-group-text colovert" >Artiste :</span>
+                <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.dico_extrait['artiste']" />
+
+                <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                  <!-- utiliser js TODO -->
+                  <option value=""> > </option>
+                  <option value="option1"> Artiste 1</option> 
+                  <option value="option2"> Artiste 2</option>
+                  <option value="option3"> Artiste 3</option>
+                </select>
+
+                <div class="form-control colovert">
+                  <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
+                  <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
+                  <input class="col" type="date" lang="fr" id="name4" name="name4" :value="this.current_extrait.uploaded_at"/>
+                  <!-- rendre jolie TODO -->
+                </div>
+              </div>
+
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                <div class="input-group mb-3 ">
+                  <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
+                  <input type="text" class="form-control textfield" placeholder="youtube_url" v-model="youtubeUrl">
+                </div>
+              </div>
+                
+
+              <div class="row"  style="--bs-gutter-x: 0em;">
+                  <div class="input-group mb-3 ">
+                    <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
+                    <input type="text" class="form-control textfield" placeholder="vimeo_url" v-model="vimeoUrl">
+                  </div>
+              </div>
+              
+
+                <div class="row"  style="--bs-gutter-x: 0em;">
+                  <div class="form-group">
+                    <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="description"></textarea>
+                  </div>
+                </div>
+
+                <div class="row" style="margin-right: 0em; margin-left: 0em;">
+                  <h1 class="row pcentrer"> Tableau des Playlist
+                    <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
+                  </h1>
+                
+                  <table class="ultagger table tables table-striped">
+                      <thead>
+                          <tr>
+                              <th class="btgrisv2  col">Nom Playlist</th>
+                              <th class="btgrisv2  col">paramètre</th>
+                          </tr>
+                      </thead>
+                      <tbody class="tobodd">
+                          <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                              <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
+                              <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
+                          </tr>
+                      </tbody>
+                  </table>
+
+                  <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+                
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row pad"  style="--bs-gutter-x: 0em;">
+            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+            <button  type="button" @click="enregistrer"  class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+            <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
+          </div>
+
+        </form>
+        
+        <div class="row grisee "  style="--bs-gutter-x: 0em;">
+          <section class="row secondpart">
+              <h1 class="pcentrer col"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+              <button class="bt col"> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+              <div class="recherche col">
+                    <div class="search-bar">
+                        <div class="input-group">
+                            <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                            <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                                    <img src="/imgs/search.svg" alt="button search">
+                                </RouterLink>
+                        </div>
+                    </div>
+                </div>
+          </section>
+
+
+
+          <div class="row">
+
+            <ul v-if="this.taillelist.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+                <li v-for="tag in this.taillelist " class="col">
+                    <div class="row">
+                      <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+                      <p class="col">ssssssssss</p>
+                      <button> - </button>
+                    </div>
+                </li>
+            </ul>
+
+            <ul v-else-if="this.taillelist == 0 " class="col">
+                <li class="row"> 
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+                  <p  class="col">vide</p>
+                  <button class="col bt" ><img src="/imgs/remove.svg" class="col" alt="labelle tags" height="20" width="20"> </button>
+                </li>
+            </ul>
+
+            <ul v-else class="col">
+                <li> 
+                    <p  class="col">erreur de Chargement</p>
+                </li>
+            </ul>        
+
+
+
+
+          </div>
+        </div>
+        
+      
+
+        <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+        
+
+
+        </template>
 
 <style scoped>
 
@@ -330,6 +446,13 @@ justify-content: center
   background-color: var(--gris-moyen);
 }
 
+.secondpart{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 1em;
+}
 
 .textfield{
   background-color: var(--gris-ultraclair);
