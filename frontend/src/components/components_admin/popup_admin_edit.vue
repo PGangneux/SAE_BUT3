@@ -8,7 +8,11 @@ import Interview from '../../model/interview.js';
 export default {
     name: "comp_admin_edit_popup",
     props: {
-        popup: Boolean
+        popup: {
+            type:Boolean,
+            required:true
+            }
+        
 
     },data() {
         return {

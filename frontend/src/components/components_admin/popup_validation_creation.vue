@@ -12,8 +12,12 @@ export default {
     props: {
         Element_Creer: {
             type:Object,
+            required:true
         },
-        popup2: Boolean
+        popup2: {
+            type:Boolean,
+            required:true
+            }
 
     },data(){
         return {
@@ -22,11 +26,11 @@ export default {
     },
     methods: {
         sendData () {
-            this.$emit('ecoutepopup2', !this.popup2)
+            this.$emit('popupenregistrer', !this.popup2)
         },
         
     },
-    emits : [ "ecoutepopup2"],   
+    emits : [ "popupenregistrer"],   
     
     
     computed: {

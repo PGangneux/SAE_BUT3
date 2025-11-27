@@ -17,6 +17,7 @@ export default {
     popup_valider,
     comp_popup,
 
+    //dataliste
   },data() {
         return {
             current_extrait : {type:Extrait},
@@ -38,27 +39,7 @@ export default {
   methods: {
 
     async enregistrer(){
-      let dicocreation = {
-        "titre"         : document.getElementById("question").value, 
-        "description"   : document.getElementById("description").value, 
-        "youtube_url"   : document.getElementById("youtube").value, 
-        "vimeo_url"     : document.getElementById("vimeo").value, 
-        "uploaded_at"   : document.getElementById("date").value, 
-        "artiste"       : document.getElementById("inputartist").value, 
-        "question"      : document.getElementById("question").value,
-        
-        "interviews"    : document.getElementById("in").value, 
-        "tags"          : document.getElementById("in").value,
-        "position"      : document.getElementById("in").value,
-        "artiste_uuid"  : document.getElementById("in").value,
-        "question_uuid" : document.getElementById("in").value,
-        "duree"         : document.getElementById("in").value, 
-      };
-
-
-      document.getElementById("in").value;
-
-
+      
       this.Element_Creer = await new Extrait().create()
       this.popup2 =true;
     },
@@ -247,7 +228,7 @@ export default {
 
     <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
     
-    <div v-if="popup2 === true">  <popup_valider  v-on:ecoutepopup2="popupchange2" /> </div>
+    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2" /> </div>
 
 
     </template>
