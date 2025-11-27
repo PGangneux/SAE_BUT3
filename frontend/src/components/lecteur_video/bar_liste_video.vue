@@ -3,7 +3,6 @@ import { markRaw, toRaw } from 'vue';
 import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
 import miniature_video from "./miniature_video.vue";
-import Artiste from '../../model/artiste';
 
 export default {
   components: { miniature_video, },
@@ -28,11 +27,16 @@ export default {
 
   methods : {
 
+    async current_reco(){
+      this.selected = "reco";
+      this.videos = markRaw(await Extrait.list());
+    },
 
     async interview_current_extrait(){
       this.selected = "playlists"
       this.videos = markRaw(await this.extrait.interviews)
     },
+
 
     async extraits_current_question(){
       this.selected = "questions"
@@ -113,8 +117,7 @@ export default {
       videoStore.currentTime = 0;
 
       this.$emit('update');
-      this.videos = markRaw(await Extrait.list());
-
+      
       this.$refs.miniature_videos.forEach(child => {
         child.update_miniature();
       });
@@ -132,7 +135,7 @@ export default {
   async mounted() {
     this.interview = toRaw(await this.interview_current.get());
     this.extrait = toRaw(await this.extrait_current.get());
-    this.videos = markRaw(await Extrait.list());
+    this.current_reco();
     if (this.interview) this.img_close = false;
 
 
@@ -146,10 +149,11 @@ export default {
     <header>
         <nav class="header-nav">
             <ul class="menu">
+              <li @click="current_reco" :class="{selected: selected === 'reco'}">Recomendation</li>
               <li @click="extraits_interviews_current_artiste" :class="{selected: selected === 'artiste'}">Artiste</li>
               <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
-              <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <!--si la video est un extrait-->
+              <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
               <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'playlists'}">Playlists</li>
               
             </ul>
@@ -166,7 +170,7 @@ export default {
             </div>
             <div>
                 <ul class="liste_video">
-                    <li v-for="(video, index) in videos" :key="video.uuid">
+                    <li v-for="(video) in videos" :key="video.uuid">
                         <div>
                               <miniature_video 
                                 ref="miniature_videos" 

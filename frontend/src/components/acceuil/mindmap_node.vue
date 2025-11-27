@@ -1,5 +1,5 @@
 <script>
-import { LegendClassMap, mmNode } from "./mindmap_func";
+import { LegendClassMap, mmNode } from "../../model/mindmap_func";
 
 export default {
     name: "mindmap_node",
@@ -35,7 +35,7 @@ export default {
 
             // If there's content, show it alongside the category
             if (this.node.content) {
-                const contentName = this.node.content.nom || this.node.content.titre || 'Sans nom';
+                const contentName = this.node.content.titre ;
                 return `${categoryName}: ${contentName}`;
             }
 
@@ -109,6 +109,9 @@ export default {
 
 <template>
     <div class="mindmap-node" :style="node.getStyle(scale, offx, offy)">
+    <div>
+        {{  this.node.content }}
+    </div>
         <div v-if="node.loading" class="loading-spinner">
             <img src="/imgs/spinner.gif" alt="Loading..." />
         </div>
@@ -118,7 +121,7 @@ export default {
 
             <!-- Show content name if available -->
             <p v-if="node.content" class="content-name">
-                {{ node.content.titre || 'Sans nom' }}
+                {{ node.content.name || 'Sans nom' }}
             </p>
 
             <!-- Show video type badge for Interview/Extrait -->

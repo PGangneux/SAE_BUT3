@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import { LegendClassMap, LegendColorMap, mmdraw_root , mmdraw_update } from './mindmap_func.js';
+import { LegendClassMap, LegendColorMap, mmdraw_root , mmdraw_update } from '../../model/mindmap_func.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
@@ -25,10 +25,12 @@ export default {
             lastMouseX: 0,
             lastMouseY: 0,
             clickTimer: null, // For click-and-hold functionality
+            searchval : "",
         };
     },
     async mounted() {
         this.centerMindmap();
+        this.searchval = this.searchterm.get();
         mmdraw_root(this);
     },
     computed: {
@@ -39,6 +41,7 @@ export default {
     watch: {
         searchValue(newVal) {
             console.log("Search term changed:", newVal);
+            this.searchval = newVal;
             mmdraw_root(this);
         }
     },
