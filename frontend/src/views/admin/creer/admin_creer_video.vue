@@ -194,18 +194,20 @@ export default {
     </form>
     
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
-      <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
-      <button> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
-       <div class="recherche">
-            <div class="search-bar">
-                <div class="input-group">
-                    <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
-                        </RouterLink>
+      <section class="row secondpart">
+          <h1 class="pcentrer col"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+          <button class="bt col"> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+          <div class="recherche col">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                                <img src="/imgs/search.svg" alt="button search">
+                            </RouterLink>
+                    </div>
                 </div>
             </div>
-      </div>
+      </section>
 
 
 
@@ -359,6 +361,14 @@ ul {
   border: solid 3px;
   border-color: var(--vert-neon);
   border-radius: 2em;
+}
+
+.secondpart{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 1em;
 }
 
 option{
