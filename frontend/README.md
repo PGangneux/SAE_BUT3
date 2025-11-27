@@ -7,16 +7,20 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 - [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
 
-# Todo admin
+# Todo admin a faire
 
-ajouter extrait (modif rooter et pages avec meme templates)
-ajouter interview (modif rooter et pages avec meme templates)
-ajouter utilisateur (modif rooter et pages avec meme templates)
-
-page details user a realiser
 page details interview a finir ( probleme vigniette vimeo et youtube)
+faire attention au button annuler qui efface tout dans les edits
 
-faire comme creer user mais pour compte
+realiser le crud et creer (extrait,interview,utilisateur)
+realisation du crud  (extrait,interview,utilisateur)
 
+realisation du drag and drop pour list interview
 fonction trie
-faire attention au button annuler qui efface tout
+
+
+modifier 100vh dans popup
+
+
+reccuperer object a la place de id ( qi on a la liste de base au moment daller sur une autre pages on la genere)
+

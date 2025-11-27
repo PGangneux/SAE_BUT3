@@ -11,6 +11,7 @@ export default {
   props: {
     liste_extraits_current_interview: {
       type: Object,
+      
     }
   },
   data() {

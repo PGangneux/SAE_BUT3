@@ -68,7 +68,7 @@ export default {
     <div class="col-md-4 main-trie">
 
         <div class="row ">
-            <button type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+            <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         </div>
 
         
