@@ -5,6 +5,12 @@ import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 import Tags from '../../model/tag.js';
 import Artistes from '../../model/artiste.js';
 import Questions from '../../model/question.js';
+import Themes from '../../model/theme.js';
+
+import Styles from '../../model/style_musical.js';
+import Nations from '../../model/nation.js';
+
+
 
 
 
@@ -27,8 +33,9 @@ export default {
             Artistes : {type:Artistes},
             dico_artistes:{},
 
-            listfictive:["a","a","b"],
-            
+            Themes:{type:Themes},
+            Styles:{type:Styles},
+            Nations:{type:Nations},
             
         };
     },
@@ -36,14 +43,18 @@ export default {
     // console.log("mounted admin interview list");
     this.Questions = markRaw(await Questions.list());
     this.Artistes = markRaw(await Artistes.list());
+
+    this.Themes = markRaw(await Themes.list());
+    this.Styles = markRaw(await Styles.list());
+    this.Nations = markRaw(await Nations.list());
+
     this.Tags = markRaw(await Tags.list());
 
-    this.totalquestion = this.Questions.length
-    this.totalartiste = this.Artistes.length
-    this.totaltag = this.Tags.length
-    
 
-    console.log(this.Artistes)
+
+
+
+    console.log(this.Questions)
 
   },
 
@@ -58,137 +69,292 @@ export default {
 
     <h1 class="text-center">Autres</h1>
 
-    <section class="row ligne">
-        <h2 class="vert-neon">Questions</h2>
+    <div class="scroller2">
+        <section class="row ligne">
+            <h2 class="vert-neon">Questions</h2>
 
-        <section class="row">
+            <section class="row">
 
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Questions total</span>
-                <span class=" col input-group-text">{{this.totalquestion}}</span>
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Questions total</span>
+                    <span class=" col input-group-text">{{this.Questions.length}}</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Questions utiliser</span>
+                    <span class=" col input-group-text">nb Questions utiliser</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Questions non utiliser</span>
+                    <span class=" col input-group-text">nb Questions non utiliser</span>
+                </section>
+
             </section>
 
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Questions utiliser</span>
-                <span class=" col input-group-text">nb Questions utiliser</span>
-            </section>
-
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Questions non utiliser</span>
-                <span class=" col input-group-text">nb Questions non utiliser</span>
-            </section>
-
-        </section>
-
-        <section>
-            <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Question</th>
-                          <th class="btgrisv2  col">Theme</th>
-                          <th class="btgrisv2  col">nb dans extraits</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="question in this.Questions">
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ question.texte }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">Question</th>
+                            <th class="btgrisv2  col">Theme</th>
+                            <th class="btgrisv2  col">nb dans extraits</th>
                         </tr>
-                  </tbody>
-              </table>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="question in this.Questions">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ question.texte }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </section>
+
+
         </section>
 
+        <section class="row ligne">
+            <h2 class="vert-neon">Tags</h2>
 
-    </section>
+            <section class="row"> 
 
-    <section class="row ligne">
-        <h2 class="vert-neon">Tags</h2>
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Tags total</span>
+                    <span class=" col input-group-text">{{this.Tags.length}}</span>
+                </section>
 
-        <section class="row"> 
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Tags utiliser</span>
+                    <span class=" col input-group-text">nb Tags utiliser</span>
+                </section>
 
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Tags total</span>
-                <span class=" col input-group-text">{{this.totaltag}}</span>
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert"> nb Tags non utiliser </span>
+                    <span class=" col input-group-text"> nb Tags non utiliser</span>
+                </section>
             </section>
 
-            <section class="col input-group mb-3">
-                 <span class=" col input-group-text colovert">nb Tags utiliser</span>
-                 <span class=" col input-group-text">nb Tags utiliser</span>
-            </section>
-
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert"> nb Tags non utiliser </span>
-                <span class=" col input-group-text"> nb Tags non utiliser</span>
-            </section>
-        </section>
-
-        <section>
-            <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">name</th>
-                          <th class="btgrisv2  col">nb dans interviews</th>
-                          <th class="btgrisv2  col">nb dans extraits  </th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="tag in this.Tags">
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ tag.name }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">name</th>
+                            <th class="btgrisv2  col">nb dans interviews</th>
+                            <th class="btgrisv2  col">nb dans extraits  </th>
                         </tr>
-                  </tbody>
-            </table>
-        </section>
-
-    </section>
-
-    <section class="row ligne">
-        <h2 class="vert-neon">Artistes</h2>
-        <section class="row">
-
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert"> nb Artistes total</span>
-                <span class=" col input-group-text ">{{ this.Artistes.length }}</span>
-            </section>
-
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Artistes utiliser</span>
-                <span class=" col input-group-text ">nb Artistes utiliser</span>
-            </section>
-
-            <section class="col input-group mb-3">
-                <span class=" col input-group-text colovert">nb Artistes non utiliser</span>
-                <span class=" col input-group-text ">nb Artistes non utiliser</span>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="tag in this.Tags">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ tag.name }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
             </section>
 
         </section>
 
-        <section>
-            <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Artistes</th>
-                          <th class="btgrisv2  col">nation</th>
-                          <th class="btgrisv2  col">styles</th>
-                          <th class="btgrisv2  col">nb dans extraits  </th>
-                          <th class="btgrisv2  col">nb dans interviews</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="artiste in this.Artistes">
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ artiste.name }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                          <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+        <section class="row ligne">
+            <h2 class="vert-neon">Artistes</h2>
+            <section class="row">
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert"> nb Artistes total</span>
+                    <span class=" col input-group-text ">{{ this.Artistes.length }}</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Artistes utiliser</span>
+                    <span class=" col input-group-text ">nb Artistes utiliser</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Artistes non utiliser</span>
+                    <span class=" col input-group-text ">nb Artistes non utiliser</span>
+                </section>
+
+            </section>
+
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">Artistes</th>
+                            <th class="btgrisv2  col">nation</th>
+                            <th class="btgrisv2  col">styles</th>
+                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans interviews</th>
                         </tr>
-                  </tbody>
-            </table>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="artiste in this.Artistes">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ artiste.name }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </section>
+
         </section>
 
-    </section>
+
+
+
+        
+
+
+
+
+        <section class="row ligne">
+            <h2 class="vert-neon">Themes</h2>
+            <section class="row">
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert"> nb Themes total</span>
+                    <span class=" col input-group-text ">{{ this.Themes.length }}</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Themes utiliser</span>
+                    <span class=" col input-group-text ">nb Themes utiliser</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Themes non utiliser</span>
+                    <span class=" col input-group-text ">nb Themes non utiliser</span>
+                </section>
+
+            </section>
+
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">Thème</th>
+                            <th class="btgrisv2  col">nation</th>
+                            <th class="btgrisv2  col">styles</th>
+                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans interviews</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="theme in this.Themes">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ theme.name }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </section>
+
+
+
+
+
+        <section class="row ligne">
+            <h2 class="vert-neon">Styles</h2>
+            <section class="row">
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert"> nb Styles total</span>
+                    <span class=" col input-group-text ">{{ this.Styles.length }}</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Styles utiliser</span>
+                    <span class=" col input-group-text ">nb Artistes utiliser</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Styles non utiliser</span>
+                    <span class=" col input-group-text ">nb Artistes non utiliser</span>
+                </section>
+
+            </section>
+
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">Style</th>
+                            <th class="btgrisv2  col">nation</th>
+                            <th class="btgrisv2  col">styles</th>
+                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans interviews</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="style in  this.Styles">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ style.name }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </section>
+
+        </section>
+
+
+
+
+
+
+        <section class="row ligne">
+            <h2 class="vert-neon">Nations</h2>
+
+            <section class="row">
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Nations total</span>
+                    <span class=" col input-group-text">{{this.Nations.length}}</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Nations utiliser</span>
+                    <span class=" col input-group-text">nb Nations utiliser</span>
+                </section>
+
+                <section class="col input-group mb-3">
+                    <span class=" col input-group-text colovert">nb Nations non utiliser</span>
+                    <span class=" col input-group-text">nb Nations non utiliser</span>
+                </section>
+
+            </section>
+
+            <section>
+                <table class="ultagger table tables table-striped">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2  col">Question</th>
+                            <th class="btgrisv2  col">Theme</th>
+                            <th class="btgrisv2  col">nb dans extraits</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tobodd scroller">
+                        <tr class="col" v-for="nation in this.Nations">
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ nation.name }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
+                            </tr>
+                    </tbody>
+                </table>
+            </section>
+
+
+        </section>
+    </div>
 
 </template>
 
@@ -199,6 +365,16 @@ export default {
     color : var(--vert-neon);
     justify-self: center;
 }
+
+
+.scroller2 {
+
+  height: 63vh;
+  overflow-y: scroll;
+  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-width: thin;
+}
+
 
 .colovert{
   border-color: var(--vert-pale);
