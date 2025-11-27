@@ -29,40 +29,45 @@ function mmcheckvideo(mminfo) {
 }
 
 /**
-    pos the children of a node in a circle
+ * pos the children of a node in a circle
  * @param {mmInfo} mminfo mminfo  
-    @param {mmNode} root the root node to witch the children has been added
-*/
+ * @param {mmNode} root the root node to witch the children has been added
+ */
 function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
     // est ce que c'est mmroot ou pas 
     const isRoot = root.category == mmRoot;
+    const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
+    const nb_child = root.childrens.length;
+    
     // distance entre root et enfant ;
-    // on a un cercle de 360°/180° si root , et on doit divisier ca par le nombre d"enfants (moins le trait d"origine) 
-    let nb_child = root.childrens.length -1;
-    let angle_per_child = ((isRoot ? 360 : 180) / nb_child);
+    let angle_per_child = totalArc / nb_child;
     // so the distance is inversly proportional to the number of angle_per_child
-    const baseDistance = 400; // Base distance at depth 1
-    const taille_max_node = baseDistance * Math.pow(1.2, root.depth - 1)
-    let distance = taille_max_node + (1 / angle_per_child) * taille_max_node;
-    // we iterate over an angle ,  for root else half of arc
-    let current_angle = isRoot ? 0 : root.origin_angle - (isRoot ? 360 : 180) / 2;
+    const baseDistance = 200;
+    const depthFactor = Math.max(0.7, 1 / Math.sqrt(root.depth)); // Reduce distance as depth increases
+    const spreadFactor = Math.min(1000,Math.max(1,nb_child * 0.45)); // Slightly increase distance for more children
+    const distance = baseDistance * depthFactor * spreadFactor * mminfo.scale;
+
+    // Calculate starting position - centered on origin_angle
+    let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
+    
     let base_rootx = root.x - 25 * mminfo.scale;
     let base_rooty = root.y - 25 * mminfo.scale;
+    
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
+        const current_angle = start_angle + (angle_per_child * index);
         const angleRad = current_angle * Math.PI / 180;
 
         child.x = base_rootx + Math.cos(angleRad) * distance;
         child.y = base_rooty + Math.sin(angleRad) * distance;
-        child.angle = current_angle;
+        child.origin_angle = current_angle;
         // create link
         // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
         // advance the angle
-        current_angle += angle_per_child;
     }
-    console.log(`Positioned ${nb_child} children around ${isRoot ? 'root' : root.category.name} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
+    /// console.log(`Positioned ${nb_child} children from ${root.origin_angle} around ${isRoot ? 'root' : root.category.name} distance ${distance} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
     // console.log("set_children",root.childrens);
 }
 
@@ -200,7 +205,7 @@ async function mmget_onecat(mminfo, node) {
         node.loading = true;
 
         (mminfo.searchval ? node.category.search(mminfo.searchval) : node.category.list()).then(async contentList => {
-            console.log("getting detail from category", node.category, contentList);
+            // console.log("getting detail from category", node.category, contentList);
             for (const element of contentList.slice(0, 5)) {
                 mmcreateChildNode(mminfo,node,node.category,element);
                 // await new Promise(resolve => { setTimeout(resolve, 1000); });
