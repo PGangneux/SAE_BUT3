@@ -1,5 +1,5 @@
 <script>
-import { LegendClassMap, mmNode } from "../../model/mindmap_func";
+import { mmInfo, mmLegendClassMap, mmNode } from "../../model/mindmap/mindmap_base.js";
 
 export default {
     name: "mindmap_node",
@@ -8,69 +8,84 @@ export default {
             type: mmNode,
             required: true,
         },
-        scale: {
-            type: Number,
+        mminfo: {
+            type: mmInfo,
             required: true,
-        },
-        offx: {
-            type: Number,
-            required: true,
-        },
-        offy: {
-            type: Number,
-            required: true,
-        },
+        }
     },
     data() {
         return {
-            LegendClassMap: LegendClassMap,
+            mmLegendClassMap: mmLegendClassMap,
             thumbnailUrl: null,
             thumbnailLoading: false,
+            isAppearing: true,
+            // Default dimensions for different node types
+            nodeDimensions: {
+                default: { width: 100, height: 100 },
+                squircle: { width: 300, height: 150 }, // Adjust based on your design
+                round: { width: 100, height: 100 }
+            }
         };
     },
     computed: {
-        displayName() {
-            // Always show the category name
-            const categoryName = this.LegendClassMap[this.node.category.name] || this.node.category.name;
-
-            // If there's content, show it alongside the category
-            if (this.node.content) {
-                const contentName = this.node.content.titre ;
-                return `${categoryName}: ${contentName}`;
-            }
-
-            // If no content, just show the category
-            return categoryName;
-        },
         isVideoContent() {
-            return this.node.content &&
-                (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
+            return this.node.content && (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
+        },
+        currentNodeDimensions() {
+            if (this.isVideoContent) {
+                return this.nodeDimensions.squircle;
+            }
+            return this.nodeDimensions.round;
         }
     },
     methods: {
-        async get_miniature(video) {
-            if (!video) return null;
+        getStyle() {
+            const baseWidth = this.currentNodeDimensions.width;
+            const baseHeight = this.currentNodeDimensions.height;
+            
+            const scaledWidth = baseWidth * this.mminfo.scale;
+            const scaledHeight = baseHeight * this.mminfo.scale;
+            const sizetext = 20 * this.mminfo.scale;
+            
+            // Calculate position - adjust for node center
+            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth / 2);
+            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight / 2);
+            
+            return {
+                "left": (scaledX + this.mminfo.offx) + "px",
+                "top": (scaledY + this.mminfo.offy) + "px",
+                "width": scaledWidth + "px",
+                "height": scaledHeight + "px",
+                "font-size": sizetext + "px",
+                "line-height": (scaledHeight * 0.8) + "px", // Adjust line-height based on height
+            };
+        },
+
+        async get_miniature() {
+            if (!this.node.content) return null;
+            if (this.thumbnailUrl) return this.thumbnailUrl;
+            // await new Promise(resolve => { setTimeout(resolve, 1000); });
 
             try {
                 // Cas 1 : c'est un extrait
-                if (!video.extraits) {
-                    return (
-                        video.url_miniature_yt ||
-                        (await video.get_url_miniature_vimeo())
+                if (this.node.category.name === 'Extrait') {
+                    return (this.node.content.url_miniature_yt
+                        /// await video.get_url_miniature_vimeo() || 
                     );
                 }
 
                 // Cas 2 : c'est une interview
-                const extraits = await video.extraits;
+                const extraits = await this.node.content.extraits;
                 if (!extraits || extraits.length === 0) {
-                    console.warn(`Aucun extrait trouvé pour l'interview ${video.uuid}`);
+                    console.warn(`Aucun extrait trouvé pour l'interview ${this.node.content}`);
                     return null;
                 }
 
                 const firstExtrait = extraits[0];
+
                 return (
-                    firstExtrait.url_miniature_yt ||
-                    (await firstExtrait.get_url_miniature_vimeo())
+                    firstExtrait.url_miniature_yt
+                    /// await firstExtrait.get_url_miniature_vimeo() || 
                 );
 
             } catch (err) {
@@ -78,173 +93,212 @@ export default {
                 return null;
             }
         },
-
-        async loadThumbnail() {
-            if (!this.isVideoContent) return;
-
-            this.thumbnailLoading = true;
-            this.thumbnailUrl = await this.get_miniature(this.node.content);
-            this.thumbnailLoading = false;
-        }
-    },
-    mounted() {
-        if (this.isVideoContent) {
-            this.loadThumbnail();
-        }
     },
     watch: {
-        'node.content': {
-            handler() {
+        'node.loading': {
+            async handler() {
                 if (this.isVideoContent) {
-                    this.loadThumbnail();
-                } else {
-                    this.thumbnailUrl = null;
+                    this.thumbnailLoading = true;
+                    this.get_miniature().then(value => {
+                        this.thumbnailUrl = value;
+                        this.thumbnailLoading = false;
+                    }).catch(error => {
+                        console.error(error);
+                        this.thumbnailLoading = false;
+                    });
                 }
             },
             deep: true
         }
-    }
+    },
+    async mounted() {
+        setTimeout(() => {
+            this.isAppearing = false;
+        }, 50);
+        if (this.isVideoContent) {
+            this.thumbnailLoading = true;
+            this.get_miniature().then(value => {
+                this.thumbnailUrl = value;
+                this.thumbnailLoading = false;
+            }).catch(error => {
+                console.error(error);
+                this.thumbnailLoading = false;
+            });
+        }
+    },
 }
 </script>
 
 <template>
-    <div class="mindmap-node" :style="node.getStyle(scale, offx, offy)">
-    <div>
-        {{  this.node.content }}
-    </div>
-        <div v-if="node.loading" class="loading-spinner">
+    <div class="mm_node"
+        :class="`mmLegendColorMap${node.category.name} mm_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
+        :style="getStyle()">
+        <div style="display: none;">
+            {{ this.node }}
+        </div>
+        <template v-if="node.loading" class="mm_node_loading-spinner">
             <img src="/imgs/spinner.gif" alt="Loading..." />
-        </div>
-        <div v-else class="node-content">
-            <!-- Always show category name -->
-            <p class="category-name">{{ LegendClassMap[node.category.name] }}</p>
-
-            <!-- Show content name if available -->
-            <p v-if="node.content" class="content-name">
-                {{ node.content.name || 'Sans nom' }}
-            </p>
-
-            <!-- Show video type badge for Interview/Extrait -->
-            <div v-if="node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')"
-                class="video-badge">
-                {{ node.category.name === 'Extrait' ? 'Extrait' : 'Interview' }}
-            </div>
-
-            <!-- Thumbnail with loading state -->
-            <div v-if="isVideoContent" class="thumbnail-container">
-                <div v-if="thumbnailLoading" class="thumbnail-loading">
-                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="thumbnail-spinner" />
+        </template>
+        <template v-else>
+            <template v-if="!node.content">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">{{ mmLegendClassMap[node.category.name] }}</p>
                 </div>
-                <img v-else-if="thumbnailUrl" :src="thumbnailUrl" alt="Miniature" class="thumbnail"
-                    @error="thumbnailUrl = null" />
-                <div v-else class="no-thumbnail">
-                    📹
+            </template>
+            <template v-else-if="node.content && !isVideoContent">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">
+                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                    </p>
+                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
                 </div>
-            </div>
-        </div>
+            </template>
+            <template v-if="node.content && isVideoContent">
+                <div class="mm_node_content">
+                    <p class="mm_node_title">
+                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                    </p>
+                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
+                    <div class="mm_node_description">
+                        <p>uploaded_at : {{ this.node.content.uploaded_at }}</p>
+                        <p>duree : {{ this.node.content.duree }}</p>
+                    </div>
+                </div>
+                <div class="mm_node_preview">
+                    <template v-if="thumbnailLoading">
+                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
+                    </template>
+                    <template v-else-if="thumbnailUrl">
+                        <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                    </template>
+                    <template v-else>
+                        <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
+                    </template>
+                </div>
+                </template>
+        </template>
     </div>
 </template>
 
 <style scoped>
-.mindmap-node {
+.mm_node {
     position: absolute;
-    border-radius: 50%;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
     text-align: center;
     color: white;
-    font-weight: bold;
-    overflow: hidden;
+    cursor: pointer;
+    z-index: 5;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    transform: scale(0);
+    opacity: 0;
+    overflow: hidden;
+    /* Remove fixed max-height as it's now controlled by dimensions */
 }
 
-.loading-spinner {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
+.mm_node:not(.mm_node_appearing) {
+    transform: scale(1);
+    opacity: 1;
 }
 
-.loading-spinner img {
-    width: 50%;
-    height: 50%;
+.mm_node:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px var(--vert-neon);
 }
 
-.node-content {
-    width: 100%;
-    height: 100%;
+.mm_nodeSquircle {
+    border-radius: 10%;
+}
+
+.mm_nodeRound {
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+/* Node content layout title subtitle description */
+.mm_node_content {
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    padding: 12px;
     box-sizing: border-box;
-    gap: 4px;
+    overflow: hidden;
 }
 
-.category-name {
+.mm_node_title {
     font-size: 0.9em;
-    margin: 0;
+    margin: 0 0 4px 0;
     line-height: 1.1;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.content-name {
+.mm_node_subtitle {
     font-size: 0.7em;
-    margin: 0;
+    margin: 0 0 8px 0;
     line-height: 1;
     opacity: 0.9;
     font-weight: normal;
 }
 
-.video-badge {
-    font-size: 0.6em;
-    background: rgba(255, 255, 255, 0.2);
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin: 2px 0;
+.mm_node_description {
+    flex: 1;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px;
+    margin-top: 4px;
 }
 
-.thumbnail-container {
-    width: 80%;
-    height: 40%;
+.mm_node_description p {
+    font-size: 0.6em;
+    margin: 2px 0;
+    line-height: 1.2;
+    opacity: 0.8;
+}
+
+/* Preview/thumbnail section */
+.mm_node_preview {
+    width: auto;
+    min-width: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 8px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.05);
 }
 
-.thumbnail {
-    width: 100%;
+.mm_node_thumbnail {
     height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: 4px;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.thumbnail-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
+.mm_node_loading-spinner {
     height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
 }
 
-.thumbnail-spinner {
-    width: 50%;
-    height: 50%;
-}
-
-.no-thumbnail {
-    font-size: 1.5em;
+.mm_node_no-thumbnail {
+    height: 100%;
+    max-height: 250px;
+    width: auto;
+    aspect-ratio: 1;
     opacity: 0.7;
-}
-
-/* Responsive text sizing based on scale */
-.node-content {
-    font-size: calc(0.8em * v-bind('scale'));
+    padding: 20%;
+    box-sizing: border-box;
 }
 </style>
