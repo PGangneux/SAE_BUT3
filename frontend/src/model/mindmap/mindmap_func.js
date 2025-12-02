@@ -40,34 +40,35 @@ function set_children_pos(mminfo, root) {
     const isRoot = root.category == mmRoot;
     const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
     const nb_child = root.childrens.length;
-    
     // distance entre root et enfant ;
     let angle_per_child = totalArc / nb_child;
     // so the distance is inversly proportional to the number of angle_per_child
-    const baseDistance = 200;
-    const depthFactor = Math.max(0.7, 1 / Math.sqrt(root.depth)); // Reduce distance as depth increases
-    const spreadFactor = Math.min(1000,Math.max(1,nb_child * 0.45)); // Slightly increase distance for more children
-    const distance = baseDistance * depthFactor * spreadFactor * mminfo.scale;
+    const depthFactor = Math.max(0.7, 1 / root.depth); // Reduce distance as depth increases
+    const spreadFactor = Math.max(1,nb_child * 0.5); // Slightly increase distance for more children
+    const distance = 200 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
-    
-    let base_rootx = root.x - 25 * mminfo.scale;
-    let base_rooty = root.y - 25 * mminfo.scale;
-    
+    const degree_to_rad = Math.PI / 180;
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
         const current_angle = start_angle + (angle_per_child * index);
-        const angleRad = current_angle * Math.PI / 180;
+        const angleRad = current_angle * degree_to_rad;
 
-        child.x = base_rootx + Math.cos(angleRad) * distance;
-        child.y = base_rooty + Math.sin(angleRad) * distance;
+        child.x = root.x + Math.cos(angleRad) * distance;
+        child.y = root.y + Math.sin(angleRad) * distance;
         child.origin_angle = current_angle;
-        // create link
-        // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
-        // advance the angle
+
+        console.table({
+        Child: index + 1,
+        Angle: `${current_angle.toFixed(1)}°`,
+        Position: `(${child.x.toFixed(2)}, ${child.y.toFixed(2)})`,
+        Distance: distance,
+        Origin: `(${root.x}, ${root.y})`
+    });
     }
-    /// console.log(`Positioned ${nb_child} children from ${root.origin_angle} around ${isRoot ? 'root' : root.category.name} distance ${distance} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
+    console.log(`Positioned ${nb_child} children from ${root.origin_angle} around ${isRoot ? 'root' : root.category.name} distance ${distance} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
+    console.log(root);
     // console.log("set_children",root.childrens);
 }
 
@@ -105,15 +106,19 @@ function mmchemin_filter(mminfo) {
  * @param {mmInfo} mminfo mminfo  
  * @param {mmNode} node the parent node  
  * @param {class} category the class of node  
- * @param {class} content the content instance of class category  
+ * @param {class} content the content instance of class category
+ * @param {boolean} createLink = true do we draw the white line or not
  * @return {mmNode} the created child
 */
-function mmcreateChildNode(mminfo, node, category,content) {
+function mmcreateChildNode(mminfo, node , category ,content  , createLink = true) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
     const tmp_child = new mmNode(node.x, node.y, node.depth + 1, category, content);
     mminfo.nodes.push(markRaw(tmp_child));
     node.childrens.push(markRaw(tmp_child));
-    mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
+    // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
+    if (createLink){
+        mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
+    }
     set_children_pos(mminfo, node);
     return tmp_child;
 }
@@ -123,6 +128,8 @@ function mmcreateChildNode(mminfo, node, category,content) {
  * @param {mmInfo} mminfo mminfo  
 */
 function mmreset(mminfo) {
+    console.log("mmreset mminfo",mminfo);
+    
     // reset
     mminfo.nodes = [];
     mminfo.linkages = [];
@@ -132,11 +139,11 @@ function mmreset(mminfo) {
     
     // put defaults
     for (const cat of mmCategorysDefault) {
-        mmcreateChildNode(mminfo,root,cat,null);
+        mmcreateChildNode(mminfo,root,cat,null,false);
     }
     if (mminfo.searchval) {
         for (const cat of mmCategorysSearch) {
-            mmcreateChildNode(mminfo,root,cat,null);
+            mmcreateChildNode(mminfo,root,cat,null,false);
         }
     }
 }
