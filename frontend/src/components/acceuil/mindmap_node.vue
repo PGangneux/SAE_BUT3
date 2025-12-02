@@ -48,8 +48,8 @@ export default {
             const sizetext = 20 * this.mminfo.scale;
             
             // Calculate position - adjust for node center
-            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth / 2);
-            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight / 2);
+            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth/16);
+            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight/16);
             
             return {
                 "left": (scaledX + this.mminfo.offx) + "px",
