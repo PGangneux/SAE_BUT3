@@ -36,40 +36,85 @@ function mmcheckvideo(mminfo) {
 function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
+    
     // est ce que c'est mmroot ou pas 
     const isRoot = root.category == mmRoot;
     const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
     const nb_child = root.childrens.length;
+    
+    // Count children with and without content
+    let childrenWithContent = 0;
+    let childrenWithoutContent = 0;
+    
+    for (let child of root.childrens) {
+        if (child.content) {
+            childrenWithContent++;
+        } else {
+            childrenWithoutContent++;
+        }
+    }
+    
+    // console.log(`Children analysis: ${childrenWithContent} with content, ${childrenWithoutContent} without content`);
+    
+    // Calculate angle per child based on content
+    // Children with content get 1.2x more angle space
+    const effectiveChildren = childrenWithContent * 1.2 + childrenWithoutContent;
+    let angle_per_child = totalArc / effectiveChildren;
+    
     // distance entre root et enfant ;
-    let angle_per_child = totalArc / nb_child;
     // so the distance is inversly proportional to the number of angle_per_child
     const depthFactor = Math.max(0.7, 1 / root.depth); // Reduce distance as depth increases
-    const spreadFactor = Math.max(1,nb_child * 0.5); // Slightly increase distance for more children
+    
+    // New spreadFactor based on number of children AND children with content
+    const spreadFactor = Math.max(1, (nb_child + childrenWithContent * 0.5) * 0.5);
     const distance = 200 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
     const degree_to_rad = Math.PI / 180;
+    
+    // console.log(`Positioning ${nb_child} children:`);
+    // console.log(`Effective children count: ${effectiveChildren.toFixed(1)}`);
+    // console.log(`Angle per child: ${angle_per_child.toFixed(2)}°`);
+    // console.log(`Spread factor: ${spreadFactor.toFixed(2)}`);
+    // console.log(`Distance: ${distance.toFixed(2)}`);
+    
+    let currentEffectiveIndex = 0;
+    let positioningTable = [];
+    
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
-        const current_angle = start_angle + (angle_per_child * index);
+        const hasContent = child.content
+        // Calculate current angle - adjust for content weighting
+        const angleWeight = hasContent ? 1.2 : 1;
+        const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);
+        currentEffectiveIndex += angleWeight;
+        
         const angleRad = current_angle * degree_to_rad;
 
         child.x = root.x + Math.cos(angleRad) * distance;
         child.y = root.y + Math.sin(angleRad) * distance;
         child.origin_angle = current_angle;
 
-        console.table({
-        Child: index + 1,
-        Angle: `${current_angle.toFixed(1)}°`,
-        Position: `(${child.x.toFixed(2)}, ${child.y.toFixed(2)})`,
-        Distance: distance,
-        Origin: `(${root.x}, ${root.y})`
-    });
+        // positioningTable.push({
+        //     'Child': index + 1,
+        //     'Has Content': hasContent ? 'Yes' : 'No',
+        //     'Angle Weight': angleWeight,
+        //     'Angle': `${current_angle.toFixed(1)}°`,
+        //     'Position X': child.x.toFixed(2),
+        //     'Position Y': child.y.toFixed(2),
+        //     'Distance': distance.toFixed(2),
+        //     'Origin': `(${root.x.toFixed(2)}, ${root.y.toFixed(2)})`
+        // });
     }
-    console.log(`Positioned ${nb_child} children from ${root.origin_angle} around ${isRoot ? 'root' : root.category.name} distance ${distance} at depth ${root.depth}, arc: ${angle_per_child*nb_child}°/${angle_per_child}°`);
-    console.log(root);
-    // console.log("set_children",root.childrens);
+    
+    // console.table(positioningTable);
+    // console.table(positioningTable);
+    // console.log(`Positioned ${nb_child} children around ${isRoot ? 'root' : root.category.name}`);
+    // console.log(`Total arc used: ${(angle_per_child * effectiveChildren).toFixed(1)}°`);
+    // console.log(`Children with content: ${childrenWithContent} (get 1.2x angle space)`);
+    
+    // return positioningTable;
 }
 
 /**
@@ -128,7 +173,7 @@ function mmcreateChildNode(mminfo, node , category ,content  , createLink = true
  * @param {mmInfo} mminfo mminfo  
 */
 function mmreset(mminfo) {
-    console.log("mmreset mminfo",mminfo);
+    // console.log("mmreset mminfo",mminfo);
     
     // reset
     mminfo.nodes = [];
@@ -156,7 +201,7 @@ export async function mmdraw_root(mminfo) {
     mmreset(mminfo);
     let changevideo, changepath = mmchemin_filter(mminfo);
     if (changevideo) return;
-    console.log("mmdraw_root chemin path", mminfo.chemin);
+    // console.log("mmdraw_root chemin path", mminfo.chemin);
     for (const cheminpath of mminfo.chemin) {
         await mmget_onecat(mminfo, cheminpath);
     }
@@ -171,12 +216,12 @@ export async function mmdraw_update(mminfo) {
     let changevideo, changepath = mmchemin_filter(mminfo);
     if (changevideo) return;
     if (changepath) return mmdraw_root(mminfo);
-    console.log("mmdraw_update chemin path", mminfo.chemin);
+    // console.log("mmdraw_update chemin path", mminfo.chemin);
     await mmget_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
 }
 
 async function mmget_onecat(mminfo, node) {
-    console.log("mmget_onecat", node);
+    // console.log("mmget_onecat", node);
 
     // failsafe videonode
     // normally we should have goto video before
