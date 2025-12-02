@@ -99,6 +99,7 @@ export default {
                     <th scope="col">Nom interview</th>
                     <th scope="col">Nb video</th>
                     <th scope="col">Tags</th>
+                    <th scope="col">Ajouter</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,6 +107,7 @@ export default {
                         <td> {{ interview.titre }} </td>
                         <td> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </td>
                         <td> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </td>
+                        <td> <button> add</button> </td>
                     </tr>
                 </tbody>
             </table>

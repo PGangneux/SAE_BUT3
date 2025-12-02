@@ -7,6 +7,8 @@ import popup_valider from "../../../components/components_admin/popup_validation
 import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
+import Question from "../../../model/question";
+import Artiste from "../../../model/artiste";
 
 
 
@@ -29,6 +31,8 @@ export default {
             Element_Creer: {
               type:Object,
             },
+            listeArtiste:[],
+            listeQuestion:[],
             popup: false,
             popup2:false,
         };
@@ -52,14 +56,32 @@ export default {
     popupchange2(){
       this.popup2 = !this.popup2
       console.log(this.popup2)
+    },
+
+    async recupeArtiste(){
+      this.listeArtiste =  markRaw(await Artiste.list());
+      console.log("artiste", this.listeArtiste)
+      console.log("artiste", this.listeArtiste[0].name)
+    },
+
+
+
+
+    async recupeQuestion(){
+      this.listeQuestion =  markRaw(await Question.list());
+      console.log(this.listeQuestion)
     }
 
 
   },
 
 
+
  async mounted() {
   this.taillelist = []
+  await this.recupeArtiste();
+  await this.recupeQuestion();
+  console.log()
  }
 
 };
@@ -83,13 +105,13 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <select id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-                  <!-- utiliser js TODO -->
-                  <option value=""> > </option>
-                  <option value="option1"> Question 1</option> 
-                  <option value="option2"> Question 2</option>
-                  <option value="option3"> Question 3</option>
-                </select>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" />
+                
+                <datalist id="Questiondata">
+                <option v-for="question in listeQuestion" :key="question.texte" :value="question.texte" > </option> 
+                </datalist>
+
+
                 <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
@@ -97,13 +119,12 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-                  <!-- utiliser js TODO -->
-                  <option value=""> > </option>
-                  <option value="option1"> Artiste 1</option> 
-                  <option value="option2"> Artiste 2</option>
-                  <option value="option3"> Artiste 3</option>
-                </select>
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                
+                <datalist id="Artistedata">
+                <option v-for="artiste in listeArtiste" :key="artiste.name" :value="artiste.name" > </option> 
+                </datalist>
+
                 <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
           </div>
