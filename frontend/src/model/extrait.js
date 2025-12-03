@@ -57,10 +57,10 @@ export default class Extrait extends Model {
     get uploaded_at() { return this.#uploaded_at; }
     set uploaded_at(value) { this.#uploaded_at = value; }
 
-    get artiste() { return this.fetchDetail(this.#artiste, Artiste); }
+    async artiste() { return await this.fetchDetail(this.#artiste, Artiste); }
     set artiste(value) { this.#artiste_uuid = this.validateString(value, "artiste_uuid"); }
 
-    get question() { return this.fetchDetail(this.#question, Question); }
+    async question() { return await this.fetchDetail(this.#question, Question); }
     set question(value) { this.#question_uuid = this.validateString(value, "question_uuid"); }
 
     get duree() { return this.#duree; }

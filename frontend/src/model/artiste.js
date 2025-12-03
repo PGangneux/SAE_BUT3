@@ -30,7 +30,7 @@ export default class Artiste extends Model {
     get info() { return this.#info; }
     set info(value) { this.#info = this.validateString(value, "info"); }
 
-    get nation() { return this.fetchDetail(this.#nation, Nation); }
+    async nation() { return await this.fetchDetail(this.#nation, Nation); }
     set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
 
     async styles(args) { return await this.fetchList(this.#styles, StyleMusical, args); }

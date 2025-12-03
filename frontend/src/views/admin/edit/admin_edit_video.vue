@@ -104,10 +104,10 @@ export default {
 
     // console.log("dico complet en cours");
     this.dico_extrait = {
-      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
-      "question":   (markRaw(await this.current_extrait.titre)).name,
-      "interviews": (markRaw(await this.current_extrait.interviews)),
-      "tags": (markRaw(await this.current_extrait.tags))
+      "artiste":    (markRaw(await this.current_extrait.artiste())).name,
+      "question":   (markRaw(await this.current_extrait.titre())).name,
+      "interviews": (markRaw(await this.current_extrait.interviews())),
+      "tags": (markRaw(await this.current_extrait.tags()))
     };
 
 
