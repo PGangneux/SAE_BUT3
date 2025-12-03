@@ -22,11 +22,26 @@ export default {
     //dataliste
   },data() {
         return {
-            current_extrait : {type:Extrait},
             tags:[],
             dico_extrait:{},
             taillelist:Array,
             thumbnail: '/imgs/width551.png',
+
+            dico_elementcreer:{
+                  titre: null,
+                  description:  null,
+                  youtube_url:  null,
+                  vimeo_url:    null,
+                  uploaded_at:  null,
+                  artiste:      null,
+                  question:     null,
+                  interviews:[],
+                  tags:         null,
+                  position:     null,
+                  artiste_uuid: null,
+                  question_uuid:null,
+                  duree:        null,
+            },
 
             Element_Creer: {
               type:Object,
@@ -45,12 +60,20 @@ export default {
     async enregistrer(){
 
       //this.Element_Creer = await new Extrait().create()
-      
+      console.log(this.dico_elementcreer);
       console.log("creer");
       this.popup2 = true;
     },
 
     possiblecreation(){
+
+    },
+
+    ajoutertag(){
+
+    },
+
+    removetag(){
 
     },
 
@@ -85,6 +108,7 @@ export default {
 
  async mounted() {
   this.taillelist = []
+  this.tags = [];
   await this.recupeArtiste();
   await this.recupeQuestion();
   console.log()
@@ -111,7 +135,7 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" />
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="dico_elementcreer.question"/>
                 
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.texte" :value="question.texte" > </option> 
@@ -125,7 +149,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" v-model="dico_elementcreer.artiste">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.name" :value="artiste.name" > </option> 
@@ -141,14 +165,14 @@ export default {
                 <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
                 Date : 
               </span>
-              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" />
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" v-model="dico_elementcreer.uploaded_at" />
             </div>
           </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url">
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" v-model="dico_elementcreer.youtube_url" >
             </div>
           </div>
             
@@ -156,14 +180,14 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" >
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" v-model="dico_elementcreer.vimeo_url">
               </div>
           </div>
           
 
             <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group">
-                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="dico_elementcreer.description"></textarea>
               </div>
             </div>
 

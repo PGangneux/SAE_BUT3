@@ -105,7 +105,7 @@ export default {
     // console.log("dico complet en cours");
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
-      "question":   (markRaw(await this.current_extrait.titre)).name,
+      "question":   (markRaw(await this.current_extrait.titre)),
       "interviews": (markRaw(await this.current_extrait.interviews)),
       "tags": (markRaw(await this.current_extrait.tags))
     };
@@ -116,7 +116,7 @@ export default {
 
 
   //  // console.log(this.dico_extrait['artiste']);
-  //  // console.log(this.dico_extrait['question']);
+console.log(this.dico_extrait['question']);
   //  // console.log(this.dico_extrait['interviews']);
   //  // console.log(await this.current_extrait.interviews);
 
