@@ -43,9 +43,15 @@ export default {
   methods: {
 
     async enregistrer(){
+
+      //this.Element_Creer = await new Extrait().create()
       
-      this.Element_Creer = await new Extrait().create()
-      this.popup2 =true;
+      console.log("creer");
+      this.popup2 = true;
+    },
+
+    possiblecreation(){
+
     },
 
     popupchange(){
@@ -96,7 +102,7 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/creer/' }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
@@ -249,7 +255,7 @@ export default {
 
     <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
     
-    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2" /> </div>
+    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2"/> </div>
 
 
     </template>
