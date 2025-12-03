@@ -27,6 +27,25 @@ export default {
           return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
         },
       },
+  },methods : {
+    start(e){
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text",e.target.getAttribute("id"));
+      console.log("start drag");
+    },
+
+    over(e){
+      e.preventDefault()
+      console.log("over drag");
+      return false;
+    },
+
+    drop(e){
+      let obj = e.dataTransfer.getData("text");
+      e.currentTarget.appendChild(document.getElementById(obj));
+      console.log("drop drag");
+    }
+
   },
 
  async mounted() {
@@ -91,8 +110,8 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <li class="row carte pcentrer" v-for="extraitv1 in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;">
+            <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;"  @ondragover="over($event)" @ondrop="drop($event)">
+                <li class="row carte pcentrer" v-for="extraitv1 in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;" draggable="true" @ondragstart="start($event)">
                     <comp_petit_extrait :current_extrait=extraitv1 />
                 </li>
             </ul>
@@ -118,8 +137,8 @@ export default {
                 </div>
             </div>
 
-            <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <li class="row carte pcentrer" v-for="extraitv2 in this.current_list_extraits" style=" margin-left: 0 !important; margin-right: 0 !important;">
+            <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;"  @ondragover="over($event)" @ondrop="over($event)" >
+                <li class="row carte pcentrer" v-for="extraitv2 in this.current_list_extraits" style=" margin-left: 0 !important; margin-right: 0 !important;" @ondragstart="start($event)" draggable="true">
                     <comp_petit_extrait :current_extrait=extraitv2 />
                 </li>
             </ul>
@@ -128,7 +147,8 @@ export default {
 </div>
 
 <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-            <button  type="button"   class="button-blanc btn col" > <img src="/imgs/add_black.svg" alt="Ajouter un extrait"> Ajouter un extrait </button>
+            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
+            <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
             <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
             <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
 </div>

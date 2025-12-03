@@ -13,10 +13,3 @@ export default {
         <input type="submit" value="">
     </form>
 </template>
-
-<style scoped>
-.vert-neon { 
-    color : var(--vert-neon);
-    justify-self: center;
-}
-</style>

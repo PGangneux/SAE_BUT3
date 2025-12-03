@@ -39,7 +39,7 @@ export default {
 
 <template>
     
-    <div class="container container_extrait col " >
+    <div class="container container_extrait col "  >
         <div class="row base">
 
             <div class="col-sm reduction_image">

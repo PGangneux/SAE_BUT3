@@ -2,6 +2,8 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
+import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
+
 import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
@@ -12,8 +14,10 @@ export default {
   name: "page_admin_detail_video",
   components: {
     comp_baradmin,
+    popup_valider,
     comp_popup,
 
+    //dataliste
   },data() {
         return {
             current_extrait : {type:Extrait},
@@ -21,7 +25,12 @@ export default {
             dico_extrait:{},
             taillelist:Array,
             thumbnail: '/imgs/width551.png',
+
+            Element_Creer: {
+              type:Object,
+            },
             popup: false,
+            popup2:false,
         };
     },
     
@@ -29,10 +38,20 @@ export default {
 
   methods: {
 
+    async enregistrer(){
+      
+      this.Element_Creer = await new Extrait().create()
+      this.popup2 =true;
+    },
 
     popupchange(){
       this.popup = !this.popup
       console.log(this.popup)
+    },
+
+    popupchange2(){
+      this.popup2 = !this.popup2
+      console.log(this.popup2)
     }
 
 
@@ -63,34 +82,46 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question"/>
+
+                <select id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                  <!-- utiliser js TODO -->
+                  <option value=""> > </option>
+                  <option value="option1"> Question 1</option> 
+                  <option value="option2"> Question 2</option>
+                  <option value="option3"> Question 3</option>
+                </select>
+                <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
 
-          <div class="input-group mb-3" >
-            <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" />
+          <div class="row"  style="--bs-gutter-x: 0em;">
+              <div class="input-group mb-3" >
+                <span class="input-group-text colovert" >Artiste :</span>
+                <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
+                  <!-- utiliser js TODO -->
+                  <option value=""> > </option>
+                  <option value="option1"> Artiste 1</option> 
+                  <option value="option2"> Artiste 2</option>
+                  <option value="option3"> Artiste 3</option>
+                </select>
+                <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+              </div>
+          </div>
 
-            <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-              <!-- utiliser js TODO -->
-              <option value=""> > </option>
-              <option value="option1"> Artiste 1</option> 
-              <option value="option2"> Artiste 2</option>
-              <option value="option3"> Artiste 3</option>
-            </select>
-
-            <div class="form-control colovert">
-              <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
-              <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" />
-              <!-- rendre jolie TODO -->
+          <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class="input-group mb-3 ">
+              <span class="input-group-text colovert" >  
+                <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
+                Date : 
+              </span>
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" />
             </div>
           </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" placeholder="youtube_url">
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url">
             </div>
           </div>
             
@@ -98,14 +129,14 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" placeholder="vimeo_url" >
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" >
               </div>
           </div>
           
 
             <div class="row"  style="--bs-gutter-x: 0em;">
-              <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+              <div class="input-group">
+                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
               </div>
             </div>
 
@@ -129,21 +160,38 @@ export default {
                   </tbody>
               </table>
              
+              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+
             </div>
         </div>
       </div>
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button  type="button" @click="enregistrer"  class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
       </div>
 
     </form>
     
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
-      <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+      <section class="row secondpart">
+          <h1 class="pcentrer col"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+          <button class="bt col"> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+          <div class="recherche col">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                                <img src="/imgs/search.svg" alt="button search">
+                            </RouterLink>
+                    </div>
+                </div>
+            </div>
+      </section>
+
+
+
       <div class="row">
 
         <ul v-if="this.taillelist.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
@@ -151,13 +199,16 @@ export default {
                 <div class="row">
                   <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
                   <p class="col">ssssssssss</p>
+                  <button> - </button>
                 </div>
             </li>
         </ul>
 
         <ul v-else-if="this.taillelist == 0 " class="col">
             <li class="row"> 
-                <p  class="col">vide</p>
+              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+              <p  class="col">vide</p>
+              <button class="col bt" ><img src="/imgs/remove.svg" class="col" alt="labelle tags" height="20" width="20"> </button>
             </li>
         </ul>
 
@@ -176,6 +227,9 @@ export default {
    
 
     <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    
+    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2" /> </div>
+
 
     </template>
 
@@ -290,12 +344,25 @@ ul {
   border-radius: 2em;
 }
 
+.secondpart{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
 option{
   display : "none"
 }
 
 label{
   color: var(--vert-neon);
+}
+
+
+.button-blanc{
+    background-color: var(--blanc);
 }
 
 </style>

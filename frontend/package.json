@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "npx vitest" 
   },
   "dependencies": {
     "vue": "3.5.13",
@@ -14,6 +15,12 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "5.2.1",
-    "vite": "6.2.0"
+    "@vitest/coverage-v8": "^4.0.10",
+    "@vue/test-utils": "^2.4.6",
+    "c8": "^10.1.3",
+    "jsdom": "^20.0.3",
+    "jsdom-global": "^3.0.2",
+    "vite": "6.2.0",
+    "vitest": "^4.0.10"
   }
 }

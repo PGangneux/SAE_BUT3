@@ -49,10 +49,6 @@ export default {
 </template>
 
 <style scoped>
-.vert-neon { 
-    color : var(--vert-neon);
-    justify-self: center;
-}
 .local-flex {
     display: flex;
     flex-wrap: wrap;
