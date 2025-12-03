@@ -4,9 +4,10 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 
-import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
+import Interview from '../../../model/interview.js';
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 
@@ -17,7 +18,7 @@ export default {
   components: {
     comp_baradmin,
     popup_valider,
-    comp_popup,
+    popup_interview,
 
     //dataliste
   },data() {
@@ -73,9 +74,36 @@ export default {
 
     },
 
-    removetag(){
-
+    removetag(idtags){
+      if(this.dico_elementcreer.tags == []){
+        console.log("pas d'element a retiré")
+      }else if (this.dico_elementcreer.tags.includes(idtags)) {
+        this.dico_elementcreer.tags.remove(idtags);
+        console.log("tags retiré")
+      }
     },
+
+
+    Interview_ajouter(interview_ajouter){
+      if(interview_ajouter == null ||interview_ajouter !=Interview ){
+        console.log("interview non conforme")
+      }
+      else if(this.dico_elementcreer.interviews.includes(interview_retirer)){
+        console.log("interview deja present")
+      }else{
+        this.dico_elementcreer.interviews.push(interview_ajouter);
+      } 
+    },
+
+    Interview_retirer(interview_retirer){
+      if(this.dico_elementcreer.interviews == []){
+        console.log("pas d'element a retiré")
+      }else if (this.dico_elementcreer.interviews.includes(interview_retirer)) {
+        this.dico_elementcreer.interviews.remove(interview_retirer);
+        console.log("interviews retiré")
+      }
+    },
+    
 
     popupchange(){
       this.popup = !this.popup
@@ -108,7 +136,7 @@ export default {
 
  async mounted() {
   this.taillelist = []
-  this.tags = [];
+
   await this.recupeArtiste();
   await this.recupeQuestion();
   console.log()
@@ -277,7 +305,7 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div>
     
     <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2"/> </div>
 

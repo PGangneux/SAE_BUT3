@@ -2,7 +2,7 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
-import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
 
@@ -15,7 +15,7 @@ export default {
 
   components: {
     comp_baradmin,
-    comp_popup,
+    popup_interview,
 
   },data() {
         return {
@@ -271,7 +271,7 @@ console.log(this.dico_extrait['question']);
     
    
 
-    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 
     </template>
 

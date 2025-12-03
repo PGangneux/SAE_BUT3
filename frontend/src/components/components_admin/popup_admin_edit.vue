@@ -19,11 +19,28 @@ export default {
             interviews:{type:Interview},
             dico_interviews:{},
             tags: {type:Tags},
+            interview_modifier:{type:Interview}
         };
     },methods: {
         changement_etat_popup () {
             this.$emit('ecoutepopup', !this.popup)
         },
+
+
+        ajouter_interview_parent() {
+            if (this.interview_modifier == Interview) {
+                this.$emit('Interview_ajouter', this.interview_modifier);
+            }
+        },
+
+
+        retirer_interview_parent() {
+            if (this.interview_modifier == Interview) {
+                this.$emit('Interview_retirer', this.interview_modifier);
+            }
+        },
+
+
         tags_to_string(tags_array) {
             let string_tags = "";
             for (let tag of tags_array){
@@ -31,6 +48,8 @@ export default {
             }
             return string_tags.trim();
         },
+
+        
     },
     emits : [ "ecoutepopup"],   
     
@@ -107,7 +126,11 @@ export default {
                         <td> {{ interview.titre }} </td>
                         <td> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </td>
                         <td> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </td>
-                        <td> <button> add</button> </td>
+                        <td>
+                            <button @click="ajouter_interview_parent" value="{{ interview }}"> add </button>
+                            <button @click="retirer_interview_parent" value="{{ interview }}"> remove</button>
+                        </td>
+                        
                     </tr>
                 </tbody>
             </table>
