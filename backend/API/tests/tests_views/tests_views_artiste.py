@@ -18,14 +18,6 @@ class ArtisteViewSetAPITests(Neo4jTestCase):
         self.assertTrue(any(a['uuid'] == self.artiste1.uuid for a in response.json()))
         self.assertTrue(any(a['uuid'] == self.artiste2.uuid for a in response.json()))
 
-    def test_search_artistes(self):
-        url = reverse('artiste-list') + "?search=Jane"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.json()
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['uuid'], self.artiste2.uuid)
-
     def test_retrieve_artiste(self):
         url = reverse('artiste-detail', kwargs={'uuid': self.artiste1.uuid})
         response = self.client.get(url)
@@ -36,6 +28,61 @@ class ArtisteViewSetAPITests(Neo4jTestCase):
         url = reverse('artiste-detail', kwargs={'uuid': '00000000-0000-0000-0000-000000000000'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_search_artistes(self):
+        url = reverse('artiste-list') + "?search=Jane"
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['uuid'], self.artiste2.uuid)
+    
+    def test_order_artistes_OK(self):
+        url = reverse('artiste-list')
+        response = self.client.get(url + '?order=-name')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['uuid'], self.artiste1.uuid)
+
+    def test_order_artistesKO(self):
+        url = reverse('artiste-list')
+        response = self.client.get(url + '?order=testtest')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        print(data)
+    
+    def test_order_artistes_relationship_nodesOK(self):
+        self.artiste1.style.connect(StyleMusical(name="Style A").save())
+        self.artiste2.style.connect(StyleMusical(name="Style B").save())
+        url = reverse('artiste-list')
+        response = self.client.get(url + '?order=style__name')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data), 2)
+        self.assertEqual(data[0]['uuid'], self.artiste1.uuid)
+
+    def test_order_artistes_relationship_nodesKO(self):
+        url = reverse('artiste-list')
+        response = self.client.get(url + '?order=style__test')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        print(data)
+    
+    # def test_order_artistes_relationship_propertyOK(self):
+    #     url = reverse('artiste-list')
+    #     response = self.client.get(url + '?order=-name')
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    #     data = response.json()
+    #     self.assertEqual(len(data), 2)
+    #     self.assertEqual(data[0]['uuid'], self.artiste1.uuid)
+
+    # def test_order_artistes_relationship_propertyKO(self):
+    #     url = reverse('artiste-list')
+    #     response = self.client.get(url + '?order=testtest')
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    #     data = response.json()
+    #     print(data)
 
 
 class StyleMusicalArtisteViewSetAPITests(Neo4jTestCase):

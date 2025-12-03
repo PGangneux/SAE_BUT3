@@ -6,7 +6,7 @@ from neomodel.exceptions import DoesNotExist
 from neomodel.sync_.match import NodeSet, RawCypher
 from neomodel import StructuredNode
 from neo4j.exceptions import ServiceUnavailable
-from ...errors import NotFound, ConnexionDB
+from ...errors import NotFound, ConnexionDB, OrderError
 
 
 class BaseGenericViewSet(GenericViewSet):
@@ -156,7 +156,10 @@ class BaseGenericViewSet(GenericViewSet):
 
             else:
                 # Fonctionnement classique.
-                ordering.append(term)
+                if (term[0] == '-' and self.model_class.__dict__.get(term, None)) or self.model_class.__dict__.get(term, None):
+                    ordering.append(term)
+                else:
+                    raise OrderError(term)
         return nodeset.order_by(*ordering)
 
     def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
