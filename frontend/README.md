@@ -24,3 +24,7 @@ modifier 100vh dans popup
 
 reccuperer object a la place de id ( qi on a la liste de base au moment daller sur une autre pages on la genere)
 
+# Tests
+Se placer dans frontnend 
+- Run `npm run test` to execute the unit tests via [Vitest](https://vitest.dev/).
+pour run  fichier spesifique : npm run test -- <file path>
