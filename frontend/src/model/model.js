@@ -108,9 +108,9 @@ export default class Model {
      * @param {Class} Class 
      * @returns {Promise<Array<Model>>}
      */
-    async fetchList(url, Class) {
+    async fetchList(url, Class, args=null) {
         try {
-            return await ClientAPI.get(url)
+            return await ClientAPI.get(url, args)
             .then(data => { return data.map(row => { return new Class(row); }); });
         } catch (error) {
             console.error(error.toString());

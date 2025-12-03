@@ -63,9 +63,12 @@ export default class Extrait extends Model {
     get question() { return this.fetchDetail(this.#question, Question); }
     set question(value) { this.#question_uuid = this.validateString(value, "question_uuid"); }
 
-    get interviews() { return this.fetchList(this.#interviews, Interview); }
+    get duree() { return this.#duree; }
+    set duree(value) { this.#duree = value; }
 
-    get tags() { return this.fetchList(this.#tags, Tag); }
+    async interviews(args) { return await this.fetchList(this.#interviews, Interview, args); }
+
+    async tags(args) { return await this.fetchList(this.#tags, Tag, args); }
 
     get position() { return this.#position; }
 
@@ -78,11 +81,6 @@ export default class Extrait extends Model {
         const data = await response.json();
         return data.thumbnail_url;
     }
-
-
-    get duree() { return this.#duree; }
-
-
 
     /**
      * Connecte un extrait à un tag

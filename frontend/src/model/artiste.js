@@ -33,9 +33,9 @@ export default class Artiste extends Model {
     get nation() { return this.fetchDetail(this.#nation, Nation); }
     set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
 
-    get styles() { return this.fetchList(this.#styles, StyleMusical); }
+    async styles(args) { return await this.fetchList(this.#styles, StyleMusical, args); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait); }
+    async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
     /**
      * Connecte un artiste à un style musical
