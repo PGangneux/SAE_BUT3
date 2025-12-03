@@ -4,6 +4,7 @@ import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Interview from './model/interview';
 import Extrait from './model/extrait';
+import { videoStore } from './model/videoStore';
 
 export default {
     name: "page_router",

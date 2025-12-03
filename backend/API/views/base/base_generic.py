@@ -39,13 +39,25 @@ class BaseGenericViewSet(GenericViewSet):
         """
         queryset: NodeSet = self.get_nodeset()
         request: HttpRequest = self.request
+
         # Recherche (search)
         if self.search_field:
             queryset = self.search_nodeset(queryset, request.GET.get('search', '').strip())
+
         # Ordonne (order)
         order = request.GET.get('order', '').strip()
         if order != '':
             queryset = self.order_nodeset(queryset, order)
+
+        # Pagination (size) (page)
+        size = request.GET.get('size', None)
+        if size:
+            queryset = self.pagination_nodeset(queryset, int(size), int(request.GET.get('page', 0)))
+
+        # Skip les premiers éléments (skip)
+        skip = request.GET.get('skip', None)
+        if skip:
+            queryset = self.skip_nodeset(queryset, int(skip))
         try:
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
@@ -104,17 +116,21 @@ class BaseGenericViewSet(GenericViewSet):
                 # erreur non fatal dans le terminal
                 # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
                 field_list = term.split('__')
+
+                # Sens de l'ordre
+                sens = "DESC" if field_list[0][0] == "-" else "ASC"
+                if sens == "DESC": field_list[0] = field_list[0][1:]
+
                 # Dernière relation
                 relationship = field_list[-2]
+
                 # Field d'ordering
                 field = field_list[-1]
-                sens = "DESC" if field_list[0][0] == "-" else "ASC"
-                if sens == "DESC":
-                    field_list[0] = field_list[0][1:]
+                
+                # Ordonner le queryset
                 ord = "head([($n)"
                 for i in range(len(field_list)-2):
-                    ord += f"-[:{field_list[i].upper()}]\
-                        {"-()" if i < len(field_list)-2 else ""}"
+                    ord += f"-[:{field_list[i].upper()}]{'-()' if i < len(field_list)-2 else ''}"
                 ord += f"-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
                 ordering.append(
                     RawCypher(
@@ -142,3 +158,13 @@ class BaseGenericViewSet(GenericViewSet):
                 # Fonctionnement classique.
                 ordering.append(term)
         return nodeset.order_by(*ordering)
+
+    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
+        # Pagination commence à la page 1
+        if (page) < 1: page = 1
+        if size < 1: return nodeset
+        return nodeset[(page-1)*size:page*size]
+
+    def skip_nodeset(self, nodeset: NodeSet, skip: int):
+        if skip < 0: skip = 0
+        return nodeset[skip:]

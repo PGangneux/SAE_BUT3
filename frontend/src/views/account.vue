@@ -28,27 +28,27 @@ export default {
 
 <form action="" class="heit" style="padding: 1em;">
     <div class="row client" style="height: 80%;">
-        <div class="row client">
+        <div class="row imputexte client">
 
-            <div class="input-group mb-3 col">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="Pseudo"> Pseudo </label>
                 <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo" v-model="this.current_utilisateur.pseudo" >
             </div>
 
-            <div class="input-group mb-3 col">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="Prénom">Prénom</label>
                 <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom" v-model="this.current_utilisateur.prenom" >
             </div>
 
         </div>
 
-        <div class="row client">
-            <div class="input-group mb-3 col">
+        <div class="row client imputexte">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="Nom">Nom</label>
                 <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom" v-model="this.current_utilisateur.nom">
             </div>
 
-            <div class="input-group mb-3 col">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="mot de passe">Nouveau Mot De Passe</label>
                 <input type="text" class="form-control row client" id="mot de passe" name="mot de passe" placeholder="mot de passe" >
             </div>
@@ -56,13 +56,13 @@ export default {
 
         </div>
 
-        <div class="row client">
-            <div class="input-group mb-3 col">
+        <div class="row client imputexte">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="Adresse">Adresse</label>
                     <input type="text" class="form-control row client " id="Adresse" name="Adresse" placeholder="Adresse e-mail" v-model="this.current_utilisateur.email" >
             </div>
 
-            <div class="input-group mb-3 col">
+            <div class="input-group imputexte mb-3 col">
                 <label class="row client" for="confirmer mdp">Confirmer Nouveau <br></br> Mot De Passe</label>
                     <input type="text" class="form-control row client " id="confirmer mdp" name="confirmer mdp" placeholder="confirmer mot de passe" >
             </div>
@@ -70,7 +70,7 @@ export default {
 
 
     </div>
-    <div class="row client" style="height: 10%;">
+    <div class="row client groupebutton" style="height: 10%;">
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
     </div>
@@ -98,8 +98,16 @@ h2{
     
 }
 
+.input-group{
+    align-items: center;
+}
+
 .heit{
   height: 100%;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
 }
 
 label{
@@ -134,6 +142,9 @@ label{
   text-align: center;
 }
 
+.imputexte{
+    max-height: 2em;
+}
 
 .bt{
     color: var(--blanc);
@@ -147,6 +158,10 @@ label{
     background-color:var(--rouge);
     border-radius: 2em;
     
+}
+
+.groupebutton{
+    width: 100%;
 }
 
 .client{

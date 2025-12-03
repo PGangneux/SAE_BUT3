@@ -33,7 +33,7 @@ export default class Extrait extends Model {
         this.#artiste = artiste;
         this.#question = question;
         this.#interviews = interviews;
-        this.#tags = tags;
+        this.#tags = tags;  
         this.#position = position;
         this.#artiste_uuid = null;
         this.#question_uuid = null;

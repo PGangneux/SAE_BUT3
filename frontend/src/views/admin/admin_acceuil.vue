@@ -10,7 +10,7 @@ export default {
 <template>
   <h1 class="text-center"> Admin </h1>
   <nav>
-    <ul style="padding-right:1em ; padding-left: 1em;">
+    <ul class="blocchoix" style="padding-right:1em ; padding-left: 1em;">
       <li>
         <RouterLink class="card col" to="/admin/extrait">
           <h1 class="text-center">Question-Extrait</h1>
@@ -52,7 +52,13 @@ li>.card {
   margin: 10px 10px 10px 10px;  
 }
 
-
+.blocchoix{
+  display: flex;
+  text-align: center;
+  align-content: center;
+  align-items: center;
+  justify-content: space-around;
+}
 
 ul {
   display: flex;

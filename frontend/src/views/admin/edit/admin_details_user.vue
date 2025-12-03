@@ -92,7 +92,7 @@ export default {
     <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
 
 
-        <div class="row grisee" style=" margin-left: 0 !important; margin-right: 0 !important;">
+        <div class="row grisee" style=" margin: 1em;">
             <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
                 <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
                     <p class="row pcentrer">Historique non definie</p>
@@ -216,6 +216,9 @@ label{
     align-content: center;
     padding-right: 1em;
     min-width: 5em;
+}
+form {
+    margin: 1em;
 }
 
 .colorneon{
