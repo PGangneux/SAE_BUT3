@@ -2,6 +2,7 @@ from django.http import HttpRequest
 from django.db.models.query import QuerySet
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.exceptions import ValidationError
 from neomodel.exceptions import DoesNotExist
 from neomodel.sync_.match import NodeSet, RawCypher
 from neomodel import StructuredNode, db
@@ -51,13 +52,20 @@ class BaseGenericViewSet(GenericViewSet):
 
         # Pagination (size) (page)
         size = request.GET.get('size', None)
+        page = request.GET.get('page', 0)
         if size:
-            queryset = self.pagination_nodeset(queryset, int(size), int(request.GET.get('page', 0)))
+            try:
+                size, page = int(size), int(page)
+            except: raise ValidationError()
+            queryset = self.pagination_nodeset(queryset, size, page)
 
         # Skip les premiers éléments (skip)
         skip = request.GET.get('skip', None)
         if skip:
-            queryset = self.skip_nodeset(queryset, int(skip))
+            try:
+                skip = int(skip)
+            except: raise ValidationError()
+            queryset = self.skip_nodeset(queryset, skip)
         try:
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
@@ -118,17 +126,14 @@ class BaseGenericViewSet(GenericViewSet):
                 if len(fields_list) > 2: raise OrderError("Too many fields")
                 elif len(fields_list) < 2: raise OrderError("Not enough fields")
 
-                # Dernière relation
-                relationship = fields_list[-2].upper()
+                # Dernière relation et Field d'ordering
+                relationship, property = fields_list
 
                 # Sens de l'ordre
                 sens = "DESC" if relationship[0] == "-" else "ASC"
                 if sens == "DESC": relationship = relationship[1:]
 
-                # Field d'ordering
-                property = fields_list[-1]
-
-                if fields_list[0].upper() in [
+                if relationship.upper() in [
                     # Liste des relationships valides
                     relationship_brut[0] for relationship_brut in db.cypher_query(
                         # Request CYPHER
@@ -139,15 +144,13 @@ class BaseGenericViewSet(GenericViewSet):
                         # Liste des properties valides
                         property_brut[0] for property_brut in db.cypher_query(
                             # Request CYPHER
-                            f"MATCH (n:`{self.model_class.__name__}`)-[r:{relationship}]-(m) RETURN DISTINCT keys(m)"
+                            f"MATCH (n:`{self.model_class.__name__}`)-[r:{relationship.upper()}]-(m) RETURN DISTINCT keys(m)"
                         )[0][0]
                     ]:
                         # Ordonner le queryset
-                        ordering.append( RawCypher( f"head([($n)-[r:{relationship}]-(s) | s.{property}]) {sens}" ) )
+                        ordering.append( RawCypher( f"head([($n)-[r:{relationship.upper()}]-(s) | s.{property}]) {sens}" ) )
                     else: raise OrderError(property)
                 else: raise OrderError(fields_list[0])
-
-                
 
             elif '|' in order:
                 fields_list = order.split('|')
@@ -183,16 +186,14 @@ class BaseGenericViewSet(GenericViewSet):
                 # Fonctionnement classique.
                 if (order[0] == '-' and self.model_class.__dict__.get(order[1:], None)) or self.model_class.__dict__.get(order, None):
                     ordering.append(order)
-                else:
-                    raise OrderError(order)
+                else: raise OrderError(order)
         return nodeset.order_by(*ordering)
 
     def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
+        if size < 1: return nodeset
         # Pagination commence à la page 1
         if (page) < 1: page = 1
-        if size < 1: return nodeset
         return nodeset[(page-1)*size:page*size]
 
     def skip_nodeset(self, nodeset: NodeSet, skip: int):
-        if skip < 0: skip = 0
-        return nodeset[skip:]
+        return nodeset[skip if skip > 0 else 0:]
