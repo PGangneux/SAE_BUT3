@@ -50,7 +50,8 @@ class ArtisteViewSetAPITests(Neo4jTestCase):
         response = self.client.get(url + '?order=testtest')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         data = response.json()
-        print(data)
+        self.assertIn("Order error", data.keys())
+        self.assertEqual("testtest", data["Order error"])
     
     def test_order_artistes_relationship_nodesOK(self):
         self.artiste1.style.connect(StyleMusical(name="Style A").save())
@@ -62,12 +63,22 @@ class ArtisteViewSetAPITests(Neo4jTestCase):
         self.assertEqual(len(data), 2)
         self.assertEqual(data[0]['uuid'], self.artiste1.uuid)
 
+    def test_order_artistes_relationship_KO(self):
+        url = reverse('artiste-list')
+        response = self.client.get(url + '?order=testttest__test')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        self.assertIn("Order error", data.keys())
+        self.assertEqual("testttest", data["Order error"])
+
     def test_order_artistes_relationship_nodesKO(self):
+        self.artiste1.style.connect(StyleMusical(name="Style A").save())
         url = reverse('artiste-list')
         response = self.client.get(url + '?order=style__test')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         data = response.json()
-        print(data)
+        self.assertIn("Order error", data.keys())
+        self.assertEqual("test", data["Order error"])
     
     # def test_order_artistes_relationship_propertyOK(self):
     #     url = reverse('artiste-list')
