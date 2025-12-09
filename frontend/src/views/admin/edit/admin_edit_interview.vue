@@ -56,7 +56,7 @@ export default {
     //reccuperation de l'Extrait via l'id
     this.current_interview =  markRaw(await Interview.detail(InterviewId));
     this.Extraitlist = markRaw(await Extrait.list());
-    this.current_list_extraits = markRaw(await this.current_interview.extraits);
+    this.current_list_extraits = markRaw(await this.current_interview.extraits());
 
     console.log(this.current_list_extraits);
     console.log(this.Extraitlist);

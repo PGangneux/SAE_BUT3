@@ -27,10 +27,10 @@ export default {
         
 
         this.dico_Utilisateur = {
-            "recherches_artistes" : (markRaw(await this.current_utilisateur.recherches_artistes)),
-            "regarder_interviews" : (markRaw(await this.current_utilisateur.regarder_interviews)),
-            "regarder_extraits"   : (markRaw(await this.current_utilisateur.regarder_extraits)),
-            "recherches_questions": (markRaw(await this.current_utilisateur.recherches_questions))
+            "recherches_artistes" : (markRaw(await this.current_utilisateur.recherches_artistes())),
+            "regarder_interviews" : (markRaw(await this.current_utilisateur.regarder_interviews())),
+            "regarder_extraits"   : (markRaw(await this.current_utilisateur.regarder_extraits())),
+            "recherches_questions": (markRaw(await this.current_utilisateur.recherches_questions()))
         };
 
         console.log("recherches_artistes"     ,this.dico_Utilisateur["recherches_artistes" ]);

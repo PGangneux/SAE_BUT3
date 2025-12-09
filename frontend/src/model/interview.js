@@ -42,14 +42,14 @@ export default class Interview extends Model {
     get lieu() { return this.#lieu; }
     set lieu(value) { this.#lieu = this.validateString(value, "lieu"); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait); }
+    async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
-    get tags() { return this.fetchList(this.#tags, Tag); }
+    async tags(args) { return await this.fetchList(this.#tags, Tag, args); }
 
     get duree() {
         if (!this.#dureePromise) {
             this.#dureePromise = (async () => {
-                const extraits = await this.extraits;
+                const extraits = await this.extraits();
                 let total = 0;
                 for (const extrait of extraits) {
                     total += extrait.duree;

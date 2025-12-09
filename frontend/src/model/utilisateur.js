@@ -49,13 +49,13 @@ export default class Utilisateur extends Model {
     get is_admin() { return this.#is_admin; }
     set is_admin(value) { this.#is_admin = !!value; }
 
-    get recherches_artistes() { return this.fetchList(this.#recherches_artistes, Artiste); }
+    async recherches_artistes(args) { return await this.fetchList(this.#recherches_artistes, Artiste, args); }
 
-    get regarder_interviews() { return this.fetchList(this.#regarder_interviews, Interview); }
+    async regarder_interviews(args) { return await this.fetchList(this.#regarder_interviews, Interview, args); }
 
-    get regarder_extraits() { return this.fetchList(this.#regarder_extraits, Extrait); }
+    async regarder_extraits(args) { return await this.fetchList(this.#regarder_extraits, Extrait, args); }
 
-    get recherches_questions() { return this.fetchList(this.#recherches_questions, Question); }
+    async recherches_questions(args) { return await this.fetchList(this.#recherches_questions, Question, args); }
 
     /**
      * Connecte un utilisateur à un artiste

@@ -16,7 +16,7 @@ export default class StyleMusical extends Model {
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
 
-    get artistes() { return this.fetchList(this.#artistes, Artiste); }
+    async artistes(args) { return await this.fetchList(this.#artistes, Artiste, args); }
 
     fromJSON(json) {
         super.fromJSON(json);

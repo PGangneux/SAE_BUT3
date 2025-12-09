@@ -88,3 +88,28 @@ class RegarderExtraitsViewSetAPITests(Neo4jTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         # Vérifie que la relation a été supprimée
         self.assertFalse(self.utilisateur.regarder_extraits.is_connected(self.extrait1))
+
+    def test_order_relationship_regarder_extraitOK(self):
+        url = reverse('extrait-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})
+        response = self.client.get(url + "?order=regarder_extraits|date_heure")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.json()
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['uuid'], self.extrait1.uuid)
+
+    def test_order_relationship_regarder_extraitKO(self):
+        url = reverse('extrait-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})
+        response = self.client.get(url + '?order=testttest|test')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        self.assertIn("Order error", data.keys())
+        self.assertEqual("testttest", data["Order error"])
+
+    def test_order_relationship_regarder_extrait_propertyKO(self):
+        url = reverse('extrait-list', kwargs={'utilisateur_uuid': self.utilisateur.uuid})
+        response = self.client.get(url + '?order=regarder_extraits|test')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        data = response.json()
+        self.assertIn("Order error", data.keys())
+        self.assertEqual("test", data["Order error"])
+
