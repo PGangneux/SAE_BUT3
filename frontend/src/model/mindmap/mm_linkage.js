@@ -9,6 +9,14 @@ export class mmLinkage {
         this.thickness = thickness;
     }
 
+    toJSON() {
+        return {
+            startnode: this.startnode,
+            endnode: this.endnode,
+            thickness: this.thickness
+        };
+    }
+
     getStyle(scale, baseOffsetX, baseOffsetY) {
         const scaledStartX = this.startnode.x * scale;
         const scaledStartY = this.startnode.y * scale;

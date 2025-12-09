@@ -12,7 +12,7 @@ export class mm_node {
     thumbnailUrl;
     mminfo; // Reference to mindmap instance
 
-    constructor(mminfo,x, y, depth, category, content) {
+    constructor(mminfo, x, y, depth, category, content) {
         this.mminfo = mminfo;
         this.x = x;
         this.y = y;
@@ -27,23 +27,40 @@ export class mm_node {
         this.thumbnailUrl = null;
     }
 
+    toJSON() {
+        return {
+            x: this.x,
+            y: this.y,
+            reelx: this.reelx,
+            reely: this.reely,
+            depth: this.depth,
+            childrens: this.childrens,
+            origin_angle: this.origin_angle,
+            category: this.category,
+            content: this.content,
+            loading: this.loading,
+            thumbnailUrl: this.thumbnailUrl,
+            // mminfo: this.mminfo
+        };
+    }
+
     // Get style for rendering (using reelx/reely for smooth animation)
     getStyle() {
         if (!this.mminfo) return {};
-        
+
         const isVideoContent = this.isVideoContent();
-        const nodeDimensions = isVideoContent ? 
+        const nodeDimensions = isVideoContent ?
             { width: 300, height: 150 } : // Squircle dimensions
             { width: 100, height: 100 };  // Round dimensions
-        
+
         const scaledWidth = nodeDimensions.width * this.mminfo.scale;
         const scaledHeight = nodeDimensions.height * this.mminfo.scale;
         const sizetext = 20 * this.mminfo.scale;
-        
+
         // Calculate position - adjust for node center using reelx/reely
-        const scaledX = (this.reelx * this.mminfo.scale) - (scaledWidth/16);
-        const scaledY = (this.reely * this.mminfo.scale) - (scaledHeight/16);
-        
+        const scaledX = (this.reelx * this.mminfo.scale) - (scaledWidth / 16);
+        const scaledY = (this.reely * this.mminfo.scale) - (scaledHeight / 16);
+
         return {
             "left": (scaledX + this.mminfo.offx) + "px",
             "top": (scaledY + this.mminfo.offy) + "px",
@@ -84,7 +101,7 @@ export class mm_node {
     // Load thumbnail
     async loadThumbnail() {
         if (!this.isVideoContent() || this.thumbnailLoading) return;
-        
+
         this.thumbnailLoading = true;
         try {
             this.thumbnailUrl = await this.get_miniature();
@@ -102,22 +119,22 @@ export class mm_node {
         const targetX = this.x;
         const targetY = this.y;
         const startTime = performance.now();
-        
+
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
+
             // Use cubic easing
             const easeProgress = this.easeInOutCubic(progress);
-            
+
             // Update reel positions
             this.reelx = startX + (targetX - startX) * easeProgress;
             this.reely = startY + (targetY - startY) * easeProgress;
-            
+
             // Continue animation if not complete
             requestAnimationFrame(animate);
         };
-        
+
         requestAnimationFrame(animate);
     }
 

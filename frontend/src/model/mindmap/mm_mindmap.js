@@ -42,6 +42,25 @@ export class mm_mindmap {
         this.extrait_current = extrait_current;
     }
 
+    toJSON() {
+        return {
+            // linkages: this.linkages,
+            // nodes: this.nodes,
+            // previewnodes: this.previewnodes,
+            chemin: this.chemin,
+            fullscreen: this.fullscreen,
+            togglelegend: this.togglelegend,
+            scale: this.scale,
+            offx: this.offx,
+            offy: this.offy,
+            lastMouseX: this.lastMouseX,
+            lastMouseY: this.lastMouseY,
+            clickTimer: this.clickTimer,
+            dragging: this.dragging,
+            searchval: this.searchval
+        };
+    }
+
     toggleFullscreen() {
         this.fullscreen = !this.fullscreen;
         const element = this.vueobj.$el;
