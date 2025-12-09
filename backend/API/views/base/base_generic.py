@@ -69,7 +69,7 @@ class BaseGenericViewSet(GenericViewSet):
             queryset = self.skip_nodeset(queryset, skip)
         try:
             return queryset.all()
-        # Dans le cas ou la base de données était inaccessible
+        # Dans le cas ou la base de données est inaccessible
         except ServiceUnavailable: # pragma: no cover
             raise ConnexionDB() # pragma: no cover
     
@@ -87,7 +87,7 @@ class BaseGenericViewSet(GenericViewSet):
             return self.get_nodeset().get(uuid=self.kwargs[self.lookup_field])
         except DoesNotExist:
             raise NotFound(self.model_class)
-        # Dans le cas ou la base de données était inaccessible
+        # Dans le cas ou la base de données est inaccessible
         except ServiceUnavailable: # pragma: no cover
             raise ConnexionDB() # pragma: no cover
     
