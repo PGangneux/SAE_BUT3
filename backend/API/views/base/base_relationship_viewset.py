@@ -28,27 +28,24 @@ class BaseRelationShipViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMix
         self.router_lookup_field: str = router_lookup_field
         self.router_model_class: StructuredNode = router_model_class
         self.relationship: str = relationship
+
     def get_nodeset(self) -> NodeSet:
         try:
-            router_nodeset: NodeSet = self.router_model_class.nodes
-            router_nodeset.get(uuid=self.kwargs[self.router_lookup_field])
+            # Vérifie que l'instance du router existe bien
+            self.get_context_model()
+            return super().get_nodeset().filter(
+                uuid__in=[ uuid[0] for uuid in db.cypher_query(
+                    # Requête CYPHER
+                    f"MATCH (n:{self.model_class.__name__})-[:{self.relationship}]-\
+                        (:{str(self.router_model_class.__name__)} "+"{uuid: $uuid}) RETURN n.uuid",
+                    { 'uuid': self.kwargs[self.router_lookup_field] }
+                )[0]]
+            )
         except DoesNotExist:
             raise NotFound(self.router_model_class)
-        query: str = "MATCH (q:" + str(self.model_class.__name__) + ")-[r:" + self.relationship + "]-\
-            (t:" + str(self.router_model_class.__name__) + " {uuid: $uuid}) RETURN q.uuid"
-        nodeset: NodeSet = self.model_class.nodes
-        try:
-            nodeset = nodeset.filter(
-                uuid__in=[
-                    uuid[0] for uuid in db.cypher_query(
-                        query, {'uuid': self.kwargs[self.router_lookup_field]}
-                    )[0]
-                ]
-            )
-        # Dans le cas ou la base de données était inaccessible
+        # Dans le cas ou la base de données est inaccessible
         except ServiceUnavailable: # pragma: no cover
             raise ConnexionDB() # pragma: no cover
-        return nodeset
     
     def get_context_model(self) -> StructuredNode:
         """
