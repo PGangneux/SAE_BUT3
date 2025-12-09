@@ -33,6 +33,7 @@ class BaseGenericViewSet(GenericViewSet):
         """Récupère le queryset de la view
 
         Raises:
+            ValidationError: Les données dans les paramètres d'url ne sont pas du bon type
             ConnexionDB: La base de données n'est pas disponible
 
         Returns:
@@ -156,7 +157,11 @@ class BaseGenericViewSet(GenericViewSet):
                 fields_list = order.split('|')
                 if len(fields_list) > 2: raise OrderError("Too many fields")
                 if len(fields_list) < 2: raise OrderError("Not enough fields")
+
+                # Dernière relation et Field d'ordering
                 relationship, property = fields_list
+
+                # Sens de l'ordre
                 sens = "DESC" if relationship[0] == "-" else "ASC"
                 if sens == "DESC": relationship = relationship[1:]
 
@@ -189,11 +194,30 @@ class BaseGenericViewSet(GenericViewSet):
                 else: raise OrderError(order)
         return nodeset.order_by(*ordering)
 
-    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
+    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int) -> NodeSet:
+        """Pagination du nodeset avec une taille de page et le numéro de la page actuelle
+
+        Args:
+            nodeset (NodeSet): nodeset sur lequel est appliqué la pagination
+            size (int): entier strictement positif correspondant à la taille d'une page
+            page (int): entier strictement positif correspondant au numéro de la page
+
+        Returns:
+            NodeSet: extrait du nodeset correspondant à la taille et la page
+        """
         if size < 1: return nodeset
         # Pagination commence à la page 1
         if (page) < 1: page = 1
         return nodeset[(page-1)*size:page*size]
 
-    def skip_nodeset(self, nodeset: NodeSet, skip: int):
+    def skip_nodeset(self, nodeset: NodeSet, skip: int) -> NodeSet:
+        """Passe les premiers éléments du nodeset, le faisant commencer après
+
+        Args:
+            nodeset (NodeSet): nodeset exploiter
+            skip (int): entier strictement positif correspondant aux n premiers éléments passer
+
+        Returns:
+            NodeSet: nodeset modifier
+        """
         return nodeset[skip if skip > 0 else 0:]
