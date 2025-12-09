@@ -4,7 +4,6 @@ import comp_headerbar from './components/headerbar.vue';
 import comp_footerbar from './components/footerbar.vue';
 import Interview from './model/interview';
 import Extrait from './model/extrait';
-import { videoStore } from './model/videoStore';
 
 export default {
     name: "page_router",
@@ -15,7 +14,6 @@ export default {
     data() {
         return {
             searchterm: "", // text de recherche
-            mindmap_chemin : markRaw([]),
             interview_current: markRaw({
             type: Interview,
             value: null,
@@ -35,10 +33,6 @@ export default {
             searchterm: {
             get: () => this.searchterm,
             set: (value) => { this.searchterm = value }
-            },
-            mindmap_chemin : {
-                get: () => this.mindmap_chemin,
-                set: (value) => { this.mindmap_chemin = value ; videoStore.chemin = value ; }
             },
             interview_current: {
                 get: async () => {
