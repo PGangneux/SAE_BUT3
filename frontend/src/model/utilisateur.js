@@ -24,8 +24,8 @@ export default class Utilisateur extends Model {
         this.#email = email;
         this.#is_admin = is_admin;
         this.#recherches_artistes = recherches_artistes;
-        this.#regarder_interviews = regarder_interviews;
-        this.#regarder_extraits = regarder_extraits;
+        this.#regarder_interviews = regarder_interviews; // liste de prommesses d'interviews regarder par le user
+        this.#regarder_extraits = regarder_extraits; // liste de prommesses d'extraits regarder par le user
         this.#recherches_questions = recherches_questions;
     }
 
