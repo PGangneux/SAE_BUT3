@@ -2,7 +2,7 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
-import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
 
@@ -15,7 +15,7 @@ export default {
 
   components: {
     comp_baradmin,
-    comp_popup,
+    popup_interview,
 
   },data() {
         return {
@@ -104,10 +104,10 @@ export default {
 
     // console.log("dico complet en cours");
     this.dico_extrait = {
-      "artiste":    (markRaw(await this.current_extrait.artiste())).name,
-      "question":   (markRaw(await this.current_extrait.titre())).name,
-      "interviews": (markRaw(await this.current_extrait.interviews())),
-      "tags": (markRaw(await this.current_extrait.tags()))
+      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
+      "question":   (markRaw(await this.current_extrait.titre)),
+      "interviews": (markRaw(await this.current_extrait.interviews)),
+      "tags": (markRaw(await this.current_extrait.tags))
     };
 
 
@@ -116,7 +116,7 @@ export default {
 
 
   //  // console.log(this.dico_extrait['artiste']);
-  //  // console.log(this.dico_extrait['question']);
+console.log(this.dico_extrait['question']);
   //  // console.log(this.dico_extrait['interviews']);
   //  // console.log(await this.current_extrait.interviews);
 
@@ -271,7 +271,7 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 
     </template>
 
