@@ -36,7 +36,6 @@ export default {
                   uploaded_at:  null,
                   artiste:      null,
                   question:     null,
-                  interviews:[],
                   tags:         null,
                   position:     null,
                   artiste_uuid: null,
@@ -84,25 +83,6 @@ export default {
     },
 
 
-    Interview_ajouter(interview_ajouter){
-      if(interview_ajouter == null ||interview_ajouter !=Interview ){
-        console.log("interview non conforme")
-      }
-      else if(this.dico_elementcreer.interviews.includes(interview_retirer)){
-        console.log("interview deja present")
-      }else{
-        this.dico_elementcreer.interviews.push(interview_ajouter);
-      } 
-    },
-
-    Interview_retirer(interview_retirer){
-      if(this.dico_elementcreer.interviews == []){
-        console.log("pas d'element a retiré")
-      }else if (this.dico_elementcreer.interviews.includes(interview_retirer)) {
-        this.dico_elementcreer.interviews.remove(interview_retirer);
-        console.log("interviews retiré")
-      }
-    },
     
 
     popupchange(){
@@ -114,6 +94,22 @@ export default {
       this.popup2 = !this.popup2
       console.log(this.popup2)
     },
+
+
+
+    updateArtisteId() {
+        const artiste = this.listeArtiste.find(a => a.name === this.selectedName);
+        this.selectedId = artiste ? artiste.id : null;
+    },
+
+
+
+
+
+
+
+
+
 
     async recupeArtiste(){
       this.listeArtiste =  markRaw(await Artiste.list());
@@ -180,7 +176,7 @@ export default {
                 <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" v-model="dico_elementcreer.artiste">
                 
                 <datalist id="Artistedata">
-                <option v-for="artiste in listeArtiste" :key="artiste.name" :value="artiste.name" > </option> 
+                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" > </option> 
                 </datalist>
 
                 <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
@@ -219,29 +215,7 @@ export default {
               </div>
             </div>
 
-            <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
-              </h1>
-             
-              <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Nom Playlist</th>
-                          <th class="btgrisv2  col">paramètre</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                      </tr>
-                  </tbody>
-              </table>
-             
-              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-
-            </div>
+           
         </div>
       </div>
 
