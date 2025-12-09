@@ -19,9 +19,9 @@ export default class Tag extends Model {
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
 
-    get interviews() { return this.fetchList(this.#interviews, Interview); }
+    async interviews(args) { return this.fetchList(this.#interviews, Interview, args); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait); }
+    async extraits(args) { return this.fetchList(this.#extraits, Extrait, args); }
 
     fromJSON(json) {
         super.fromJSON(json);

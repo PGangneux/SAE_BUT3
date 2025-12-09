@@ -59,7 +59,7 @@ export default {
       }
 
       if (this.interview != null){ 
-        this.liste_extraits = markRaw(await this.interview.extraits);
+        this.liste_extraits = markRaw(await this.interview.extraits());
         console.log("liste des ectraits", this.liste_extraits)
         if (!this.extrait){
           this.extrait = this.liste_extraits[0];

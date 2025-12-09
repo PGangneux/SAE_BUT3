@@ -25,7 +25,7 @@ export default {
         }
     },
     methods: {
-        sendData () {
+        changement_etat_popup () {
             this.$emit('popupenregistrer', !this.popup2)
         },
         
@@ -66,7 +66,7 @@ export default {
 
 
 <template>
-<div class="allmightygris" @click="sendData"></div>
+<div class="allmightygris" @click="changement_etat_popup"></div>
 
 <div class="grisee allmighty trie-tagsfoncer row">
     <div class="col collumpopu ">
@@ -82,7 +82,7 @@ export default {
 
     <div class="col collx">
         <div class="row">
-            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="changement_etat_popup"></button>
         </div>
     </div>
 </div>

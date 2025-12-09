@@ -21,7 +21,7 @@ export default {
             tags: {type:Tags},
         };
     },methods: {
-        sendData () {
+        changement_etat_popup () {
             this.$emit('ecoutepopup', !this.popup)
         },
         tags_to_string(tags_array) {
@@ -41,7 +41,7 @@ export default {
 
     try {
         for (let interview of this.interviews) {
-            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits).length, "tags": markRaw(await interview.tags)};
+            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits()).length, "tags": markRaw(await interview.tags())};
             // console.log(markRaw(this.dico_interviews));
         }
 
@@ -62,7 +62,7 @@ export default {
 
 
 <template>
-<div class="allmightygris" @click="sendData"></div>
+<div class="allmightygris" @click="changement_etat_popup"></div>
 
 <div class="grisee allmighty trie-tagsfoncer row">
     <div class="col collumpopu ">
@@ -113,7 +113,7 @@ export default {
     </div>
     <div class="col collx">
         <div class="row">
-            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="sendData"></button>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" @click="changement_etat_popup"></button>
         </div>
     </div>
 </div>

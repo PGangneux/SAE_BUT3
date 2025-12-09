@@ -21,7 +21,7 @@ export default class Theme extends Model {
     get description() { return this.#description; }
     set description(value) { this.#description = this.validateString(value, "description"); }
 
-    get questions() { return this.fetchList(this.#questions, Question); }
+    async questions(args) { return await this.fetchList(this.#questions, Question, args); }
 
     fromJSON(json) {
         super.fromJSON(json);
