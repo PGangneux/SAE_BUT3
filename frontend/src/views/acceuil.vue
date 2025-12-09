@@ -231,6 +231,7 @@ export default {
     
     .pip-video img {
         width: 12%;
+        rotate: 45deg; 
     }
 }
 
@@ -257,5 +258,7 @@ export default {
     /* toujours au-dessus du contenu */
     z-index: 10000;
     cursor: pointer;
+
+    rotate: 90deg;
 }
 </style>

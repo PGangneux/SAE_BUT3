@@ -2,11 +2,12 @@ from django.http import HttpRequest
 from django.db.models.query import QuerySet
 from rest_framework.serializers import Serializer
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.exceptions import ValidationError
 from neomodel.exceptions import DoesNotExist
 from neomodel.sync_.match import NodeSet, RawCypher
-from neomodel import StructuredNode
+from neomodel import StructuredNode, db
 from neo4j.exceptions import ServiceUnavailable
-from ...errors import NotFound, ConnexionDB
+from ...errors import NotFound, ConnexionDB, OrderError
 
 
 class BaseGenericViewSet(GenericViewSet):
@@ -32,6 +33,7 @@ class BaseGenericViewSet(GenericViewSet):
         """Récupère le queryset de la view
 
         Raises:
+            ValidationError: Les données dans les paramètres d'url ne sont pas du bon type
             ConnexionDB: La base de données n'est pas disponible
 
         Returns:
@@ -51,13 +53,20 @@ class BaseGenericViewSet(GenericViewSet):
 
         # Pagination (size) (page)
         size = request.GET.get('size', None)
+        page = request.GET.get('page', 0)
         if size:
-            queryset = self.pagination_nodeset(queryset, int(size), int(request.GET.get('page', 0)))
+            try:
+                size, page = int(size), int(page)
+            except: raise ValidationError()
+            queryset = self.pagination_nodeset(queryset, size, page)
 
         # Skip les premiers éléments (skip)
         skip = request.GET.get('skip', None)
         if skip:
-            queryset = self.skip_nodeset(queryset, int(skip))
+            try:
+                skip = int(skip)
+            except: raise ValidationError()
+            queryset = self.skip_nodeset(queryset, skip)
         try:
             return queryset.all()
         # Dans le cas ou la base de données était inaccessible
@@ -99,8 +108,9 @@ class BaseGenericViewSet(GenericViewSet):
                 nodeset = nodeset.filter(**{f'{self.search_field}__icontains': term})
         return nodeset
 
-    def order_nodeset(self, nodeset: NodeSet, order: str) -> NodeSet:
+    def order_nodeset(self, nodeset: NodeSet, orders: str) -> NodeSet:
         """Ordonne le nodeset en fonction du champ renseigner
+        Ne fonctionne que si les éléments rechercher existent sinon renvoie une erreur
 
         Args:
             nodeset (NodeSet): nodeset que l'on ordonne
@@ -110,61 +120,104 @@ class BaseGenericViewSet(GenericViewSet):
             NodeSet: nodeset ordonné
         """
         ordering = []
-        for term in order.split(','):
-            if '__' in term:
-                # En cas de relationship ou/et field non présent,
-                # erreur non fatal dans le terminal
-                # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
-                field_list = term.split('__')
+        # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
+        for order in orders.split(','):
+            if '__' in order:
+                fields_list = order.split('__')
+                if len(fields_list) > 2: raise OrderError("Too many fields")
+                elif len(fields_list) < 2: raise OrderError("Not enough fields")
+
+                # Dernière relation et Field d'ordering
+                relationship, property = fields_list
 
                 # Sens de l'ordre
-                sens = "DESC" if field_list[0][0] == "-" else "ASC"
-                if sens == "DESC": field_list[0] = field_list[0][1:]
-
-                # Dernière relation
-                relationship = field_list[-2]
-
-                # Field d'ordering
-                field = field_list[-1]
-                
-                # Ordonner le queryset
-                ord = "head([($n)"
-                for i in range(len(field_list)-2):
-                    ord += f"-[:{field_list[i].upper()}]{'-()' if i < len(field_list)-2 else ''}"
-                ord += f"-[r:{relationship.upper()}]-(s) | s.{field}]) {sens}"
-                ordering.append(
-                    RawCypher(
-                        ord
-                    )
-                )
-
-            elif '|' in term:
-                # En cas de relationship ou/et field non présent,
-                # erreur non fatal dans le terminal
-                # Prévoir une situtation où la relation et/ou le field n'existe pas
-                # Prévoir une solution où plus d'un |
-                relationship, field = term.split('|')
                 sens = "DESC" if relationship[0] == "-" else "ASC"
-                if sens == "DESC":
-                    relationship = relationship[1:]
-                ordering.append(
-                    RawCypher(
-                        # ($n)-[r:relationship]-(s) pour ne pas se soucier du sens de la relation
-                        f"head([($n)-[r:{relationship.upper()}]-(s) | r.{field}]) {sens}"
-                    )
-                )
+                if sens == "DESC": relationship = relationship[1:]
+
+                if relationship.upper() in [
+                    # Liste des relationships valides
+                    relationship_brut[0] for relationship_brut in db.cypher_query(
+                        # Request CYPHER
+                        f"MATCH (n:`{self.model_class.__name__}`)-[r]-(m) RETURN DISTINCT TYPE(r)"
+                    )[0]
+                ]:
+                    if property in [
+                        # Liste des properties valides
+                        property_brut[0] for property_brut in db.cypher_query(
+                            # Request CYPHER
+                            f"MATCH (n:`{self.model_class.__name__}`)-[r:{relationship.upper()}]-(m) RETURN DISTINCT keys(m)"
+                        )[0][0]
+                    ]:
+                        # Ordonner le queryset
+                        ordering.append( RawCypher( f"head([($n)-[r:{relationship.upper()}]-(s) | s.{property}]) {sens}" ) )
+                    else: raise OrderError(property)
+                else: raise OrderError(fields_list[0])
+
+            elif '|' in order:
+                fields_list = order.split('|')
+                if len(fields_list) > 2: raise OrderError("Too many fields")
+                if len(fields_list) < 2: raise OrderError("Not enough fields")
+
+                # Dernière relation et Field d'ordering
+                relationship, property = fields_list
+
+                # Sens de l'ordre
+                sens = "DESC" if relationship[0] == "-" else "ASC"
+                if sens == "DESC": relationship = relationship[1:]
+
+                if fields_list[0].upper() in [
+                    # Liste des relationships valides
+                    relationship_brut[0] for relationship_brut in db.cypher_query(
+                        # Request CYPHER
+                        f"MATCH (n:`{self.model_class.__name__}`)-[r]-(m) RETURN DISTINCT TYPE(r)"
+                    )[0]
+                ]:
+                    if property in [
+                        # Liste des properties valides
+                        property_brut[0] for property_brut in db.cypher_query(
+                            # Request CYPHER
+                            f"MATCH (n:`{self.model_class.__name__}`)-[r:{relationship.upper()}]-(m) RETURN DISTINCT keys(r)"
+                        )[0][0]
+                    ]:
+                        ordering.append(
+                            RawCypher(
+                                f"head([($n)-[r:{relationship.upper()}]-(s) | r.{property}]) {sens}"
+                            )
+                        )
+                    else: raise OrderError(property)
+                else: raise OrderError(fields_list[0])
 
             else:
                 # Fonctionnement classique.
-                ordering.append(term)
+                if (order[0] == '-' and self.model_class.__dict__.get(order[1:], None)) or self.model_class.__dict__.get(order, None):
+                    ordering.append(order)
+                else: raise OrderError(order)
         return nodeset.order_by(*ordering)
 
-    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int):
+    def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int) -> NodeSet:
+        """Pagination du nodeset avec une taille de page et le numéro de la page actuelle
+
+        Args:
+            nodeset (NodeSet): nodeset sur lequel est appliqué la pagination
+            size (int): entier strictement positif correspondant à la taille d'une page
+            page (int): entier strictement positif correspondant au numéro de la page
+
+        Returns:
+            NodeSet: extrait du nodeset correspondant à la taille et la page
+        """
+        if size < 1: return nodeset
         # Pagination commence à la page 1
         if (page) < 1: page = 1
-        if size < 1: return nodeset
         return nodeset[(page-1)*size:page*size]
 
-    def skip_nodeset(self, nodeset: NodeSet, skip: int):
-        if skip < 0: skip = 0
-        return nodeset[skip:]
+    def skip_nodeset(self, nodeset: NodeSet, skip: int) -> NodeSet:
+        """Passe les premiers éléments du nodeset, le faisant commencer après
+
+        Args:
+            nodeset (NodeSet): nodeset exploiter
+            skip (int): entier strictement positif correspondant aux n premiers éléments passer
+
+        Returns:
+            NodeSet: nodeset modifier
+        """
+        return nodeset[skip if skip > 0 else 0:]

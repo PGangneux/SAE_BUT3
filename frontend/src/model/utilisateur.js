@@ -24,8 +24,8 @@ export default class Utilisateur extends Model {
         this.#email = email;
         this.#is_admin = is_admin;
         this.#recherches_artistes = recherches_artistes;
-        this.#regarder_interviews = regarder_interviews;
-        this.#regarder_extraits = regarder_extraits;
+        this.#regarder_interviews = regarder_interviews; // liste de prommesses d'interviews regarder par le user
+        this.#regarder_extraits = regarder_extraits; // liste de prommesses d'extraits regarder par le user
         this.#recherches_questions = recherches_questions;
     }
 
@@ -49,13 +49,13 @@ export default class Utilisateur extends Model {
     get is_admin() { return this.#is_admin; }
     set is_admin(value) { this.#is_admin = !!value; }
 
-    get recherches_artistes() { return this.fetchList(this.#recherches_artistes, Artiste); }
+    async recherches_artistes(args) { return await this.fetchList(this.#recherches_artistes, Artiste, args); }
 
-    get regarder_interviews() { return this.fetchList(this.#regarder_interviews, Interview); }
+    async regarder_interviews(args) { return await this.fetchList(this.#regarder_interviews, Interview, args); }
 
-    get regarder_extraits() { return this.fetchList(this.#regarder_extraits, Extrait); }
+    async regarder_extraits(args) { return await this.fetchList(this.#regarder_extraits, Extrait, args); }
 
-    get recherches_questions() { return this.fetchList(this.#recherches_questions, Question); }
+    async recherches_questions(args) { return await this.fetchList(this.#recherches_questions, Question, args); }
 
     /**
      * Connecte un utilisateur à un artiste

@@ -75,7 +75,7 @@ export default {
                 }
 
                 // Cas 2 : c'est une interview
-                const extraits = await this.node.content.extraits;
+                const extraits = await this.node.content.extraits();
                 if (!extraits || extraits.length === 0) {
                     console.warn(`Aucun extrait trouvé pour l'interview ${this.node.content}`);
                     return null;

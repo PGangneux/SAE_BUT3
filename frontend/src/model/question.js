@@ -21,10 +21,10 @@ export default class Question extends Model {
     get texte() { return this.#texte; }
     set texte(value) { this.#texte = this.validateString(value, "texte"); }
 
-    get theme() { return this.fetchDetail(this.#theme, Theme); }
+    async theme() { return await this.fetchDetail(this.#theme, Theme); }
     set theme(value) { this.#theme_uuid = this.validateString(value, "theme_uuid"); }
 
-    get extraits() { return this.fetchList(this.#extraits, Extrait); }
+    async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
     fromJSON(json) {
         super.fromJSON(json);
