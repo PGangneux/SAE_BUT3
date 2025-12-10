@@ -32,7 +32,6 @@ export default {
           console.warn(`Aucun extrait trouvé pour l’interview ${video.uuid}`);
           return null;
         }
-
         const firstExtrait = extraits[0];
         return (
           firstExtrait.url_miniature_yt ||
@@ -77,13 +76,18 @@ export default {
     },
 
     async update_miniature(){
-
-      const extraits = await this.video.extraits
-      this.url = await this.get_miniature(this.video, extraits);
-      this.duree = await this.get_duree(this.video, extraits);
-      this.is_loading = false;
-      
-      
+      let extraits;
+      if (this.video.extraits){
+        extraits = await this.video.extraits()
+        this.url = await this.get_miniature(this.video, extraits);
+        this.duree = await this.get_duree(this.video, extraits);
+        this.is_loading = false;
+      }
+      else {
+        this.url = await this.get_miniature(this.video, null);
+        this.duree = await this.get_duree(this.video, null);
+        this.is_loading = false;
+      }
     }
   },
 
