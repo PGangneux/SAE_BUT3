@@ -31,7 +31,7 @@ export default {
 
   methods : {
     // pour Baptiste peut etre utile
-    async get_statistiques_reco(video_regrardees){
+    async get_statistiques_reco(video_regardees){
       // initialiser les maps de comptage
       this.tags_count.clear();
       this.themes_count.clear();
@@ -90,39 +90,18 @@ export default {
 
 
     /**
-     * Génère une map de poids selon le chemin d'entrée de l'utilisateur.
+     * Génère un dictionnaire de poids selon le chemin d'entrée de l'utilisateur.
      * les poids sont plus lourd au debut du chemin.
      *
      * @param {Array} chemin - liste représentant le chemin d'entrée de l'utilisateur
      * @return {Map} liste des poids pour les recommandations
     */
-    get_map_poids_reco(chemin){
-      // chemin liste de mmNode
-      // représentation d'un mmNode: {categorie: 'artiste', content: artiste1}
-      // exemple de chemin : 
-      // [{categorie: 'artiste', content: null},{categorie: 'artiste', content: artiste1}, {categorie: 'pays', content: null}, {categorie: 'pays', content: "france"}]
-
-      const map_poids = new Map("artsite", 1, "thème", 1, "question", 1, "tags", 1);
-      for (let i = 0; i < chemin.length; i++) {
-        const node = chemin[i];
-        const poids = chemin.length - i; // poids décroissant
-        switch (node.categorie) {
-          case 'artiste':
-            map_poids.set("artiste", map_poids.get("artiste") + poids);
-            break;
-          case 'thème':
-            map_poids.set("thème", map_poids.get("thème") + poids);
-            break;
-          case 'question':
-            map_poids.set("question", map_poids.get("question") + poids);
-            break;
-          case 'tags':
-            map_poids.set("tags", map_poids.get("tags") + poids);
-            break;
-          default:
-            break;
-        }
-      }
+    get_reco_weights(chemin){
+      const weights = {};
+      chemin.forEach((value, index, array) => {
+        weights[value.category.name] = array.length - index;
+      });
+      return weights;
     },
 
     get_delta_frequance_extraits(video_regardees){
@@ -150,8 +129,8 @@ export default {
       const ratioInterview = Math.max(0, deltaMax - delta_frequance_extraits);
       const ratioExtrait   = delta_frequance_extraits;
 
-      nbE = ratioExtrait * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
-      nbI = ratioInterview * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
+      const nbE = ratioExtrait * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
+      const nbI = ratioInterview * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
 
       // fetch des vidéos todo Baptiste
       const liste_extraits = fetchextrait(nbextrait = nbE, map_poids) // récupère x extraits recommander pout l'utilisateur
@@ -180,12 +159,13 @@ export default {
       }
     },
 
-
+    // À déplacer
     async current_reco(){
+      this.selected = "reco";
       // get x derniers Interview/extrait regardés avec un taux de watch time supérieur à 70%
       // proposées proportion interview/extratait en fonction de ce que l'utilisateur regarde le plus
       // si user regarde plus extrait commencé par proposées x extraits, max 4 extrait 1 interview vise versa
-      // donc  4 pour 1 max
+      // donc 4 pour 1 max
 
       // pour choisir extrait/interview on fait classement de tags des x derniers regardés sup 70%
       // + classemnt des thèmes
@@ -201,29 +181,20 @@ export default {
       // si pas de user ou pas assez de data on propose les video les plus regardé avec un bon watch time
 
       // todo Baptiste attendre que Baptiste ait fait l'algorithme pour fetcher les vidéos recommander
-      if (false){
-        current_user = ClientAPI.current_user; // récupère l'utilisateur courant
-        if (!current_user) {
-          // TODO pas d'utilisateur connecté, on propose les vidéos les plus regardées
-          this.videos = markRaw(await Extrait.list({size:10})); // récupère les 10 derniers extraits/interviews
-        }
-        else{
-          // TODO caper le nombre de données récupérées + filtrer celles avec watch time > 70% + récupérer égalment les interviews
-          const video_regardees = markRaw(await current_user.regarder_extraits); 
+      // Feature-flag de l'algorithme de recommandation
+      if (true){
+        // récupère l'utilisateur courant
+        const current_user = ClientAPI.current_user;
+        // TODO caper le nombre de données récupérées + filtrer celles avec watch time > 70% + récupérer égalment les interviews
+        // Sera fait côté API
+        // const video_regardees = current_user ? markRaw(await current_user.regarder_extraits({size:10})) : [];
+        const map_poids = this.get_reco_weights(videoStore.chemin);
+        // this.generateVideos(map_poids, video_regardees, 10);
 
-          const map_poids = this.get_poids_reco(videoStore.chemin);
-
-          this.generateVideos(map_poids, video_regardees, 10);
-
-        }
-      }
-      
+        // ClientAPI.post()
         
-
-      this.selected = "reco";
+      }
       this.videos = markRaw(await Extrait.list({size:10})); // récupère les 10 derniers extraits/interviews
-
-
     },
 
 
