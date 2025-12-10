@@ -14,7 +14,7 @@ export default {
             type:Object,
             required:true
         },
-        popup2: {
+        popupEnregistrer: {
             type:Boolean,
             required:true
             }
@@ -26,7 +26,7 @@ export default {
     },
     methods: {
         changement_etat_popup () {
-            this.$emit('popupenregistrer', !this.popup2)
+            this.$emit('popupenregistrer', !this.popupEnregistrer)
         },
 
         creerExtrait(e) {
@@ -35,9 +35,9 @@ export default {
 
             if(value == "envoyer"){
                 alert("nous avons: " + value);
-                this.$emit('popupenregistrer', !this.popup2)
+                this.$emit('popupenregistrer', !this.popupEnregistrer)
             }else{
-                this.$emit('popupenregistrer', !this.popup2)
+                this.$emit('popupenregistrer', !this.popupEnregistrer)
             }
             
         }

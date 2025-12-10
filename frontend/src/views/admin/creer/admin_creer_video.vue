@@ -20,16 +20,13 @@ export default {
     popup_valider,
     popup_interview,
 
-    //dataliste
   },data() {
         return {
-            tags:[],
-            dico_extrait:{},
             taillelist:Array,
-            thumbnail: '/imgs/width551.png',
-            searchValue: "",
-            new_extrait:new Extrait("","","","","","","","","","","","",),
-            dico_elementcreer:{
+            thumbnail: '/imgs/width551.png', //image defaults
+            searchValueTag: "",
+            new_extrait:new Extrait("","","","","","","","","","","","",), //Extrait vide
+            dico_elementcreer:{  //regroupement des valeurs des imputs
                   titre: null,
                   description:  null,
                   youtube_url:  null,
@@ -43,17 +40,16 @@ export default {
                   question_uuid:null,
                   duree:        null,
             },
-            selectedArtiste: "",
-            selectedQuestion: "",
-            selectedId: null,
+            selectedArtiste: "", //Artiste selectionner retourn null si rien
+            selectedQuestion: "",//Questio selectionner retourn null si rien
 
-            Element_Creer: {
-              type:Object,
-            },
-            listeArtiste:[],
-            listeQuestion:[],
-            popup: false,
-            popup2:false,
+            listeArtiste:[],    //liste des Artistes totals
+            listeQuestion:[],   //liste des Questions totals
+            tags:[],            //liste des tags totals
+
+
+            popupSelectInterview: false, //Props pour popupSelectInterview
+            popupEnregistrer:false,
         };
     },
     
@@ -62,6 +58,7 @@ export default {
   methods: {
 
     async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
 
       
       console.log(this.dico_elementcreer);
@@ -77,23 +74,24 @@ export default {
       this.new_extrait.tags = this.dico_elementcreer.tags
 
       console.log(this.new_extrait)
-
-      //https://www.youtube.com/watch?v=xvFZjo5PgG0
   
-
       console.log("creer");
-      this.popup2 = true;
+      this.popupEnregistrer = true;
+      //this.new_extrait.create
     },
 
     possiblecreation(){
+    //fonction pour verifier si les elements peuve etre enregistrer
 
     },
 
     ajoutertag(){
-
+      //permet d'ajouter un tag a l'extrait
     },
 
     removetag(idtags){
+      //permet de retirer un tag a l'extrait
+
       if(this.dico_elementcreer.tags == []){
         console.log("pas d'element a retiré")
       }else if (this.dico_elementcreer.tags.includes(idtags)) {
@@ -102,26 +100,28 @@ export default {
       }
     },
 
-
-    
-
-    popupchange(){
-      this.popup = !this.popup
-      console.log(this.popup)
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      console.log(this.popupSelectInterview)
     },
 
-    popupchange2(){
-      this.popup2 = !this.popup2
-      console.log(this.popup2)
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      console.log(this.popupEnregistrer)
     },
 
 
 
-    updateSelectedArtisteId() {
-     
-     //console.log(this.selectedArtiste);
+    SelectedArtisteId() {
+      //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
+      //console.log(this.selectedArtiste);
+
+      //reccupere l'artiste de la liste
       const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
 
+      //verifie si artiste existe et n'es pas null
       if (artiste) {
           this.dico_elementcreer.artiste = artiste;
           this.dico_elementcreer.artiste_uuid = artiste.uuid;
@@ -135,13 +135,13 @@ export default {
 
     },
 
-    updateSelectedQuestion() {
-     
-      //console.log(this.listeQuestion);
+    SelectedQuestion() {
+      //reccupere la Question de la liste en reccuperant le text de la Question selectionner
+
+      //reccupere l'artiste de la liste
       const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
 
-      //console.log(question);
-
+      //verifie si question existe et n'es pas null
       if (question) {
           this.dico_elementcreer.question = question;
           this.dico_elementcreer.question_uuid = question.uuid;
@@ -157,27 +157,14 @@ export default {
 
     },
 
-
-
-
-
-
-
-
-
-
     async recupeArtiste(){
+      //reccupere la liste des Artistes
       this.listeArtiste =  markRaw(await Artiste.list());
-      //console.log("artiste", this.listeArtiste)
-      //console.log("artiste", this.listeArtiste[0].name)
     },
 
-
-
-
     async recupeQuestion(){
+      //reccupere la liste des Questions
       this.listeQuestion =  markRaw(await Question.list());
-      //console.log(this.listeQuestion)
     }
 
 
@@ -214,7 +201,7 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="updateSelectedQuestion"/>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="SelectedQuestion"/>
                 
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -228,7 +215,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="updateSelectedArtisteId">
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
@@ -289,7 +276,7 @@ export default {
           <div class="recherche col">
                 <div class="search-bar">
                     <div class="input-group">
-                        <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <input type="text" class="form-control" v-model="searchValueTag" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                         <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                                 <img src="/imgs/search.svg" alt="button search">
                             </RouterLink>
@@ -334,9 +321,9 @@ export default {
     
    
 
-    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div>
+    <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
     
-    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2"/> </div>
+    <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
 
     </template>
