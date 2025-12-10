@@ -27,7 +27,8 @@ export default {
             dico_extrait:{},
             taillelist:Array,
             thumbnail: '/imgs/width551.png',
-
+            searchValue: "",
+            new_extrait:new Extrait("","","","","","","","","","","","",),
             dico_elementcreer:{
                   titre: null,
                   description:  null,
@@ -65,14 +66,20 @@ export default {
       
       console.log(this.dico_elementcreer);
 
-      try{
-        this.Element_Creer = await new Extrait().create();
-        console.log(this.Element_Creer);
-      }catch {
-        console.log("erreur de creation");
-        alert("erreur chargement ")
-        //https://www.youtube.com/watch?v=xvFZjo5PgG0
-      }
+      console.log(this.new_extrait)
+
+      this.new_extrait.titre = this.dico_elementcreer.titre;
+      this.new_extrait.description = this.dico_elementcreer.description;
+      this.new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
+      this.new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
+      
+      this.new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
+      this.new_extrait.tags = this.dico_elementcreer.tags
+
+      console.log(this.new_extrait)
+
+      //https://www.youtube.com/watch?v=xvFZjo5PgG0
+  
 
       console.log("creer");
       this.popup2 = true;
@@ -118,6 +125,7 @@ export default {
       if (artiste) {
           this.dico_elementcreer.artiste = artiste;
           this.dico_elementcreer.artiste_uuid = artiste.uuid;
+          this.new_extrait.artiste =artiste.uuid;
         } else {
           this.dico_elementcreer.artiste = null;
           this.dico_elementcreer.artiste_uuid = null;
@@ -137,6 +145,8 @@ export default {
       if (question) {
           this.dico_elementcreer.question = question;
           this.dico_elementcreer.question_uuid = question.uuid;
+          this.dico_elementcreer.titre = question.texte;
+          this.new_extrait.question = question.uuid;
         } else {
           this.dico_elementcreer.question = null;
           this.dico_elementcreer.question_uuid = null;
@@ -158,8 +168,8 @@ export default {
 
     async recupeArtiste(){
       this.listeArtiste =  markRaw(await Artiste.list());
-      console.log("artiste", this.listeArtiste)
-      console.log("artiste", this.listeArtiste[0].name)
+      //console.log("artiste", this.listeArtiste)
+      //console.log("artiste", this.listeArtiste[0].name)
     },
 
 
@@ -167,7 +177,7 @@ export default {
 
     async recupeQuestion(){
       this.listeQuestion =  markRaw(await Question.list());
-      console.log(this.listeQuestion)
+      //console.log(this.listeQuestion)
     }
 
 
@@ -180,7 +190,7 @@ export default {
 
   await this.recupeArtiste();
   await this.recupeQuestion();
-  console.log()
+
  }
 
 };
