@@ -22,11 +22,6 @@ export default {
             isAppearing: true,
         };
     },
-    watch: {
-        targetPosition(newVal, oldVal) {
-            this.jsclass.animateToTarget();
-        }
-    },
     async mounted() {
         // console.table(this.jsclass.toJSON());
         // console.log("isVideoContent",this.jsclass.isVideoContent());
