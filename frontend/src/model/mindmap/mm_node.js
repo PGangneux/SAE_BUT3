@@ -6,8 +6,8 @@ export class mm_node {
     _x;           
     _y;           
     // Target positions
-    _targetX;
-    _targetY;
+    targetX;
+    targetY;
     depth;
     childrens;
     origin_angle;
@@ -22,8 +22,8 @@ export class mm_node {
         // Both start at same position initially
         this._x = x;
         this._y = y;
-        this._targetX = x;
-        this._targetY = y;
+        this.targetX = x;
+        this.targetY = y;
         this.depth = depth;
         this.origin_angle = null;
         this.childrens = [];
@@ -44,21 +44,21 @@ export class mm_node {
 
     // Setters that set target positions
     set x(value) {
-        this._targetX = value;
+        this.targetX = value;
         this.animateToTarget();
     }
 
     set y(value) {
-        this._targetY = value;
-        this.animateToTarget();
+        this.targetY = value;
+        // this.animateToTarget();
     }
 
     toJSON() {
         return {
             x: this.x,
             y: this.y,
-            targetX: this._targetX,
-            targetY: this._targetY,
+            targetX: this.targetX,
+            targetY: this.targetY,
             depth: this.depth,
             childrens: this.childrens,
             origin_angle: this.origin_angle,
@@ -76,7 +76,7 @@ export class mm_node {
 
     // Get style for rendering (using x/y for smooth animation)
     getStyle() {
-        if (!this.mminfo) return {};
+        // console.table(this.toJSON());
 
         const isVideoContent = this.isVideoContent();
         const nodeDimensions = isVideoContent ?
@@ -145,26 +145,30 @@ export class mm_node {
     // Animate to target position
     animateToTarget(duration = 1000) {
         // TODO : TEST
-        this.childrens.forEach(child => {
-            child.animateToTarget();
-        });
+        // this.childrens.forEach(child => {
+        //     child.animateToTarget();
+        // });
+
+        // console.table(this.toJSON());
         
-        const startX = this.x;
-        const startY = this.y;
-        const endX = this._targetX;
-        const endY = this._targetY;
+        const startX = this._x;
+        const startY = this._y;
+        const endX = this.targetX;
+        const endY = this.targetY;
         const startTime = performance.now();
 
         const animate = (currentTime) => {
+            
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-
+            
             // Use cubic easing
             const easeProgress = this.easeInOutCubic(progress);
-
+            
             // Update real positions (x, y) to animate toward target
-            this.x = startX + (endX - startX) * easeProgress;
-            this.y = startY + (endY - startY) * easeProgress;
+            this._x = startX + (endX - startX) * easeProgress;
+            this._y = startY + (endY - startY) * easeProgress;
+            // console.log("animating",startX + (endX - startX) * easeProgress,startY + (endY - startY) * easeProgress,this);
 
             if (progress < 1) {
                 // Continue animation if not complete

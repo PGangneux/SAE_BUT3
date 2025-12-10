@@ -1,17 +1,17 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import { mm_mindmap } from '../../model/mindmap/mm_mindmap.js';
-import { mm_node } from '../../model/mindmap/mm_node.js';
+// import { mm_mindmap } from '../../model/mindmap/mm_mindmap.js';
+// import { mm_node } from '../../model/mindmap/mm_node.js';
 
 export default {
     name: "mindmap_node",
     props: {
         jsclass: {
-            type: mm_node,
+            type: Object,
             required: true,
         },
         jsmm: {
-            type: mm_mindmap,
+            type: Object,
             required: true,
         }
     },
