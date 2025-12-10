@@ -4,9 +4,12 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 
-import comp_popup from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
 
+import Interview from '../../../model/interview.js';
+import Question from "../../../model/question";
+import Artiste from "../../../model/artiste";
 
 
 
@@ -15,20 +18,36 @@ export default {
   components: {
     comp_baradmin,
     popup_valider,
-    comp_popup,
+    popup_interview,
 
     //dataliste
   },data() {
         return {
-            current_extrait : {type:Extrait},
             tags:[],
             dico_extrait:{},
             taillelist:Array,
             thumbnail: '/imgs/width551.png',
 
+            dico_elementcreer:{
+                  titre: null,
+                  description:  null,
+                  youtube_url:  null,
+                  vimeo_url:    null,
+                  uploaded_at:  null,
+                  artiste:      null,
+                  question:     null,
+                  tags:         null,
+                  position:     null,
+                  artiste_uuid: null,
+                  question_uuid:null,
+                  duree:        null,
+            },
+
             Element_Creer: {
               type:Object,
             },
+            listeArtiste:[],
+            listeQuestion:[],
             popup: false,
             popup2:false,
         };
@@ -39,10 +58,32 @@ export default {
   methods: {
 
     async enregistrer(){
-      
-      this.Element_Creer = await new Extrait().create()
-      this.popup2 =true;
+
+      //this.Element_Creer = await new Extrait().create()
+      console.log(this.dico_elementcreer);
+      console.log("creer");
+      this.popup2 = true;
     },
+
+    possiblecreation(){
+
+    },
+
+    ajoutertag(){
+
+    },
+
+    removetag(idtags){
+      if(this.dico_elementcreer.tags == []){
+        console.log("pas d'element a retiré")
+      }else if (this.dico_elementcreer.tags.includes(idtags)) {
+        this.dico_elementcreer.tags.remove(idtags);
+        console.log("tags retiré")
+      }
+    },
+
+
+    
 
     popupchange(){
       this.popup = !this.popup
@@ -52,14 +93,49 @@ export default {
     popupchange2(){
       this.popup2 = !this.popup2
       console.log(this.popup2)
+    },
+
+
+
+    updateArtisteId() {
+        const artiste = this.listeArtiste.find(a => a.name === this.selectedName);
+        this.selectedId = artiste ? artiste.id : null;
+    },
+
+
+
+
+
+
+
+
+
+
+    async recupeArtiste(){
+      this.listeArtiste =  markRaw(await Artiste.list());
+      console.log("artiste", this.listeArtiste)
+      console.log("artiste", this.listeArtiste[0].name)
+    },
+
+
+
+
+    async recupeQuestion(){
+      this.listeQuestion =  markRaw(await Question.list());
+      console.log(this.listeQuestion)
     }
 
 
   },
 
 
+
  async mounted() {
   this.taillelist = []
+
+  await this.recupeArtiste();
+  await this.recupeQuestion();
+  console.log()
  }
 
 };
@@ -74,7 +150,7 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/creer/' }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
@@ -83,13 +159,13 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <select id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-                  <!-- utiliser js TODO -->
-                  <option value=""> > </option>
-                  <option value="option1"> Question 1</option> 
-                  <option value="option2"> Question 2</option>
-                  <option value="option3"> Question 3</option>
-                </select>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="dico_elementcreer.question"/>
+                
+                <datalist id="Questiondata">
+                <option v-for="question in listeQuestion" :key="question.texte" :value="question.texte" > </option> 
+                </datalist>
+
+
                 <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
@@ -97,13 +173,12 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-                  <!-- utiliser js TODO -->
-                  <option value=""> > </option>
-                  <option value="option1"> Artiste 1</option> 
-                  <option value="option2"> Artiste 2</option>
-                  <option value="option3"> Artiste 3</option>
-                </select>
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" v-model="dico_elementcreer.artiste">
+                
+                <datalist id="Artistedata">
+                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" > </option> 
+                </datalist>
+
                 <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
           </div>
@@ -114,14 +189,14 @@ export default {
                 <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
                 Date : 
               </span>
-              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" />
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" v-model="dico_elementcreer.uploaded_at" />
             </div>
           </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url">
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" v-model="dico_elementcreer.youtube_url" >
             </div>
           </div>
             
@@ -129,40 +204,18 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" >
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" v-model="dico_elementcreer.vimeo_url">
               </div>
           </div>
           
 
             <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group">
-                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control"></textarea>
+                <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="dico_elementcreer.description"></textarea>
               </div>
             </div>
 
-            <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
-              </h1>
-             
-              <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Nom Playlist</th>
-                          <th class="btgrisv2  col">paramètre</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                      </tr>
-                  </tbody>
-              </table>
-             
-              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-
-            </div>
+           
         </div>
       </div>
 
@@ -226,9 +279,9 @@ export default {
     
    
 
-    <div v-if="popup === true">  <comp_popup v-on:ecoutepopup="popupchange" /> </div>
+    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div>
     
-    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2" /> </div>
+    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2"/> </div>
 
 
     </template>

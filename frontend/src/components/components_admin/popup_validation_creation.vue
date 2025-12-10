@@ -28,6 +28,19 @@ export default {
         changement_etat_popup () {
             this.$emit('popupenregistrer', !this.popup2)
         },
+
+        creerExtrait(e) {
+            const value = e.submitter.value
+            console.log(value);
+
+            if(value == "envoyer"){
+                alert("nous avons: " + value);
+                this.$emit('popupenregistrer', !this.popup2)
+            }else{
+                this.$emit('popupenregistrer', !this.popup2)
+            }
+            
+        }
         
     },
     emits : [ "popupenregistrer"],   
@@ -71,11 +84,13 @@ export default {
 <div class="grisee allmighty trie-tagsfoncer row">
     <div class="col collumpopu ">
         <h1> Etes vous sur d'ajoutez {{  }} dans {{ typefichierfunc }} </h1>
-        
-        <div class="container row fullwith" style="max-height: 4em;">
-            <button> Yes </button>
-            <button> No </button>
-        </div>
+
+        <form @submit.prevent="creerExtrait">
+            <div class="container row fullwith" style="max-height: 4em;">
+                <button type="submit" value="envoyer"> Yes </button>
+                <button type="submit" value="no"> No </button>
+            </div>
+        </form>
 
 
     </div>
