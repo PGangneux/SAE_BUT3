@@ -45,6 +45,7 @@ export default {
         },
         
         onDrop(evt, targetList) {
+            console.log("drop")
             evt.preventDefault();
             const itemID = evt.dataTransfer.getData('itemID');
             
@@ -122,18 +123,18 @@ export default {
             </div>
 
             <ul 
-                class="drop-zone scroller2 row"
+                class="drop-zone"
                 @drop="onDrop($event, 'available')"
                 @dragover="onDragOver($event)"
             >
-                <li 
-                    v-for="extraitv1 in this.Extraitlist" 
-                    :key="extraitv1.uuid"
-                    class="drag-el row carte pcentrer" 
-                    draggable
-                    @dragstart="startDrag($event, extraitv1)"
-                >
-                    <comp_petit_extrait :current_extrait=extraitv1 />
+                <li  v-for="extraitv1 in this.Extraitlist"  :key="extraitv1.uuid" class="drag-el" >
+                    <div
+                        class="drag-wrapper"
+                        draggable="true"
+                        @dragstart="startDrag($event, extraitv1)"
+                    >
+                        <comp_petit_extrait :current_extrait=extraitv1 />
+                    </div>
                 </li>
             </ul>
         </div>
@@ -157,18 +158,22 @@ export default {
             </div>
 
             <ul 
-                class="drop-zone scroller2 row"
+                class="drop-zone"
                 @drop="onDrop($event, 'playlist')"
                 @dragover="onDragOver($event)"
             >
                 <li 
                     v-for="extraitv2 in this.current_list_extraits"
                     :key="extraitv2.uuid"
-                    class="drag-el row carte pcentrer" 
-                    draggable
-                    @dragstart="startDrag($event, extraitv2)"
+                    class="drag-el" 
                 >
-                    <comp_petit_extrait :current_extrait=extraitv2 />
+                    <div
+                        class="drag-wrapper"
+                        draggable="true"
+                        @dragstart="startDrag($event, extraitv2)"
+                    >
+                        <comp_petit_extrait :current_extrait=extraitv2 />
+                    </div>
                 </li>
             </ul>
         </div>
@@ -200,10 +205,7 @@ export default {
     border-radius: 2em;
 }
 
-.card{
-  background-color: var(--gris-moyen);
-  filter: drop-shadow(20px 13px 4px var(--noir));
-}
+
 
 .pcentrer{
   margin-top: 1em;
@@ -220,13 +222,8 @@ export default {
     border-radius: 2em;
 }
 
-li > .card{
-    padding: 20px 50px 150px;
-    margin: 10px 10px 10px 10px;
-}
 
 ul {
-  display: flex;
   list-style-type: none;
   justify-content: space-between;
 }
@@ -258,5 +255,25 @@ ul {
   margin-bottom: 10px;
   padding: 5px;
   cursor: move;
+}
+
+.drag-el * {
+    user-select: none
+}
+
+
+li {
+  display: block;
+}
+
+li[draggable="true"] {
+  transform: translateZ(0); /* hack Chrome */
+}
+
+.drag-wrapper {
+    cursor: grab;
+}
+.drag-wrapper:active {
+    cursor: grabbing;
 }
 </style>
