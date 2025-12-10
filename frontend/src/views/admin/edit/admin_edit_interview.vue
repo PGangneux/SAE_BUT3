@@ -35,10 +35,26 @@ export default {
     },
     methods : {
         startDrag(evt, item) {
+            // Empêche l'image / le lien d'être la "drag image"
+            const crt = evt.currentTarget; // la div.drag-wrapper
+
+            // Crée une copie invisible de la carte à utiliser comme drag image
+            const clone = crt.cloneNode(true);
+            clone.style.position = 'absolute';
+            clone.style.top = '-9999px';
+            clone.style.left = '-9999px';
+            document.body.appendChild(clone);
+
+            evt.dataTransfer.setDragImage(clone, 0, 0);
+
+            // Remove after a short delay (Chrome needs async)
+            setTimeout(() => document.body.removeChild(clone), 0);
+
             evt.dataTransfer.dropEffect = 'move';
             evt.dataTransfer.effectAllowed = 'move';
             evt.dataTransfer.setData('itemID', item.uuid);
         },
+
         
         onDragOver(evt) {
             evt.preventDefault();
