@@ -78,6 +78,7 @@ export class mm_mindmap {
     draw_root() {
         this.centerMindmap();
         mmdraw_root(this);
+        this.nodes.animateToTarget();
     }
 
     startDrag(event) {

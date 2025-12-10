@@ -121,6 +121,10 @@ export class mm_node {
 
     // Animate to target position
     animateToTarget(duration = 1000) {
+        // TODO : TEST
+        this.childrens.forEach(child => {
+            child.animateToTarget();
+        });
         const startX = this.reelx;
         const startY = this.reely;
         const targetX = this.x;
