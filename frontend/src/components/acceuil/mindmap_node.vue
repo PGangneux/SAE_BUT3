@@ -1,123 +1,42 @@
 <script>
-import { mmInfo, mmLegendClassMap, mmNode } from "../../model/mindmap/mindmap_base.js";
+import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
+import { mm_mindmap } from '../../model/mindmap/mm_mindmap.js';
+import { mm_node } from '../../model/mindmap/mm_node.js';
 
 export default {
     name: "mindmap_node",
     props: {
-        node: {
-            type: mmNode,
+        jsclass: {
+            type: mm_node,
             required: true,
         },
-        mminfo: {
-            type: mmInfo,
+        jsmm: {
+            type: mm_mindmap,
             required: true,
         }
     },
     data() {
         return {
-            mmLegendClassMap: mmLegendClassMap,
-            thumbnailUrl: null,
+            mm_LegendClassMap: mm_LegendClassMap,
             thumbnailLoading: false,
             isAppearing: true,
-            // Default dimensions for different node types
-            nodeDimensions: {
-                default: { width: 100, height: 100 },
-                squircle: { width: 300, height: 150 }, // Adjust based on your design
-                round: { width: 100, height: 100 }
-            }
         };
     },
-    computed: {
-        isVideoContent() {
-            return this.node.content && (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
-        },
-        currentNodeDimensions() {
-            if (this.isVideoContent) {
-                return this.nodeDimensions.squircle;
-            }
-            return this.nodeDimensions.round;
-        }
-    },
-    methods: {
-        getStyle() {
-            const baseWidth = this.currentNodeDimensions.width;
-            const baseHeight = this.currentNodeDimensions.height;
-            
-            const scaledWidth = baseWidth * this.mminfo.scale;
-            const scaledHeight = baseHeight * this.mminfo.scale;
-            const sizetext = 20 * this.mminfo.scale;
-            
-            // Calculate position - adjust for node center
-            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth/16);
-            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight/16);
-            
-            return {
-                "left": (scaledX + this.mminfo.offx) + "px",
-                "top": (scaledY + this.mminfo.offy) + "px",
-                "width": scaledWidth + "px",
-                "height": scaledHeight + "px",
-                "font-size": sizetext + "px",
-                "line-height": (scaledHeight * 0.8) + "px", // Adjust line-height based on height
-            };
-        },
-
-        async get_miniature() {
-            if (!this.node.content) return null;
-            if (this.thumbnailUrl) return this.thumbnailUrl;
-            // await new Promise(resolve => { setTimeout(resolve, 1000); });
-
-            try {
-                // Cas 1 : c'est un extrait
-                if (this.node.category.name === 'Extrait') {
-                    return (this.node.content.url_miniature_yt
-                        /// await video.get_url_miniature_vimeo() || 
-                    );
-                }
-
-                // Cas 2 : c'est une interview
-                const extraits = await this.node.content.extraits();
-                if (!extraits || extraits.length === 0) {
-                    console.warn(`Aucun extrait trouvé pour l'interview ${this.node.content}`);
-                    return null;
-                }
-
-                const firstExtrait = extraits[0];
-
-                return (
-                    firstExtrait.url_miniature_yt
-                    /// await firstExtrait.get_url_miniature_vimeo() || 
-                );
-
-            } catch (err) {
-                console.error("Erreur lors de la récupération de la miniature :", err);
-                return null;
-            }
-        },
-    },
     watch: {
-        'node.loading': {
-            async handler() {
-                if (this.isVideoContent) {
-                    this.thumbnailLoading = true;
-                    this.get_miniature().then(value => {
-                        this.thumbnailUrl = value;
-                        this.thumbnailLoading = false;
-                    }).catch(error => {
-                        console.error(error);
-                        this.thumbnailLoading = false;
-                    });
-                }
-            },
-            deep: true
+        targetPosition(newVal, oldVal) {
+            this.jsclass.animateToTarget();
         }
     },
     async mounted() {
+        // console.table(this.jsclass.toJSON());
+        // console.log("isVideoContent",this.jsclass.isVideoContent());
+        
         setTimeout(() => {
             this.isAppearing = false;
         }, 50);
-        if (this.isVideoContent) {
+        if (this.jsclass.isVideoContent()) {
             this.thumbnailLoading = true;
-            this.get_miniature().then(value => {
+            this.jsclass.get_miniature().then(value => {
                 this.thumbnailUrl = value;
                 this.thumbnailLoading = false;
             }).catch(error => {
@@ -131,51 +50,51 @@ export default {
 
 <template>
     <div class="mm_node"
-        :class="`mmLegendColorMap${node.category.name} mm_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
-        :style="getStyle()">
+        :class="`mmLegendColorMap${jsclass.category.name} mm_node${this.jsclass.isVideoContent() ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
+        :style="jsclass.getStyle()">
         <div style="display: none;">
-            {{ this.node }}
+            {{ jsclass }}
         </div>
-        <template v-if="node.loading" class="mm_node_loading-spinner">
-            <img src="/imgs/spinner.gif" alt="Loading..." />
+        <template v-if="jsclass.loading">
+            <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
         </template>
         <template v-else>
-            <template v-if="!node.content">
+            <template v-if="!jsclass.content">
                 <div class="mm_node_content">
-                    <p class="mm_node_title">{{ mmLegendClassMap[node.category.name] }}</p>
+                    <p class="mm_node_title">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
                 </div>
             </template>
-            <template v-else-if="node.content && !isVideoContent">
+            <template v-else-if="jsclass.content && !this.jsclass.isVideoContent()">
                 <div class="mm_node_content">
                     <p class="mm_node_title">
-                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                        {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
                     </p>
-                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
+                    <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
                 </div>
             </template>
-            <template v-if="node.content && isVideoContent">
+            <template v-if="jsclass.content && this.jsclass.isVideoContent()">
                 <div class="mm_node_content">
                     <p class="mm_node_title">
-                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
+                        {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
                     </p>
-                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
+                    <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
                     <div class="mm_node_description">
-                        <p>uploaded_at : {{ this.node.content.uploaded_at }}</p>
-                        <p>duree : {{ this.node.content.duree }}</p>
+                        <p>uploaded_at : {{ jsclass.content.uploaded_at }}</p>
+                        <p>duree : {{ jsclass.content.duree }}</p>
                     </div>
                 </div>
                 <div class="mm_node_preview">
-                    <template v-if="thumbnailLoading">
+                    <template v-if="jsclass.thumbnailLoading">
                         <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
                     </template>
-                    <template v-else-if="thumbnailUrl">
-                        <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                    <template v-else-if="jsclass.thumbnailUrl">
+                        <img :src="jsclass.thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
                     </template>
                     <template v-else>
                         <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
                     </template>
                 </div>
-                </template>
+            </template>
         </template>
     </div>
 </template>

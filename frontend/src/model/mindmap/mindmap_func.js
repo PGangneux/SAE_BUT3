@@ -1,24 +1,27 @@
 import { markRaw } from "vue";
-import { mmRoot, mmCategorysDefault, mmCategorysSearch, mmLinkage, mmNode, mmInfo } from "./mindmap_base.js";
+import { mm_Root, mm_CategorysDefault, mm_CategorysSearch } from "./mm_const.js";
+import { mm_mindmap } from "./mm_mindmap.js";
+import { mmLinkage } from "./mm_linkage.js";
+import { mm_node } from "./mm_node.js";
 import Extrait from "../extrait.js";
 import Interview from "../interview.js";
 import router from "../../router.js";
 
 /**
     check video
- * @param {mmInfo} mminfo mminfo  
+ * @param {mm_mindmap} mminfo mm_mindmap  
  * @return {boolean} if there is a goto video or not
 */
 function mmcheckvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if (last.category == Extrait && last.content){
+    if (last.category == Extrait && last.content) {
         mminfo.extrait_current.set(last.content);
         router.push({
             path: "/lecteur_video/"
         });
         return true;
-    } else if (last.category == Interview && last.content){
+    } else if (last.category == Interview && last.content) {
         mminfo.interview_current.set(last.content);
         router.push({
             path: "/lecteur_video/"
@@ -30,22 +33,22 @@ function mmcheckvideo(mminfo) {
 
 /**
  * pos the children of a node in a circle
- * @param {mmInfo} mminfo mminfo  
- * @param {mmNode} root the root node to witch the children has been added
+ * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_node} root the root node to witch the children has been added
  */
 function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
-    
-    // est ce que c'est mmroot ou pas 
-    const isRoot = root.category == mmRoot;
+
+    // est ce que c'est mm_Root ou pas 
+    const isRoot = root.category == mm_Root;
     const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
     const nb_child = root.childrens.length;
-    
+
     // Count children with and without content
     let childrenWithContent = 0;
     let childrenWithoutContent = 0;
-    
+
     for (let child of root.childrens) {
         if (child.content) {
             childrenWithContent++;
@@ -53,18 +56,18 @@ function set_children_pos(mminfo, root) {
             childrenWithoutContent++;
         }
     }
-    
+
     // console.log(`Children analysis: ${childrenWithContent} with content, ${childrenWithoutContent} without content`);
-    
+
     // Calculate angle per child based on content
     // Children with content get 1.2x more angle space
     const effectiveChildren = childrenWithContent * 1.2 + childrenWithoutContent;
     let angle_per_child = totalArc / effectiveChildren;
-    
+
     // distance entre root et enfant ;
     // so the distance is inversly proportional to the number of angle_per_child
     const depthFactor = Math.max(0.7, 1 / root.depth); // Reduce distance as depth increases
-    
+
     // New spreadFactor based on number of children AND children with content
     const spreadFactor = Math.max(1, (nb_child + childrenWithContent * 0.5) * 0.5);
     const distance = 200 * mminfo.scale * depthFactor * spreadFactor;
@@ -72,16 +75,16 @@ function set_children_pos(mminfo, root) {
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
     const degree_to_rad = Math.PI / 180;
-    
+
     // console.log(`Positioning ${nb_child} children:`);
     // console.log(`Effective children count: ${effectiveChildren.toFixed(1)}`);
     // console.log(`Angle per child: ${angle_per_child.toFixed(2)}°`);
     // console.log(`Spread factor: ${spreadFactor.toFixed(2)}`);
     // console.log(`Distance: ${distance.toFixed(2)}`);
-    
+
     let currentEffectiveIndex = 0;
-    let positioningTable = [];
-    
+    // let positioningTable = [];
+
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
         const hasContent = child.content
@@ -89,7 +92,7 @@ function set_children_pos(mminfo, root) {
         const angleWeight = hasContent ? 1.2 : 1;
         const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);
         currentEffectiveIndex += angleWeight;
-        
+
         const angleRad = current_angle * degree_to_rad;
 
         child.x = root.x + Math.cos(angleRad) * distance;
@@ -107,19 +110,19 @@ function set_children_pos(mminfo, root) {
         //     'Origin': `(${root.x.toFixed(2)}, ${root.y.toFixed(2)})`
         // });
     }
-    
+
     // console.table(positioningTable);
     // console.table(positioningTable);
     // console.log(`Positioned ${nb_child} children around ${isRoot ? 'root' : root.category.name}`);
     // console.log(`Total arc used: ${(angle_per_child * effectiveChildren).toFixed(1)}°`);
     // console.log(`Children with content: ${childrenWithContent} (get 1.2x angle space)`);
-    
+
     // return positioningTable;
 }
 
 /**
     filter chemin to maintain proper depth hierarchy
- * @param {mmInfo} mminfo mminfo  
+ * @param {mm_mindmap} mminfo mm_mindmap  
  * @return {boolean,boolean} change goto video , change in path
 */
 function mmchemin_filter(mminfo) {
@@ -140,28 +143,31 @@ function mmchemin_filter(mminfo) {
             }
         });
     }
-    // Filter out mmRoot from chemin if present
+    // Filter out mm_Root from chemin if present
     let didchange = original_lenght != mminfo.chemin.length;
-    mminfo.chemin = mminfo.chemin.filter(item => item.category !== mmRoot);
+    mminfo.chemin = mminfo.chemin.filter(item => item.category !== mm_Root);
     return false, didchange;
 }
 
 /**
     utils to create a child node
- * @param {mmInfo} mminfo mminfo  
- * @param {mmNode} node the parent node  
+ * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_node} node the parent node  
  * @param {class} category the class of node  
  * @param {class} content the content instance of class category
  * @param {boolean} createLink = true do we draw the white line or not
- * @return {mmNode} the created child
+ * @return {mm_node} the created child
 */
-function mmcreateChildNode(mminfo, node , category ,content  , createLink = true) {
+function mmcreateChildNode(mminfo, node, category, content, createLink = true) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
-    const tmp_child = new mmNode(node.x, node.y, node.depth + 1, category, content);
+    const tmp_child = new mm_node(mminfo,node.x, node.y, node.depth + 1, category, content);
+    // console.table({"node":node, "category":category, "content":content, "createLink":createLink });
+    // console.log("mmcreateChildNode",tmp_child);
     mminfo.nodes.push(markRaw(tmp_child));
     node.childrens.push(markRaw(tmp_child));
     // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
-    if (createLink){
+    if (createLink) {
+        // TODO : change to have that in linkage constructor
         mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
     }
     set_children_pos(mminfo, node);
@@ -170,32 +176,32 @@ function mmcreateChildNode(mminfo, node , category ,content  , createLink = true
 
 /**
     recreate the root node and reset everything
- * @param {mmInfo} mminfo mminfo  
+ * @param {mm_mindmap} mminfo mm_mindmap  
 */
 function mmreset(mminfo) {
     // console.log("mmreset mminfo",mminfo);
-    
+
     // reset
     mminfo.nodes = [];
     mminfo.linkages = [];
     // create root
-    let root = new mmNode(0, 0, 1, mmRoot, null);
+    let root = new mm_node(mminfo,0, 0, 1, mm_Root, null);
     mminfo.nodes.push(root);
-    
+
     // put defaults
-    for (const cat of mmCategorysDefault) {
-        mmcreateChildNode(mminfo,root,cat,null,false);
+    for (const cat of mm_CategorysDefault) {
+        mmcreateChildNode(mminfo, root, cat, null, false);
     }
     if (mminfo.searchval) {
-        for (const cat of mmCategorysSearch) {
-            mmcreateChildNode(mminfo,root,cat,null,false);
+        for (const cat of mm_CategorysSearch) {
+            mmcreateChildNode(mminfo, root, cat, null, false);
         }
     }
 }
 
 /**
     redraw everynode from root
- * @param {mmInfo} mminfo mminfo  
+ * @param {mm_mindmap} mminfo mm_mindmap  
 */
 export async function mmdraw_root(mminfo) {
     mmreset(mminfo);
@@ -209,17 +215,22 @@ export async function mmdraw_root(mminfo) {
 
 /**
     redraw an update
- * @param {mmInfo} mminfo mminfo  
+ * @param {mm_mindmap} mminfo mm_mindmap  
 */
 export async function mmdraw_update(mminfo) {
     if (mminfo.chemin.length <= 0) return mmdraw_root(mminfo);
     let changevideo, changepath = mmchemin_filter(mminfo);
     if (changevideo) return;
     if (changepath) return mmdraw_root(mminfo);
-    // console.log("mmdraw_update chemin path", mminfo.chemin);
+    console.log("mmdraw_update chemin path", mminfo.chemin);
     await mmget_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
 }
 
+/**
+    draw the categories of one node
+ * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_node} node the root node to apply the new nodes to
+*/
 async function mmget_onecat(mminfo, node) {
     // console.log("mmget_onecat", node);
 
@@ -228,7 +239,7 @@ async function mmget_onecat(mminfo, node) {
     if (node.content && (node.category.name === 'Extrait' || node.category.name === 'Interview')) return;
     // Get categories that are NOT in the current path
     const currentPathCategories = mminfo.chemin.map(item => item.category.name);
-    const availableCategories = mmCategorysDefault.filter(cat =>
+    const availableCategories = mm_CategorysDefault.filter(cat =>
         !currentPathCategories.includes(cat.name)
     );
 
@@ -236,14 +247,14 @@ async function mmget_onecat(mminfo, node) {
         // Current node has content - add CATEGORY nodes
         console.log("Adding category nodes to content node");
         node.loading = true;
-        // TODO : use mmCheminMap
+        // TODO : use mm_CheminMap
         for (const cat of availableCategories) {
-            mmcreateChildNode(mminfo,node,cat,null);
+            mmcreateChildNode(mminfo, node, cat, null);
             // await new Promise(resolve => { setTimeout(resolve, 1000); });
         }
         (mminfo.searchval ? Extrait.search(mminfo.searchval) : Extrait.list()).then(async extraits => {
             for (let index = 0; index < extraits.length && index < 5 && node.childrens.length < 8; index++) {
-                mmcreateChildNode(mminfo,node,Extrait,extraits[index]);
+                mmcreateChildNode(mminfo, node, Extrait, extraits[index]);
                 // await new Promise(resolve => { setTimeout(resolve, 1000); });
             }
             node.loading = false;
@@ -259,7 +270,7 @@ async function mmget_onecat(mminfo, node) {
         (mminfo.searchval ? node.category.search(mminfo.searchval) : node.category.list()).then(async contentList => {
             // console.log("getting detail from category", node.category, contentList);
             for (const element of contentList.slice(0, 5)) {
-                mmcreateChildNode(mminfo,node,node.category,element);
+                mmcreateChildNode(mminfo, node, node.category, element);
                 // await new Promise(resolve => { setTimeout(resolve, 1000); });
             }
             node.loading = false;

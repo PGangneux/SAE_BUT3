@@ -1,3 +1,6 @@
+import Extrait from "../extrait.js";
+import Interview from "../interview.js";
+
 export class mm_node {
     x;           // Target X position
     y;           // Target Y position
@@ -42,6 +45,10 @@ export class mm_node {
             thumbnailUrl: this.thumbnailUrl,
             // mminfo: this.mminfo
         };
+    }
+
+    isVideoContent() {
+        return !!this.content && (this.category === Extrait || this.category === Interview);
     }
 
     // Get style for rendering (using reelx/reely for smooth animation)
