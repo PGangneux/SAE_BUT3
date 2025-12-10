@@ -42,6 +42,9 @@ export default {
                   question_uuid:null,
                   duree:        null,
             },
+            selectedArtiste: "",
+            selectedQuestion: "",
+            selectedId: null,
 
             Element_Creer: {
               type:Object,
@@ -59,8 +62,18 @@ export default {
 
     async enregistrer(){
 
-      //this.Element_Creer = await new Extrait().create()
+      
       console.log(this.dico_elementcreer);
+
+      try{
+        this.Element_Creer = await new Extrait().create();
+        console.log(this.Element_Creer);
+      }catch {
+        console.log("erreur de creation");
+        alert("erreur chargement ")
+        //https://www.youtube.com/watch?v=xvFZjo5PgG0
+      }
+
       console.log("creer");
       this.popup2 = true;
     },
@@ -97,9 +110,41 @@ export default {
 
 
 
-    updateArtisteId() {
-        const artiste = this.listeArtiste.find(a => a.name === this.selectedName);
-        this.selectedId = artiste ? artiste.id : null;
+    updateSelectedArtisteId() {
+     
+     //console.log(this.selectedArtiste);
+      const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
+
+      if (artiste) {
+          this.dico_elementcreer.artiste = artiste;
+          this.dico_elementcreer.artiste_uuid = artiste.uuid;
+        } else {
+          this.dico_elementcreer.artiste = null;
+          this.dico_elementcreer.artiste_uuid = null;
+      }
+
+      console.log( this.dico_elementcreer.artiste, this.dico_elementcreer.artiste_uuid);
+
+    },
+
+    updateSelectedQuestion() {
+     
+      //console.log(this.listeQuestion);
+      const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
+
+      //console.log(question);
+
+      if (question) {
+          this.dico_elementcreer.question = question;
+          this.dico_elementcreer.question_uuid = question.uuid;
+        } else {
+          this.dico_elementcreer.question = null;
+          this.dico_elementcreer.question_uuid = null;
+      }
+
+
+      console.log( this.dico_elementcreer.question);
+
     },
 
 
@@ -159,10 +204,10 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="dico_elementcreer.question"/>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="updateSelectedQuestion"/>
                 
                 <datalist id="Questiondata">
-                <option v-for="question in listeQuestion" :key="question.texte" :value="question.texte" > </option> 
+                <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
                 </datalist>
 
 
@@ -173,10 +218,10 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" v-model="dico_elementcreer.artiste">
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="updateSelectedArtisteId">
                 
                 <datalist id="Artistedata">
-                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" > </option> 
+                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
                 </datalist>
 
                 <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
