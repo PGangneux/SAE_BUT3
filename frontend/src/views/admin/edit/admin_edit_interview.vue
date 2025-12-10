@@ -108,188 +108,176 @@ export default {
 <template>
 <comp_baradmin/>
 
-<h1 class="text-center"> Edit Interview-Playlist </h1>
+<div class="main_content">
+    <h1 class="text-center"> Edit Interview-Playlist </h1>
 
-<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-    <h1> {{ this.current_interview.titre }} - Playlist </h1>
+    <div class="row">
+        <h1> {{ this.current_interview.titre }} - Playlist </h1>
 
-    <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-        <div class="form-group">
-            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
+        <div class="row">
+            <div class="form-group">
+                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" >
-    <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel); margin: 1%;">
-        <div class="container row pcentrer " style=" margin-left: 0 !important; margin-right: 0 !important;">
+    <div class="row row_gap">
+        <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel);">
+            <div class="pcentrer ">
 
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <h1> Question-Extrait existant</h1>
-                <h1> Total Question-Extrait : {{this.taillelist1}}</h1>
-            </div>
-
-            <div class="search-bar grisee">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                        <img src="/imgs/search.svg" alt="button search">
-                    </button>
+                <div class="row">
+                    <h1> Question-Extrait existant</h1>
+                    <h1> Total Question-Extrait : {{this.taillelist1}}</h1>
                 </div>
-            </div>
 
-            <ul 
-                class="drop-zone"
-                @drop="onDrop($event, 'available')"
-                @dragover="onDragOver($event)"
-            >
-                <li  v-for="extraitv1 in this.Extraitlist"  :key="extraitv1.uuid" class="drag-el" >
-                    <div
-                        class="drag-wrapper"
-                        draggable="true"
-                        @dragstart="startDrag($event, extraitv1)"
-                    >
-                        <comp_petit_extrait :current_extrait=extraitv1 />
+                <div class="search-bar grisee">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
                     </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale); margin: 1%;">
-        <div class="container row pcentrer " style=" margin-left: 0 !important; margin-right: 0 !important;">
-
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <h1> Question-Extrait dans Playlist</h1>
-                <h1> Total Question-Extrait : {{ this.taillelist2 }}</h1>
-            </div>
-
-            <div class="search-bar grisee">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                        <img src="/imgs/search.svg" alt="button search">
-                    </button>
                 </div>
-            </div>
 
-            <ul 
-                class="drop-zone"
-                @drop="onDrop($event, 'playlist')"
-                @dragover="onDragOver($event)"
-            >
-                <li 
-                    v-for="extraitv2 in this.current_list_extraits"
-                    :key="extraitv2.uuid"
-                    class="drag-el" 
+                <ul 
+                    class="drop-zone"
+                    @drop="onDrop($event, 'available')"
+                    @dragover="onDragOver($event)"
                 >
-                    <div
-                        class="drag-wrapper"
-                        draggable="true"
-                        @dragstart="startDrag($event, extraitv2)"
-                    >
-                        <comp_petit_extrait :current_extrait=extraitv2 />
+                    <li  v-for="extraitv1 in this.Extraitlist"  :key="extraitv1.uuid" class="drag-el" >
+                        <div
+                            class="drag-wrapper"
+                            draggable="true"
+                            @dragstart="startDrag($event, extraitv1)"
+                        >
+                            <comp_petit_extrait :current_extrait=extraitv1 />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale);">
+            <div class="pcentrer ">
+
+                <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <h1> Question-Extrait dans Playlist</h1>
+                    <h1> Total Question-Extrait : {{ this.taillelist2 }}</h1>
+                </div>
+
+                <div class="search-bar grisee">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
                     </div>
-                </li>
-            </ul>
+                </div>
+
+                <ul 
+                    class="drop-zone"
+                    @drop="onDrop($event, 'playlist')"
+                    @dragover="onDragOver($event)"
+                >
+                    <li 
+                        v-for="extraitv2 in this.current_list_extraits"
+                        :key="extraitv2.uuid"
+                        class="drag-el" 
+                    >
+                        <div
+                            class="drag-wrapper"
+                            draggable="true"
+                            @dragstart="startDrag($event, extraitv2)"
+                        >
+                            <comp_petit_extrait :current_extrait=extraitv2 />
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-    <RouterLink to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
-    <RouterLink to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-    <button type="submit" class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-    <button type="button" class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+    <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
+        <RouterLink to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
+        <RouterLink to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+        <button type="submit" class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button type="button" class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+    </div>
 </div>
 </template>
 
 <style scoped>
-.pad{
-  padding-top: 1em;
-  padding-bottom: 1em;
+/* marge globale pour le contenu */
+.main_content {
+    margin: 20px;
 }
 
-.carte{
-  padding: 5px;
-  padding-bottom: 1em;
+/* conteneur des deux colonnes */
+.row_gap {
+    display: flex;
+    flex-wrap: nowrap;           /* interdit le retour à la ligne */
+    gap: 20px;                   /* espace entre les colonnes */
+    margin: 2% 20px;             /* marge pour ne pas coller aux bords */
+    align-items: stretch;        /* les colonnes ont la même hauteur */
 }
 
-.btred{
-    color: var(--blanc);
-    background-color:var(--rouge);
-    border-radius: 2em;
+/* colonnes */
+.aggrandir {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;                 /* peut grandir mais pas rétrécir en dessous */
+    min-width: 300px;             /* largeur minimale pour ne pas rétrécir */
+    height: auto;                 /* hauteur basée sur la colonne la plus grande */
 }
 
-
-
-.pcentrer{
-  margin-top: 1em;
-  justify-content: center
+/* wrapper vertical qui contient header / search / liste */
+.pcentrer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;                 /* occupe toute la hauteur de la colonne */
 }
 
-.button-blanc{
-    background-color: var(--blanc);
+/* empêcher header et search de grandir */
+.pcentrer > *:not(.drop-zone) {
+    flex: 0 0 auto;
 }
 
-.bt{
-    color:white;
-    background-color:var(--vert-pale);
-    border-radius: 2em;
-}
-
-
-ul {
-  list-style-type: none;
-  justify-content: space-between;
-}
-
-.scroller2 {
-  height: 70vh;
-  overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
-  scrollbar-width: thin;
-}
-
-.aggrandir{
-  list-style-type: none;
-  flex-grow: 1;
-}
-
-.grisee{
-  background-color: var(--gris-moyen);
-}
-
+/* UL prend sa hauteur naturelle et ne scroll plus */
 .drop-zone {
-  background-color: #eee;
-  margin-bottom: 10px;
-  padding: 10px;
+    flex: 1 1 auto;               /* occupe tout l'espace restant de la colonne */
+    overflow: visible;            /* plus de scroll interne */
+    background-color: #eee;
+    padding: 10px;
+    list-style: none;
+    margin: 0;
 }
 
-.drag-el {
-  background-color: #fff;
-  margin-bottom: 10px;
-  padding: 5px;
-  cursor: move;
+/* reset ul default spacing */
+.drop-zone { padding-left: 0; }
+
+/* si tu veux que les li s'empilent verticalement */
+.drop-zone .drag-el {
+    display: block;
+    margin-bottom: 8px;
+    background: #fff;
+    padding: 8px;
+    cursor: move;
 }
 
-.drag-el * {
-    user-select: none
+/* éviter que les enfants forcent la taille */
+.pcentrer * {
+    box-sizing: border-box;
 }
 
+/* drag wrapper visuel */
+.drag-wrapper { cursor: grab; }
+.drag-wrapper:active { cursor: grabbing; }
 
-li {
-  display: block;
-}
+/* garde esthétique pour header et search */
+.aggrandir .header-zone { padding-bottom: 8px; }
+.search-bar { padding-bottom: 8px; }
 
-li[draggable="true"] {
-  transform: translateZ(0); /* hack Chrome */
-}
-
-.drag-wrapper {
-    cursor: grab;
-}
-.drag-wrapper:active {
-    cursor: grabbing;
-}
+/* outlines pour debugger (enlever en production) */
+.aggrandir { outline: 1px dashed rgba(0,0,0,0.05); }
+.drop-zone { outline: 1px dashed rgba(0,0,0,0.05); }
 </style>
