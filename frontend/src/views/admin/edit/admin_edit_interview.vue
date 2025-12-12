@@ -79,11 +79,8 @@ export default {
             const item = sourceArray.splice(itemIndex, 1)[0]; // supprime de la source
 
             if (targetList === 'playlist') {
-                console.log("test2");
 
                 const targetItems = Array.from(evt.currentTarget.children);
-
-                
 
                 // Calcul de l'index d'insertion
                 const dropY = evt.clientY;
@@ -98,7 +95,6 @@ export default {
 
                 // Insérer à la bonne position
                 targetArray.splice(insertIndex, 0, item);
-                console.log(targetArray)
 
                 // force vue à redessiner la liste playlist, sinon affichage non mis à jour car on change l'intérieurs de la liste et pas de changement de taille ...
                 if (targetList === sourceList){
