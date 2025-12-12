@@ -34,7 +34,7 @@ export default {
         },
     },
     methods : {
-        startDrag(evt, item) {
+        startDrag(evt, item, sourceList) {
             // Empêche l'image / le lien d'être la "drag image"
             const crt = evt.currentTarget; // la div.drag-wrapper
 
@@ -53,6 +53,8 @@ export default {
             evt.dataTransfer.dropEffect = 'move';
             evt.dataTransfer.effectAllowed = 'move';
             evt.dataTransfer.setData('itemID', item.uuid);
+            evt.dataTransfer.setData('sourceList', sourceList); // 'available' ou 'playlist'
+            
         },
 
         
@@ -61,30 +63,63 @@ export default {
         },
         
         onDrop(evt, targetList) {
-            console.log("drop")
+            console.log("test")
             evt.preventDefault();
-            const itemID = evt.dataTransfer.getData('itemID');
-            
+
+            const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
+            const sourceList = evt.dataTransfer.getData('sourceList'); // 'available' ou 'playlist'
+
+            let sourceArray = sourceList === 'playlist' ? this.current_list_extraits : this.Extraitlist;
+            let targetArray = targetList === 'playlist' ? this.current_list_extraits : this.Extraitlist;
+
+            // Trouver l’élément dans la liste source
+            const itemIndex = sourceArray.findIndex(item => item.uuid === itemID);
+            if (itemIndex === -1) return;
+
+            const item = sourceArray.splice(itemIndex, 1)[0]; // supprime de la source
+
             if (targetList === 'playlist') {
-                // Déplacer de Extraitlist vers current_list_extraits
-                const itemIndex = this.Extraitlist.findIndex(item => item.uuid === itemID);
-                if (itemIndex !== -1) {
-                    const item = this.Extraitlist.splice(itemIndex, 1)[0];
-                    this.current_list_extraits.push(item);
-                    this.taillelist1 = this.Extraitlist.length;
-                    this.taillelist2 = this.current_list_extraits.length;
+                console.log("test2");
+
+                const targetItems = Array.from(evt.currentTarget.children);
+
+                
+
+                // Calcul de l'index d'insertion
+                const dropY = evt.clientY;
+                let insertIndex = targetArray.length; // par défaut fin
+                for (let i = 0; i < targetItems.length; i++) {
+                    const rect = targetItems[i].getBoundingClientRect();
+                    if (dropY < rect.top + rect.height / 2) {
+                        insertIndex = i;
+                        break;
+                    }
                 }
+
+                // Insérer à la bonne position
+                targetArray.splice(insertIndex, 0, item);
+                console.log(targetArray)
+
+                // force vue à redessiner la liste playlist, sinon affichage non mis à jour car on change l'intérieurs de la liste et pas de changement de taille ...
+                if (targetList === sourceList){
+                    // TRIGGER VUE RENDER 
+                    // Forcer rerender sans proxifier les objets
+                    this.current_list_extraits = this.current_list_extraits.map(e => markRaw(e));
+                    this.Extraitlist = this.Extraitlist.map(e => markRaw(e));
+                }
+
             } else if (targetList === 'available') {
-                // Déplacer de current_list_extraits vers Extraitlist
-                const itemIndex = this.current_list_extraits.findIndex(item => item.uuid === itemID);
-                if (itemIndex !== -1) {
-                    const item = this.current_list_extraits.splice(itemIndex, 1)[0];
-                    this.Extraitlist.push(item);
-                    this.taillelist1 = this.Extraitlist.length;
-                    this.taillelist2 = this.current_list_extraits.length;
-                }
+                // ----------------------
+                // Déplacer vers le début de la liste disponible
+                // ----------------------
+                targetArray.splice(0, 0, item);
             }
+
+            // Mettre à jour les compteurs
+            this.taillelist1 = this.Extraitlist.length;
+            this.taillelist2 = this.current_list_extraits.length;
         },
+
     },
 
     async mounted() {
@@ -148,7 +183,7 @@ export default {
                         <div
                             class="drag-wrapper"
                             draggable="true"
-                            @dragstart="startDrag($event, extraitv1)"
+                            @dragstart="startDrag($event, extraitv1, 'available')"
                         >
                             <comp_petit_extrait :current_extrait=extraitv1 />
                         </div>
@@ -187,7 +222,7 @@ export default {
                         <div
                             class="drag-wrapper"
                             draggable="true"
-                            @dragstart="startDrag($event, extraitv2)"
+                            @dragstart="startDrag($event, extraitv2, 'playlist')"
                         >
                             <comp_petit_extrait :current_extrait=extraitv2 />
                         </div>
