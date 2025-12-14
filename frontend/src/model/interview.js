@@ -47,6 +47,7 @@ export default class Interview extends Model {
     /**
      * Remplace complètement la liste des extraits
      * @param {Array<Extrait>} extraits
+     * BaptisteBD
      */
     async setExtraits(extraits) {
         // Extraits actuellement liés

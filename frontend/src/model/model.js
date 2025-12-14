@@ -227,6 +227,7 @@ export default class Model {
      * @param {string} url 
      * @param {Object} data 
      * @returns {Promise<Object>}
+     * BaptisteBD
      */
     async connect(url, data) {
         try {

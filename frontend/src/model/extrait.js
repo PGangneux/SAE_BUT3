@@ -104,7 +104,7 @@ export default class Extrait extends Model {
      * @param {int} position 
      * 
      * 
-     * 
+     * BaptisteBD
      * Uncaught (in promise) TypeError: this.validateInt is not a function
         connect_interview extrait.js:107
      */
