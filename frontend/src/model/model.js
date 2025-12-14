@@ -118,6 +118,7 @@ export default class Model {
         }
     }
 
+
     /**
      * Récupère la liste des éléments de this
      * @param {Record<string, string|string[]>} args
@@ -229,6 +230,9 @@ export default class Model {
      */
     async connect(url, data) {
         try {
+            console.log("test")
+            console.log(url)
+            console.log(data)
             return await ClientAPI.post(url, data);
         } catch (error) {
             console.error(error.toString());

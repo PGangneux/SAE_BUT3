@@ -22,6 +22,7 @@ install:
 	$(pip) install -r backend/requirements.txt
 	$(npm) install
 
+
 # Pour le backend
 migration:
 	$(python) $(manage) makemigrations $(APP)

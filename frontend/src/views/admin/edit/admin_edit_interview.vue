@@ -34,6 +34,14 @@ export default {
         },
     },
     methods : {
+        /**
+         * Démarre le drag d’un élément
+         * configure les métadonnées (UUID + liste source) et initialise l’effet de déplacement.
+         *
+         * @param {DragEvent} evt - L’événement de dragstart.
+         * @param {Object} item - L’élément extrait en cours de déplacement.
+         * @param {string} sourceList - La liste d’origine ("available" ou "playlist").
+         */
         startDrag(evt, item, sourceList) {
             // Empêche l'image / le lien d'être la "drag image"
             const crt = evt.currentTarget; // la div.drag-wrapper
@@ -57,13 +65,24 @@ export default {
             
         },
 
-        
+        /**
+         * Autorise le drop en empêchant le comportement par défaut du navigateur.
+         *
+         * @param {DragEvent} evt - L’événement de dragover.
+         */
         onDragOver(evt) {
             evt.preventDefault();
         },
         
+        /**
+         * Gère le drop d’un élément : récupère l’UUID, détermine la liste source/target,
+         * déplace l’élément, calcule la position d’insertion dans la playlist si nécessaire,
+         * et met à jour les compteurs ainsi que le rendu Vue.
+         *
+         * @param {DragEvent} evt - L’événement de drop.
+         * @param {string} targetList - La liste cible ("available" ou "playlist").
+         */
         onDrop(evt, targetList) {
-            console.log("test")
             evt.preventDefault();
 
             const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
@@ -115,6 +134,11 @@ export default {
             this.taillelist1 = this.Extraitlist.length;
             this.taillelist2 = this.current_list_extraits.length;
         },
+
+        async save(){
+            console.log("save")
+            await this.current_interview.setExtraits(this.current_list_extraits)
+        }
 
     },
 
@@ -231,7 +255,7 @@ export default {
     <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
         <RouterLink to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
         <RouterLink to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button type="submit" class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button @click="save()" type="submit" class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button type="button" class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
     </div>
 </div>
