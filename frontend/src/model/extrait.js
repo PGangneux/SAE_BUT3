@@ -43,25 +43,25 @@ export default class Extrait extends Model {
     static get endpoint() { return "extraits"; }
 
     get titre() {return this.#titre; }
-    set titre(value) { this.#titre = this.validateString(value, "titre"); }
+    set titre(value) { this.#titre = this.constructor.validateString(value, "titre"); }
 
     get description() { return this.#description; }
-    set description(value) { this.#description = this.validateString(value, "description"); }
+    set description(value) { this.#description = this.constructor.validateString(value, "description"); }
 
     get youtube_url() { return this.#youtube_url; }
-    set youtube_url(value) { this.#youtube_url = this.validateString(value, "youtube_url"); }
+    set youtube_url(value) { this.#youtube_url = this.constructor.validateString(value, "youtube_url"); }
 
     get vimeo_url() { return this.#vimeo_url; }
-    set vimeo_url(value) { this.#vimeo_url = this.validateString(value, "vimeo_url"); }
+    set vimeo_url(value) { this.#vimeo_url = this.constructor.validateString(value, "vimeo_url"); }
 
     get uploaded_at() { return this.#uploaded_at; }
     set uploaded_at(value) { this.#uploaded_at = value; }
 
     async artiste() { return await this.fetchDetail(this.#artiste, Artiste); }
-    set artiste(value) { this.#artiste_uuid = this.validateString(value, "artiste_uuid"); }
+    set artiste(value) { this.#artiste_uuid = this.constructor.validateString(value, "artiste_uuid"); }
 
     async question() { return await this.fetchDetail(this.#question, Question); }
-    set question(value) { this.#question_uuid = this.validateString(value, "question_uuid"); }
+    set question(value) { this.#question_uuid = this.constructor.validateString(value, "question_uuid"); }
 
     get duree() { return this.#duree; }
     set duree(value) { this.#duree = value; }

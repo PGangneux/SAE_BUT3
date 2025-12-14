@@ -169,7 +169,7 @@ export default class Model {
         }
         try {
             return await ClientAPI.post(
-                ClientAPI.endpoints(this.endpoint),
+                await ClientAPI.endpoints(this.endpoint),
                 JSON.stringify(this.toJSON())
             )
             // Charger les nouvelles données dans l'instance

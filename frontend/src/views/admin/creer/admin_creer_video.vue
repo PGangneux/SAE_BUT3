@@ -25,8 +25,9 @@ export default {
             taillelist:Array,
             thumbnail: '/imgs/width551.png', //image defaults
             searchValueTag: "",
-            new_extrait:new Extrait("","","","","","","","","","","","",), //Extrait vide
-            dico_elementcreer:{  //regroupement des valeurs des imputs
+            
+            //regroupement des valeurs des imputs
+            dico_elementcreer:{  
                   titre: null,
                   description:  null,
                   youtube_url:  null,
@@ -40,6 +41,7 @@ export default {
                   question_uuid:null,
                   duree:        null,
             },
+            
             selectedArtiste: "", //Artiste selectionner retourn null si rien
             selectedQuestion: "",//Questio selectionner retourn null si rien
 
@@ -60,24 +62,26 @@ export default {
     async enregistrer(){
       //fonction pour enregistrer un extraits dans L'api
 
+
+      //Extrait vide
+      let new_extrait = new Extrait("","","","","","","","","","","","",); 
       
       console.log(this.dico_elementcreer);
 
-      console.log(this.new_extrait)
-
-      this.new_extrait.titre = this.dico_elementcreer.titre;
-      this.new_extrait.description = this.dico_elementcreer.description;
-      this.new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
-      this.new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
-      
-      this.new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
-      this.new_extrait.tags = this.dico_elementcreer.tags
-
-      console.log(this.new_extrait)
+      new_extrait.titre = this.dico_elementcreer.titre;
+      new_extrait.description = this.dico_elementcreer.description;
+      new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
+      new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
+      new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
+      new_extrait.tags = this.dico_elementcreer.tags
+      new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
+      new_extrait.question = this.dico_elementcreer.question_uuid;
+      console.log(new_extrait)
+      await new_extrait.create();
   
       console.log("creer");
-      this.popupEnregistrer = true;
-      //this.new_extrait.create
+      this.popupEnregistrer = false;
+      //new_extrait.create
     },
 
     possiblecreation(){
@@ -103,13 +107,13 @@ export default {
     popupchangeInterview(){
       //permet de changer l'etat de la popup Interview
       this.popupSelectInterview = !this.popupSelectInterview
-      console.log(this.popupSelectInterview)
+      
     },
 
     popupchangeEnregistrer(){
       //permet de changer l'etat de la popup Enregistrer
       this.popupEnregistrer = !this.popupEnregistrer
-      console.log(this.popupEnregistrer)
+      
     },
 
 
@@ -121,17 +125,18 @@ export default {
       //reccupere l'artiste de la liste
       const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
 
+      
+
       //verifie si artiste existe et n'es pas null
       if (artiste) {
           this.dico_elementcreer.artiste = artiste;
           this.dico_elementcreer.artiste_uuid = artiste.uuid;
-          this.new_extrait.artiste =artiste.uuid;
         } else {
           this.dico_elementcreer.artiste = null;
           this.dico_elementcreer.artiste_uuid = null;
       }
 
-      console.log( this.dico_elementcreer.artiste, this.dico_elementcreer.artiste_uuid);
+      console.log(this.dico_elementcreer.artiste);
 
     },
 
@@ -146,7 +151,6 @@ export default {
           this.dico_elementcreer.question = question;
           this.dico_elementcreer.question_uuid = question.uuid;
           this.dico_elementcreer.titre = question.texte;
-          this.new_extrait.question = question.uuid;
         } else {
           this.dico_elementcreer.question = null;
           this.dico_elementcreer.question_uuid = null;
