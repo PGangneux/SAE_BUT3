@@ -221,6 +221,9 @@ export default class ClientAPI {
      * @returns {Promise<Object>}
      */
     static async post(url, data, withAuth=true) {
+        console.log("post")
+        console.log(url)
+        console.log(data)
         return await this.fetch("POST", url, null, data, withAuth);
     }
 

@@ -165,34 +165,25 @@ export default {
 <comp_baradmin/>
 
 <div class="main_content">
-    <h1 class="text-center"> Edit Interview-Playlist </h1>
+    <h1 class="text-center"> Modification d'une Playlist </h1>
+    <h2> {{ this.current_interview.titre }}</h2>
 
-    <div class="row">
-        <h1> {{ this.current_interview.titre }} - Playlist </h1>
-
-        <div class="row">
-            <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
-            </div>
-        </div>
-    </div>
+    <textarea type="aera" placeholder="Description" v-model="description" class="form-control"></textarea>
 
     <div class="row row_gap">
-        <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel);">
+        <div class="col-md-4 aggrandir div_extrait_dispo">
             <div class="pcentrer ">
 
                 <div class="row">
-                    <h1> Question-Extrait existant</h1>
-                    <h1> Total Question-Extrait : {{this.taillelist1}}</h1>
+                    <h1> Disponible </h1>
+                    <h2> Total Extraits : {{this.taillelist1}}</h2>
                 </div>
 
-                <div class="search-bar grisee">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
-                        </button>
-                    </div>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                        <img src="/imgs/search.svg" alt="button search">
+                    </button>
                 </div>
 
                 <ul 
@@ -213,22 +204,20 @@ export default {
             </div>
         </div>
 
-        <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale);">
+        <div class="col-md-4 aggrandir div_extrait_playlist">
             <div class="pcentrer ">
 
-                <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                    <h1> Question-Extrait dans Playlist</h1>
-                    <h1> Total Question-Extrait : {{ this.taillelist2 }}</h1>
+                <div class="row">
+                    <h1> Playlist</h1>
+                    <h2> Total Extraits : {{ this.taillelist2 }}</h2>
                 </div>
 
-                <div class="search-bar grisee">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                     </div>
-                </div>
 
                 <ul 
                     class="drop-zone"
@@ -253,11 +242,11 @@ export default {
         </div>
     </div>
 
-    <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-        <RouterLink to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
-        <RouterLink to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button @click="save()" type="submit" class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-        <button type="button" class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+    <div class="bottom_button">
+        <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add"> Ajouter un Extrait</RouterLink>          
+        <RouterLink to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">  Ajouter une Playlist </RouterLink>
+        <button @click="save()" type="submit" class="btn btn-outline-success" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button type="button" class="btn  btn-outline-danger" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
     </div>
 </div>
 </template>
@@ -265,7 +254,7 @@ export default {
 <style scoped>
 /* marge globale pour le contenu */
 .main_content {
-    margin: 20px;
+    margin: 2%;
 }
 
 /* conteneur des deux colonnes */
@@ -273,7 +262,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;           /* interdit le retour à la ligne */
     gap: 20px;                   /* espace entre les colonnes */
-    margin: 2% 20px;             /* marge pour ne pas coller aux bords */
+    margin: 2% 0% 2% 0%  ;        /* marge pour ne pas coller aux bords */
     align-items: stretch;        /* les colonnes ont la même hauteur */
 }
 
@@ -284,6 +273,8 @@ export default {
     flex: 1 1 0;                 /* peut grandir mais pas rétrécir en dessous */
     min-width: 300px;             /* largeur minimale pour ne pas rétrécir */
     height: auto;                 /* hauteur basée sur la colonne la plus grande */
+    border-radius: 5px;   /* arrondit les bords */
+    overflow: hidden;      /* optionnel : évite que le contenu dépasse */
 }
 
 /* wrapper vertical qui contient header / search / liste */
@@ -302,7 +293,6 @@ export default {
 .drop-zone {
     flex: 1 1 auto;               /* occupe tout l'espace restant de la colonne */
     overflow: visible;            /* plus de scroll interne */
-    background-color: #eee;
     padding: 10px;
     list-style: none;
     margin: 0;
@@ -315,7 +305,6 @@ export default {
 .drop-zone .drag-el {
     display: block;
     margin-bottom: 8px;
-    background: #fff;
     padding: 8px;
     cursor: move;
 }
@@ -331,9 +320,34 @@ export default {
 
 /* garde esthétique pour header et search */
 .aggrandir .header-zone { padding-bottom: 8px; }
-.search-bar { padding-bottom: 8px; }
 
 /* outlines pour debugger (enlever en production) */
 .aggrandir { outline: 1px dashed rgba(0,0,0,0.05); }
 .drop-zone { outline: 1px dashed rgba(0,0,0,0.05); }
+
+
+
+/* couleurs ul */
+.div_extrait_dispo{
+    background-color:var(--vert-midel);
+}
+
+.div_extrait_playlist{
+    background-color:var(--vert-pale);
+}
+
+textarea{
+    border:solid 0.3em;  
+    border-color: var(--vert-pale);
+}
+
+h1 {
+    text-align: center;
+}
+
+.aggrandir h1{
+    margin-top: 2%; ;
+}
+
+
 </style>
