@@ -1,5 +1,5 @@
 <script>
-import { markRaw} from 'vue';
+import { markRaw, nextTick} from 'vue';
 import Interview from '../../../model/interview.js';
 import Tags from '../../../model/tag.js';
 
@@ -21,21 +21,14 @@ export default {
 
 
   async mounted() {
-    // console.log("mounted admin interview list");
     this.interviews = markRaw(await Interview.list());
-
-    
 
     try {
         for (let interview of this.interviews) {
             this.dico_interviews[interview.uuid] = {"length": (await interview.extraits()).length, "tags": markRaw(await interview.tags())};
-            // console.log(markRaw(this.dico_interviews));
         }
 
         this.tags = markRaw(await Tags.list())
-
-
-
     } catch (error) {
       console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
     }
