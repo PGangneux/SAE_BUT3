@@ -8,20 +8,28 @@ export class mmch_Question extends mmch_CheminT {
     constructor(question) {
         this.mmch_obj = question;
     }
-    
+
     static async mmch_list(args = {}) {
         const finalArgs = { ...this.mmch_default_list_args, ...args };
         const items = await this.mmch_dbjsclass.list(finalArgs);
-        return items.map(item => new mmch_Question(item));
+        return [
+            new mmch_Extrait(null),
+            new mmch_Theme(null),
+            ...items.map(item => new mmch_Question(item)),
+        ];
     }
 
-    static async mmch_search(query, args = {}) {
+    static async mmch_search(args = {}) {
         const finalArgs = { ...this.mmch_default_search_args, ...args };
-        const questions = await Question.search(query, finalArgs);
-        return questions.map(q => new mmch_Question(q));
+        const items = await Question.search(finalArgs);
+        return [
+            new mmch_Extrait(null),
+            new mmch_Theme(null),
+            ...items.map(item => new mmch_Question(item)),
+        ];
     }
-    
-    async mmch_getTitle(){
+
+    async mmch_getTitle() {
         const question = this.mmch_obj;
         return question.texte.substring(0, 50);
     }
@@ -32,8 +40,8 @@ export class mmch_Question extends mmch_CheminT {
         try {
             const theme = await question.theme();
             if (theme && theme.name) description.push(`Thème: ${theme.name}`);
-        } catch (error) {console.warn(error);}
-        
+        } catch (error) { console.warn(error); }
+
         return description.length > 0 ? description : ["no description question"];
     }
 }

@@ -20,16 +20,16 @@ const mm_CategorysSearch = [
     mmch_Interview
 ];
 
-class mm_Root{
+class mm_Root {
 }
 
 export class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
-    
+
     constructor() {
         super(null);
     }
-    
+
     static async mmch_list(args = {}) {
         const results = [];
         for (const Category of mm_CategorysDefault) {
@@ -40,11 +40,11 @@ export class mmch_Root extends mmch_CheminT {
         }
         return results;
     }
-    
+
     static async mmch_search(args = {}) {
         const allCategories = [...mm_CategorysDefault, ...mm_CategorysSearch];
         const results = [];
-        
+
         for (const Category of allCategories) {
             if (Category.mmch_search) {
                 const items = await Category.mmch_search(query, args);
