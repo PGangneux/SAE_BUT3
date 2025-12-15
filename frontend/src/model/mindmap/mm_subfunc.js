@@ -13,15 +13,14 @@ export function mm_checkvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
     if (!!last) return false;
-    let content = last.category.mmch_obj; 
-    if (last.category == mmch_Extrait && content) {
-        mminfo.extrait_current.set(content);
+    if (last.category == mmch_Extrait && last.category.mmch_obj) {
+        mminfo.extrait_current.set(last.category);
         router.push({
             path: "/lecteur_video/"
         });
         return true;
-    } else if (last.category == mmch_Interview && content) {
-        mminfo.interview_current.set(content);
+    } else if (last.category == mmch_Interview && last.category.mmch_obj) {
+        mminfo.interview_current.set(last.category);
         router.push({
             path: "/lecteur_video/"
         });
