@@ -80,7 +80,7 @@ class Recommandation(APIView):
                 (c:{video_class}|{playlist_class}{" {uuid: $uuid}"})
 
                 WHERE v.uuid <> c.uuid
-                // {"AND NOT ( (u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))" if user else ""}
+                {"AND NOT ( (u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))" if user else ""}
 
                 // Permet de compter les éléments en commun pour ordonner
 
