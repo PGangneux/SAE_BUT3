@@ -45,8 +45,8 @@ export default class Interview extends Model {
     async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
     /**
-     * Remplace complètement la liste des extraits
-     * @param {Array<Extrait>} extraits
+     * Redéfinie la liste des extraits de this
+     * @param {Array<Extrait>} extraits Les nouveaux extrait de this.
      * BaptisteBD
      */
     async setExtraits(extraits) {
@@ -60,7 +60,7 @@ export default class Interview extends Model {
         for (const extrait of current) {
             console.log(extrait)
             if (!newUUIDs.has(extrait.uuid)) {
-                await this.disconnect(this.#extraits, extrait);
+                await extrait.disconnect_interview(this);
             }
         }
 
@@ -71,7 +71,6 @@ export default class Interview extends Model {
 
             if (!currentUUIDs.has(extrait.uuid)) {
                 // add new Extrait
-                console.log("ADDD")
                 await extrait.connect_interview(this, index)
             }
             else{
