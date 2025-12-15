@@ -109,7 +109,6 @@ export default {
 
     popupchange(){
       this.popup = !this.popup
-      console.log(this.popup)
     },
 
 
@@ -169,16 +168,13 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    //// console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
     await this.recupeArtiste();
     await this.recupeQuestion();
 
-    console.log(this.current_extrait);
 
-    // console.log("dico complet en cours");
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
       "uploaded_at": (markRaw(await this.current_extrait.uploaded_at)),
@@ -192,10 +188,7 @@ export default {
 
 
 
-console.log(this.dico_extrait['artiste']);
-console.log(this.dico_extrait['question']);
-console.log(this.dico_extrait['interviews']);
-console.log(await this.current_extrait.interviews);
+
 
 
 

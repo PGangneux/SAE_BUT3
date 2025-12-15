@@ -66,7 +66,7 @@ export default {
       //Extrait vide
       const new_extrait = new Extrait("","","","","","","","","","","","",); 
       
-      console.log(this.dico_elementcreer);
+
 
       new_extrait.titre = this.dico_elementcreer.titre;
       new_extrait.description = this.dico_elementcreer.description;
@@ -76,8 +76,8 @@ export default {
       new_extrait.tags = this.dico_elementcreer.tags
       new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
       new_extrait.question = this.dico_elementcreer.question_uuid;
-      
-      console.log(new_extrait)
+      new_extrait.duree = 0;
+
 
       const test = await new_extrait.create();
       

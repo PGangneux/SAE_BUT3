@@ -31,7 +31,6 @@ export default {
 
         creerExtrait(e) {
             const value = e.submitter.value
-            console.log(value);
 
             if(value == "envoyer"){
                 alert("nous avons: " + value);
@@ -62,12 +61,7 @@ export default {
     },
 
     async mounted() {
-        console.log(this.$route.path)
         this.typefichier=this.$route.path.split("/")[2]
-        console.log(this.typefichier)
-
-        console.log(this.Element_Creer)
-
     }
 };
 
