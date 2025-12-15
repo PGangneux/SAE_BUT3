@@ -19,19 +19,9 @@ export default {
             current_list_extraits:{type:Extrait},
             taillelist1:0,   
             taillelist2:0, 
+            titre: '',
+            description: '',
         };
-    },
-    computed: {
-        description: {
-            get() {
-                return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
-            },
-            set(value) {
-                if (this.current_interview) {
-                    this.current_interview.description = value;
-                }
-            }
-        },
     },
     methods : {
         /**
@@ -135,9 +125,14 @@ export default {
             this.taillelist2 = this.current_list_extraits.length;
         },
 
-        async save(){
-            await this.current_interview.setExtraits(this.current_list_extraits)
+        async save() {
+            this.current_interview.titre = this.titre;
+            this.current_interview.description = this.description;
+
+            await this.current_interview.setExtraits(this.current_list_extraits);
+            await this.current_interview.update()
         }
+
 
     },
 
@@ -155,6 +150,10 @@ export default {
 
         this.taillelist1 = this.Extraitlist.length;
         this.taillelist2 = this.current_list_extraits.length;
+
+        // pré-remplissage du formulaire
+        this.titre = this.current_interview.titre;
+        this.description = this.current_interview.description;
     },
 };
 </script>
@@ -164,9 +163,21 @@ export default {
 
 <div class="main_content">
     <h1 class="text-center"> Modification d'une Playlist </h1>
-    <h2> {{ this.current_interview.titre }}</h2>
+    <input
+        v-model="titre"
+        class="form-control"
+        placeholder="Titre"
+    />
 
-    <textarea type="aera" placeholder="Description" v-model="description" class="form-control"></textarea>
+
+
+    <textarea
+        type="aera"
+        v-model="description"
+        placeholder="Description"
+        class="form-control">
+    </textarea>
+
 
     <div class="row row_gap">
         <div class="col-md-4 aggrandir div_extrait_dispo">
