@@ -5,8 +5,8 @@ export class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     mmch_obj;
 
-    constructor(extrait) {
-        this.mmch_obj = extrait;
+    constructor({inst = null} = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -34,6 +34,7 @@ export class mmch_Extrait extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch description extrait on empty obj");
         const description = [];
         const extrait = this.mmch_obj;
         try {
@@ -71,11 +72,13 @@ export class mmch_Extrait extends mmch_CheminT {
     }
 
     mmch_hasPreview() {
+        if (!!this.mmch_obj) return null;
         const extrait = this.mmch_obj;
         return !!(extrait.youtube_url || extrait.vimeo_url);
     }
 
     async mmch_getPreview() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getPreview Extrait on empty obj");
         const extrait = this.mmch_obj;
         if (extrait.youtube_url) {
             return extrait.url_miniature_yt;

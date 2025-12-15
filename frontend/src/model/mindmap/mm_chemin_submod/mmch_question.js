@@ -5,8 +5,8 @@ export class mmch_Question extends mmch_CheminT {
     static mmch_dbjsclass = Question;
     mmch_obj;
 
-    constructor(question) {
-        this.mmch_obj = question;
+    constructor({inst = null} = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -30,11 +30,13 @@ export class mmch_Question extends mmch_CheminT {
     }
 
     async mmch_getTitle() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle question on empty obj");
         const question = this.mmch_obj;
         return question.texte.substring(0, 50);
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch description question on empty obj");
         const description = [];
         const question = this.mmch_obj;
         try {

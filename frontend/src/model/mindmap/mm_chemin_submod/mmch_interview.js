@@ -5,8 +5,8 @@ export class mmch_Interview extends mmch_CheminT {
     static mmch_dbjsclass = Interview;
     mmch_obj;
 
-    constructor(interview) {
-        this.mmch_obj = interview;
+    constructor({ inst = null } = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -30,6 +30,7 @@ export class mmch_Interview extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch description interview on empty obj");
         const description = [];
         const interview = this.mmch_obj;
 
@@ -46,5 +47,25 @@ export class mmch_Interview extends mmch_CheminT {
         } catch (error) { console.warn(error); }
 
         return description.length > 0 ? description : ["no description interview"];
+    }
+
+    async mmch_getPreview() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getPreview interview on empty obj");
+        const interview = this.mmch_obj;
+
+        const extraits = await interview.extraits();
+        if (!extraits || extraits.length === 0) {
+            console.warn(`Aucun extrait trouvé pour l'interview ${interview}`);
+            return null;
+        }
+
+        const extrait = extraits[0];
+        if (extrait.youtube_url) {
+            return extrait.url_miniature_yt;
+        } else if (extrait.vimeo_url) {
+            return await extrait.get_url_miniature_vimeo();
+        } else {
+            throw new Error("unreachable Extrait doesn't have url");
+        }
     }
 }

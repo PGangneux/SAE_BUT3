@@ -5,8 +5,8 @@ export class mmch_Nation extends mmch_CheminT {
     static mmch_dbjsclass = Nation;
     mmch_obj;
 
-    constructor(nation) {
-        this.mmch_obj = nation;
+    constructor({inst = null} = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -28,6 +28,7 @@ export class mmch_Nation extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch description nation on empty obj");
         const description = [];
         const nation = this.mmch_obj;
 

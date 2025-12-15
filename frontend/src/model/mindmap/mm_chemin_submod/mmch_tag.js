@@ -5,8 +5,8 @@ export class mmch_Tag extends mmch_CheminT {
     static mmch_dbjsclass = Tag;
     mmch_obj;
 
-    constructor(tag) {
-        this.mmch_obj = tag;
+    constructor({inst = null} = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -30,10 +30,7 @@ export class mmch_Tag extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle tag on empty obj");
         return "";
-        const description = [];
-        const tag = this.mmch_obj;
-
-        return description.length > 0 ? description : ["no description tag"];
     }
 }

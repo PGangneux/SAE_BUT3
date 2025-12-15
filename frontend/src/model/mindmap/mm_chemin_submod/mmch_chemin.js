@@ -19,6 +19,7 @@ export class mmch_CheminT {
     }
 
     async mmch_getTitle() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle generic on empty obj");
         const obj = this.mmch_obj;
         if (obj.name) return obj.name;
         if (obj.titre) return obj.titre;
@@ -27,6 +28,7 @@ export class mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        console.warn("mmch_getDescription generic");
         return ["no description"];
     }
 

@@ -5,8 +5,8 @@ export class mmch_StyleMusical extends mmch_CheminT {
     static mmch_dbjsclass = StyleMusical;
     mmch_obj;
 
-    constructor(style) {
-        this.mmch_obj = style;
+    constructor({inst = null} = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -28,10 +28,7 @@ export class mmch_StyleMusical extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle style musical on empty obj");
         return "";
-        const description = [];
-        const style = this.mmch_obj;
-
-        return description.length > 0 ? description : ["no description style musical"];
     }
 }

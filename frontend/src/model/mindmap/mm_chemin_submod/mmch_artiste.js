@@ -5,8 +5,8 @@ export class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
     mmch_obj;
 
-    constructor(artiste) {
-        this.mmch_obj = artiste;
+    constructor({ inst = null } = {}) {
+        this.mmch_obj = inst;
     }
 
     static async mmch_list(args = {}) {
@@ -32,6 +32,7 @@ export class mmch_Artiste extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
+        if (!!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
         const description = [];
 
         try {
