@@ -31,65 +31,6 @@ export default {
   },
 
   methods : {
-    // pour Baptiste peut etre utile
-    async get_statistiques_reco(video_regardees){
-      // initialiser les maps de comptage
-      this.tags_count.clear();
-      this.themes_count.clear();
-      this.artistes_count.clear();
-      this.questions_count.clear();
-
-      for (const video of video_regardees) {
-          // compter les tags
-          const tags = await video.tags;
-          for (const tag of tags) {
-            this.tags_count.set(tag, (this.tags_count.get(tag) || 0) + 1);
-          }
-          // compter les thèmes
-          const themes = await video.themes;
-          for (const theme of themes) {
-            this.themes_count.set(theme, (this.themes_count.get(theme) || 0) + 1);
-          }
-          // compter les artistes
-          const artistes = await video.artiste;
-          for (const artiste of artistes) {
-            this.artistes_count.set(artiste, (this.artistes_count.get(artiste) || 0) + 1);
-          }
-          // compter les questions
-          const questions = await video.question;
-          for (const question of questions) {
-            this.questions_count.set(question, (this.questions_count.get(question) || 0) + 1);
-          }
-        }
-    },
-
-    // pour Baptiste peut etre utile
-    sort_stats(){
-      // trier les maps de comptage par valeur décroissante
-      // exemple pour les tags
-      // avant trie
-      // this.tags_count = new Map([
-      //   ["rock", 12],
-      //   ["pop", 5],
-      //   ["jazz", 8],
-      //   ["electro", 20]
-      // ]);
-      // après trie
-      // this.tags_count = new Map([
-      //   ["electro", 20],
-      //   ["rock", 12],
-      //   ["jazz", 8],
-      //   ["pop", 5]
-      // ]);
-
-
-      this.tags_count = new Map([...this.tags_count.entries()].sort((a, b) => b[1] - a[1]));
-      this.themes_count = new Map([...this.themes_count.entries()].sort((a, b) => b[1] - a[1]));
-      this.artistes_count = new Map([...this.artistes_count.entries()].sort((a, b) => b[1] - a[1]));
-      this.questions_count = new Map([...this.questions_count.entries()].sort((a, b) => b[1] - a[1]));
-    },
-
-
     /**
      * Génère un dictionnaire de poids selon le chemin d'entrée de l'utilisateur.
      * les poids sont plus lourd au debut du chemin.
@@ -105,64 +46,6 @@ export default {
       return weights;
     },
 
-    get_delta_frequance_extraits(video_regardees){
-        const nombre_extraits_regardes = video_regardees.filter(video => !video.extraits).length;
-        const nombre_interviews_regardees = video_regardees.length - nombre_extraits_regardes;
-        const delta_frequance_extraits = (video_regardees.length - nombre_extraits_regardes) / nombre_interviews_regardees   // rapport extrait/interview regardées
-
-        // on interpole linéairement entre 0 et 1 -> 1 à 4 puis on arrondit pour reotourner un entier
-        return Math.round(Math.min(Math.max(4 - 3 * delta_frequance_extraits, 1), 4));
-    },
-
-    /**
-     * TODO Inutiliser
-     * Génère une liste de vidéos selon un ratio interview/extrait
-     * dérivé d'un delta compris entre 1 et deltaMax.
-     *
-     * @param {Map} poids - map des poids pour les recommandations
-     * @param {number} totalVideos - nombre total de vidéos à générer
-     * @param {number} deltaMax - valeur maximale possible du delta (par ex. 4 aujourd’hui)
-     */
-    async generateVideos(poids, totalVideos, deltaMax = 4) {
-      // const delta_frequance_extraits = this.get_delta_frequance_extraits(video_regardees);
-
-      // Fait dans l'API
-      // ratio linéaire suivant le delta, abstrait !
-      // const ratioInterview = Math.max(0, deltaMax - delta_frequance_extraits);
-      // const ratioExtrait   = delta_frequance_extraits;
-
-      // Fait dans l'API
-      // const nbE = ratioExtrait * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
-      // const nbI = ratioInterview * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
-
-      // Fait dans l'API
-      // fetch des vidéos todo Baptiste
-      // const liste_extraits = fetchextrait(nbextrait = nbE, map_poids) // récupère x extraits recommander pout l'utilisateur
-      // const liste_interview =  fetchinterview(nbinterview = nbI, map_poids) // récupère y interviews recommander pour l'utilisateur
-
-      // todo : fusionner les deux listes en respectant le patern interview/extrait
-
-      // création du pattern basé sur le ratio
-      // const pattern = [
-      //   ...Array(ratioInterview).fill("interview"),
-      //   ...Array(ratioExtrait).fill("extrait")
-      // ];
-
-      // boucle abstraite
-      // let indI = 0;
-      // let indE = 0;
-      // for (let i = 0; i < totalVideos; i++) {
-      //   const type = pattern[i % pattern.length];
-      //   if (type === "interview") {
-      //     this.videos.push(liste_interview[indI]);
-      //     indI++;
-      //   } else {
-      //     this.videos.push(liste_extraits[indE]);
-      //     indE++;
-      //   }
-      // }
-
-    },
 
     // À déplacer
     async current_reco(){
