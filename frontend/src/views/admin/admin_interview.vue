@@ -1,11 +1,11 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
-import supprimer from "../supprimer.vue";
+import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
+import supprimer from "./supprimer.vue";
 
-import Interview from '../../../model/interview.js';
-import Extrait from "../../../model/extrait.js";
+import Interview from '../../model/interview.js';
+import Extrait from "../../model/extrait.js";
 
 export default {
     name: "page_admin_edit_interview",
@@ -18,12 +18,13 @@ export default {
         return {
             Extraitlist : [],
             current_interview:{type:Interview},
-            current_list_extraits:{type:Extrait},
+            current_list_extraits:[],
             taillelist1:0,   
             taillelist2:0, 
             titre: '',
             description: '',
-            popupDelete: false
+            popupDelete: false,
+            create: false,
         };
     },
     methods : {
@@ -106,7 +107,7 @@ export default {
                 }
 
                 // Insérer à la bonne position
-                targetArray.splice(insertIndex, 0, item);
+                targetArray.splice(insertIndex, 0, markRaw(item));
 
                 // force vue à redessiner la liste playlist, sinon affichage non mis à jour car on change l'intérieurs de la liste et pas de changement de taille ...
                 if (targetList === sourceList){
@@ -129,38 +130,47 @@ export default {
         },
 
         async save() {
+            console.log(this.current_interview)
             this.current_interview.titre = this.titre;
             this.current_interview.description = this.description;
-
+            this.current_interview =  this.create ? await this.current_interview.create() : await this.current_interview.update();
+            console.log("interview create", this.current_interview)
             await this.current_interview.setExtraits(this.current_list_extraits);
-            await this.current_interview.update()
         },
-
-
-
-
-
-
     },
 
     async mounted() {
-        const InterviewId = this.$route.params.id;
-        this.current_interview = markRaw(await Interview.detail(InterviewId));
-        this.current_list_extraits = markRaw(await this.current_interview.extraits({'order': 'APPARTIENT_A|position'}));
-        
         const allExtraits = markRaw(await Extrait.list());
-        this.Extraitlist = markRaw(
-            allExtraits.filter(e => 
-                !this.current_list_extraits.some(c => c.uuid === e.uuid)
-            )
-        );
-
+            
         this.taillelist1 = this.Extraitlist.length;
-        this.taillelist2 = this.current_list_extraits.length;
 
-        // pré-remplissage du formulaire
-        this.titre = this.current_interview.titre;
-        this.description = this.current_interview.description;
+        const InterviewId = this.$route.params.id;
+        if (InterviewId){
+            this.current_interview = markRaw(await Interview.detail(InterviewId));
+            this.current_list_extraits = markRaw(await this.current_interview.extraits({'order': 'APPARTIENT_A|position'}));
+            
+            this.Extraitlist = markRaw(
+                allExtraits.filter(e => 
+                    !this.current_list_extraits.some(c => c.uuid === e.uuid)
+                )
+            );
+
+            this.taillelist2 = this.current_list_extraits.length;
+
+            // pré-remplissage du formulaire
+            this.titre = this.current_interview.titre;
+            this.description = this.current_interview.description;
+        }
+
+        else{
+            this.create = true
+            this.current_interview  = markRaw(new Interview({}));
+            this.Extraitlist = allExtraits;
+            
+        }
+
+
+        
     },
 };
 </script>

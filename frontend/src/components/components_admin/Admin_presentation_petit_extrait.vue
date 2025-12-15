@@ -21,7 +21,7 @@ export default {
 
 
     async mounted() {
-
+        console.log("this.current_extrait",this.current_extrait)
         if (this.current_extrait.url_miniature_yt != null) {
             this.thumbnail = this.current_extrait.url_miniature_yt
         }else{
@@ -39,7 +39,7 @@ export default {
 
 <template>
     
-    <div class="container container_extrait col "  >
+    <div  v-if="current_extrait" class="container container_extrait col "  >
         <div class="row base">
 
             <div class="col-sm reduction_image">
@@ -47,24 +47,9 @@ export default {
             </div>
 
             <div class="col-xl vigniette ">
+                <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
 
-                    <RouterLink v-if="current_extrait && current_extrait.uuid" class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/' + current_extrait.uuid} ">
-                        <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
-                        
-                        <h1 v-else class="row decallage_droite">
-                            Chargement des informations...
-                        </h1>
 
-                    </RouterLink>
-
-                    <RouterLink v-else class="row decallage_droite" style="text-decoration: none; color: inherit;" :to="{path:'/admin/extrait/1'} ">
-                        <h1  v-if="current_extrait && current_extrait.titre" class="row decallage_droite">{{current_extrait.titre}}</h1>
-                        
-                        <h1 v-else class="row decallage_droite">
-                            Chargement des informations...
-                        </h1>
-
-                    </RouterLink>
 
 
                 <div class="row decallage_droite">
@@ -73,9 +58,6 @@ export default {
                             <img src="/imgs/date.svg" alt="date logo " class="col" height="32" width="32">
                             <p v-if="current_extrait && current_extrait.uploaded_at" class="col">
                                 {{ current_extrait.uploaded_at }}
-                            </p>
-                            <p v-else class="col">
-                                Chargement des informations...
                             </p>
                         </li>
 
