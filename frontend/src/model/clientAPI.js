@@ -220,8 +220,8 @@ export default class ClientAPI {
      * @param {boolean} withAuth
      * @returns {Promise<Object>}
      */
-    static async post(url, data, withAuth=true) {
-        return await this.fetch("POST", url, null, data, withAuth);
+    static async post(url, data, withAuth=true, args=null) {
+        return await this.fetch("POST", url, args, data, withAuth);
     }
 
     /**

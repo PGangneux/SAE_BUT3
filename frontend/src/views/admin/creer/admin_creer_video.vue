@@ -5,11 +5,11 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
-import Extrait from "../../../model/extrait";
 
-import Interview from '../../../model/interview.js';
+
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
+import Extrait from "../../../model/extrait";
 
 
 
@@ -20,15 +20,14 @@ export default {
     popup_valider,
     popup_interview,
 
-    //dataliste
   },data() {
         return {
-            tags:[],
-            dico_extrait:{},
             taillelist:Array,
-            thumbnail: '/imgs/width551.png',
-
-            dico_elementcreer:{
+            thumbnail: '/imgs/width551.png', //image defaults
+            searchValueTag: "",
+            
+            //regroupement des valeurs des imputs
+            dico_elementcreer:{  
                   titre: null,
                   description:  null,
                   youtube_url:  null,
@@ -36,21 +35,23 @@ export default {
                   uploaded_at:  null,
                   artiste:      null,
                   question:     null,
-                  interviews:[],
                   tags:         null,
                   position:     null,
                   artiste_uuid: null,
                   question_uuid:null,
                   duree:        null,
             },
+            
+            selectedArtiste: "", //Artiste selectionner retourn null si rien
+            selectedQuestion: "",//Questio selectionner retourn null si rien
 
-            Element_Creer: {
-              type:Object,
-            },
-            listeArtiste:[],
-            listeQuestion:[],
-            popup: false,
-            popup2:false,
+            listeArtiste:[],    //liste des Artistes totals
+            listeQuestion:[],   //liste des Questions totals
+            tags:[],            //liste des tags totals
+
+
+            popupSelectInterview: false, //Props pour popupSelectInterview
+            popupEnregistrer:false,
         };
     },
     
@@ -59,74 +60,111 @@ export default {
   methods: {
 
     async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
 
-      //this.Element_Creer = await new Extrait().create()
-      console.log(this.dico_elementcreer);
+
+      //Extrait vide
+      const new_extrait = new Extrait("","","","","","","","","","","","",); 
+      
+
+
+      new_extrait.titre = this.dico_elementcreer.titre;
+      new_extrait.description = this.dico_elementcreer.description;
+      new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
+      new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
+      new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
+      new_extrait.tags = this.dico_elementcreer.tags
+      new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
+      new_extrait.question = this.dico_elementcreer.question_uuid;
+      new_extrait.duree = 0;
+
+
+      const test = await new_extrait.create();
+      
+  
       console.log("creer");
-      this.popup2 = true;
+      this.popupEnregistrer = false;
+      //new_extrait.create
     },
 
     possiblecreation(){
+    //fonction pour verifier si les elements peuve etre enregistrer
 
     },
 
     ajoutertag(){
-
+      //permet d'ajouter un tag a l'extrait
     },
 
     removetag(idtags){
+      //permet de retirer un tag a l'extrait
+
       if(this.dico_elementcreer.tags == []){
-        console.log("pas d'element a retiré")
+        //console.log("pas d'element a retiré")
       }else if (this.dico_elementcreer.tags.includes(idtags)) {
         this.dico_elementcreer.tags.remove(idtags);
-        console.log("tags retiré")
+        //console.log("tags retiré")
       }
     },
 
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      
+    },
 
-    Interview_ajouter(interview_ajouter){
-      if(interview_ajouter == null ||interview_ajouter !=Interview ){
-        console.log("interview non conforme")
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      
+    },
+
+
+
+    SelectedArtisteId() {
+      //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
+      //reccupere l'artiste de la liste
+      const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
+
+      
+
+      //verifie si artiste existe et n'es pas null
+      if (artiste) {
+          this.dico_elementcreer.artiste = artiste;
+          this.dico_elementcreer.artiste_uuid = artiste.uuid;
+        } else {
+          this.dico_elementcreer.artiste = null;
+          this.dico_elementcreer.artiste_uuid = null;
       }
-      else if(this.dico_elementcreer.interviews.includes(interview_retirer)){
-        console.log("interview deja present")
-      }else{
-        this.dico_elementcreer.interviews.push(interview_ajouter);
-      } 
+
     },
 
-    Interview_retirer(interview_retirer){
-      if(this.dico_elementcreer.interviews == []){
-        console.log("pas d'element a retiré")
-      }else if (this.dico_elementcreer.interviews.includes(interview_retirer)) {
-        this.dico_elementcreer.interviews.remove(interview_retirer);
-        console.log("interviews retiré")
+    SelectedQuestion() {
+      //reccupere la Question de la liste en reccuperant le text de la Question selectionner
+
+      //reccupere l'artiste de la liste
+      const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
+
+      //verifie si question existe et n'es pas null
+      if (question) {
+          this.dico_elementcreer.question = question;
+          this.dico_elementcreer.question_uuid = question.uuid;
+          this.dico_elementcreer.titre = question.texte;
+        } else {
+          this.dico_elementcreer.question = null;
+          this.dico_elementcreer.question_uuid = null;
       }
-    },
-    
 
-    popupchange(){
-      this.popup = !this.popup
-      console.log(this.popup)
-    },
-
-    popupchange2(){
-      this.popup2 = !this.popup2
-      console.log(this.popup2)
     },
 
     async recupeArtiste(){
+      //reccupere la liste des Artistes
       this.listeArtiste =  markRaw(await Artiste.list());
-      console.log("artiste", this.listeArtiste)
-      console.log("artiste", this.listeArtiste[0].name)
     },
 
-
-
-
     async recupeQuestion(){
+      //reccupere la liste des Questions
       this.listeQuestion =  markRaw(await Question.list());
-      console.log(this.listeQuestion)
     }
 
 
@@ -139,7 +177,7 @@ export default {
 
   await this.recupeArtiste();
   await this.recupeQuestion();
-  console.log()
+
  }
 
 };
@@ -154,7 +192,7 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/creer/' }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/' }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
@@ -163,10 +201,10 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="dico_elementcreer.question"/>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="SelectedQuestion"/>
                 
                 <datalist id="Questiondata">
-                <option v-for="question in listeQuestion" :key="question.texte" :value="question.texte" > </option> 
+                <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
                 </datalist>
 
 
@@ -177,10 +215,10 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" v-model="dico_elementcreer.artiste">
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
-                <option v-for="artiste in listeArtiste" :key="artiste.name" :value="artiste.name" > </option> 
+                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
                 </datalist>
 
                 <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
@@ -219,29 +257,7 @@ export default {
               </div>
             </div>
 
-            <div class="row">
-              <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; height: 2.5em; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
-              </h1>
-             
-              <table class="ultagger table tables table-striped">
-                  <thead>
-                      <tr>
-                          <th class="btgrisv2  col">Nom Playlist</th>
-                          <th class="btgrisv2  col">paramètre</th>
-                      </tr>
-                  </thead>
-                  <tbody class="tobodd scroller">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
-                          <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> ha </RouterLink> </td>
-                          <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> <button class="bt col"> supprimer </button> </RouterLink> </td>
-                      </tr>
-                  </tbody>
-              </table>
-             
-              <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-
-            </div>
+           
         </div>
       </div>
 
@@ -260,7 +276,7 @@ export default {
           <div class="recherche col">
                 <div class="search-bar">
                     <div class="input-group">
-                        <input type="text" class="form-control" v-model="searchValue" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <input type="text" class="form-control" v-model="searchValueTag" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                         <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
                                 <img src="/imgs/search.svg" alt="button search">
                             </RouterLink>
@@ -305,9 +321,9 @@ export default {
     
    
 
-    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div>
+    <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
     
-    <div v-if="popup2 === true">  <popup_valider  v-on:popupenregistrer="popupchange2"/> </div>
+    <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
 
     </template>

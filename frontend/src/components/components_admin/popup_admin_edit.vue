@@ -8,7 +8,7 @@ import Interview from '../../model/interview.js';
 export default {
     name: "comp_admin_edit_popup",
     props: {
-        popup: {
+        popupSelectInterview: {
             type:Boolean,
             required:true
             }
@@ -23,7 +23,7 @@ export default {
         };
     },methods: {
         changement_etat_popup () {
-            this.$emit('ecoutepopup', !this.popup)
+            this.$emit('ecoutepopup', !this.popupSelectInterview)
         },
 
 

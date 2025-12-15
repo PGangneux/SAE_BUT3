@@ -32,7 +32,7 @@ export default {
     <div class="main-trie col-md-3 ">
 
         <div class="row ">
-            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+            <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         </div>
 
         <div class="recherche row">

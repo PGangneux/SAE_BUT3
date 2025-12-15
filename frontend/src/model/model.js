@@ -213,7 +213,7 @@ export default class Model {
         }
         try {
             return await ClientAPI.delete(
-                ClientAPI.url_uuid(ClientAPI.endpoints(this.endpoint), this.#uuid),
+                ClientAPI.url_uuid(ClientAPI.endpoints(this.constructor.endpoint), this.#uuid),
             )
             // Charger les nouvelles données dans l'instance
             .then(result => { return true; });
