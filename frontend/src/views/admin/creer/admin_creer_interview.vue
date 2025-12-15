@@ -32,15 +32,14 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const InterviewId = this.$route.params.id;
-    // console.log("ID de l'Interview' :", InterviewId);
+
 
     //reccuperation de l'Extrait via l'id
     this.current_interview =  markRaw(await Interview.detail(InterviewId));
     this.Extraitlist = markRaw(await Extrait.list());
     this.current_list_extraits = markRaw(await this.current_interview.extraits());
 
-    console.log(this.current_list_extraits);
-    console.log(this.Extraitlist);
+
     
     this.taillelist1 = this.Extraitlist.length
     this.taillelist2 =this.current_list_extraits.length
@@ -128,7 +127,7 @@ export default {
 </div>
 
 <div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+            <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
             <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
             <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
 </div>
