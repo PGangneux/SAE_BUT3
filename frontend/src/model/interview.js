@@ -52,12 +52,11 @@ export default class Interview extends Model {
         // Extraits actuellement liés
         const current = await this.extraits();
 
-        const currentUUIDs = new Set(current.map(e => e.uuid));
-        const newUUIDs = new Set(extraits.map(e => e.uuid));
+        const currentUUIDs = new Set(current.map(extrait => extrait.uuid));
+        const newUUIDs = new Set(extraits.map(extrait => extrait.uuid));
 
         // Supprimer ceux qui ne sont plus là
         for (const extrait of current) {
-            console.log(extrait)
             if (!newUUIDs.has(extrait.uuid)) {
                 await extrait.disconnect_interview(this);
             }

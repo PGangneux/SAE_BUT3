@@ -139,7 +139,7 @@ export default {
     async mounted() {
         const InterviewId = this.$route.params.id;
         this.current_interview = markRaw(await Interview.detail(InterviewId));
-        this.current_list_extraits = markRaw(await this.current_interview.extraits());
+        this.current_list_extraits = markRaw(await this.current_interview.extraits({'order': 'APPARTIENT_A|position'}));
         
         const allExtraits = markRaw(await Extrait.list());
         this.Extraitlist = markRaw(
