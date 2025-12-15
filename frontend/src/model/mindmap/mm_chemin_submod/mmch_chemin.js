@@ -18,6 +18,11 @@ export class mmch_CheminT {
         throw new Error("mmch_search must be defined in child");
     }
 
+    mmch_getStyle(){
+        console.warn("mmch_getDescription generic");
+        return "";
+    }
+
     async mmch_getTitle() {
         if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle generic on empty obj");
         const obj = this.mmch_obj;

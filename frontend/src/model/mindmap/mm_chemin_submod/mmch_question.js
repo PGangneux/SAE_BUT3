@@ -29,6 +29,10 @@ export class mmch_Question extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapQuestion";
+    }
+
     async mmch_getTitle() {
         if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle question on empty obj");
         const question = this.mmch_obj;

@@ -31,6 +31,10 @@ export class mmch_Artiste extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapArtiste";
+    }
+
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
         const description = [];

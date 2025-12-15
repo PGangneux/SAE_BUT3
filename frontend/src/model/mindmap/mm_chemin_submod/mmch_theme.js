@@ -27,6 +27,10 @@ export class mmch_Theme extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapTheme";
+    }
+
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch description theme on empty obj");
         const description = [];

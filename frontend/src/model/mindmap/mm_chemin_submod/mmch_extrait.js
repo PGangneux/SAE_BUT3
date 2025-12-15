@@ -33,6 +33,10 @@ export class mmch_Extrait extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapExtrait";
+    }
+
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch description extrait on empty obj");
         const description = [];

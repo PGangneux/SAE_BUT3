@@ -27,6 +27,10 @@ export class mmch_StyleMusical extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapStyleMusical";
+    }
+
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle style musical on empty obj");
         return "";

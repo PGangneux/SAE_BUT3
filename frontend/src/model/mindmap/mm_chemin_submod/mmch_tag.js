@@ -29,6 +29,10 @@ export class mmch_Tag extends mmch_CheminT {
         ];
     }
 
+    mmch_getStyle(){
+        return "mmLegendColorMapTag";
+    }
+
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle tag on empty obj");
         return "";
