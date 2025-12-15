@@ -191,9 +191,8 @@ export default {
             json => {
               return json.map(
                 (v) => {
-                  console.log(v)
                   if (v.type == 'Extrait') { return markRaw( new Extrait(v.value) ); }
-                  else { console.log('ici'); return markRaw( new Interview(v.value) ); }
+                  else { return markRaw( new Interview(v.value) ); }
                 }
               );
             }
