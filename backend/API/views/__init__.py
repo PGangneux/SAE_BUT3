@@ -17,3 +17,4 @@ from .interviews import InterviewsViewSet
 from .tags_extrait import TagsExtraitRelationShipViewSet
 from .tags_interview import TagsInterviewRelationShipViewSet
 from .login import LoginView
+from .recommandation import Recommandation
