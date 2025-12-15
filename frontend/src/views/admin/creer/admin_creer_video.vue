@@ -64,7 +64,7 @@ export default {
 
 
       //Extrait vide
-      let new_extrait = new Extrait("","","","","","","","","","","","",); 
+      const new_extrait = new Extrait("","","","","","","","","","","","",); 
       
       console.log(this.dico_elementcreer);
 
@@ -76,8 +76,11 @@ export default {
       new_extrait.tags = this.dico_elementcreer.tags
       new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
       new_extrait.question = this.dico_elementcreer.question_uuid;
+      
       console.log(new_extrait)
-      await new_extrait.create();
+
+      const test = await new_extrait.create();
+      
   
       console.log("creer");
       this.popupEnregistrer = false;
@@ -97,10 +100,10 @@ export default {
       //permet de retirer un tag a l'extrait
 
       if(this.dico_elementcreer.tags == []){
-        console.log("pas d'element a retiré")
+        //console.log("pas d'element a retiré")
       }else if (this.dico_elementcreer.tags.includes(idtags)) {
         this.dico_elementcreer.tags.remove(idtags);
-        console.log("tags retiré")
+        //console.log("tags retiré")
       }
     },
 
@@ -120,8 +123,6 @@ export default {
 
     SelectedArtisteId() {
       //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
-      //console.log(this.selectedArtiste);
-
       //reccupere l'artiste de la liste
       const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
 
@@ -135,8 +136,6 @@ export default {
           this.dico_elementcreer.artiste = null;
           this.dico_elementcreer.artiste_uuid = null;
       }
-
-      console.log(this.dico_elementcreer.artiste);
 
     },
 
@@ -155,9 +154,6 @@ export default {
           this.dico_elementcreer.question = null;
           this.dico_elementcreer.question_uuid = null;
       }
-
-
-      console.log( this.dico_elementcreer.question);
 
     },
 
@@ -196,7 +192,7 @@ export default {
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/creer/' }">
+        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit;" :to="{path: '/admin/extrait/' }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
