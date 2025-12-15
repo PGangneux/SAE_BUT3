@@ -19,12 +19,13 @@ class Recommandation(APIView):
     """
     Actuel:
         Vidéo similaire à celle en cours
-        Trier par nombre de Thèmes, Artistes et Questions en commun puis par récente
+        Créer un score à partir des poids de Thèmes, Artistes et Questions en commun avec la vidéo regarder
+        Trier par score puis par récente
         Non visionner si connecter
 
     Objectif:
         TODO get x derniers Interview/extrait regardés
-        TODO filtrer celles avec watch time > 70% - Pas encore possible (manque property relationship)
+        TODO filtrer celles avec watch time > 70%
         TODO - proposées proportion interview/extratait en fonction de ce que l'utilisateur regarde le plus
             si user regarde plus extrait commencé par proposées x extraits, max 4 extrait 1 interview vise versa
             donc 4 pour 1 max pour choisir extrait/interview on fait classement de tags des x derniers regardés sup 70%
@@ -34,8 +35,8 @@ class Recommandation(APIView):
         TODO regarder le chemin d'entrée sur le lecteur video
             TODO si c'est par une playlist on propose plus d'interview
             TODO si c'est par une question on propose plus d'extrait
-            TODO si c'est par artiste on ajoute un poids sur ce classement des artistes
-            TODO si c'est par thème  on ajoute un poids sur ce classement des thèmes
+            si c'est par artiste on ajoute un poids sur ce classement des artistes
+            si c'est par thème  on ajoute un poids sur ce classement des thèmes
         TODO si pas de user ou pas assez de data on propose les video les plus regardé / récentes
         caper le nombre de données récupérées
         récupérer égalment les interviews
@@ -48,8 +49,8 @@ class Recommandation(APIView):
         return self.post(request)
 
     def post(self, request: HttpRequest):
-        data = request.data
-        print("data:", data)
+        poids: dict = request.data
+        print("poids:", poids)
 
         user = get_current_user(request)
         print("user: ", user.pseudo if user else None)
@@ -94,19 +95,31 @@ class Recommandation(APIView):
                 OPTIONAL MATCH (v)--{"{0,2}"}(v_q:Question)
 
                 WITH v, c,
-                collect(DISTINCT c_t) AS c_themes, collect(DISTINCT v_t) AS v_themes,
-                collect(DISTINCT c_a) AS c_artistes, collect(DISTINCT v_a) AS v_artistes,
-                collect(DISTINCT c_q) AS c_questions, collect(DISTINCT v_q) AS v_questions,
+                collect(DISTINCT c_t) AS c_themes,
+                collect(DISTINCT v_t) AS v_themes,
+                collect(DISTINCT c_a) AS c_artistes,
+                collect(DISTINCT v_a) AS v_artistes,
+                collect(DISTINCT c_q) AS c_questions,
+                collect(DISTINCT v_q) AS v_questions
+
+                WITH v, c, c_themes, v_themes, c_artistes, v_artistes, c_questions, v_questions,
+                size([t IN c_themes WHERE t IN v_themes]) AS nbThemes,
+                size([a IN c_artistes WHERE a IN v_artistes]) AS nbArtistes,
+                size([s IN c_questions WHERE s IN v_questions]) AS nbQuestions,
                 // Champ de date non uniforme entre les extraits et les interviews
                 coalesce(v.date, v.uploaded_at) AS date
 
-                RETURN v, c_themes, v_themes, c_artistes, v_artistes, c_questions, v_questions,
+                RETURN v,
+                [t IN c_themes WHERE t IN v_themes OR t IN c_themes],
+                [t IN c_artistes WHERE t IN v_artistes OR t IN c_artistes],
+                [t IN c_questions WHERE t IN v_questions OR t IN c_questions],
 
-                size([t IN c_themes WHERE t IN v_themes]) AS nbThemes,
-                size([a IN c_artistes WHERE a IN v_artistes]) AS nbArtistes,
-                size([s IN c_questions WHERE s IN v_questions]) AS nbQuestions
+                nbThemes * {poids.get('Thème', 0)} +
+                nbArtistes * {poids.get('Artiste', 0)} +
+                nbQuestions * {poids.get('Question', 0)}
+                AS score
 
-                ORDER BY nbThemes DESC, nbArtistes DESC, nbQuestions DESC, date DESC
+                ORDER BY score DESC, date DESC
 
                 LIMIT {size}
                 """
@@ -142,7 +155,7 @@ class Recommandation(APIView):
             for recommandation in recommandations_cypher
         ]
 
-        return Response(recommandations)
+        return Response(recommandations_cypher)
 
 
 
