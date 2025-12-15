@@ -24,25 +24,7 @@ export default {
             current_extrait : {type:Extrait},
             tags:[],
             thumbnail: '/imgs/width551.png',
-            dico_extrait:{},
-            taillelist:0,
-
-            //a modifer
-            dico_elementmodif:{  
-                  titre: null,
-                  description:  null,
-                  youtube_url:  null,
-                  vimeo_url:    null,
-                  uploaded_at:  null,
-                  artiste:      null,
-                  question:     null,
-                  tags:         null,
-                  position:     null,
-                  artiste_uuid: null,
-                  question_uuid:null,
-                  duree:        null,
-            },
-            
+            taillelist:0,            
             selectedArtiste: "", //Artiste selectionner retourn null si rien
             selectedQuestion: "",//Questio selectionner retourn null si rien 
 
@@ -124,11 +106,11 @@ export default {
 
       //verifie si artiste existe et n'es pas null
       if (artiste) {
-          this.dico_elementcreer.artiste = artiste;
-          this.dico_elementcreer.artiste_uuid = artiste.uuid;
+          this.current_extrait.artiste = artiste;
+          this.current_extrait.artiste_uuid = artiste.uuid;
         } else {
-          this.dico_elementcreer.artiste = null;
-          this.dico_elementcreer.artiste_uuid = null;
+          this.current_extrait.artiste = null;
+          this.current_extrait.artiste_uuid = null;
       }
 
     },
@@ -141,12 +123,12 @@ export default {
 
       //verifie si question existe et n'es pas null
       if (question) {
-          this.dico_elementcreer.question = question;
-          this.dico_elementcreer.question_uuid = question.uuid;
-          this.dico_elementcreer.titre = question.texte;
+          this.current_extrait.question = question;
+          this.current_extrait.question_uuid = question.uuid;
+          this.current_extrait.titre = question.texte;
         } else {
-          this.dico_elementcreer.question = null;
-          this.dico_elementcreer.question_uuid = null;
+          this.current_extrait.question = null;
+          this.current_extrait.question_uuid = null;
       }
 
     },
@@ -166,6 +148,8 @@ export default {
 
 
  async mounted() {
+
+  
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
 
@@ -174,17 +158,27 @@ export default {
     await this.recupeArtiste();
     await this.recupeQuestion();
 
-
-    this.dico_extrait = {
-      "artiste":    (markRaw(await this.current_extrait.artiste)),
-      "uploaded_at": (markRaw(await this.current_extrait.uploaded_at)),
-      "question":   (markRaw(await this.current_extrait.titre)),
-      "interviews": (markRaw(await this.current_extrait.interviews)),
-      "tags": (markRaw(await this.current_extrait.tags))
-    };
+    console.log(this.current_extrait);
 
 
-    this.taillelist = this.dico_extrait['tags'].length
+    this.current_extrait.interview = await this.current_extrait.interview;
+
+    this.current_extrait.tags = await this.current_extrait.tags;
+
+    this.taillelist = await this.current_extrait.tags;
+
+    this.selectedArtiste = await this.current_extrait.artiste, //Artiste selectionner retourn null si rien
+    this.selectedQuestion= await this.current_extrait.question,//Questio selectionner retourn null si rien 
+    
+    console.log(this.selectedArtiste);
+    console.log(this.selectedQuestion);
+
+    
+    console.log("ha");
+
+
+    
+    console.log(this.taillelist.length);
 
 
 
@@ -300,7 +294,7 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                      <tr class="col" v-for="interview in this.current_extrait.interview">
                           <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
                           <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
                       </tr>
@@ -324,21 +318,37 @@ export default {
     </form>
     
     <div class="row grisee "  style="--bs-gutter-x: 0em;">
-      <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+       <section class="row secondpart">
+          <h1 class="pcentrer col"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
+          <button class="bt col"> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+          <div class="recherche col">
+                <div class="search-bar">
+                    <div class="input-group">
+                        <input type="text" class="form-control" v-model="searchValueTag" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                                <img src="/imgs/search.svg" alt="button search">
+                            </RouterLink>
+                    </div>
+                </div>
+            </div>
+      </section>
       <div class="row">
 
-        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
-            <li v-for="tag in dico_extrait.tags " class="col">
-                <div class="row" style="--bs-gutter-x: 0rem;">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50" style="max-width: 5em;">
-                  <p class="col" style="text-align: center; max-width:max-content; align-content: center; ">{{ tag.name }}</p>
+        <ul v-if="this.taillelist.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+            <li v-for="tag in this.taillelist " class="col">
+                <div class="row">
+                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+                  <p class="col">{{ tag.name }}</p>
+                  <button> - </button>
                 </div>
             </li>
         </ul>
 
         <ul v-else-if="this.taillelist == 0 " class="col">
             <li class="row"> 
-                <p  class="col">vide</p>
+              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
+              <p  class="col">vide</p>
+              <button class="col bt" ><img src="/imgs/remove.svg" class="col" alt="labelle tags" height="20" width="20"> </button>
             </li>
         </ul>
 
@@ -495,7 +505,13 @@ ul {
     background-color: var(--blanc);
 }
 
-
+.secondpart{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 1em;
+}
 
 
 
