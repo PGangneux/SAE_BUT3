@@ -1,4 +1,3 @@
-import json
 from rest_framework import status
 from rest_framework.serializers import Serializer
 from rest_framework.response import Response
@@ -91,7 +90,6 @@ class BaseRelationShipViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMix
         Création de la RelationShip
         """
         data = request.data
-        print('request.data', data, 'type', type(data))
         context_model_name: str = self.router_model_class.__name__
         serializer: Serializer = self.serializer_class(
             data=data,
@@ -99,8 +97,6 @@ class BaseRelationShipViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMix
                 context_model_name.lower(): self.get_context_model()
             }
         )
-        print(serializer)
         serializer.is_valid()
-        print('passe')
         instance = serializer.create(serializer.validated_data)
         return Response(self.get_serializer(instance, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)
