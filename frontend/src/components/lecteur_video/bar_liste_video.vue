@@ -167,9 +167,9 @@ export default {
     // À déplacer
     async current_reco(){
       this.selected = "reco";
-      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null
       // Feature-flag de l'algorithme de recommandation
       if (true){
+        const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
         // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
         let weights;
         if (false) {
@@ -191,8 +191,9 @@ export default {
             json => {
               return json.map(
                 (v) => {
-                  try { return markRaw( new Extrait(v) ); }
-                  catch (error) { return markRaw( new Interview(v) ); }
+                  console.log(v)
+                  if (v.type == 'Extrait') { return markRaw( new Extrait(v.value) ); }
+                  else { console.log('ici'); return markRaw( new Interview(v.value) ); }
                 }
               );
             }

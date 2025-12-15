@@ -133,12 +133,12 @@ class Recommandation(APIView):
 
         # Convertir le retour de la requête CYPHER en liste d'Extrait et Interview en json
         recommandations = [
-            ExtraitSerializer(Extrait.inflate(recommandation[0]), context=context).data 
+            {'value': ExtraitSerializer(Extrait.inflate(recommandation[0]), context=context).data, 'type': list(recommandation[0].labels)[0]}
             if 'Extrait' in recommandation[0].labels
             else
-            InterviewSerializer(Interview.inflate(recommandation[0]), context=context).data
+            {'value': InterviewSerializer(Interview.inflate(recommandation[0]), context=context).data, 'type': list(recommandation[0].labels)[0]}
             if 'Interview' in recommandation[0].labels
-            else recommandation[0]
+            else {'value':recommandation[0], 'type': list(recommandation[0].labels)[0]}
             for recommandation in recommandations_cypher
         ]
 
