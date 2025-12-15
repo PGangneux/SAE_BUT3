@@ -3,7 +3,7 @@ import Interview from "../interview.js";
 import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 import mm_Mindmap from "./mm_mindmap.js";
 
-export class mm_Node {
+export default class mm_Node {
     // Real/current positions (animating positions)
     /** @type {number} */
     x;           

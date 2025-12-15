@@ -1,4 +1,4 @@
-import mm_mindmap from "./mm_mindmap.js";
+import mm_Mindmap from "./mm_mindmap.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
 import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
 import mmch_Interview from "./mm_chemin_submod/mmch_interview.js";
@@ -6,10 +6,10 @@ import router from "../../router.js";
 
 /**
     check video
- * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_Mindmap} mminfo mm_mindmap  
  * @return {boolean} if there is a goto video or not
 */
-export function mmcheckvideo(mminfo) {
+export function mm_checkvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
     if (!!last) return false;
@@ -32,12 +32,12 @@ export function mmcheckvideo(mminfo) {
 
 /**
     filter chemin to maintain proper depth hierarchy
- * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_Mindmap} mminfo mm_mindmap  
  * @return {boolean,boolean} change goto video , change in path
 */
-export function mmchemin_filter(mminfo) {
+export function mm_chemin_filter(mminfo) {
     // Validate depth and handle depth mismatches
-    if (mmcheckvideo(mminfo)) return true, false;
+    if (mm_checkvideo(mminfo)) return true, false;
     let original_lenght = mminfo.chemin.length;
     if (mminfo.chemin.length > 0) {
         let lastElement = mminfo.chemin[mminfo.chemin.length - 1];
