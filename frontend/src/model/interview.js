@@ -44,6 +44,46 @@ export default class Interview extends Model {
 
     async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
+    /**
+     * Redéfinie la liste des extraits de this
+     * @param {Array<Extrait>} extraits Les nouveaux extrait de this.
+     */
+    async setExtraits(extraits) {
+        // Extraits actuellement liés
+        const current = await this.extraits();
+
+        const currentUUIDs = new Set(current.map(e => e.uuid));
+        const newUUIDs = new Set(extraits.map(e => e.uuid));
+
+        // Supprimer ceux qui ne sont plus là
+        for (const extrait of current) {
+            console.log(extrait)
+            if (!newUUIDs.has(extrait.uuid)) {
+                await extrait.disconnect_interview(this);
+            }
+        }
+
+        // Ajouter les nouveaux
+        // Connexion avec POSITION
+        for (let index = 0; index < extraits.length; index++) {
+            const extrait = extraits[index];
+
+            if (!currentUUIDs.has(extrait.uuid)) {
+                // add new Extrait
+                await extrait.connect_interview(this, index)
+            }
+            else{
+                // update posiiton
+                await extrait.update_position(this, index)
+            }
+        }
+
+        // Reset durée
+        this.#dureePromise = null;
+    }
+
+
+
     async tags(args) { return await this.fetchList(this.#tags, Tag, args); }
 
     get duree() {

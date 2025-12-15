@@ -86,13 +86,14 @@ class BaseRelationShipViewSet(ListModelMixin, RetrieveModelMixin, CreateModelMix
         """
         Création de la RelationShip
         """
+        data = request.data
         context_model_name: str = self.router_model_class.__name__
-        serializer: Serializer = self.get_serializer(
-            data=request.data,
+        serializer: Serializer = self.serializer_class(
+            data=data,
             context={
                 context_model_name.lower(): self.get_context_model()
             }
         )
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid()
         instance = serializer.create(serializer.validated_data)
         return Response(self.get_serializer(instance, context=self.get_serializer_context()).data, status=status.HTTP_201_CREATED)

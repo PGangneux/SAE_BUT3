@@ -11,233 +11,341 @@ export default {
     components: {
       comp_baradmin,
       comp_petit_extrait,
-
-    },data() {
+    },
+    data() {
         return {
             Extraitlist : [],
             current_interview:{type:Interview},
             current_list_extraits:{type:Extrait},
             taillelist1:0,   
             taillelist2:0, 
-    };
-  },
-  computed: {
-      description: {
-        get() {
-          return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
+        };
+    },
+    computed: {
+        description: {
+            get() {
+                return this.current_interview?.description ? this.current_interview.description : 'Chargement...';
+            },
+            set(value) {
+                if (this.current_interview) {
+                    this.current_interview.description = value;
+                }
+            }
         },
-      },
-  },methods : {
-    start(e){
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text",e.target.getAttribute("id"));
-      console.log("start drag");
+    },
+    methods : {
+        /**
+         * Démarre le drag d’un élément
+         * configure les métadonnées (UUID + liste source) et initialise l’effet de déplacement.
+         *
+         * @param {DragEvent} evt - L’événement de dragstart.
+         * @param {Object} item - L’élément extrait en cours de déplacement.
+         * @param {string} sourceList - La liste d’origine ("available" ou "playlist").
+         */
+        startDrag(evt, item, sourceList) {
+            // Empêche l'image / le lien d'être la "drag image"
+            const crt = evt.currentTarget; // la div.drag-wrapper
+
+            // Crée une copie invisible de la carte à utiliser comme drag image
+            const clone = crt.cloneNode(true);
+            clone.style.position = 'absolute';
+            clone.style.top = '-9999px';
+            clone.style.left = '-9999px';
+            document.body.appendChild(clone);
+
+            evt.dataTransfer.setDragImage(clone, 0, 0);
+
+            // Remove after a short delay (Chrome needs async)
+            setTimeout(() => document.body.removeChild(clone), 0);
+
+            evt.dataTransfer.dropEffect = 'move';
+            evt.dataTransfer.effectAllowed = 'move';
+            evt.dataTransfer.setData('itemID', item.uuid);
+            evt.dataTransfer.setData('sourceList', sourceList); // 'available' ou 'playlist'
+            
+        },
+
+        /**
+         * Autorise le drop en empêchant le comportement par défaut du navigateur.
+         *
+         * @param {DragEvent} evt - L’événement de dragover.
+         */
+        onDragOver(evt) {
+            evt.preventDefault();
+        },
+        
+        /**
+         * Gère le drop d’un élément : récupère l’UUID, détermine la liste source/target,
+         * déplace l’élément, calcule la position d’insertion dans la playlist si nécessaire,
+         * et met à jour les compteurs ainsi que le rendu Vue.
+         *
+         * @param {DragEvent} evt - L’événement de drop.
+         * @param {string} targetList - La liste cible ("available" ou "playlist").
+         */
+        onDrop(evt, targetList) {
+            evt.preventDefault();
+
+            const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
+            const sourceList = evt.dataTransfer.getData('sourceList'); // 'available' ou 'playlist'
+
+            let sourceArray = sourceList === 'playlist' ? this.current_list_extraits : this.Extraitlist;
+            let targetArray = targetList === 'playlist' ? this.current_list_extraits : this.Extraitlist;
+
+            // Trouver l’élément dans la liste source
+            const itemIndex = sourceArray.findIndex(item => item.uuid === itemID);
+            if (itemIndex === -1) return;
+
+            const item = sourceArray.splice(itemIndex, 1)[0]; // supprime de la source
+
+            if (targetList === 'playlist') {
+
+                const targetItems = Array.from(evt.currentTarget.children);
+
+                // Calcul de l'index d'insertion
+                const dropY = evt.clientY;
+                let insertIndex = targetArray.length; // par défaut fin
+                for (let i = 0; i < targetItems.length; i++) {
+                    const rect = targetItems[i].getBoundingClientRect();
+                    if (dropY < rect.top + rect.height / 2) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+
+                // Insérer à la bonne position
+                targetArray.splice(insertIndex, 0, item);
+
+                // force vue à redessiner la liste playlist, sinon affichage non mis à jour car on change l'intérieurs de la liste et pas de changement de taille ...
+                if (targetList === sourceList){
+                    // TRIGGER VUE RENDER 
+                    // Forcer rerender sans proxifier les objets
+                    this.current_list_extraits = this.current_list_extraits.map(e => markRaw(e));
+                    this.Extraitlist = this.Extraitlist.map(e => markRaw(e));
+                }
+
+            } else if (targetList === 'available') {
+                // ----------------------
+                // Déplacer vers le début de la liste disponible
+                // ----------------------
+                targetArray.splice(0, 0, item);
+            }
+
+            // Mettre à jour les compteurs
+            this.taillelist1 = this.Extraitlist.length;
+            this.taillelist2 = this.current_list_extraits.length;
+        },
+
+        async save(){
+            await this.current_interview.setExtraits(this.current_list_extraits)
+        }
+
     },
 
-    over(e){
-      e.preventDefault()
-      console.log("over drag");
-      return false;
+    async mounted() {
+        const InterviewId = this.$route.params.id;
+        this.current_interview = markRaw(await Interview.detail(InterviewId));
+        this.current_list_extraits = markRaw(await this.current_interview.extraits());
+        
+        const allExtraits = markRaw(await Extrait.list());
+        this.Extraitlist = markRaw(
+            allExtraits.filter(e => 
+                !this.current_list_extraits.some(c => c.uuid === e.uuid)
+            )
+        );
+
+        this.taillelist1 = this.Extraitlist.length;
+        this.taillelist2 = this.current_list_extraits.length;
     },
-
-    drop(e){
-      let obj = e.dataTransfer.getData("text");
-      e.currentTarget.appendChild(document.getElementById(obj));
-      console.log("drop drag");
-    }
-
-  },
-
- async mounted() {
-    //reccuperation de l'id en parametre
-    const InterviewId = this.$route.params.id;
-    // console.log("ID de l'Interview' :", InterviewId);
-
-    //reccuperation de l'Extrait via l'id
-    this.current_interview =  markRaw(await Interview.detail(InterviewId));
-    this.Extraitlist = markRaw(await Extrait.list());
-    this.current_list_extraits = markRaw(await this.current_interview.extraits());
-
-    console.log(this.current_list_extraits);
-    console.log(this.Extraitlist);
-    
-    this.taillelist1 = this.Extraitlist.length
-    this.taillelist2 =this.current_list_extraits.length
-
-
-    this.question = 'Chargement...';
-
-      
-
-  },
-
 };
-
-
 </script>
 
 <template>
-
 <comp_baradmin/>
 
-<h1 class="text-center"> Edit Interview-Playlist </h1>
+<div class="main_content">
+    <h1 class="text-center"> Modification d'une Playlist </h1>
+    <h2> {{ this.current_interview.titre }}</h2>
 
-<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-        <h1> {{ this.current_interview.titre }} - Playlist </h1>
+    <textarea type="aera" placeholder="Description" v-model="description" class="form-control"></textarea>
 
-        <div class="row"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-          <div class="form-group">
-            <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" v-model="description" class="form-control"></textarea>
-          </div>
-        </div>
-</div>
+    <div class="row row_gap">
+        <div class="col-md-4 aggrandir div_extrait_dispo">
+            <div class="pcentrer ">
 
-<div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;" >
-    <div class="col-md-4 aggrandir" style="background-color:var(--vert-midel); margin: 1%;">
-        <div class="container row  pcentrer " style=" margin-left: 0 !important; margin-right: 0 !important;">
+                <div class="row">
+                    <h1> Disponible </h1>
+                    <h2> Total Extraits : {{this.taillelist1}}</h2>
+                </div>
 
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-              <h1> Question-Extrait existant</h1>
-              <h1> Total Question-Extrait : {{this.taillelist1}}</h1>
-            </div>
-
-            <div class="search-bar grisee">
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
                     <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
+                        <img src="/imgs/search.svg" alt="button search">
                     </button>
                 </div>
-            </div>
 
-            <ul class="scroller2  row" style=" margin-left: 0 !important; margin-right: 0 !important;"  @ondragover="over($event)" @ondrop="drop($event)">
-                <li class="row carte pcentrer" v-for="extraitv1 in this.Extraitlist" style=" margin-left: 0 !important; margin-right: 0 !important;" draggable="true" @ondragstart="start($event)">
-                    <comp_petit_extrait :current_extrait=extraitv1 />
-                </li>
-            </ul>
+                <ul 
+                    class="drop-zone"
+                    @drop="onDrop($event, 'available')"
+                    @dragover="onDragOver($event)"
+                >
+                    <li  v-for="extraitv1 in this.Extraitlist"  :key="extraitv1.uuid" class="drag-el" >
+                        <div
+                            class="drag-wrapper"
+                            draggable="true"
+                            @dragstart="startDrag($event, extraitv1, 'available')"
+                        >
+                            <comp_petit_extrait :current_extrait=extraitv1 />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-4 aggrandir div_extrait_playlist">
+            <div class="pcentrer ">
+
+                <div class="row">
+                    <h1> Playlist</h1>
+                    <h2> Total Extraits : {{ this.taillelist2 }}</h2>
+                </div>
+
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
+                        <button class="btn btn-outline-secondary" type="button" id="search-addon">
+                            <img src="/imgs/search.svg" alt="button search">
+                        </button>
+                    </div>
+
+                <ul 
+                    class="drop-zone"
+                    @drop="onDrop($event, 'playlist')"
+                    @dragover="onDragOver($event)"
+                >
+                    <li 
+                        v-for="extraitv2 in this.current_list_extraits"
+                        :key="extraitv2.uuid"
+                        class="drag-el" 
+                    >
+                        <div
+                            class="drag-wrapper"
+                            draggable="true"
+                            @dragstart="startDrag($event, extraitv2, 'playlist')"
+                        >
+                            <comp_petit_extrait :current_extrait=extraitv2 />
+                        </div>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div  class="col" ></div>
-
-    <div class="col-md-4 aggrandir" style="background-color:var(--vert-pale); margin: 1%;">
-        <div class="container row pcentrer  " style=" margin-left: 0 !important; margin-right: 0 !important;">
-
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-              <h1> Question-Extrait dans Playlist</h1>
-              <h1> Total Question-Extrait : {{ this.taillelist2 }}</h1>
-            </div>
-
-            <div class="search-bar grisee">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
-                    </button>
-                </div>
-            </div>
-
-            <ul class="scroller2  row  " style=" margin-left: 0 !important; margin-right: 0 !important;"  @ondragover="over($event)" @ondrop="over($event)" >
-                <li class="row carte pcentrer" v-for="extraitv2 in this.current_list_extraits" style=" margin-left: 0 !important; margin-right: 0 !important;" @ondragstart="start($event)" draggable="true">
-                    <comp_petit_extrait :current_extrait=extraitv2 />
-                </li>
-            </ul>
-        </div>
+    <div class="bottom_button">
+        <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add"> Ajouter un Extrait</RouterLink>          
+        <RouterLink to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">  Ajouter une Playlist </RouterLink>
+        <button @click="save()" type="submit" class="btn btn-outline-success" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button type="button" class="btn  btn-outline-danger" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
     </div>
 </div>
-
-<div class="row pad"  style=" margin-left: 0 !important; margin-right: 0 !important;">
-            <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>          
-            <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-            <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-            <button  type="button"  class="btred btn col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
-</div>
-
-
 </template>
 
 <style scoped>
-
-.pad{
-  padding-top: 1em;
-  padding-bottom: 1em;
+/* marge globale pour le contenu */
+.main_content {
+    margin: 2%;
 }
 
-.carte{
-  padding: 5px;
-  padding-bottom: 1em;
-  /*!margin: 5px; */
+/* conteneur des deux colonnes */
+.row_gap {
+    display: flex;
+    flex-wrap: nowrap;           /* interdit le retour à la ligne */
+    gap: 20px;                   /* espace entre les colonnes */
+    margin: 2% 0% 2% 0%  ;        /* marge pour ne pas coller aux bords */
+    align-items: stretch;        /* les colonnes ont la même hauteur */
 }
 
-.btred{
-    color: var(--blanc);
-    background-color:var(--rouge);
-    border-radius: 2em;
-    
+/* colonnes */
+.aggrandir {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;                 /* peut grandir mais pas rétrécir en dessous */
+    min-width: 300px;             /* largeur minimale pour ne pas rétrécir */
+    height: auto;                 /* hauteur basée sur la colonne la plus grande */
+    border-radius: 5px;   /* arrondit les bords */
+    overflow: hidden;      /* optionnel : évite que le contenu dépasse */
 }
 
-.card{
-  background-color: var(--gris-moyen);
-  filter: drop-shadow(20px 13px 4px var(--noir)) ;
-
- 
+/* wrapper vertical qui contient header / search / liste */
+.pcentrer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;                 /* occupe toute la hauteur de la colonne */
 }
 
-.pcentrer{
-margin-top: 1em;
-justify-content: center
+/* empêcher header et search de grandir */
+.pcentrer > *:not(.drop-zone) {
+    flex: 0 0 auto;
 }
 
-.button-blanc{
-    background-color: var(--blanc);
+/* UL prend sa hauteur naturelle et ne scroll plus */
+.drop-zone {
+    flex: 1 1 auto;               /* occupe tout l'espace restant de la colonne */
+    overflow: visible;            /* plus de scroll interne */
+    padding: 10px;
+    list-style: none;
+    margin: 0;
 }
 
+/* reset ul default spacing */
+.drop-zone { padding-left: 0; }
 
-.bt{
-    color:white;
+/* si tu veux que les li s'empilent verticalement */
+.drop-zone .drag-el {
+    display: block;
+    margin-bottom: 8px;
+    padding: 8px;
+    cursor: move;
+}
+
+/* éviter que les enfants forcent la taille */
+.pcentrer * {
+    box-sizing: border-box;
+}
+
+/* drag wrapper visuel */
+.drag-wrapper { cursor: grab; }
+.drag-wrapper:active { cursor: grabbing; }
+
+/* garde esthétique pour header et search */
+.aggrandir .header-zone { padding-bottom: 8px; }
+
+/* outlines pour debugger (enlever en production) */
+.aggrandir { outline: 1px dashed rgba(0,0,0,0.05); }
+.drop-zone { outline: 1px dashed rgba(0,0,0,0.05); }
+
+
+
+/* couleurs ul */
+.div_extrait_dispo{
+    background-color:var(--vert-midel);
+}
+
+.div_extrait_playlist{
     background-color:var(--vert-pale);
-    border-radius: 2em;
-    
 }
 
-
-
-
-li > .card{
-    padding: 20px 50px 150px;
-    margin: 10px 10px 10px 10px;
-  
+textarea{
+    border:solid 0.3em;  
+    border-color: var(--vert-pale);
 }
 
-
-
-ul {
-  display: flex;
-  list-style-type: none;
-  justify-content: space-between;
-
-  
+h1 {
+    text-align: center;
 }
 
-.scroller2 {
-
-  height: 70vh;
-  overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
-  scrollbar-width: thin;
+.aggrandir h1{
+    margin-top: 2%; ;
 }
 
-
-.aggrandir{
-  /*! display: flex; */
-  /*! flex-wrap: nowrap; */
-  list-style-type: none;
-  flex-grow: 1;
-
-}
-
-.grisee{
-  background-color: var(--gris-moyen);
-}
 
 </style>
