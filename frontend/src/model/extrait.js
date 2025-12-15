@@ -109,8 +109,8 @@ export default class Extrait extends Model {
         connect_interview extrait.js:107
      */
     async connect_interview(interview, position) {
-        //await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': this.validateInt(position)});
-        await this.connect(this.#interviews, {'interview': interview.uuid, 'position': position});
+        // await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': position});
+        await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': Model.validateNumber(position, 'position') });
     }
 
     /**
@@ -122,7 +122,7 @@ export default class Extrait extends Model {
         try {
             return await ClientAPI.put(
                 ClientAPI.url_uuid(this.#interviews, interview.uuid),
-                {'position':position}
+                JSON.stringify({'position':position})
             );
         } catch (error) {
             console.error(`Erreur HTTP ${error.message}`);

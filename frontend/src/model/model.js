@@ -83,8 +83,8 @@ export default class Model {
      * @param {string} fieldName 
      * @returns {int}
      */
-    static validateInt(value, fieldName) {
-        return this.validateType(value, fieldName, "int");
+    static validateNumber(value, fieldName) {
+        return this.validateType(value, fieldName, "number");
     }
 
     /**
@@ -234,7 +234,7 @@ export default class Model {
             console.log("test")
             console.log(url)
             console.log(data)
-            return await ClientAPI.post(url, data);
+            return await ClientAPI.post(url, JSON.stringify(data));
         } catch (error) {
             console.error(error.toString());
             return null;
