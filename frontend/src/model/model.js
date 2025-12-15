@@ -83,8 +83,8 @@ export default class Model {
      * @param {string} fieldName 
      * @returns {int}
      */
-    static validateInt(value, fieldName) {
-        return this.validateType(value, fieldName, "int");
+    static validateNumber(value, fieldName) {
+        return this.validateType(value, fieldName, "number");
     }
 
     /**
@@ -117,6 +117,7 @@ export default class Model {
             return [];
         }
     }
+
 
     /**
      * Récupère la liste des éléments de this
@@ -229,7 +230,7 @@ export default class Model {
      */
     async connect(url, data) {
         try {
-            return await ClientAPI.post(url, data);
+            return await ClientAPI.post(url, JSON.stringify(data));
         } catch (error) {
             console.error(error.toString());
             return null;

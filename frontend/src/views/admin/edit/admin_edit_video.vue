@@ -339,7 +339,6 @@ justify-content: center
     color: var(--blanc);
     background-color:var(--vert-pale);
     border-radius: 2em;
-    
 }
 
 .colovert{
