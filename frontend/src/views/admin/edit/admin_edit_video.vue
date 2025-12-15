@@ -26,6 +26,22 @@ export default {
             thumbnail: '/imgs/width551.png',
             dico_extrait:{},
             taillelist:0,
+
+            //a modifer
+            dico_elementmodif:{  
+                  titre: null,
+                  description:  null,
+                  youtube_url:  null,
+                  vimeo_url:    null,
+                  uploaded_at:  null,
+                  artiste:      null,
+                  question:     null,
+                  tags:         null,
+                  position:     null,
+                  artiste_uuid: null,
+                  question_uuid:null,
+                  duree:        null,
+            },
             
             selectedArtiste: "", //Artiste selectionner retourn null si rien
             selectedQuestion: "",//Questio selectionner retourn null si rien 
