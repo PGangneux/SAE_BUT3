@@ -1,10 +1,11 @@
 import Extrait from "../extrait.js";
 import Interview from "../interview.js";
+import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 
 export class mm_node {
     // Real/current positions (animating positions)
-    _x;           
-    _y;           
+    x;           
+    y;           
     // Target positions
     targetX;
     targetY;
@@ -17,11 +18,20 @@ export class mm_node {
     thumbnailUrl;
     mminfo; // Reference to mindmap instance
 
+    /**
+    * constructor for mindmap node
+    * @param {mm_mindmap} mminfo mm_mindmap
+    * @param {number} x x pos
+    * @param {number} y y pos
+    * @param {number} depth depth
+    * @param {mmch_CheminT} category mindmap chemin class db category mmch_Artiste
+    * @param {mmch_CheminT} content an instance with info of class category mmch_*
+    */
     constructor(mminfo, x, y, depth, category, content) {
         this.mminfo = mminfo;
         // Both start at same position initially
-        this._x = x;
-        this._y = y;
+        this.x = x;
+        this.y = y;
         this.targetX = x;
         this.targetY = y;
         this.depth = depth;
@@ -31,26 +41,6 @@ export class mm_node {
         this.content = content;
         this.loading = false;
         this.thumbnailUrl = null;
-    }
-
-    // Getters for current positions
-    get x() {
-        return this._x;
-    }
-
-    get y() {
-        return this._y;
-    }
-
-    // Setters that set target positions
-    set x(value) {
-        this.targetX = value;
-        this.animateToTarget();
-    }
-
-    set y(value) {
-        this.targetY = value;
-        // this.animateToTarget();
     }
 
     toJSON() {
@@ -108,10 +98,13 @@ export class mm_node {
 
         try {
             // Case 1: It's an extract
-            if (this.category.name === 'Extrait') {
+            if (this.category === Extrait) {
                 return this.content.url_miniature_yt;
             }
 
+            if (this.category != Interview) {
+                throw new Error("unreachable mm_node category isn't Extrait or Interview in get_miniature");
+            }
             // Case 2: It's an interview
             const extraits = await this.content.extraits();
             if (!extraits || extraits.length === 0) {
@@ -125,20 +118,6 @@ export class mm_node {
         } catch (err) {
             console.error("Erreur lors de la récupération de la miniature :", err);
             return null;
-        }
-    }
-
-    // Load thumbnail
-    async loadThumbnail() {
-        if (!this.isVideoContent() || this.thumbnailLoading) return;
-
-        this.thumbnailLoading = true;
-        try {
-            this.thumbnailUrl = await this.get_miniature();
-        } catch (error) {
-            console.error(error);
-        } finally {
-            this.thumbnailLoading = false;
         }
     }
 
@@ -162,16 +141,13 @@ export class mm_node {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
             
-            // Use cubic easing
             const easeProgress = this.easeInOutCubic(progress);
             
-            // Update real positions (x, y) to animate toward target
-            this._x = startX + (endX - startX) * easeProgress;
-            this._y = startY + (endY - startY) * easeProgress;
+            this.x = startX + (endX - startX) * easeProgress;
+            this.y = startY + (endY - startY) * easeProgress;
             // console.log("animating",startX + (endX - startX) * easeProgress,startY + (endY - startY) * easeProgress,this);
 
             if (progress < 1) {
-                // Continue animation if not complete
                 requestAnimationFrame(animate);
             }
         };
@@ -179,7 +155,6 @@ export class mm_node {
         requestAnimationFrame(animate);
     }
 
-    // Cubic easing function
     easeInOutCubic(t) {
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }

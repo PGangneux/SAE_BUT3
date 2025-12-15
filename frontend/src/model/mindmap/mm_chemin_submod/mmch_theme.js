@@ -1,0 +1,31 @@
+import Theme from "../../theme.js";
+import mmch_CheminT from "./mmch_chemin.js";
+
+export class mmch_Theme extends mmch_CheminT {
+    static mmch_dbjsclass = Theme;
+    mmch_obj;
+
+    constructor(theme) {
+        super(theme);
+    }
+    
+    static async mmch_list(args = {}) {
+        const finalArgs = { ...this.mmch_default_list_args, ...args };
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return items.map(item => new mmch_Theme(item));
+    }
+
+    static async mmch_search(query, args = {}) {
+        const finalArgs = { ...this.mmch_default_search_args, ...args };
+        const themes = await Theme.search(query, finalArgs);
+        return themes.map(t => new mmch_Theme(t));
+    }
+    
+    async mmch_getDescription() {
+        const description = [];
+        const theme = this.mmch_obj;
+        if (theme.description) description.push(theme.description.substring(0, 100) + "...");
+        
+        return description.length > 0 ? description : ["no description theme"];
+    }
+}

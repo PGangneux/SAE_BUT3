@@ -1,5 +1,5 @@
 import { videoStore } from '../videoStore.js';
-import { mmdraw_root, mmdraw_update } from "./mindmap_func.js";
+import { mmdraw_root, mmdraw_update } from "./mm_func.js";
 
 export class mm_mindmap {
     vueobj;
