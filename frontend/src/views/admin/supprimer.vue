@@ -56,11 +56,10 @@ export default {
 <template>
     <div class="overlay">
 
-    
         <div class="popup">
 
             <h1> Voulez vous vraiment supprimer {{ nametype }}  </h1>
-            <RouterLink class="col bt button-blanc"> Annuler </RouterLink>
+            <button @click="$emit('closePopup')" class="col bt button-blanc"> Annuler </button>
             <button @click="deleteElement()" class="col bt button-blanc">Valider</button>
         </div>
     </div>

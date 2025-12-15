@@ -140,6 +140,7 @@ export default {
 
 
 
+
     },
 
     async mounted() {
@@ -265,7 +266,11 @@ export default {
         <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
     </div>
 
-    <supprimer v-if="this.popupDelete" :Element_Supp="this.current_interview"/>
+    <supprimer 
+        v-if="popupDelete" 
+        :Element_Supp="current_interview"
+        @closePopup="popupDelete=false"
+    />
     
 
 </div>
