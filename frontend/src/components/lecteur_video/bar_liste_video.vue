@@ -4,6 +4,7 @@ import Extrait from '../../model/extrait';
 import { videoStore } from "../../model/videoStore";
 import miniature_video from "./miniature_video.vue";
 import ClientAPI from '../../model/clientAPI';
+import Interview from '../../model/interview';
 
 
 // Todo ajouter gif de chargement pendant le fetch des vidéos
@@ -94,7 +95,7 @@ export default {
      * les poids sont plus lourd au debut du chemin.
      *
      * @param {Array} chemin - liste représentant le chemin d'entrée de l'utilisateur
-     * @return {Map} liste des poids pour les recommandations
+     * @return {Dict} Dictionnaire des poids pour les recommandations
     */
     get_reco_weights(chemin){
       const weights = {};
@@ -114,87 +115,94 @@ export default {
     },
 
     /**
+     * TODO Inutiliser
      * Génère une liste de vidéos selon un ratio interview/extrait
      * dérivé d'un delta compris entre 1 et deltaMax.
      *
-     * @param {Map} map_poids - map des poids pour les recommandations
-     * @param {Array} video_regardees - liste des vidéos regardées par l'utilisateur
+     * @param {Map} poids - map des poids pour les recommandations
      * @param {number} totalVideos - nombre total de vidéos à générer
      * @param {number} deltaMax - valeur maximale possible du delta (par ex. 4 aujourd’hui)
      */
-    async generateVideos(map_poids, video_regardees, totalVideos, deltaMax = 4) {
-      const delta_frequance_extraits = this.get_delta_frequance_extraits(video_regardees);
+    async generateVideos(poids, totalVideos, deltaMax = 4) {
+      // const delta_frequance_extraits = this.get_delta_frequance_extraits(video_regardees);
 
+      // Fait dans l'API
       // ratio linéaire suivant le delta, abstrait !
-      const ratioInterview = Math.max(0, deltaMax - delta_frequance_extraits);
-      const ratioExtrait   = delta_frequance_extraits;
+      // const ratioInterview = Math.max(0, deltaMax - delta_frequance_extraits);
+      // const ratioExtrait   = delta_frequance_extraits;
 
-      const nbE = ratioExtrait * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
-      const nbI = ratioInterview * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
+      // Fait dans l'API
+      // const nbE = ratioExtrait * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
+      // const nbI = ratioInterview * Math.floor(totalVideos / (ratioInterview + ratioExtrait));
 
+      // Fait dans l'API
       // fetch des vidéos todo Baptiste
-      const liste_extraits = fetchextrait(nbextrait = nbE, map_poids) // récupère x extraits recommander pout l'utilisateur
-      const liste_interview =  fetchinterview(nbinterview = nbI, map_poids) // récupère y interviews recommander pour l'utilisateur
+      // const liste_extraits = fetchextrait(nbextrait = nbE, map_poids) // récupère x extraits recommander pout l'utilisateur
+      // const liste_interview =  fetchinterview(nbinterview = nbI, map_poids) // récupère y interviews recommander pour l'utilisateur
 
       // todo : fusionner les deux listes en respectant le patern interview/extrait
 
       // création du pattern basé sur le ratio
-      const pattern = [
-        ...Array(ratioInterview).fill("interview"),
-        ...Array(ratioExtrait).fill("extrait")
-      ];
+      // const pattern = [
+      //   ...Array(ratioInterview).fill("interview"),
+      //   ...Array(ratioExtrait).fill("extrait")
+      // ];
 
       // boucle abstraite
-      let indI = 0;
-      let indE = 0;
-      for (let i = 0; i < totalVideos; i++) {
-        const type = pattern[i % pattern.length];
-        if (type === "interview") {
-          this.videos.push(liste_interview[indI]);
-          indI++;
-        } else {
-          this.videos.push(liste_extraits[indE]);
-          indE++;
-        }
-      }
+      // let indI = 0;
+      // let indE = 0;
+      // for (let i = 0; i < totalVideos; i++) {
+      //   const type = pattern[i % pattern.length];
+      //   if (type === "interview") {
+      //     this.videos.push(liste_interview[indI]);
+      //     indI++;
+      //   } else {
+      //     this.videos.push(liste_extraits[indE]);
+      //     indE++;
+      //   }
+      // }
+
     },
 
     // À déplacer
     async current_reco(){
       this.selected = "reco";
-      // get x derniers Interview/extrait regardés avec un taux de watch time supérieur à 70%
-      // proposées proportion interview/extratait en fonction de ce que l'utilisateur regarde le plus
-      // si user regarde plus extrait commencé par proposées x extraits, max 4 extrait 1 interview vise versa
-      // donc 4 pour 1 max
-
-      // pour choisir extrait/interview on fait classement de tags des x derniers regardés sup 70%
-      // + classemnt des thèmes
-      // + classement des artistes
-      // + classement des questions
-      
-      // regarder le chemin d'entrée sur le lecteur video
-      // si c'est par une playlist on propose plus d'interview
-      // si c'est par une question on propose plus d'extrait
-      // si c'est par artiste on ajoute un pods sue ce classement des artistes
-      // si c'est par thème  on ajoute un pods sue ce classement des thèmes
-
-      // si pas de user ou pas assez de data on propose les video les plus regardé avec un bon watch time
-
-      // todo Baptiste attendre que Baptiste ait fait l'algorithme pour fetcher les vidéos recommander
+      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null
       // Feature-flag de l'algorithme de recommandation
       if (true){
-        // récupère l'utilisateur courant
-        const current_user = ClientAPI.current_user;
-        // TODO caper le nombre de données récupérées + filtrer celles avec watch time > 70% + récupérer égalment les interviews
-        // Sera fait côté API
-        // const video_regardees = current_user ? markRaw(await current_user.regarder_extraits({size:10})) : [];
-        const map_poids = this.get_reco_weights(videoStore.chemin);
-        // this.generateVideos(map_poids, video_regardees, 10);
-
-        // ClientAPI.post()
-        
+        // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
+        let weights;
+        if (false) {
+          weights = localStorage.getItem('weights');
+          weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
+          localStorage.setItem('weights', JSON.stringify(weights));
+        }
+        else {
+          weights = this.get_reco_weights(videoStore.chemin);
+        }
+        this.videos = markRaw(
+          await ClientAPI.post(
+            `${ClientAPI.BASE_URL}api/recommandations`,
+            JSON.stringify(weights),
+            ClientAPI.current_user ? true : false,
+            video ? {'video': video} : null
+          )
+          .then(
+            json => {
+              return json.map(
+                (v) => {
+                  try { return markRaw( new Extrait(v) ); }
+                  catch (error) { return markRaw( new Interview(v) ); }
+                }
+              );
+            }
+          )
+        );
       }
-      this.videos = markRaw(await Extrait.list({size:10})); // récupère les 10 derniers extraits/interviews
+      else {
+        this.videos = markRaw(await Extrait.list({size:10})); // récupère les 10 derniers extraits/interviews
+      }
+      console.log('vidéo', this.videos);
     },
 
 
