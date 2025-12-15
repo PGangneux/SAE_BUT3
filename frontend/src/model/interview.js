@@ -28,19 +28,19 @@ export default class Interview extends Model {
     static get endpoint() { return "interviews"; }
 
     get titre() { return this.#titre; }
-    set titre(value) { this.#titre = this.validateString(value, "titre"); }
+    set titre(value) { this.#titre = Model.validateString(value, "titre"); }
 
     get date() { return this.#date; }
     set date(value) { this.#date = value; }
 
     get occasion() { return this.#occasion; }
-    set occasion(value) { this.#occasion = this.validateString(value, "occasion"); }
+    set occasion(value) { this.#occasion = Model.validateString(value, "occasion"); }
 
     get description() { return this.#description; }
-    set description(value) { this.#description = this.validateString(value, "description"); }
+    set description(value) { this.#description = Model.validateString(value, "description"); }
 
     get lieu() { return this.#lieu; }
-    set lieu(value) { this.#lieu = this.validateString(value, "lieu"); }
+    set lieu(value) { this.#lieu = Model.validateString(value, "lieu"); }
 
     async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
