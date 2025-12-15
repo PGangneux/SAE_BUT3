@@ -176,7 +176,7 @@ export default {
 
 
     this.dico_extrait = {
-      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
+      "artiste":    (markRaw(await this.current_extrait.artiste)),
       "uploaded_at": (markRaw(await this.current_extrait.uploaded_at)),
       "question":   (markRaw(await this.current_extrait.titre)),
       "interviews": (markRaw(await this.current_extrait.interviews)),

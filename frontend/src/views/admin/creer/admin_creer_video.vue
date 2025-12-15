@@ -26,6 +26,9 @@ export default {
             thumbnail: '/imgs/width551.png', //image defaults
             searchValueTag: "",
             
+
+            new_extrait :markRaw (new Extrait({})),
+
             //regroupement des valeurs des imputs
             dico_elementcreer:{  
                   titre: null,
@@ -64,26 +67,27 @@ export default {
 
 
       //Extrait vide
-      const new_extrait = new Extrait("","","","","","","","","","","","",); 
+        
       
 
 
-      new_extrait.titre = this.dico_elementcreer.titre;
-      new_extrait.description = this.dico_elementcreer.description;
-      new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
-      new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
-      new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
-      new_extrait.tags = this.dico_elementcreer.tags
-      new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
-      new_extrait.question = this.dico_elementcreer.question_uuid;
-      new_extrait.duree = 0;
+      this.new_extrait.titre = this.dico_elementcreer.titre;
+      this.new_extrait.description = this.dico_elementcreer.description;
+      this.new_extrait.youtube_url = this.dico_elementcreer.youtube_url;
+      this.new_extrait.vimeo_url = this.dico_elementcreer.vimeo_url;
+      this.new_extrait.uploaded_at = this.dico_elementcreer.uploaded_at
+      this.new_extrait.tags = this.dico_elementcreer.tags
+      this.new_extrait.artiste =this.dico_elementcreer.artiste_uuid;
+      this.new_extrait.question = this.dico_elementcreer.question_uuid;
+      this.new_extrait.duree = 0;
 
-
-      const test = await new_extrait.create();
+      this.popupEnregistrer = false;
+      const test = await this.new_extrait.create();
       
+      this.new_extrait = new markRaw(new Extrait({}));
   
       console.log("creer");
-      this.popupEnregistrer = false;
+      
       //new_extrait.create
     },
 
