@@ -101,7 +101,7 @@ export default class Extrait extends Model {
     /**
      * Connecte un extrait à une interview
      * @param {Interview} interview 
-     * @param {int} position 
+     * @param {number} position 
      */
     async connect_interview(interview, position) {
         // await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': position});
@@ -111,13 +111,14 @@ export default class Extrait extends Model {
     /**
      * Modifie la position d'un extrait dans une interview
      * @param {Interview} interview 
-     * @param {int} position 
+     * @param {number} position 
      */
     async update_position(interview, position) {
         try {
             return await ClientAPI.put(
                 ClientAPI.url_uuid(this.#interviews, interview.uuid),
-                JSON.stringify({'position': Model.validateNumber(position, 'position')})
+                // JSON.stringify({'position': Model.validateNumber(position, 'position')})
+                JSON.stringify({'position': position})
             );
         } catch (error) {
             console.error(`Erreur HTTP ${error.message}`);
