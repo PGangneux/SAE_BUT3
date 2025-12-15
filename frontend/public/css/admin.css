@@ -1,0 +1,12 @@
+.bottom_button {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.bottom_button > * {
+    flex: 1 1 0;
+    text-align: center; /* pour centrer le texte dans les boutons */
+}
+
+
