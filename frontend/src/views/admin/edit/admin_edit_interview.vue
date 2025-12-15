@@ -136,8 +136,6 @@ export default {
         },
 
         async save(){
-            //BaptisteBD
-            console.log("save")
             await this.current_interview.setExtraits(this.current_list_extraits)
         }
 

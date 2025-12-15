@@ -102,11 +102,6 @@ export default class Extrait extends Model {
      * Connecte un extrait à une interview
      * @param {Interview} interview 
      * @param {int} position 
-     * 
-     * 
-     * BaptisteBD
-     * Uncaught (in promise) TypeError: this.validateInt is not a function
-        connect_interview extrait.js:107
      */
     async connect_interview(interview, position) {
         // await this.connect(this.#interviews, {'uuid': interview.uuid, 'position': position});
@@ -122,7 +117,7 @@ export default class Extrait extends Model {
         try {
             return await ClientAPI.put(
                 ClientAPI.url_uuid(this.#interviews, interview.uuid),
-                JSON.stringify({'position':position})
+                JSON.stringify({'position': Model.validateNumber(position, 'position')})
             );
         } catch (error) {
             console.error(`Erreur HTTP ${error.message}`);

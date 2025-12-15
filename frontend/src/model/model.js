@@ -227,13 +227,9 @@ export default class Model {
      * @param {string} url 
      * @param {Object} data 
      * @returns {Promise<Object>}
-     * BaptisteBD
      */
     async connect(url, data) {
         try {
-            console.log("test")
-            console.log(url)
-            console.log(data)
             return await ClientAPI.post(url, JSON.stringify(data));
         } catch (error) {
             console.error(error.toString());
