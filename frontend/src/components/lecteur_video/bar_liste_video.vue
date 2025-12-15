@@ -361,10 +361,6 @@ export default {
     </header>
     <main>
         <div>
-            <div class="search-bar">
-                <input type="text" placeholder="placeholderRecherche"/>
-                <img src="/imgs/Search.png" alt="loupe"/>
-            </div>
             <div>
                 <ul class="liste_video">
                     <li v-for="(video) in videos" :key="video.uuid">
