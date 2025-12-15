@@ -1,7 +1,7 @@
 import Extrait from "../../extrait.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Extrait extends mmch_CheminT {
+export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     mmch_obj;
 

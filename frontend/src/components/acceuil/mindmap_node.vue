@@ -45,7 +45,7 @@ export default {
 
 <template>
     <div class="mm_node"
-        :class="`mmLegendColorMap${jsclass.category.name} mm_node${this.jsclass.isVideoContent() ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
+        :class="`${jsclass.category.mmch_getStyle()} mm_node${this.jsclass.isVideoContent() ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
         :style="jsclass.getStyle()">
         <div style="display: none;">
             {{ jsclass }}

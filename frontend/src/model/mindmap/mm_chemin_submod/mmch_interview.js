@@ -1,7 +1,7 @@
 import Interview from "../../interview.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Interview extends mmch_CheminT {
+export default class mmch_Interview extends mmch_CheminT {
     static mmch_dbjsclass = Interview;
     mmch_obj;
 

@@ -1,7 +1,7 @@
 import Tag from "../../tag.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Tag extends mmch_CheminT {
+export default class mmch_Tag extends mmch_CheminT {
     static mmch_dbjsclass = Tag;
     mmch_obj;
 

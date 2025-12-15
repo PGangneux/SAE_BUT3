@@ -1,4 +1,4 @@
-export const mm_LegendClassMap = {
+export default mm_LegendClassMap = {
     "Artiste": "Artiste",
     "Extrait": "Extrait",
     "Interview": "Interview",

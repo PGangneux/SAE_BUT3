@@ -1,4 +1,4 @@
-export class mmch_CheminT {
+export default class mmch_CheminT {
     static mmch_dbjsclass = null;
     static mmch_default_list_args = { limit: 5 };
     static mmch_default_search_args = { limit: 5 };
@@ -16,6 +16,13 @@ export class mmch_CheminT {
 
     static async mmch_search(args = {}) {
         throw new Error("mmch_search must be defined in child");
+    }
+
+    toJSON() {
+        return {
+            mmch_dbjsclass: this.mmch_dbjsclass,
+            mmch_obj: this.mmch_obj,
+        };
     }
 
     mmch_getStyle(){

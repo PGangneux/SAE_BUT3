@@ -1,7 +1,7 @@
 import mm_mindmap from "./mm_mindmap.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
-import Extrait from "../extrait.js";
-import Interview from "../interview.js";
+import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
+import mmch_Interview from "./mm_chemin_submod/mmch_interview.js";
 import router from "../../router.js";
 
 /**
@@ -12,14 +12,16 @@ import router from "../../router.js";
 export function mmcheckvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if (last.category == Extrait && last.content) {
-        mminfo.extrait_current.set(last.content);
+    if (!!last) return false;
+    let content = last.category.mmch_obj; 
+    if (last.category == mmch_Extrait && content) {
+        mminfo.extrait_current.set(content);
         router.push({
             path: "/lecteur_video/"
         });
         return true;
-    } else if (last.category == Interview && last.content) {
-        mminfo.interview_current.set(last.content);
+    } else if (last.category == mmch_Interview && content) {
+        mminfo.interview_current.set(content);
         router.push({
             path: "/lecteur_video/"
         });

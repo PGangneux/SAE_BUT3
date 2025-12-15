@@ -1,7 +1,7 @@
 import StyleMusical from "../../style_musical.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_StyleMusical extends mmch_CheminT {
+export default class mmch_StyleMusical extends mmch_CheminT {
     static mmch_dbjsclass = StyleMusical;
     mmch_obj;
 

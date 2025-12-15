@@ -1,7 +1,7 @@
 import Question from "../../question.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Question extends mmch_CheminT {
+export default class mmch_Question extends mmch_CheminT {
     static mmch_dbjsclass = Question;
     mmch_obj;
 

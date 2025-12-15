@@ -1,7 +1,7 @@
 import Nation from "../../nation.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Nation extends mmch_CheminT {
+export default class mmch_Nation extends mmch_CheminT {
     static mmch_dbjsclass = Nation;
     mmch_obj;
 

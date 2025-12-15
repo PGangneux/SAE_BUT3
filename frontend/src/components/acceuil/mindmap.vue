@@ -1,6 +1,6 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import { mm_mindmap } from '../../model/mindmap/mm_mindmap.js';
+import mm_Mindmap from '../../model/mindmap/mm_mindmap.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {
@@ -14,7 +14,7 @@ export default {
         let ext = this.extrait_current;        
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            jsclass : new mm_mindmap(this, inter, ext),
+            jsclass : new mm_Mindmap(this, inter, ext),
             searchval : "",
         };
     },

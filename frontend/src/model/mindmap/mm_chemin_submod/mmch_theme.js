@@ -1,7 +1,7 @@
 import Theme from "../../theme.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Theme extends mmch_CheminT {
+export default class mmch_Theme extends mmch_CheminT {
     static mmch_dbjsclass = Theme;
     mmch_obj;
 

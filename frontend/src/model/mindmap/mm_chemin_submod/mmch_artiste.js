@@ -1,7 +1,7 @@
 import Artiste from "../../artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 
-export class mmch_Artiste extends mmch_CheminT {
+export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
     mmch_obj;
 

@@ -1,69 +1,63 @@
 import { markRaw } from "vue";
-import mm_mindmap from "./mm_mindmap.js";
-import mm_node from "./mm_node.js";
+import mm_Mindmap from "./mm_Mindmap.js";
+import mm_Node from "./mm_node.js";
 import mmch_Root  from "./mm_chemin_submod/mmch_root.js";
-import { mmchemin_filter } from "./mm_subfunc.js"
+import { mm_chemin_filter } from "./mm_subfunc.js"
+import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 
 /**
     redraw everynode from root
- * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
-export async function mmdraw_root(mminfo) {
-    mmreset(mminfo);
-    let changevideo, changepath = mmchemin_filter(mminfo);
+export async function mm_draw_root(mminfo) {
+    mm_reset(mminfo);
+    let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return;
-    // console.log("mmdraw_root chemin path", mminfo.chemin);
     for (const cheminpath of mminfo.chemin) {
-        await mmdraw_onecat(mminfo, cheminpath);
+        await mm_draw_onecat(mminfo, cheminpath);
     }
 }
 
 /**
     redraw an update
- * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
-export async function mmdraw_update(mminfo) {
-    if (mminfo.chemin.length <= 0) return mmdraw_root(mminfo);
-    let changevideo, changepath = mmchemin_filter(mminfo);
+export async function mm_draw_update(mminfo) {
+    if (mminfo.chemin.length <= 0) return mm_draw_root(mminfo);
+    let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return;
-    if (changepath) return mmdraw_root(mminfo);
-    console.log("mmdraw_update chemin path", mminfo.chemin);
-    await mmdraw_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
+    if (changepath) return mm_draw_root(mminfo);
+    await mm_draw_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
 }
 
 /**
     recreate the root node and reset everything
- * @param {mm_mindmap} mminfo mm_mindmap  
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
-export function mmreset(mminfo) {
+function mm_reset(mminfo) {
     // reset everything
     mminfo.nodes = [];
     mminfo.linkages = [];
     // create root
-    let root = new mm_node(mminfo,0, 0, 1, mmch_Root, null);
+    let root = new mm_Node(mminfo,0, 0, 1, mmch_Root, null);
     mminfo.nodes.push(root);
-    mmdraw_onecat(root);
+    mm_draw_onecat(root);
 }
 
 /**
     utils to create a child node
- * @param {mm_mindmap} mminfo mm_mindmap  
- * @param {mm_node} node the parent node  
- * @param {class} category the class of node  
- * @param {class} content the content instance of class category
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
+ * @param {mm_Node} node the parent node  
+ * @param {mmch_CheminT} category the class of node  
  * @param {boolean} createLink = true do we draw the white line or not
- * @return {mm_node} the created child
+ * @return {mm_Node} the created child
 */
-export function mmcreateChildNode(mminfo, node, category, content, createLink = true) {
+function mm_createChildNode(mminfo, node, category, content, createLink = true) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
-    const tmp_child = new mm_node(mminfo,node.x, node.y, node.depth + 1, category, content);
-    // console.table({"node":node, "category":category, "content":content, "createLink":createLink });
-    // console.log("mmcreateChildNode",tmp_child);
+    const tmp_child = new mm_Node(mminfo,node.x, node.y, node.depth + 1, category, content);
     mminfo.nodes.push(markRaw(tmp_child));
     node.childrens.push(markRaw(tmp_child));
-    // console.log("thicness",mminfo.chemin.length,root.depth,thickness_base,thickness_base * (1 / root.depth));
     if (createLink) {
-        // TODO : change to have that in linkage constructor
         mminfo.linkages.push(new mmLinkage(node, tmp_child, thickness_base * (1 / node.depth)));
     }
     set_children_pos(mminfo, node);
@@ -72,10 +66,10 @@ export function mmcreateChildNode(mminfo, node, category, content, createLink = 
 
 /**
  * pos the children of a node in a circle
- * @param {mm_mindmap} mminfo mm_mindmap  
- * @param {mm_node} root the root node to witch the children has been added
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
+ * @param {mm_Node} root the root node to witch the children has been added
  */
-export function set_children_pos(mminfo, root) {
+function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
 
@@ -107,7 +101,6 @@ export function set_children_pos(mminfo, root) {
     // Check if all children already have origin_angle set with consistent spacing
     if (root.childrens.length > 1) {
         let allAnglesSet = true;
-        let spacingConsistent = true;
         
         for (let child of root.childrens) {
             if (child.origin_angle === null || child.origin_angle === undefined) {
@@ -123,12 +116,19 @@ export function set_children_pos(mminfo, root) {
             let spacing_ok = false;
             let root_angle = root.childrens.origin_angle;
             if (root.childrens[1].hasPreview()){
-                if (root_angle - )
+                if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.4 < 5){
+                    spacing_ok = true;
+                }
             } else if (root.childrens[1].content){
-
+                if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.2 < 5){
+                    spacing_ok = true;
+                }
             } else {
-                
+                if (root_angle - root.childrens[0].origin_angle - angle_per_child < 5){
+                    spacing_ok = true;
+                }
             }
+            if (spacing_ok) return; // spacing consistent, no need to recalculate
         }
     } 
     // If we reach here, we need to recalculate positions
@@ -139,7 +139,7 @@ export function set_children_pos(mminfo, root) {
 
     // New spreadFactor based on number of children AND children with content
     const spreadFactor = Math.max(1, (nb_child + childrenWithContent * 0.5) * 0.5);
-    const distance = 200 * mminfo.scale * depthFactor * spreadFactor;
+    const distance = 250 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
@@ -170,10 +170,10 @@ export function set_children_pos(mminfo, root) {
 
 /**
     draw the categories of one node
- * @param {mm_mindmap} mminfo mm_mindmap  
- * @param {mm_node} node the root node to apply the new nodes to
+ * @param {mm_Mindmap} mminfo mm_Mindmap  
+ * @param {mm_Node} node the root node to apply the new nodes to
 */
-async function mmdraw_onecat(mminfo, node) {
+async function mm_draw_onecat(mminfo, node) {
     // TODO : FIX CHEMIN mmch
     // console.log("mmdraw_onecat", node);
 
@@ -201,7 +201,7 @@ async function mmdraw_onecat(mminfo, node) {
         
         // Add available category nodes
         for (const cat of availableCategories) {
-            mmcreateChildNode(mminfo, node, cat, null);
+            mm_createChildNode(mminfo, node, cat, null);
         }
         
         // Add Extrait nodes based on search or list
@@ -212,7 +212,7 @@ async function mmdraw_onecat(mminfo, node) {
         searchFunc().then(async extraits => {
             if (extraits && extraits.length > 0) {
                 for (let index = 0; index < extraits.length && index < 5 && node.childrens.length < 8; index++) {
-                    mmcreateChildNode(mminfo, node, node.category, extraits[index]);
+                    mm_createChildNode(mminfo, node, node.category, extraits[index]);
                 }
             }
             node.loading = false;
@@ -233,7 +233,7 @@ async function mmdraw_onecat(mminfo, node) {
             // console.log("getting detail from category", node.category, contentList);
             if (contentList && contentList.length > 0) {
                 for (const element of contentList.slice(0, 5)) {
-                    mmcreateChildNode(mminfo, node, node.category, element);
+                    mm_createChildNode(mminfo, node, node.category, element);
                 }
             }
             node.loading = false;
