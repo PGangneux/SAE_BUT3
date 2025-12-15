@@ -5,11 +5,11 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
-import Extrait from "../../../model/extrait";
 
-import Interview from '../../../model/interview.js';
+
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
+import Extrait from "../../../model/extrait";
 
 
 

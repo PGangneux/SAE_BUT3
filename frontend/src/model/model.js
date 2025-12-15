@@ -170,7 +170,7 @@ export default class Model {
         }
         try {
             return await ClientAPI.post(
-                await ClientAPI.endpoints(this.endpoint),
+                await ClientAPI.endpoints(this.constructor.endpoint),
                 JSON.stringify(this.toJSON())
             )
             // Charger les nouvelles données dans l'instance
@@ -191,7 +191,7 @@ export default class Model {
         }
         try {
             return await ClientAPI.put(
-                ClientAPI.url_uuid(ClientAPI.endpoints(this.endpoint), this.#uuid),
+                ClientAPI.url_uuid(await ClientAPI.endpoints(this.constructor.endpoint), this.#uuid),
                 JSON.stringify(this.toJSON())
             )
             // Charger les nouvelles données dans l'instance
@@ -212,7 +212,7 @@ export default class Model {
         }
         try {
             return await ClientAPI.delete(
-                ClientAPI.url_uuid(ClientAPI.endpoints(this.endpoint), this.#uuid),
+                ClientAPI.url_uuid(ClientAPI.endpoints(this.constructor.endpoint), this.#uuid),
             )
             // Charger les nouvelles données dans l'instance
             .then(result => { return true; });
