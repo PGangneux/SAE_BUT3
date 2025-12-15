@@ -170,6 +170,7 @@ export default class ClientAPI {
      * @returns {Promise<Object>}
      */
     static async fetch(methode, url, args=null, data=null, withAuth=false) {
+        console.log("fetch", url, data)
         if (args) url = this.url_query(url, args);
 
         const opts = {
@@ -178,7 +179,9 @@ export default class ClientAPI {
         };
         if (data) opts["body"] = data;
 
+        console.log("urls fetch", url, opts)
         let response = await fetch(url, opts);
+        console.log("reposne", response)
 
         if (response.status === 401 && withAuth) {
             const refreshed = await this.tryRefresh();

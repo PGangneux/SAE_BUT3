@@ -114,10 +114,10 @@ export default class Extrait extends Model {
      * @param {number} position 
      */
     async update_position(interview, position) {
+        console.log(this.titre, position)
         try {
             return await ClientAPI.put(
                 ClientAPI.url_uuid(this.#interviews, interview.uuid),
-                // JSON.stringify({'position': Model.validateNumber(position, 'position')})
                 JSON.stringify({'position': position})
             );
         } catch (error) {

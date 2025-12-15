@@ -73,6 +73,7 @@ export default class Interview extends Model {
             }
             else{
                 // update posiiton
+                console.log("tetettetetetete")
                 await extrait.update_position(this, index)
             }
         }

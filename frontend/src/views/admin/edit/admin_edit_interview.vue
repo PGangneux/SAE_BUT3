@@ -2,6 +2,7 @@
 import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../../components/components_admin/Admin_presentation_petit_extrait.vue';
+import supprimer from "../supprimer.vue";
 
 import Interview from '../../../model/interview.js';
 import Extrait from "../../../model/extrait.js";
@@ -11,6 +12,7 @@ export default {
     components: {
       comp_baradmin,
       comp_petit_extrait,
+      supprimer,
     },
     data() {
         return {
@@ -21,6 +23,7 @@ export default {
             taillelist2:0, 
             titre: '',
             description: '',
+            popupDelete: false
         };
     },
     methods : {
@@ -131,7 +134,10 @@ export default {
 
             await this.current_interview.setExtraits(this.current_list_extraits);
             await this.current_interview.update()
-        }
+        },
+
+
+
 
 
     },
@@ -251,12 +257,17 @@ export default {
         </div>
     </div>
 
+
     <div class="bottom_button">
         <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add"> Ajouter un Extrait</RouterLink>          
         <RouterLink to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">  Ajouter une Playlist </RouterLink>
         <button @click="save()" type="submit" class="btn btn-outline-success" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-        <button type="button" class="btn  btn-outline-danger" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+        <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
     </div>
+
+    <supprimer v-if="this.popupDelete" :Element_Supp="this.current_interview"/>
+    
+
 </div>
 </template>
 

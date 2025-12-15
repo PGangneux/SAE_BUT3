@@ -30,41 +30,17 @@ export default {
     },
 
 
-    async mounted() {
-        
-
-        if (this.Element_Supp == null){
-            const ObjectId = this.$route.params.id;
-            this.ObjectType = this.$route.params.type;
-
-            if ( this.liste_possible.includes(this.ObjectType) ) {
-                    switch (this.ObjectType) {
-                        case "extrait":
-                            this.current_object =  markRaw(await Extrait.detail(ObjectId));
-                            console.log("Extrait")
-                        break;
-
-                        case "interview":
-                                this.current_object =  markRaw(await Interview.detail(ObjectId));
-                                console.log("Interview")
-                            break;
-
-                        case "utilisateur":
-                                this.current_object =  markRaw(await Utilisateur.detail(ObjectId));
-                                console.log("Utilisateur")
-                            break;
-                    
-                        default:
-                            console.log("whats")
-                            break;
-                    }
-                
-            }else{
-                console.log("why")
-            }
+    methods: {
+        async deleteElement() {
+            await this.Element_Supp.delete();
+            this.$router.push("/admin/interview");
             
-
         }
+    },
+
+
+    async mounted() {
+        console.log(this.Element_Supp)
 
         
 
@@ -78,17 +54,18 @@ export default {
 </script>
 
 <template>
+    <div class="overlay">
 
-    <h1> Voulez vous vraiment supprimer {{ nametype }}  </h1>
+    
+        <div class="popup">
 
-    <form action="" class="row" style="--bs-gutter-x: 0em;">
-        <div class="row"  style="--bs-gutter-x: 0em;">
-            <RouterLink class="col bt button-blanc" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/admin/'+ ObjectType }"> Annuler </RouterLink>
-            <button class="col bt button-blanc">Valider</button>
+            <h1> Voulez vous vraiment supprimer {{ nametype }}  </h1>
+            <RouterLink class="col bt button-blanc"> Annuler </RouterLink>
+            <button @click="deleteElement()" class="col bt button-blanc">Valider</button>
         </div>
-    </form>
+    </div>
 
-    </template>
+</template>
 
 <style scoped>
 .button-blanc{
