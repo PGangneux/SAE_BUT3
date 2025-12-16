@@ -3,6 +3,7 @@ import { markRaw } from 'vue';
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
 import supprimer from "./supprimer.vue";
+import tags from "./tags.vue"
 
 import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
@@ -13,11 +14,12 @@ export default {
         comp_baradmin,
         comp_petit_extrait,
         supprimer,
+        tags,
     },
     data() {
         return {
             Extraitlist: [],
-            current_interview: { type: Interview },
+            current_interview: null,
             current_list_extraits: [],
             taillelist1: 0,
             taillelist2: 0,
@@ -269,6 +271,8 @@ export default {
             </div>
         </div>
 
+        <!-- Only render tags when current_interview is loaded -->
+        <tags v-if="current_interview" :video="current_interview"></tags>
 
         <div class="bottom_button">
             <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
@@ -281,10 +285,10 @@ export default {
                     src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
         </div>
 
-        <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
-
+        
 
     </div>
+    <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
 </template>
 
 <style scoped>

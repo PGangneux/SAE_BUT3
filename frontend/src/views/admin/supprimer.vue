@@ -13,6 +13,9 @@ export default {
             this.$router.push("/admin/interview");
         }
     },
+    mounted(){
+        console.log("elem sup", this.Element_Supp)
+    },
     emits : ["closePopup"],
 };
 </script>
