@@ -28,6 +28,28 @@ export default {
     };
   },
 
+  computed: {
+    // Détermine le type de vidéo à suivre
+    videoType() {
+      // Si on a une interview, on suit l'interview complète
+      if (this.interview) {
+        return 'interview';
+      }
+      // Sinon on suit juste l'extrait
+      return 'extrait';
+    },
+    
+    // Retourne l'objet vidéo à suivre
+    videoObjectToTrack() {
+      // Si on a une interview, c'est elle qu'on veut marquer comme vue
+      if (this.interview) {
+        return this.interview;
+      }
+      // Sinon on marque l'extrait seul comme vu
+      return this.extrait;
+    }
+  },
+
   async mounted() {
     await this.update();
     if (this.$refs.iframe) {
@@ -60,7 +82,7 @@ export default {
 
       if (this.interview != null){ 
         this.liste_extraits = markRaw(await this.interview.extraits());
-        console.log("liste des ectraits", this.liste_extraits)
+        console.log("liste des extraits", this.liste_extraits)
         if (!this.extrait){
           this.extrait = this.liste_extraits[0];
           this.extrait_current.set(this.liste_extraits[0]);
@@ -126,7 +148,7 @@ export default {
       let index = this.liste_extraits.find(extrait => extrait.uuid === this.extrait.uuid).position;
 
       console.log("index", index)
-      console.log("nb extraist", this.liste_extraits.length -1)
+      console.log("nb extraits", this.liste_extraits.length - 1)
       
       if (index < this.liste_extraits.length - 1) {
         let next_extrait = this.liste_extraits[index + 1];
@@ -147,6 +169,9 @@ export default {
         v-if="url"
         :url="url"
         ref="iframe"
+        :videoObject="videoObjectToTrack"
+        :videoType="videoType"
+        :progressThreshold="70"
         @lancement_prochaine_video="lancement_prochaine_video"
       />
 
