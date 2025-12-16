@@ -27,10 +27,10 @@ export default class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
 
     constructor() {
-        super(null);
+        throw new Error("mmch_Root is an abstract class and cannot be instantiated directly.");
     }
 
-    async mmch_listinst(args = {}) {
+    static async mmch_listcat(args = {}) {
         const results = [];
         for (const Category of mm_CategorysDefault) {
             const items = await Category.mmch_listcat(args);
@@ -39,7 +39,7 @@ export default class mmch_Root extends mmch_CheminT {
         return results;
     }
 
-    async mmch_searchinst(args = {}) {
+    static async mmch_searchcat(args = {}) {
         const allCategories = [...mm_CategorysDefault, ...mm_CategorysSearch];
         const results = [];
 

@@ -11,10 +11,11 @@ export default class mmch_CheminT {
     static mmch_default_previewinst_args = { limit: 1 };
     mmch_obj;
 
-    constructor({ obj } = {}) {
+    constructor(inst = null) {
         if (new.target === mmch_CheminT) {
             throw new Error("Cannot instantiate abstract class mmch_CheminT");
         }
+        this.mmch_obj = inst;
     }
 
     static async mmch_listcat(args = {}) {

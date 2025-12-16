@@ -9,8 +9,8 @@ export default class mmch_Question extends mmch_CheminT {
     /** @type {Question} */
     mmch_obj;
 
-    constructor({ inst = null } = {}) {
-        this.mmch_obj = inst;
+    constructor(inst = null) {
+        super(inst);
     }
 
     static async mmch_listcat(args = {}) {

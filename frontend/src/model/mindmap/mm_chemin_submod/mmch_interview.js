@@ -11,8 +11,8 @@ export default class mmch_Interview extends mmch_CheminT {
     /** @type {String} */
     #_previewurl;
 
-    constructor({ inst = null } = {}) {
-        this.mmch_obj = inst;
+    constructor(inst = null) {
+        super(inst);
         this._previewurl = null;
     }
 

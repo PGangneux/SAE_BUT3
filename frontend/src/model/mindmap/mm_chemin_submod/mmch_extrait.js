@@ -11,8 +11,8 @@ export default class mmch_Extrait extends mmch_CheminT {
     mmch_obj;
     #_previewurl;
 
-    constructor({ inst = null } = {}) {
-        this.mmch_obj = inst;
+    constructor(inst = null) {
+        super(inst);
         this.#_previewurl = null;
     }
 

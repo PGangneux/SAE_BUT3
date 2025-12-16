@@ -8,8 +8,8 @@ export default class mmch_StyleMusical extends mmch_CheminT {
     /** @type {StyleMusical} */
     mmch_obj;
 
-    constructor({ inst = null } = {}) {
-        this.mmch_obj = inst;
+    constructor(inst = null) {
+        super(inst);
     }
 
     static async mmch_listcat(args = {}) {
