@@ -23,7 +23,7 @@ export default {
 
   },data() {
         return {
-            current_extrait : {type:Extrait},
+            current_extrait : null,
             thumbnail: '/imgs/width551.png',          
             laselectedArtiste: "", //Artiste selectionner retourn null si rien
             laselectedQuestion: "",//Questio selectionner retourn null si rien 
@@ -244,14 +244,14 @@ export default {
 <template>
     <comp_baradmin/>
 
-    <form action="" class="row" style="--bs-gutter-x: 0em;">
+    <form v-if="current_extrait" action="" class="row" style="--bs-gutter-x: 0em;">
 
 
 
 
       <div class="row"  style="--bs-gutter-x: 0em;">
         
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <RouterLink  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
