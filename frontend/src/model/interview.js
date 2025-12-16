@@ -77,6 +77,14 @@ export default class Interview extends Model {
     return await this.fetchList(this.#extraits, Extrait, args);
   }
 
+  get_duree(extraits){
+    let time = 0;
+    for (let extrait of extraits) {
+      time += extrait.duree;
+    }
+    return time;
+  }
+
   /**
    * Redéfinie la liste des extraits de this
    * @param {Array<Extrait>} extraits Les nouveaux extrait de this.

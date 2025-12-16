@@ -54,7 +54,7 @@ export default {
 
 <comp_baradmin/>
 
-<h1 class="text-center">Interview-Playlist</h1>
+<h1 class="text-center">Playlist</h1>
 
 <div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px; height: 100%; ">
     
@@ -76,23 +76,6 @@ export default {
             </div>
         </div>
 
-        <div class="row">
-            <button class="bt btn col ">Date</button>
-            <button class="bt btn col ">Name</button>
-        </div>
-
-        <div class="row  trie-tags centrer">
-
-            <p class="row pcentrer">Trier par tag</p>
-
-            <!--tagfully futur probleme-->
-
-            <ul class="scroller ultagger row tagsfully">
-                <li class="col padd" v-for="tag in this.tags">
-                    <button class="btn btn-primary"> {{ tag.name }} </button>
-                </li>
-            </ul>
-        </div>
     </div>
 
     <div class="col-md-6 recherche aggrandir">
@@ -101,7 +84,6 @@ export default {
                     <tr>
                         <th class="btgrisv2" scope=" col">Nom interview</th>
                         <th class="btgrisv2" scope=" col">Nb video</th>
-                        <th class="btgrisv2" scope=" col">Tags</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,7 +92,6 @@ export default {
                             
                                 <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
                                 <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </RouterLink> </td>
                             
                         </tr>
                     
