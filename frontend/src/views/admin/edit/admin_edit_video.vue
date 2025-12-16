@@ -35,7 +35,9 @@ export default {
             popupDelete: false,
             searchValueTag:"",
             create:false,
-            popup: false
+            popup: false,
+            popupSelectInterview: false, //Props pour popupSelectInterview
+            popupEnregistrer:false,
         };
     }
     
@@ -92,15 +94,32 @@ export default {
   methods: {
 
 
+    async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
+
+      console.log(this.current_extrait);
+      this.current_extrait.duree = 0;
+
+      this.popupEnregistrer = false;
+      
+      await this.current_extrait.create();
+      
+      this.new_extrait = new markRaw(new Extrait({}));
+  
+      console.log("creer");
+      
+      //new_extrait.create
+    },
+
     popupchange(){
       this.popup = !this.popup
     },
 
     modificationDonnees(){
-      if (create) {
-          
+      if (this.create) {
+          this.enregistrer();
       } else {
-        Update();
+        this.Update();
       }
     },
 
@@ -140,7 +159,6 @@ export default {
       if (question) {
           this.current_extrait.question = question.uuid;
           this.current_extrait.question_uuid = question.uuid;
-          this.current_extrait.titre = question.texte;
         } else {
           this.current_extrait.question = null;
           this.current_extrait.question_uuid = null;
@@ -159,6 +177,17 @@ export default {
     },
 
 
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      
+    },
+
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      
+    },
 
 
   async migniature_video(){
@@ -188,56 +217,41 @@ export default {
   },
 
  async mounted() {
-
+    await this.recupeArtiste();
+    await this.recupeQuestion();
   
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
+    console.log(ExtraitId);
 
-    //reccuperation de l'Extrait via l'id
-    this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
-    await this.recupeArtiste();
-    await this.recupeQuestion();
+    if (ExtraitId != null) {
+        //reccuperation de l'Extrait via l'id
+      this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+      console.log(this.current_extrait);
+      this.interviews = markRaw(await this.current_extrait.interviews());
+      console.log(this.interviews);
+      this.tags = markRaw(await this.current_extrait.tags());
 
-    console.log(this.current_extrait);
 
+      if(await this.current_extrait.question != null){
+        const question =  markRaw(await this.current_extrait.question);
+        this.laselectedQuestion = question.texte;
+        this.current_extrait.question.uuid = question.uuid;
+        this.current_extrait.question = question.uuid;
+      }
 
-    this.interviews = markRaw(await this.current_extrait.interviews());
-
-    console.log(this.interviews);
-
-    this.tags = markRaw(await this.current_extrait.tags());
-
-    console.log("ha");
-
-    if(await this.current_extrait.question != null){
-      const question =  markRaw(await this.current_extrait.question);
-      this.laselectedQuestion = question.texte;
-      this.current_extrait.question.uuid = question.uuid;
-      this.current_extrait.question = question.uuid;
+      if(await this.current_extrait.artiste != null){
+        const artiste = markRaw(await this.current_extrait.artiste);
+        this.laselectedArtiste  = artiste.name;
+        this.current_extrait.artiste = artiste.uuid;
+        this.current_extrait.artiste.uuid = artiste.uuid;
+      }
+    }else{
+      this.current_extrait = markRaw( await new Extrait({}));
+      this.create = true;
     }
 
-    if(await this.current_extrait.artiste != null){
-      const artiste = markRaw(await this.current_extrait.artiste);
-      this.laselectedArtiste  = artiste.name;
-      this.current_extrait.artiste = artiste.uuid;
-      this.current_extrait.artiste.uuid = artiste.uuid;
-    }
-
     
- 
-
-    console.log(this.laselectedArtiste);
-    console.log(this.laselectedQuestion);
-
-    
-    console.log("ha");
-
-
-    
-    console.log(this.tags.length);
-
-
-
 
   }
 };
@@ -333,12 +347,12 @@ export default {
             </div>
           </div>
 
-            <div class="row" style="margin-right: 0em; margin-left: 0em;">
+            <div v-if="!create" class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
                  <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
               </h1>
              
-              <table class="ultagger table tables table-striped">
+              <table  class="ultagger table tables table-striped">
                   <thead>
                       <tr>
                           <th class="btgrisv2  col">Nom Playlist</th>
@@ -360,19 +374,14 @@ export default {
       </div>
 
       <div class="bottom_button">
-          <RouterLink v-if="!create" to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
+          <RouterLink v-if="!create" to="/admin/extrait/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
               Ajouter un Extrait</RouterLink>
-          <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+          <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                   alt="Enregistrer"> Enregistrer </button>
           <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
                   src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
       </div>
 
-
-      <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button  type="button"   class="bt btn col" @click="Update" > <img src="/imgs/save.svg"  alt="Enregistrer"> Enregistrer </button>
-      </div>
       <supprimer v-if="popupDelete" :Element_Supp="current_extrait" @closePopup="popupDelete = false" />
 
     </form>
@@ -385,6 +394,9 @@ export default {
    
 
     <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
+
+    <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
+    <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
     </template>
 

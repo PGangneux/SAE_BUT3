@@ -39,7 +39,7 @@ const routes = [
 
     { path: "/admin/user/creer/",         component: () => import("./views/admin//creer/admin_creer_user.vue")},
     { path: "/admin/interview/creer/",    component: () => import("./views/admin/admin_interview.vue")},
-    { path: "/admin/extrait/",      component: () => import("./views/admin/creer/admin_creer_video.vue")},
+    { path: "/admin/extrait/",      component: () => import("./views/admin/edit/admin_edit_video.vue")},
     { path: "/admin/:type/supprimer/:id", component: () => import("./views/admin/supprimer.vue")},
 
 
