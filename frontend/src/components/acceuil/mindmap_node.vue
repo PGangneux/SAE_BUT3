@@ -1,7 +1,7 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
 // import { mm_mindmap } from '../../model/mindmap/mm_mindmap.js';
-// import { mm_node } from '../../model/mindmap/mm_node.js';
+// import mmch_CheminT from "../../model/mindmap/mm_chemin_submod/mmch_chemin.js";
 
 export default {
     name: "mindmap_node",
@@ -25,11 +25,11 @@ export default {
     async mounted() {
         // console.table(this.jsclass.toJSON());
         // console.log("isVideoContent",this.jsclass.isVideoContent());
-        
+
         setTimeout(() => {
             this.isAppearing = false;
         }, 50);
-        if (this.jsclass.isVideoContent()) {
+        if (this.jsclass.mmch_hasMiniature()) {
             this.thumbnailLoading = true;
             this.jsclass.get_miniature().then(value => {
                 this.thumbnailUrl = value;
@@ -45,51 +45,55 @@ export default {
 
 <template>
     <div class="mm_node"
-        :class="`${jsclass.category.mmch_getStyle()} mm_node${this.jsclass.isVideoContent() ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
+        :class="`${jsclass.mmch_getStyle()} mm_node${this.jsclass.mmch_hasMiniature() ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
         :style="jsclass.getStyle()">
         <div style="display: none;">
             {{ jsclass }}
         </div>
-        <template v-if="jsclass.loading">
-            <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+        <template v-if="!jsclass.content">
+            <div class="mm_node_content">
+                <p class="mm_node_title">{{ mm_LegendClassMap[jsclass.name] }}</p>
+                <template v-if="jsclass.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+                </template>
+            </div>
         </template>
-        <template v-else>
-            <template v-if="!jsclass.content">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
+        <template v-else-if="jsclass.content && !this.jsclass.mmch_hasMiniature()">
+            <div class="mm_node_content">
+                <p class="mm_node_title">
+                    {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
+                </p>
+                <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.name] }}</p>
+                <template v-if="jsclass.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+                </template>
+            </div>
+        </template>
+        <template v-if="jsclass.content && this.jsclass.mmch_hasMiniature()">
+            <div class="mm_node_content">
+                <p class="mm_node_title">
+                    {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
+                </p>
+                <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.name] }}</p>
+                <div class="mm_node_description">
+                    <p>uploaded_at : {{ jsclass.content.uploaded_at }}</p>
+                    <p>duree : {{ jsclass.content.duree }}</p>
                 </div>
-            </template>
-            <template v-else-if="jsclass.content && !this.jsclass.isVideoContent()">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">
-                        {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
-                    </p>
-                    <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
-                </div>
-            </template>
-            <template v-if="jsclass.content && this.jsclass.isVideoContent()">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">
-                        {{ jsclass.content.name || jsclass.content.titre || 'nom Inconnue' }}
-                    </p>
-                    <p class="mm_node_subtitle">{{ mm_LegendClassMap[jsclass.category.name] }}</p>
-                    <div class="mm_node_description">
-                        <p>uploaded_at : {{ jsclass.content.uploaded_at }}</p>
-                        <p>duree : {{ jsclass.content.duree }}</p>
-                    </div>
-                </div>
-                <div class="mm_node_preview">
-                    <template v-if="jsclass.thumbnailLoading">
-                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
-                    </template>
-                    <template v-else-if="jsclass.thumbnailUrl">
-                        <img :src="jsclass.thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
-                    </template>
-                    <template v-else>
-                        <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
-                    </template>
-                </div>
-            </template>
+                <template v-if="jsclass.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+                </template>
+            </div>
+            <div class="mm_node_preview">
+                <template v-if="jsclass.thumbnailLoading">
+                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
+                </template>
+                <template v-else-if="jsclass.thumbnailUrl">
+                    <img :src="jsclass.thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                </template>
+                <template v-else>
+                    <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
+                </template>
+            </div>
         </template>
     </div>
 </template>

@@ -18,11 +18,11 @@ export default class mm_Node {
     /** @type {Array[mm_Node]} */
     childrens;
     /** @type {boolean} */
-    ispreview;
+    ispreview = false;
     /** @type {number} */
-    origin_angle;
+    origin_angle = null;
     /** @type {boolean} */
-    loading;
+    loading = false;
     /** @type {mm_Mindmap} */
     mminfo; // Reference to mindmap instance
 
@@ -41,9 +41,7 @@ export default class mm_Node {
         this.targetX = x;
         this.targetY = y;
         this.depth = depth;
-        this.origin_angle = null;
         this.childrens = [];
-        this.loading = false;
     }
 
     toJSON() {

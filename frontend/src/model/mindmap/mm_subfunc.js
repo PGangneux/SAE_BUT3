@@ -17,14 +17,14 @@ export function mm_checkvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
     let last = mminfo.chemin[mminfo.chemin.length - 1];
     if (!!last) return false;
-    if (last.category == mmch_Extrait && last.category.mmch_obj) {
-        mminfo.extrait_current.set(last.category);
+    if (last instanceof  mmch_Extrait && last.mmch_obj) {
+        mminfo.extrait_current.set(last.mmch_obj);
         router.push({
             path: "/lecteur_video/"
         });
         return true;
-    } else if (last.category == mmch_Interview && last.category.mmch_obj) {
-        mminfo.interview_current.set(last.category);
+    } else if (last instanceof mmch_Interview && last.mmch_obj) {
+        mminfo.interview_current.set(last.mmch_obj);
         router.push({
             path: "/lecteur_video/"
         });
@@ -58,7 +58,7 @@ export function mm_chemin_filter(mminfo) {
     }
     // Filter out mm_Root from chemin if present
     let didchange = original_lenght != mminfo.chemin.length;
-    mminfo.chemin = mminfo.chemin.filter(item => item.category !== mmch_Root);
+    mminfo.chemin = mminfo.chemin.filter(item => !(item instanceof mmch_Root));
     return false, didchange;
 }
 
@@ -122,7 +122,7 @@ export function set_children_pos(mminfo, root) {
     if (!root.childrens.length) return;
 
     // est ce que c'est mm_Root ou pas 
-    const isRoot = root.category == mmch_Root;
+    const isRoot = root instanceof mmch_Root;
     const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
     const nb_child = root.childrens.length;
 
@@ -134,7 +134,7 @@ export function set_children_pos(mminfo, root) {
     for (let child of root.childrens) {
         if (child.mmch_hasMiniature()) {
             childrenWithPreview++;
-        } else if (child.category.mmch_obj) {
+        } else if (child.mmch_obj) {
             childrenWithContent++;
         } else {
             childrenWithoutContent++;
@@ -163,11 +163,12 @@ export function set_children_pos(mminfo, root) {
             // We need to account for content weighting, so we check each pair
             let spacing_ok = false;
             let root_angle = root.childrens.origin_angle;
-            if (root.childrens[1].category.mmch_hasMiniature()){
+            // TODO : REDO
+            if (root.childrens[1].mmch_hasMiniature()){
                 if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.4 < 5){
                     spacing_ok = true;
                 }
-            } else if (root.childrens[1].category.mmch_obj){
+            } else if (root.childrens[1].mmch_obj){
                 if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.2 < 5){
                     spacing_ok = true;
                 }
@@ -197,7 +198,7 @@ export function set_children_pos(mminfo, root) {
 
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
-        const hasContent = child.category.mmch_obj;
+        const hasContent = child.mmch_obj;
         // Calculate current angle - adjust for content weighting
         const angleWeight = hasContent ? 1.2 : 1;
         const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);

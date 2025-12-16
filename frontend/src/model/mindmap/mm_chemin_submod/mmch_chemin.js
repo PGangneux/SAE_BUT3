@@ -70,7 +70,7 @@ export default class mmch_CheminT extends mm_Node {
     }
 
     mmch_getStyle() {
-        return `mmLegendColorMap${this.mmch_dbjsclass.name}`;
+        return `mmLegendColorMap${this.constructor.mmch_dbjsclass.name}`;
     }
 
     async mmch_getTitle() {
