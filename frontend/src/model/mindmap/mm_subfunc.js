@@ -92,7 +92,7 @@ export function mm_clean_preview(mminfo){
 */
 export function mm_createChildNode(mminfo, node, category,content=null, createLink = true, isPreview = false) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
-    const tmp_child = new category(mminfo, node.x, node.y, node.depth + 1,content);
+    const tmp_child = new category(mminfo, node.x, node.y, node.depth,content);
     node.childrens.push(markRaw(tmp_child));
     if (isPreview){
         mminfo.previewnodes.push(markRaw(tmp_child));

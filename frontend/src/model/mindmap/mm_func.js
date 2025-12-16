@@ -1,7 +1,7 @@
-import mm_Mindmap from "./mm_mindmap.js";
-import mm_Node from "./mm_node.js";
-import mmch_Root from "./mm_chemin_submod/mmch_root.js";
 import { mm_chemin_filter, mm_createChildNode, mm_clean_preview } from "./mm_subfunc.js"
+import mm_Mindmap from "./mm_mindmap.js";
+import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
+import mmch_Root from "./mm_chemin_submod/mmch_root.js";
 
 /**
     redraw everynode from root
@@ -40,7 +40,7 @@ function mm_reset(mminfo) {
     mminfo.previewnodes = [];
 
     // create root
-    let root = new mm_Node(mminfo, 0, 0, 1, mmch_Root);
+    let root = new mmch_Root(mminfo, 0, 0, 0);
     mminfo.nodes.push(root);
     mm_draw_onecat(mminfo, root);
 }
@@ -48,7 +48,7 @@ function mm_reset(mminfo) {
 /**
  * draw the categories of one node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @param {mm_Node} node the root node to apply the new nodes to
+ * @param {mmch_CheminT} node the root node to apply the new nodes to
 */
 async function mm_draw_onecat(mminfo, node) {
     // TODO : FIX CHEMIN mmch

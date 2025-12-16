@@ -26,10 +26,6 @@ class mm_Root {
 export default class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
 
-    constructor() {
-        throw new Error("mmch_Root is an abstract class and cannot be instantiated directly.");
-    }
-
     static async mmch_listcat(args = {}) {
         const results = [];
         for (const Category of mm_CategorysDefault) {
