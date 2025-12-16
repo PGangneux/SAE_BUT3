@@ -30,26 +30,22 @@ export default class mmch_Root extends mmch_CheminT {
         super(null);
     }
 
-    static async mmch_list(args = {}) {
+    async mmch_listinst(args = {}) {
         const results = [];
         for (const Category of mm_CategorysDefault) {
-            if (Category.mmch_list) {
-                const items = await Category.mmch_list(args);
-                results.push(...items);
-            }
+            const items = await Category.mmch_listcat(args);
+            results.push(...items);
         }
         return results;
     }
 
-    static async mmch_search(args = {}) {
+    async mmch_searchinst(args = {}) {
         const allCategories = [...mm_CategorysDefault, ...mm_CategorysSearch];
         const results = [];
 
         for (const Category of allCategories) {
-            if (Category.mmch_search) {
-                const items = await Category.mmch_search(query, args);
-                results.push(...items);
-            }
+            const items = await Category.mmch_searchcat(args);
+            results.push(...items);
         }
         return results;
     }

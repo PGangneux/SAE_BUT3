@@ -3,14 +3,22 @@ import mmch_CheminT from "./mmch_chemin.js";
 
 export default class mmch_Theme extends mmch_CheminT {
     static mmch_dbjsclass = Theme;
+    /** @type {Theme} */
     mmch_obj;
 
     constructor({inst = null} = {}) {
         this.mmch_obj = inst;
     }
 
-    static async mmch_list(args = {}) {
-        const finalArgs = { ...this.mmch_default_list_args, ...args };
+    static async mmch_listcat(args = {}) {
+        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
+            ...items.map(item => new mmch_Theme(item)),
+        ];
+    }
+    async mmch_listinst(args = {}) {
+        const finalArgs = { ...this.mmch_default_listinst_args, ...args };
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
             new mmch_Question(),
@@ -18,7 +26,15 @@ export default class mmch_Theme extends mmch_CheminT {
         ];
     }
 
-    static async mmch_search(args = {}) {
+    static async mmch_searchcat(args = {}) {
+        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
+        const items = await Theme.search(finalArgs);
+        return [
+            new mmch_Question(),
+            ...items.map(item => new mmch_Theme(item)),
+        ];
+    }
+    async mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_search_args, ...args };
         const items = await Theme.search(finalArgs);
         return [
@@ -27,7 +43,16 @@ export default class mmch_Theme extends mmch_CheminT {
         ];
     }
 
-    static async mmch_preview(mminfo,parent,args = {}){
+    static async mmch_previewcat(mminfo,parent,args = {}){
+        const finalArgs = { ...this.mmch_default_preview_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
+            ...items.map(item => new mmch_Theme(item)),
+        ];
+    }
+
+    async mmch_previewinst(mminfo,parent,args = {}){
         const finalArgs = { ...this.mmch_default_preview_args, ...args };
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);

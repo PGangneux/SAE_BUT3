@@ -1,3 +1,4 @@
+import Extrait from "../../extrait.js";
 import Artiste from "../../artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
@@ -13,19 +14,38 @@ export default class mmch_Artiste extends mmch_CheminT {
         this.mmch_obj = inst;
     }
 
-    static async mmch_list(args = {}) {
-        const finalArgs = { ...this.mmch_default_list_args, ...args };
+    static async mmch_listcat(args = {}) {
+        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
+        // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            new mmch_Extrait(null),
-            new mmch_Nation(null),
-            new mmch_StyleMusical(null),
             ...items.map(item => new mmch_Artiste(item)),
         ];
     }
 
-    static async mmch_search(args = {}) {
-        const finalArgs = { ...this.mmch_default_search_args, ...args };
+    async mmch_listinst(args = {}) {
+        const finalArgs = { ...this.mmch_default_listinst_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_obj.extraits();
+        return [
+            new mmch_Extrait(null),
+            new mmch_Nation(null),
+            new mmch_StyleMusical(null),
+            ...items.map(item => new mmch_Extrait(item)),
+        ];
+    }
+
+    static async mmch_searchcat(args = {}) {
+        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await Artiste.search(finalArgs);
+        return [
+            ...items.map(item => new mmch_Artiste(item)),
+        ];
+    }
+    async mmch_searchinst(args = {}) {
+        const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
+        // TODO : put recomendation algorithm here
         const items = await Artiste.search(finalArgs);
         return [
             new mmch_Extrait(null),
@@ -35,8 +55,16 @@ export default class mmch_Artiste extends mmch_CheminT {
         ];
     }
 
-    static async mmch_Preview(mminfo,parent,args = {}){
-        const finalArgs = { ...this.mmch_default_preview_args, ...args };
+    static async mmch_previewcat(mminfo, parent, args = {}) {
+        const finalArgs = { ...this.mmch_default_previewcat_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
+            ...items.map(item => new mmch_Artiste(item)),
+        ];
+    }
+    static async mmch_previewinst(mminfo, parent, args = {}) {
+        const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
