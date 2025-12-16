@@ -34,7 +34,7 @@ export default {
             tags:[],            //liste des tags totals
             popupDelete: false,
             searchValueTag:"",
-
+            create:false,
             popup: false
         };
     }
@@ -94,6 +94,14 @@ export default {
 
     popupchange(){
       this.popup = !this.popup
+    },
+
+    modificationDonnees(){
+      if (create) {
+          
+      } else {
+        Update();
+      }
     },
 
 
@@ -352,10 +360,8 @@ export default {
       </div>
 
       <div class="bottom_button">
-          <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
+          <RouterLink v-if="!create" to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
               Ajouter un Extrait</RouterLink>
-          <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
-                  src="/imgs/add.svg" alt="add"> Ajouter une Playlist </RouterLink>
           <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                   alt="Enregistrer"> Enregistrer </button>
           <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
@@ -366,9 +372,6 @@ export default {
       <div class="row pad"  style="--bs-gutter-x: 0em;">
         <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         <button  type="button"   class="bt btn col" @click="Update" > <img src="/imgs/save.svg"  alt="Enregistrer"> Enregistrer </button>
-        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-        <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
-                    src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
       </div>
       <supprimer v-if="popupDelete" :Element_Supp="current_extrait" @closePopup="popupDelete = false" />
 
