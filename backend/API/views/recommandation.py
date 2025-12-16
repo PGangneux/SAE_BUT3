@@ -45,97 +45,203 @@ class Recommandation(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest) -> Response:
         return self.post(request)
 
-    def post(self, request: HttpRequest):
-        poids: dict = request.data
+    def post(self, request: HttpRequest) -> Response:
+        """L'Algorithme de recommandation de vidéos (Extrait / Interview)
+            request.data:
+             - weights : dict (Thème, Question, Artiste)
+                key: Nom de la classe du node
+                value: weight de la classe (number)
+             - filters : dict (Thème, Question, Artiste, Nation, StyleMusical, Tag)
+                key: Nom de la classe du filtre
+                value: uuid de l'instance
+
+        Args:
+            request (HttpRequest): Requête vers l'api
+
+        Raises:
+            ValidationError: Si un champ n'a pas un valeur du bon type
+            ConnexionDB: Si la base de données est indisponnible
+
+        Returns:
+            Response: Les vidéos (Extrait / Interview)
+        """
+        data: dict = request.data
+        poids = data.get("weights", {})
         print("poids:", poids)
+        filtres = data.get("filters", {})
+        print("filtres:", filtres)
 
         user = get_current_user(request)
         print("user: ", user.pseudo if user else None)
 
         context = {"request": request}
 
-        video = request.GET.get("video", None)
+        video = request.GET.get("video", False)
         size: str = request.GET.get("size", "10")
         if size.isnumeric():
             try:
                 size: int = int(size)
             except:
-                raise ValidationError(detail='{size: numeric not string}')
+                raise ValidationError(detail="{size: numeric not string}")
 
         # Modulabilité du modèle
         video_class = Extrait.__name__
-        playlist_class= Interview.__name__
+        playlist_class = Interview.__name__
 
-        print('uuid', video)
+        print("uuid", video)
+
+        # Algo complet
+        # Construction des parties de la requête
+        parts = {
+            "match": [],
+            "where": ["TRUE"],
+            "optional_match": [],
+            "with_clauses": [],
+            "return": [],
+        }
+
+        # === MATCH CLAUSE ===
+        if user:
+            parts["match"].append("(u:Utilisateur {uuid: $current_user})")
 
         if video:
-            # Algo complet
-            filtre = {"uuid": video, "current_user": user.uuid if user else None}
-            query = f"""
-                MATCH 
-                {"(u:Utilisateur {uuid: $current_user})," if user else ""}
-                (v:{video_class}|{playlist_class}),
-                (c:{video_class}|{playlist_class}{" {uuid: $uuid}"})
+            parts["match"].append(f"(c:{video_class}|{playlist_class} {{uuid: $uuid}})")
 
-                WHERE v.uuid <> c.uuid
-                {"AND NOT ( (u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))" if user else ""}
+        parts["match"].append(f"(v:{video_class}|{playlist_class})")
 
-                // Permet de compter les éléments en commun pour ordonner
+        # === WHERE CLAUSE ===
+        if video:
+            parts["where"].append("v.uuid <> c.uuid")
 
-                OPTIONAL MATCH (c)--{"{0,3}"}(c_t:Theme)
-                OPTIONAL MATCH (v)--{"{0,3}"}(v_t:Theme)
+        if user:
+            parts["where"].append(
+                "NOT ((u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))"
+            )
 
-                OPTIONAL MATCH (c)--{"{0,2}"}(c_a:Artiste)
-                OPTIONAL MATCH (v)--{"{0,2}"}(v_a:Artiste)
+        # Filtres dynamiques
+        filter_configs = {
+            "Thème": ("Theme", "*2..3"),
+            "Artiste": ("Artiste", "*..2"),
+            "StyleMusical": ("StyleMusical", "*2..3"),
+            "Nation": ("Nation", "*2..3"),
+            "Question": ("Question", "*..2"),
+            "Tag": ("Tag", "*0..3"),
+        }
 
-                OPTIONAL MATCH (c)--{"{0,2}"}(c_q:Question)
-                OPTIONAL MATCH (v)--{"{0,2}"}(v_q:Question)
+        excluded_relations = [
+            "REGARDER_EXTRAITS",
+            "REGARDER_INTERVIEWS",
+            "RECHERCHES_ARTISTES",
+            "RECHERCHES_QUESTIONS",
+        ]
 
-                WITH v, c,
-                collect(DISTINCT c_t) AS c_themes,
-                collect(DISTINCT v_t) AS v_themes,
-                collect(DISTINCT c_a) AS c_artistes,
-                collect(DISTINCT v_a) AS v_artistes,
-                collect(DISTINCT c_q) AS c_questions,
-                collect(DISTINCT v_q) AS v_questions
+        for filtre_key, (node_type, path_length) in filter_configs.items():
+            if filtres.get(filtre_key):
+                # Gestion spéciale pour Tag avec le préfixe '!'
+                node_pattern = (
+                    f"!:{node_type}" if filtre_key == "Tag" else f"t:{node_type}"
+                )
+                node_var = "!" if filtre_key == "Tag" else "t"
 
-                WITH v, c,
-                size([t IN c_themes WHERE t IN v_themes]) AS nbThemes,
-                size([a IN c_artistes WHERE a IN v_artistes]) AS nbArtistes,
-                size([s IN c_questions WHERE s IN v_questions]) AS nbQuestions,
-                // Champ de date non uniforme entre les extraits et les interviews
-                coalesce(v.date, v.uploaded_at) AS date
+                filter_clause = f"""EXISTS {{
+                    MATCH p = SHORTEST 1 (v)-[{path_length}]-({node_pattern})
+                    WHERE {node_var}.uuid = '{filtres[filtre_key]}'
+                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
+                    AND NONE(r IN relationships(p) WHERE type(r) IN {excluded_relations})
+                }}"""
+                parts["where"].append(filter_clause)
 
-                RETURN v,
+        # === OPTIONAL MATCH pour le scoring ===
+        score_configs = {
+            "Thème": ("Theme", "*0..3", "c_t", "v_t"),
+            "Artiste": ("Artiste", "*0..2", "c_a", "v_a"),
+            "Question": ("Question", "*0..2", "c_q", "v_q"),
+        }
 
-                nbThemes * {poids.get('Thème', 0)} +
-                nbArtistes * {poids.get('Artiste', 0)} +
-                nbQuestions * {poids.get('Question', 0)}
-                AS score
+        collections = []
+        score_parts = []
 
-                ORDER BY score DESC, date DESC
+        if video and poids:
+            for poids_key, (
+                node_type,
+                path_length,
+                c_var,
+                v_var,
+            ) in score_configs.items():
+                if poids.get(poids_key):
+                    parts["optional_match"].extend(
+                        [
+                            f"OPTIONAL MATCH (c)-[{path_length}]-({c_var}:{node_type})",
+                            f"OPTIONAL MATCH (v)-[{path_length}]-({v_var}:{node_type})",
+                        ]
+                    )
 
-                LIMIT {size}
-                """
+                    collections.append(
+                        f"collect(DISTINCT {c_var}) AS {c_var}s, "
+                        f"collect(DISTINCT {v_var}) AS {v_var}s"
+                    )
+
+                    count_var = f"nb{node_type}s"
+                    parts["with_clauses"].append(
+                        f"size([x IN {c_var}s WHERE x IN {v_var}s]) AS {count_var}"
+                    )
+
+                    score_parts.append(f"{count_var} * {poids[poids_key]}")
+
+        # === Construction de la requête finale ===
+        query_parts = []
+
+        # MATCH
+        query_parts.append("MATCH " + ",\n      ".join(parts["match"]))
+
+        # WHERE
+        query_parts.append("WHERE " + "\n  AND ".join(parts["where"]))
+
+        # OPTIONAL MATCH
+        if parts["optional_match"]:
+            query_parts.append("\n".join(parts["optional_match"]))
+
+        # WITH (collections)
+        if collections:
+            with_items = ["c"] if video else []
+            with_items.extend(collections)
+            with_items.append("v")
+            query_parts.append("WITH " + ", ".join(with_items))
+
+        # WITH (counts + date)
+        if parts["with_clauses"] or video:
+            with_items = ["c"] if video else []
+            with_items.extend(parts["with_clauses"])
+            with_items.extend(["v", "coalesce(v.date, v.uploaded_at) AS date"])
+            query_parts.append("WITH " + ", ".join(with_items))
         else:
-            # Recommandation de base
-            filtre = {"current_user": user.uuid if user else None}
-            query = f"""
-                MATCH (v:{Extrait.__name__}|{Interview.__name__})
-                {"OPTIONAL MATCH (u:Utilisateur {uuid: $current_user})" if user else ""}
-                {"WHERE NOT ( (u)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]->(v) )" if user else ""}
-                WITH v, coalesce(v.date, v.uploaded_at) AS date
-                RETURN v, date
-                ORDER BY date DESC
-                LIMIT {size}
-                """
+            query_parts.append("WITH v, coalesce(v.date, v.uploaded_at) AS date")
 
-        print(query, filtre)
+        # RETURN
+        score_formula = " + ".join(score_parts) if score_parts else "0"
+        query_parts.append(f"RETURN v, {score_formula} AS score")
+
+        # ORDER BY
+        query_parts.append("ORDER BY score DESC, date DESC, rand() DESC")
+
+        # LIMIT
+        query_parts.append("LIMIT $size")
+
+        # Assemblage final
+        query = "\n".join(query_parts)
+
+        # Paramètres
+        params = {
+            "uuid": video,
+            "current_user": user.uuid if user else None,
+            "size": size,
+        }
+        print(query, params)
         try:
-            recommandations_cypher = db.cypher_query(query, filtre)[0]
+            recommandations_cypher = db.cypher_query(query, params)[0]
         except ServiceUnavailable:
             raise ConnexionDB()
 
@@ -143,17 +249,32 @@ class Recommandation(APIView):
 
         # Convertir le retour de la requête CYPHER en liste d'Extrait et Interview en json
         recommandations = [
-            {'value': ExtraitSerializer(Extrait.inflate(recommandation[0]), context=context).data, 'type': list(recommandation[0].labels)[0]}
-            if 'Extrait' in recommandation[0].labels
-            else
-            {'value': InterviewSerializer(Interview.inflate(recommandation[0]), context=context).data, 'type': list(recommandation[0].labels)[0]}
-            if 'Interview' in recommandation[0].labels
-            else {'value':recommandation[0], 'type': list(recommandation[0].labels)[0]}
+            (
+                {
+                    "value": ExtraitSerializer(
+                        Extrait.inflate(recommandation[0]), context=context
+                    ).data,
+                    "type": list(recommandation[0].labels)[0],
+                }
+                if "Extrait" in recommandation[0].labels
+                else (
+                    {
+                        "value": InterviewSerializer(
+                            Interview.inflate(recommandation[0]), context=context
+                        ).data,
+                        "type": list(recommandation[0].labels)[0],
+                    }
+                    if "Interview" in recommandation[0].labels
+                    else {
+                        "value": recommandation[0],
+                        "type": list(recommandation[0].labels)[0],
+                    }
+                )
+            )
             for recommandation in recommandations_cypher
         ]
 
         return Response(recommandations)
-
 
 
 def get_current_user(request):
