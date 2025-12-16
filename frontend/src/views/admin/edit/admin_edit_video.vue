@@ -152,26 +152,31 @@ export default {
 
 
 
-  ajoutertag(){
-      //permet d'ajouter un tag a l'extrait
-    },
-
-    removetag(idtags){
-      //permet de retirer un tag a l'extrait
-
-      console.log("ba")
-      if(this.tags == []){
-        console.log("pas d'element a retiré")
-      }else if (this.tags.includes(idtags)) {
-        this.tags.remove(idtags);
-        console.log("tags retiré")
+  async migniature_video(){
+        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
         
+          this.thumbnail = await this.current_extrait.url_miniature_yt
+            
+        }else{
+            this.thumbnail = await this.current_extrait.url_miniature_vi()
+        }
+  },
+
+    get_YT_videoId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname === "youtu.be") return u.pathname.slice(1);
+        if (u.hostname.includes("youtube.com")) {
+          if (u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2];
+          if (u.searchParams.has("v")) return u.searchParams.get("v");
+        }
+      } catch {
+        console.warn("URL YouTube invalide :", url);
       }
-      console.log(this.tags)
+      return null;
     },
 
-    },
-
+  },
 
  async mounted() {
 
@@ -225,24 +230,11 @@ export default {
 
 
 
-
-
-
-    
-    if (this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
-        
-      this.thumbnail = await this.current_extrait.url_miniature_yt
-        
-    }else{
-        this.thumbnail = await this.current_extrait.url_miniature_vi()
-        
-    }
-
-
-  },
-
-
+  }
 };
+
+
+
 
 
 

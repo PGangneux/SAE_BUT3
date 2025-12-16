@@ -153,7 +153,6 @@ export default {
       if (question) {
           this.dico_elementcreer.question = question;
           this.dico_elementcreer.question_uuid = question.uuid;
-          this.dico_elementcreer.titre = question.texte;
         } else {
           this.dico_elementcreer.question = null;
           this.dico_elementcreer.question_uuid = null;
@@ -201,6 +200,14 @@ export default {
         </RouterLink>
 
         <div class="col-md-6">
+
+          <div class="row"  style="--bs-gutter-x: 0em;">
+              <div class=" input-group mb-3" >
+                  <span  class="input-group-text colovert" id="basic-addon3" > Titre :</span>
+                  <input list="Questiondata" id="question" name="question" class="form-control"   v-model="this.dico_elementcreer.titre"/>
+              </div>
+          </div>
+
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
