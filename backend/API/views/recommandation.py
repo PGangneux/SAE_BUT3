@@ -49,6 +49,25 @@ class Recommandation(APIView):
         return self.post(request)
 
     def post(self, request: HttpRequest) -> Response:
+        """L'Algorithme de recommandation de vidéos (Extrait / Interview)
+            request.data:
+             - weights : dict (Thème, Question, Artiste)
+                key: Nom de la classe du node
+                value: weight de la classe (number)
+             - filters : dict (Thème, Question, Artiste, Nation, StyleMusical, Tag)
+                key: Nom de la classe du filtre
+                value: uuid de l'instance
+
+        Args:
+            request (HttpRequest): Requête vers l'api
+
+        Raises:
+            ValidationError: Si un champ n'a pas un valeur du bon type
+            ConnexionDB: Si la base de données est indisponnible
+
+        Returns:
+            Response: Les vidéos (Extrait / Interview)
+        """
         data: dict = request.data
         poids = data.get("weights", False)
         print("poids:", poids)
