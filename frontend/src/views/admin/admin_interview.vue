@@ -22,6 +22,7 @@ export default {
             taillelist1: 0,
             taillelist2: 0,
             titre: '',
+            occasion: '',
             description: '',
             popupDelete: false,
             create: false,
@@ -157,6 +158,7 @@ export default {
         async save() {
             this.current_interview.titre = this.titre;
             this.current_interview.description = this.description;
+            this.current_interview.occasion = this.occasion
             this.current_interview = this.create ? await this.current_interview.create() : await this.current_interview.update();
             await this.current_interview.setExtraits(this.current_list_extraits);
         },
@@ -183,6 +185,7 @@ export default {
             // pré-remplissage du formulaire
             this.titre = this.current_interview.titre;
             this.description = this.current_interview.description;
+            this.occasion = this.current_interview.occasion
         }
 
         else {
@@ -202,13 +205,11 @@ export default {
     <comp_baradmin />
 
     <div class="main_content">
-        <h1 class="text-center"> Modification d'une Playlist </h1>
-        <input v-model="titre" class="form-control" placeholder="Titre" />
-
-
-
-        <textarea type="aera" v-model="description" placeholder="Description" class="form-control">
-    </textarea>
+        <h1 v-if="create" class="text-center"> Création d'une Playlist </h1>
+        <h1 v-else class="text-center"> Modification d'une Playlist </h1>
+        <input v-model="titre" class="form-control" placeholder="Titre (Obligatoire)" />
+        <textarea type="aera" v-model="description" placeholder="Description" class="form-control"></textarea>
+        <input v-model="occasion" class="form-control" placeholder="Occasion" />
 
 
         <div class="row row_gap">
@@ -272,7 +273,7 @@ export default {
         <div class="bottom_button">
             <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
                 Ajouter un Extrait</RouterLink>
-            <RouterLink to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
+            <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
                     src="/imgs/add.svg" alt="add"> Ajouter une Playlist </RouterLink>
             <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                     alt="Enregistrer"> Enregistrer </button>
