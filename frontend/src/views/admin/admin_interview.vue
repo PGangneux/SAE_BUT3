@@ -298,7 +298,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     /* interdit le retour à la ligne */
-    gap: 20px;
+    gap: 10%;
     /* espace entre les colonnes */
     margin: 2% 0% 2% 0%;
     /* marge pour ne pas coller aux bords */
@@ -335,21 +335,28 @@ export default {
     flex: 0 0 auto;
 }
 
-/* UL prend sa hauteur naturelle et ne scroll plus */
+
 .drop-zone {
     flex: 1 1 auto;
-    /* occupe tout l'espace restant de la colonne */
-    overflow: visible;
-    /* plus de scroll interne */
+    overflow-y: auto;   /* scroll vertical */
+    overflow-x: hidden;
     padding: 10px;
     list-style: none;
     margin: 0;
+    overscroll-behavior: contain;
 }
 
-/* reset ul default spacing */
+/* cacher scrollbar mais garder le scroll */
 .drop-zone {
-    padding-left: 0;
+    overflow-y: auto;
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* IE / Edge legacy */
 }
+
+.drop-zone::-webkit-scrollbar {
+    display: none;              /* Chrome / Safari */
+}
+
 
 /* si tu veux que les li s'empilent verticalement */
 .drop-zone .drag-el {
@@ -380,6 +387,8 @@ export default {
 
 /* outlines pour debugger (enlever en production) */
 .aggrandir {
+    flex: 0 0 45%;   /* largeur fixe en % */
+    max-height: 90vh;
     outline: 1px dashed rgba(0, 0, 0, 0.05);
 }
 
