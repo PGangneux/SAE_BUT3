@@ -38,6 +38,9 @@ export default {
             popup: false,
             popupSelectInterview: false, //Props pour popupSelectInterview
             popupEnregistrer:false,
+            
+            urlVimeoReconstruit:"",
+            urlyoutubeReconstruit:"",
         };
     }
     
@@ -100,7 +103,7 @@ export default {
       console.log(this.current_extrait);
       this.current_extrait.duree = 0;
 
-      this.popupEnregistrer = false;
+      this.popupEnregistrer = true;
       
       await this.current_extrait.create();
       
@@ -191,6 +194,15 @@ export default {
 
 
   async migniature_video(){
+
+        if(!this.create){
+          this.urlVimeoReconstruit ='https://www.youtube.com/watch?v='  + this.current_extrait.vimeo_url ;
+          this.urlyoutubeReconstruit = 'https://vimeo.com/' +  this.current_extrait.youtube_url;
+        }
+
+        
+
+    
         if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
         
           this.thumbnail = await this.current_extrait.url_miniature_yt
@@ -246,10 +258,15 @@ export default {
         this.current_extrait.artiste = artiste.uuid;
         this.current_extrait.artiste.uuid = artiste.uuid;
       }
+
+      
+      
+
     }else{
       this.current_extrait = markRaw( await new Extrait({}));
       this.create = true;
     }
+    this.migniature_video()
 
     
 
@@ -328,7 +345,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" v-model="this.current_extrait.youtube_url" >
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" @change="migniature_video" v-model="this.urlyoutubeReconstruit" >
             </div>
           </div>
             
@@ -336,7 +353,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" v-model="this.current_extrait.vimeo_url">
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" @change="migniature_video" v-model="this.urlVimeoReconstruit">
               </div>
           </div>
           
