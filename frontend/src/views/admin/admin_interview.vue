@@ -3,6 +3,7 @@ import { markRaw } from 'vue';
 import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
 import supprimer from "./supprimer.vue";
+import tags from "./tags.vue"
 
 import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
@@ -13,20 +14,47 @@ export default {
         comp_baradmin,
         comp_petit_extrait,
         supprimer,
+        tags,
     },
     data() {
         return {
             Extraitlist: [],
-            current_interview: { type: Interview },
+            current_interview: null,
             current_list_extraits: [],
             taillelist1: 0,
             taillelist2: 0,
             titre: '',
+            occasion: '',
             description: '',
             popupDelete: false,
             create: false,
+            searchAvailable: "",
+            searchPlaylist: ""
         };
     },
+    computed: {
+        filteredAvailableExtraits() {
+            if (!this.searchAvailable) return this.Extraitlist
+
+            return this.Extraitlist.filter(extrait =>
+                extrait.titre?.toLowerCase().includes(
+                    this.searchAvailable.toLowerCase()
+                )
+            )
+        },
+
+        filteredPlaylistExtraits() {
+            if (!this.searchPlaylist) return this.current_list_extraits
+
+            return this.current_list_extraits.filter(extrait =>
+                extrait.titre?.toLowerCase().includes(
+                    this.searchPlaylist.toLowerCase()
+                )
+            )
+        }
+    },
+
+
     methods: {
         /**
          * Démarre le drag d’un élément
@@ -132,6 +160,7 @@ export default {
         async save() {
             this.current_interview.titre = this.titre;
             this.current_interview.description = this.description;
+            this.current_interview.occasion = this.occasion
             this.current_interview = this.create ? await this.current_interview.create() : await this.current_interview.update();
             await this.current_interview.setExtraits(this.current_list_extraits);
         },
@@ -140,7 +169,7 @@ export default {
     async mounted() {
         const allExtraits = markRaw(await Extrait.list());
 
-        this.taillelist1 = this.Extraitlist.length;
+        
 
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
@@ -158,6 +187,7 @@ export default {
             // pré-remplissage du formulaire
             this.titre = this.current_interview.titre;
             this.description = this.current_interview.description;
+            this.occasion = this.current_interview.occasion
         }
 
         else {
@@ -166,6 +196,7 @@ export default {
             this.Extraitlist = allExtraits;
 
         }
+        this.taillelist1 = this.Extraitlist.length;
 
 
 
@@ -177,13 +208,11 @@ export default {
     <comp_baradmin />
 
     <div class="main_content">
-        <h1 class="text-center"> Modification d'une Playlist </h1>
-        <input v-model="titre" class="form-control" placeholder="Titre" />
-
-
-
-        <textarea type="aera" v-model="description" placeholder="Description" class="form-control">
-    </textarea>
+        <h1 v-if="create" class="text-center"> Création d'une Playlist </h1>
+        <h1 v-else class="text-center"> Modification d'une Playlist </h1>
+        <input v-model="titre" class="form-control" placeholder="Titre (Obligatoire)" />
+        <textarea type="aera" v-model="description" placeholder="Description" class="form-control"></textarea>
+        <input v-model="occasion" class="form-control" placeholder="Occasion" />
 
 
         <div class="row row_gap">
@@ -196,15 +225,16 @@ export default {
                     </div>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search"
-                            aria-describedby="search-addon">
+                        <input type="text" class="form-control" placeholder="Search..." v-model="searchAvailable" />
+
+
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                     </div>
 
                     <ul class="drop-zone" @drop="onDrop($event, 'available')" @dragover="onDragOver($event)">
-                        <li v-for="extraitv1 in this.Extraitlist" :key="extraitv1.uuid" class="drag-el">
+                        <li v-for="extraitv1 in filteredAvailableExtraits" :key="extraitv1.uuid" class="drag-el">
                             <div class="drag-wrapper" draggable="true"
                                 @dragstart="startDrag($event, extraitv1, 'available')">
                                 <comp_petit_extrait :current_extrait=extraitv1 />
@@ -223,15 +253,15 @@ export default {
                     </div>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search"
-                            aria-describedby="search-addon">
+                        <input type="text" class="form-control" placeholder="Search..." v-model="searchPlaylist" />
+
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                     </div>
 
                     <ul class="drop-zone" @drop="onDrop($event, 'playlist')" @dragover="onDragOver($event)">
-                        <li v-for="extraitv2 in this.current_list_extraits" :key="extraitv2.uuid" class="drag-el">
+                        <li v-for="extraitv2 in filteredPlaylistExtraits" :key="extraitv2.uuid" class="drag-el">
                             <div class="drag-wrapper" draggable="true"
                                 @dragstart="startDrag($event, extraitv2, 'playlist')">
                                 <comp_petit_extrait :current_extrait=extraitv2 />
@@ -242,11 +272,13 @@ export default {
             </div>
         </div>
 
+        <!-- Only render tags when current_interview is loaded -->
+        <tags v-if="current_interview" :video="current_interview"></tags>
 
         <div class="bottom_button">
             <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
                 Ajouter un Extrait</RouterLink>
-            <RouterLink to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
+            <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
                     src="/imgs/add.svg" alt="add"> Ajouter une Playlist </RouterLink>
             <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                     alt="Enregistrer"> Enregistrer </button>
@@ -254,10 +286,10 @@ export default {
                     src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
         </div>
 
-        <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
-
+        
 
     </div>
+    <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
 </template>
 
 <style scoped>
@@ -271,7 +303,7 @@ export default {
     display: flex;
     flex-wrap: nowrap;
     /* interdit le retour à la ligne */
-    gap: 20px;
+    gap: 10%;
     /* espace entre les colonnes */
     margin: 2% 0% 2% 0%;
     /* marge pour ne pas coller aux bords */
@@ -308,21 +340,28 @@ export default {
     flex: 0 0 auto;
 }
 
-/* UL prend sa hauteur naturelle et ne scroll plus */
+
 .drop-zone {
     flex: 1 1 auto;
-    /* occupe tout l'espace restant de la colonne */
-    overflow: visible;
-    /* plus de scroll interne */
+    overflow-y: auto;   /* scroll vertical */
+    overflow-x: hidden;
     padding: 10px;
     list-style: none;
     margin: 0;
+    overscroll-behavior: contain;
 }
 
-/* reset ul default spacing */
+/* cacher scrollbar mais garder le scroll */
 .drop-zone {
-    padding-left: 0;
+    overflow-y: auto;
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* IE / Edge legacy */
 }
+
+.drop-zone::-webkit-scrollbar {
+    display: none;              /* Chrome / Safari */
+}
+
 
 /* si tu veux que les li s'empilent verticalement */
 .drop-zone .drag-el {
@@ -353,6 +392,8 @@ export default {
 
 /* outlines pour debugger (enlever en production) */
 .aggrandir {
+    flex: 0 0 45%;   /* largeur fixe en % */
+    max-height: 90vh;
     outline: 1px dashed rgba(0, 0, 0, 0.05);
 }
 

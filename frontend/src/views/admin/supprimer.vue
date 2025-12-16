@@ -13,6 +13,9 @@ export default {
             this.$router.push("/admin/interview");
         }
     },
+    mounted(){
+        console.log("elem sup", this.Element_Supp)
+    },
     emits : ["closePopup"],
 };
 </script>
@@ -20,7 +23,7 @@ export default {
 <template>
     <div class="overlay">
         <div class="popup">
-            <h1> Voulez vous vraiment supprimer {{ this.Element_Supp.titre }} </h1>
+            <h1> Voulez vous vraiment supprimer "{{ this.Element_Supp.titre }}" ? </h1>
             <button @click="$emit('closePopup')" class="col bt button-blanc"> Annuler </button>
             <button @click="deleteElement()" class="col bt button-blanc">Valider</button>
         </div>
