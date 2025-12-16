@@ -1,3 +1,4 @@
+import { markRaw } from "vue";
 import mm_Mindmap from "./mm_mindmap.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
 import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
