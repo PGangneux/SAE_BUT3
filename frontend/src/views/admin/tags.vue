@@ -10,72 +10,145 @@ export default {
             required: true
         }
     },
+    emits: ['update:tagsCreated', 'update:tagsDisconnected', 'update:tagsConnected'],
     computed: {
         tagExistsInDatabase() {
-            return markRaw(this.liste_tags_bd.some(tag => 
+            return this.liste_tags_bd.some(tag => 
                 tag.name.toLowerCase() === this.newTagName.trim().toLowerCase()
-            ));
+            );
         },
         tagAlreadyInVideo() {
-            return markRaw(this.liste_tags_video.some(tag => 
-                tag.name.toLowerCase() === this.newTagName.trim().toLowerCase()
-            ));
+            const inputName = this.newTagName.trim().toLowerCase();
+            return (
+                this.liste_tags_video.some(tag => tag.name.toLowerCase() === inputName) ||
+                this.liste_tags_video_created.some(tag => tag.name.toLowerCase() === inputName)
+            );
         },
         isValidTagName() {
             return this.newTagName.trim().length > 0;
+        },
+        // Liste complète des tags à afficher (existants + à créer)
+        allDisplayedTags() {
+            return [...this.liste_tags_video, ...this.liste_tags_video_created];
         }
     },
     data() {
         return {
             liste_tags_video: [],
+            liste_tags_video_created: [],
+            liste_tags_video_disconnected: [],
             liste_tags_bd: [],
             allTags: [],
             newTagName: '', // For the input field
         }
     },
-    async mounted() {
-        await this.loadTags();
-    },
     methods: {
-        async loadTags() {
-
-            this.liste_tags_video = markRaw(await this.video.tags());
-            this.allTags = markRaw(await Tag.list());
-
-
+        loadTags() {
             // Filter out tags that are already associated with the video
-            this.liste_tags_bd = markRaw(this.allTags.filter(tag => 
-                !this.liste_tags_video.some(videoTag => videoTag.uuid === tag.uuid)
-            ));
-
+            this.liste_tags_bd = this.allTags.filter(tag => 
+                !this.liste_tags_video.some(videoTag => videoTag.uuid === tag.uuid) &&
+                !this.liste_tags_video_created.some(createdTag => createdTag.name.toLowerCase() === tag.name.toLowerCase())
+            );
         },
         
-        async addTag() {
+        addTag() {
             // Find the tag in the available list
             const tag = this.liste_tags_bd.find(t => t.name === this.newTagName);
             if (tag) {
-                await this.video.connect_tag(tag);
-                await this.loadTags(); // Reload tags
+                // Add to video tags
+                this.liste_tags_video.push(markRaw(tag));
+                
+                // Remove from disconnected list if it was there
+                const disconnectedIndex = this.liste_tags_video_disconnected.findIndex(
+                    t => t.uuid === tag.uuid
+                );
+                if (disconnectedIndex !== -1) {
+                    this.liste_tags_video_disconnected.splice(disconnectedIndex, 1);
+                }
+                
+                // Emit the connected tag
+                this.$emit('update:tagsConnected', tag);
+                
+                this.loadTags(); // Reload tags
                 this.newTagName = '';
             }
         },
         
-        async createTag() {
+        createTag() {
             if (this.newTagName.trim()) {
-                // Create new tag (adjust based on your Tag model's create method)
-                const newTag = await markRaw(new Tag({name:this.newTagName})).create();
-                // Add it to the video
-                await this.video.connect_tag(newTag);
-                await this.loadTags(); // Reload tags
+                const tagName = this.newTagName.trim();
+                
+                const newTag = {
+                    uuid: `temp-${Date.now()}-${tagName}`,
+                    name: tagName,
+                    isNew: true
+                };
+                
+                // Track that this tag needs to be created
+                this.liste_tags_video_created.push(newTag);
+                
+                // Emit the created tag
+                this.$emit('update:tagsCreated', newTag);
+                
+                this.loadTags(); // Reload tags
                 this.newTagName = '';
             }
         },
         
-        async removeTag(tag) {
-            // Remove tag from video (you'll need to implement this method)
-            await this.video.disconnect_tag(tag);
-            await this.loadTags(); // Reload tags
+        removeTag(tag) {
+            // Check if this tag is in the created list
+            const createdIndex = this.liste_tags_video_created.findIndex(t => t.uuid === tag.uuid);
+            
+            if (createdIndex !== -1) {
+                // If it was in created list, just remove it from there
+                this.liste_tags_video_created.splice(createdIndex, 1);
+                
+                // Emit that a created tag was removed (you might want to handle this differently)
+                this.$emit('update:tagsCreated', null);
+            } else {
+                // Find the tag in the video list
+                const index = this.liste_tags_video.findIndex(t => t.uuid === tag.uuid);
+                
+                if (index !== -1) {
+                    // Remove from video tags
+                    const removedTag = this.liste_tags_video.splice(index, 1)[0];
+                    this.liste_tags_video_disconnected.push(removedTag);
+                    
+                    // Emit the disconnected tag
+                    this.$emit('update:tagsDisconnected', removedTag);
+                }
+            }
+            
+            this.loadTags(); // Reload tags
         }
+    },
+    
+    watch: {
+        // Emit all created tags whenever the list changes
+        liste_tags_video_created: {
+            handler(newVal) {
+                this.$emit('update:tagsCreated', newVal);
+            },
+            deep: true
+        },
+        // Emit all disconnected tags whenever the list changes
+        liste_tags_video_disconnected: {
+            handler(newVal) {
+                this.$emit('update:tagsDisconnected', newVal);
+            },
+            deep: true
+        }
+    },
+
+    async mounted() {
+        const videoTags = await this.video.tags();
+        const allTagsList = await Tag.list();
+        
+        // Store tags with markRaw on individual objects, not arrays
+        this.liste_tags_video = videoTags.map(tag => markRaw(tag));
+        this.allTags = allTagsList.map(tag => markRaw(tag));
+        
+        this.loadTags();
     }
 };
 </script>
@@ -114,8 +187,9 @@ export default {
         </div>
         <div class="champ_tags">
             <ul>
-                <li v-for="tag in liste_tags_video" :key="tag.uuid">
+                <li v-for="tag in allDisplayedTags" :key="tag.uuid">
                     {{ tag.name }}
+                    <span v-if="tag.isNew" class="badge-new">nouveau</span>
                     <button @click="removeTag(tag)" class="btn-remove">✕</button>
                 </li>
             </ul>
@@ -214,5 +288,15 @@ div > button:disabled {
 
 .btn-remove:hover {
     color: #ff0000;
+}
+
+.badge-new {
+    margin-left: 6px;
+    font-size: 0.75em;
+    background-color: #ff9800;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: bold;
 }
 </style>
