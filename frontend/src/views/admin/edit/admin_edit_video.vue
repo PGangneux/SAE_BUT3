@@ -7,8 +7,8 @@ import Extrait from "../../../model/extrait";
 import Interview from '../../../model/interview.js';
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
-
-
+import supprimer from "../supprimer.vue";
+import tags from "../tags.vue"
 
 export default {
   name: "page_admin_detail_video",
@@ -18,39 +18,29 @@ export default {
   components: {
     comp_baradmin,
     popup_interview,
+    supprimer,
+    tags,
 
   },data() {
         return {
-            current_extrait : {type:Extrait},
-            tags:[],
-            thumbnail: '/imgs/width551.png',
-            dico_extrait:{},
-            taillelist:0,
+            current_extrait : null,
+            thumbnail: '/imgs/width551.png',          
+            laselectedArtiste: "", //Artiste selectionner retourn null si rien
+            laselectedQuestion: "",//Questio selectionner retourn null si rien 
 
-            //a modifer
-            dico_elementmodif:{  
-                  titre: null,
-                  description:  null,
-                  youtube_url:  null,
-                  vimeo_url:    null,
-                  uploaded_at:  null,
-                  artiste:      null,
-                  question:     null,
-                  tags:         null,
-                  position:     null,
-                  artiste_uuid: null,
-                  question_uuid:null,
-                  duree:        null,
-            },
-            
-            selectedArtiste: "", //Artiste selectionner retourn null si rien
-            selectedQuestion: "",//Questio selectionner retourn null si rien 
-
+            interviews:[],
             listeArtiste:[],    //liste des Artistes totals
             listeQuestion:[],   //liste des Questions totals
             tags:[],            //liste des tags totals
-
-            popup: false
+            popupDelete: false,
+            searchValueTag:"",
+            create:false,
+            popup: false,
+            popupSelectInterview: false, //Props pour popupSelectInterview
+            popupEnregistrer:false,
+            
+            urlVimeoReconstruit:"",
+            urlyoutubeReconstruit:"",
         };
     }
     
@@ -107,46 +97,74 @@ export default {
   methods: {
 
 
+    async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
+
+      console.log(this.current_extrait);
+      this.current_extrait.duree = 0;
+
+      this.popupEnregistrer = true;
+      
+      await this.current_extrait.create();
+      
+      this.new_extrait = new markRaw(new Extrait({}));
+  
+      console.log("creer");
+      
+      //new_extrait.create
+    },
+
     popupchange(){
       this.popup = !this.popup
     },
 
+    modificationDonnees(){
+      if (this.create) {
+          this.enregistrer();
+      } else {
+        this.Update();
+      }
+    },
 
+
+    Update(){
+      console.log(this.current_extrait);
+      this.current_extrait.update();
+    },
 
 
 
     SelectedArtisteId() {
       //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
       //reccupere l'artiste de la liste
-      const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
+      const artiste = this.listeArtiste.find(a => a.name === this.laselectedArtiste);
 
       
 
       //verifie si artiste existe et n'es pas null
       if (artiste) {
-          this.dico_elementcreer.artiste = artiste;
-          this.dico_elementcreer.artiste_uuid = artiste.uuid;
+          this.current_extrait.artiste = artiste.uuid;
+          this.current_extrait.artiste_uuid = artiste.uuid;
         } else {
-          this.dico_elementcreer.artiste = null;
-          this.dico_elementcreer.artiste_uuid = null;
+          this.current_extrait.artiste = null;
+          this.current_extrait.artiste_uuid = null;
       }
 
     },
 
-    SelectedQuestion() {
+    FoncSelectedQuestion() {
       //reccupere la Question de la liste en reccuperant le text de la Question selectionner
 
       //reccupere l'artiste de la liste
-      const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
+      const question = this.listeQuestion.find(a => a.texte === this.laselectedQuestion);
 
       //verifie si question existe et n'es pas null
       if (question) {
-          this.dico_elementcreer.question = question;
-          this.dico_elementcreer.question_uuid = question.uuid;
-          this.dico_elementcreer.titre = question.texte;
+          this.current_extrait.question = question.uuid;
+          this.current_extrait.question_uuid = question.uuid;
         } else {
-          this.dico_elementcreer.question = null;
-          this.dico_elementcreer.question_uuid = null;
+          this.current_extrait.question = null;
+          this.current_extrait.question_uuid = null;
       }
 
     },
@@ -159,54 +177,104 @@ export default {
     async recupeQuestion(){
       //reccupere la liste des Questions
       this.listeQuestion =  markRaw(await Question.list());
-    }
+    },
 
 
-  },
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      
+    },
+
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      
+    },
 
 
- async mounted() {
-    //reccuperation de l'id en parametre
-    const ExtraitId = this.$route.params.id;
+  async migniature_video(){
 
-    //reccuperation de l'Extrait via l'id
-    this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
-    await this.recupeArtiste();
-    await this.recupeQuestion();
+        if(!this.create){
+          this.urlVimeoReconstruit ='https://www.youtube.com/watch?v='  + this.current_extrait.vimeo_url ;
+          this.urlyoutubeReconstruit = 'https://vimeo.com/' +  this.current_extrait.youtube_url;
+        }
 
-
-    this.dico_extrait = {
-      "artiste":    (markRaw(await this.current_extrait.artiste)).name,
-      "uploaded_at": (markRaw(await this.current_extrait.uploaded_at)),
-      "question":   (markRaw(await this.current_extrait.titre)),
-      "interviews": (markRaw(await this.current_extrait.interviews)),
-      "tags": (markRaw(await this.current_extrait.tags))
-    };
-
-
-    this.taillelist = this.dico_extrait['tags'].length
-
-
-
-
-
-
+        
 
     
-    if (this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
+        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
         
-      this.thumbnail = await this.current_extrait.url_miniature_yt
-        
-    }else{
-        this.thumbnail = await this.current_extrait.url_miniature_vi()
-        
-    }
+          this.thumbnail = await this.current_extrait.url_miniature_yt
+            
+        }else{
+            this.thumbnail = await this.current_extrait.url_miniature_vi()
+        }
+  },
 
+    get_YT_videoId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname === "youtu.be") return u.pathname.slice(1);
+        if (u.hostname.includes("youtube.com")) {
+          if (u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2];
+          if (u.searchParams.has("v")) return u.searchParams.get("v");
+        }
+      } catch {
+        console.warn("URL YouTube invalide :", url);
+      }
+      return null;
+    },
 
   },
 
+ async mounted() {
+    await this.recupeArtiste();
+    await this.recupeQuestion();
+  
+    //reccuperation de l'id en parametre
+    const ExtraitId = this.$route.params.id;
+    console.log(ExtraitId);
 
+    if (ExtraitId != null) {
+        //reccuperation de l'Extrait via l'id
+      this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+      console.log(this.current_extrait);
+      this.interviews = markRaw(await this.current_extrait.interviews());
+      console.log(this.interviews);
+      this.tags = markRaw(await this.current_extrait.tags());
+
+
+      if(await this.current_extrait.question != null){
+        const question =  markRaw(await this.current_extrait.question);
+        this.laselectedQuestion = question.texte;
+        this.current_extrait.question.uuid = question.uuid;
+        this.current_extrait.question = question.uuid;
+      }
+
+      if(await this.current_extrait.artiste != null){
+        const artiste = markRaw(await this.current_extrait.artiste);
+        this.laselectedArtiste  = artiste.name;
+        this.current_extrait.artiste = artiste.uuid;
+        this.current_extrait.artiste.uuid = artiste.uuid;
+      }
+
+      
+      
+
+    }else{
+      this.current_extrait = markRaw( await new Extrait({}));
+      this.create = true;
+    }
+    this.migniature_video()
+
+    
+
+  }
 };
+
+
+
 
 
 
@@ -215,22 +283,31 @@ export default {
 <template>
     <comp_baradmin/>
 
-    <form action="" class="row" style="--bs-gutter-x: 0em;">
+    <form v-if="current_extrait" action="" class="row" style="--bs-gutter-x: 0em;">
+
+
+
 
       <div class="row"  style="--bs-gutter-x: 0em;">
-        <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        
+        <RouterLink  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
         <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           
-          
+        <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class=" input-group mb-3" >
+                <span  class="input-group-text colovert" id="basic-addon3" > Titre :</span>
+                <input list="Questiondata" id="question" name="question" class="form-control"   v-model="this.current_extrait.titre"/>
+            </div>
+        </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="SelectedQuestion"/>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
                 
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -245,7 +322,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="SelectedArtisteId">
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
@@ -268,7 +345,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" v-model="this.current_extrait.youtube_url" >
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" @change="migniature_video" v-model="this.urlyoutubeReconstruit" >
             </div>
           </div>
             
@@ -276,7 +353,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" v-model="this.current_extrait.vimeo_url">
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" @change="migniature_video" v-model="this.urlVimeoReconstruit">
               </div>
           </div>
           
@@ -287,12 +364,12 @@ export default {
             </div>
           </div>
 
-            <div class="row" style="margin-right: 0em; margin-left: 0em;">
+            <div v-if="!create" class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
                  <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
               </h1>
              
-              <table class="ultagger table tables table-striped">
+              <table  class="ultagger table tables table-striped">
                   <thead>
                       <tr>
                           <th class="btgrisv2  col">Nom Playlist</th>
@@ -300,7 +377,7 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd">
-                      <tr class="col" v-for="interview in this.dico_extrait['interviews']">
+                      <tr class="col" v-for="interview in this.interviews">
                           <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
                           <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
                       </tr>
@@ -313,50 +390,30 @@ export default {
         </div>
       </div>
 
-
-      <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
+      <div class="bottom_button">
+          <RouterLink v-if="!create" to="/admin/extrait/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
+              Ajouter un Extrait</RouterLink>
+          <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+                  alt="Enregistrer"> Enregistrer </button>
+          <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
+                  src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
       </div>
+
+      <supprimer v-if="popupDelete" :Element_Supp="current_extrait" @closePopup="popupDelete = false" />
 
     </form>
     
-    <div class="row grisee "  style="--bs-gutter-x: 0em;">
-      <h1 class="row pcentrer"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
-      <div class="row">
-
-        <ul v-if="this.taillelist != 0" class="scroller2  row" style="--bs-gutter-x: 0em; height: 17vh;" >
-            <li v-for="tag in dico_extrait.tags " class="col">
-                <div class="row" style="--bs-gutter-x: 0rem;">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50" style="max-width: 5em;">
-                  <p class="col" style="text-align: center; max-width:max-content; align-content: center; ">{{ tag.name }}</p>
-                </div>
-            </li>
-        </ul>
-
-        <ul v-else-if="this.taillelist == 0 " class="col">
-            <li class="row"> 
-                <p  class="col">vide</p>
-            </li>
-        </ul>
-
-        <ul v-else class="col">
-            <li> 
-                <p  class="col">erreur de Chargement</p>
-            </li>
-        </ul>        
+        <!-- Only render tags when current_extrait is loaded -->
+    <tags v-if="current_extrait" :video="current_extrait"></tags>
 
 
-
-
-      </div>
-    </div>
     
    
 
     <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
+
+    <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
+    <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
     </template>
 
@@ -480,7 +537,6 @@ ul {
 
 
 
-
 .scroller2 {
   height: 100vh;
   overflow-y: scroll;
@@ -495,7 +551,13 @@ ul {
     background-color: var(--blanc);
 }
 
-
+.secondpart{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  margin: 1em;
+}
 
 
 
