@@ -169,7 +169,7 @@ export default {
     async mounted() {
         const allExtraits = markRaw(await Extrait.list());
 
-        this.taillelist1 = this.Extraitlist.length;
+        
 
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
@@ -196,6 +196,7 @@ export default {
             this.Extraitlist = allExtraits;
 
         }
+        this.taillelist1 = this.Extraitlist.length;
 
 
 
