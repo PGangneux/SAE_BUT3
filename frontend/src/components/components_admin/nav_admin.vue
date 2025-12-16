@@ -14,7 +14,7 @@ export default {
                     </li>
 
                     <li class="nav-item text-white">
-                        <RouterLink class="bt btn " to="/admin/extrait"> Question-Extrait </RouterLink>
+                        <RouterLink class="bt btn " to="/admin/extraits/"> Question-Extrait </RouterLink>
                     </li>
 
                     <li class="nav-item text-white">

@@ -4,7 +4,9 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
-
+import Interview from '../../../model/interview.js';
+import Question from "../../../model/question";
+import Artiste from "../../../model/artiste";
 
 
 
@@ -23,7 +25,30 @@ export default {
             tags:[],
             thumbnail: '/imgs/width551.png',
             dico_extrait:{},
-            taillelist:0,    
+            taillelist:0,
+
+            //a modifer
+            dico_elementmodif:{  
+                  titre: null,
+                  description:  null,
+                  youtube_url:  null,
+                  vimeo_url:    null,
+                  uploaded_at:  null,
+                  artiste:      null,
+                  question:     null,
+                  tags:         null,
+                  position:     null,
+                  artiste_uuid: null,
+                  question_uuid:null,
+                  duree:        null,
+            },
+            
+            selectedArtiste: "", //Artiste selectionner retourn null si rien
+            selectedQuestion: "",//Questio selectionner retourn null si rien 
+
+            listeArtiste:[],    //liste des Artistes totals
+            listeQuestion:[],   //liste des Questions totals
+            tags:[],            //liste des tags totals
 
             popup: false
         };
@@ -84,7 +109,56 @@ export default {
 
     popupchange(){
       this.popup = !this.popup
-      console.log(this.popup)
+    },
+
+
+
+
+
+    SelectedArtisteId() {
+      //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
+      //reccupere l'artiste de la liste
+      const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
+
+      
+
+      //verifie si artiste existe et n'es pas null
+      if (artiste) {
+          this.dico_elementcreer.artiste = artiste;
+          this.dico_elementcreer.artiste_uuid = artiste.uuid;
+        } else {
+          this.dico_elementcreer.artiste = null;
+          this.dico_elementcreer.artiste_uuid = null;
+      }
+
+    },
+
+    SelectedQuestion() {
+      //reccupere la Question de la liste en reccuperant le text de la Question selectionner
+
+      //reccupere l'artiste de la liste
+      const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
+
+      //verifie si question existe et n'es pas null
+      if (question) {
+          this.dico_elementcreer.question = question;
+          this.dico_elementcreer.question_uuid = question.uuid;
+          this.dico_elementcreer.titre = question.texte;
+        } else {
+          this.dico_elementcreer.question = null;
+          this.dico_elementcreer.question_uuid = null;
+      }
+
+    },
+
+    async recupeArtiste(){
+      //reccupere la liste des Artistes
+      this.listeArtiste =  markRaw(await Artiste.list());
+    },
+
+    async recupeQuestion(){
+      //reccupere la liste des Questions
+      this.listeQuestion =  markRaw(await Question.list());
     }
 
 
@@ -94,17 +168,16 @@ export default {
  async mounted() {
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    //// console.log("ID de l'Extraits' :", ExtraitId);
 
     //reccuperation de l'Extrait via l'id
     this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+    await this.recupeArtiste();
+    await this.recupeQuestion();
 
 
-    console.log(this.current_extrait);
-
-    // console.log("dico complet en cours");
     this.dico_extrait = {
       "artiste":    (markRaw(await this.current_extrait.artiste)).name,
+      "uploaded_at": (markRaw(await this.current_extrait.uploaded_at)),
       "question":   (markRaw(await this.current_extrait.titre)),
       "interviews": (markRaw(await this.current_extrait.interviews)),
       "tags": (markRaw(await this.current_extrait.tags))
@@ -115,10 +188,7 @@ export default {
 
 
 
-  //  // console.log(this.dico_extrait['artiste']);
-console.log(this.dico_extrait['question']);
-  //  // console.log(this.dico_extrait['interviews']);
-  //  // console.log(await this.current_extrait.interviews);
+
 
 
 
@@ -153,37 +223,52 @@ console.log(this.dico_extrait['question']);
         </RouterLink>
 
         <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
+          
+          
+
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                <input type="text" id="question" name="question" class="textfield form-control col" placeholder="Question" v-model="this.dico_extrait['question']"  />
+
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="SelectedQuestion"/>
+                
+                <datalist id="Questiondata">
+                <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
+                </datalist>
+
+
+                <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
 
-          <div class="input-group mb-3" >
-            <span class="input-group-text colovert" >Artiste :</span>
-            <input type="text" id="inputartist" name="inputartist" class="textfield form-control" v-model="this.dico_extrait['artiste']" />
 
-            <select id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" >
-              <!-- utiliser js TODO -->
-              <option value=""> > </option>
-              <option value="option1"> Artiste 1</option> 
-              <option value="option2"> Artiste 2</option>
-              <option value="option3"> Artiste 3</option>
-            </select>
+          <div class="row"  style="--bs-gutter-x: 0em;">
+              <div class="input-group mb-3" >
+                <span class="input-group-text colovert" >Artiste :</span>
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="SelectedArtisteId">
+                
+                <datalist id="Artistedata">
+                <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
+                </datalist>
 
-            <div class="form-control colovert">
-              <img   class="col" src="/imgs/date.svg" style="padding-right: 10px;" alt="">
-              <label class="col whiteelement" style="padding-right: 10px;" for="name4"> Date </label>
-              <input class="col" type="date" lang="fr" id="name4" name="name4" :value="this.current_extrait.uploaded_at"/>
-              <!-- rendre jolie TODO -->
+                <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+              </div>
+          </div>
+
+          <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class="input-group mb-3 ">
+              <span class="input-group-text colovert" >  
+                <img   class="col" src="/imgs/date.svg" style="padding-right: 10px; width: 1em; height: 1em;" alt="">
+                Date : 
+              </span>
+              <input class="col form-control" type="date" lang="fr" id="date" name="name4" style="background-color: var(--gris-ultraclair);" v-model="this.current_extrait.uploaded_at" />
             </div>
           </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group mb-3 ">
               <span class="input-group-text colovert" id="basic-addon1"  >youtube_url :</span>
-              <input type="text" class="form-control textfield" placeholder="youtube_url" v-model="youtubeUrl">
+              <input type="text" class="form-control textfield" id="youtube" placeholder="youtube_url" v-model="this.current_extrait.youtube_url" >
             </div>
           </div>
             
@@ -191,16 +276,16 @@ console.log(this.dico_extrait['question']);
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3 ">
                 <span class="input-group-text colovert" id="basic-addon2">vimeo_url :</span>
-                <input type="text" class="form-control textfield" placeholder="vimeo_url" v-model="vimeoUrl">
+                <input type="text" class="form-control textfield" id="vimeo" placeholder="vimeo_url" v-model="this.current_extrait.vimeo_url">
               </div>
           </div>
           
 
-            <div class="row"  style="--bs-gutter-x: 0em;">
-              <div class="form-group">
-                <textarea type="aera" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="description"></textarea>
-              </div>
+          <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class="input-group">
+              <textarea type="aera" id="description" placeholder="Description" style="background-color: var(--gris-ultraclair); border:solid 0.3em;  border-color: var(--vert-pale);" class="form-control" v-model="this.current_extrait.description"></textarea>
             </div>
+          </div>
 
             <div class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
@@ -230,7 +315,7 @@ console.log(this.dico_extrait['question']);
 
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
-        <RouterLink  to="/admin/extrait/creer/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
+        <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
 

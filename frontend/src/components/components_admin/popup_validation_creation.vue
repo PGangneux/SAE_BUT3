@@ -14,7 +14,7 @@ export default {
             type:Object,
             required:true
         },
-        popup2: {
+        popupEnregistrer: {
             type:Boolean,
             required:true
             }
@@ -26,18 +26,17 @@ export default {
     },
     methods: {
         changement_etat_popup () {
-            this.$emit('popupenregistrer', !this.popup2)
+            this.$emit('popupenregistrer', !this.popupEnregistrer)
         },
 
         creerExtrait(e) {
             const value = e.submitter.value
-            console.log(value);
 
             if(value == "envoyer"){
                 alert("nous avons: " + value);
-                this.$emit('popupenregistrer', !this.popup2)
+                this.$emit('popupenregistrer', !this.popupEnregistrer)
             }else{
-                this.$emit('popupenregistrer', !this.popup2)
+                this.$emit('popupenregistrer', !this.popupEnregistrer)
             }
             
         }
@@ -62,12 +61,7 @@ export default {
     },
 
     async mounted() {
-        console.log(this.$route.path)
         this.typefichier=this.$route.path.split("/")[2]
-        console.log(this.typefichier)
-
-        console.log(this.Element_Creer)
-
     }
 };
 

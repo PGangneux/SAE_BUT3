@@ -12,7 +12,7 @@ export default {
   <nav>
     <ul class="blocchoix" style="padding-right:1em ; padding-left: 1em;">
       <li>
-        <RouterLink class="card col" to="/admin/extrait">
+        <RouterLink class="card col" to="/admin/extraits/">
           <h1 class="text-center">Question-Extrait</h1>
           <div class="text-center align-middle">
             <img src="/imgs/video.svg" alt="Video logo" height="311" width="311">
