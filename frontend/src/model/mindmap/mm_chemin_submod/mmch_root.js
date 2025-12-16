@@ -53,8 +53,4 @@ export default class mmch_Root extends mmch_CheminT {
         }
         return results;
     }
-
-    mmch_getStyle(){
-        return "mmLegendColorMapmmRoot";
-    }
 }

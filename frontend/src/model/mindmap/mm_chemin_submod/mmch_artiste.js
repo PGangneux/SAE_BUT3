@@ -1,8 +1,12 @@
 import Artiste from "../../artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
+import mmch_Extrait from "./mmch_extrait.js";
+import mmch_Nation from "./mmch_nation.js";
+import mmch_StyleMusical from "./mmch_style_musical.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
+    /** @type {Artiste} */
     mmch_obj;
 
     constructor({ inst = null } = {}) {
@@ -38,10 +42,6 @@ export default class mmch_Artiste extends mmch_CheminT {
         return [
             ...items.map(item => new mmch_Artiste(item)),
         ];
-    }
-
-    mmch_getStyle(){
-        return "mmLegendColorMapArtiste";
     }
 
     async mmch_getDescription() {

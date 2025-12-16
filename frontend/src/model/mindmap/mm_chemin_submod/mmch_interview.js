@@ -31,17 +31,13 @@ export default class mmch_Interview extends mmch_CheminT {
         ];
     }
 
-    static async mmch_Preview(mminfo,parent,args = {}){
+    static async mmch_preview(mminfo,parent,args = {}){
         const finalArgs = { ...this.mmch_default_preview_args, ...args };
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
             ...items.map(item => new mmch_Interview(item)),
         ];
-    }
-
-    mmch_getStyle(){
-        return "mmLegendColorMapInterview";
     }
 
     async mmch_getDescription() {
@@ -97,7 +93,7 @@ export default class mmch_Interview extends mmch_CheminT {
     }
 
     async mmch_getMiniature() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_Preview interview on empty obj");
+        if (!!this.mmch_obj) throw new Error("mmch mmch_preview interview on empty obj");
         return await this.#get_url();
     }
 }

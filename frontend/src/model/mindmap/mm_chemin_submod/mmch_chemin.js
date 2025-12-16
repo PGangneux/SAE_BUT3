@@ -1,8 +1,14 @@
 export default class mmch_CheminT {
     static mmch_dbjsclass = null;
-    static mmch_default_list_args = { limit: 5 };
-    static mmch_default_search_args = { limit: 5 };
-    static mmch_default_preview_args = { limit: 1 };
+    
+    static mmch_default_listcat_args = { limit: 5 };
+    static mmch_default_listinst_args = { limit: 5 };
+    
+    static mmch_default_searchcat_args = { limit: 5 };
+    static mmch_default_searchinst_args = { limit: 5 };
+    
+    static mmch_default_previewcat_args = { limit: 1 };
+    static mmch_default_previewinst_args = { limit: 1 };
     mmch_obj;
 
     constructor({obj} = {}) {
@@ -31,8 +37,7 @@ export default class mmch_CheminT {
     }
 
     mmch_getStyle(){
-        console.warn("mmch_getDescription generic");
-        return "";
+        return `mmLegendColorMap${this.mmch_dbjsclass.name}`;
     }
 
     async mmch_getTitle() {

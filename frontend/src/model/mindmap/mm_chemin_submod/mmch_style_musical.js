@@ -27,17 +27,13 @@ export default class mmch_StyleMusical extends mmch_CheminT {
         ];
     }
 
-    static async mmch_Preview(mminfo,parent,args = {}){
+    static async mmch_preview(mminfo,parent,args = {}){
         const finalArgs = { ...this.mmch_default_preview_args, ...args };
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
             ...items.map(item => new mmch_StyleMusical(item)),
         ];
-    }
-
-    mmch_getStyle(){
-        return "mmLegendColorMapStyleMusical";
     }
 
     async mmch_getDescription() {
