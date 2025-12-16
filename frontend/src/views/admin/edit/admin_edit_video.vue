@@ -7,7 +7,7 @@ import Extrait from "../../../model/extrait";
 import Interview from '../../../model/interview.js';
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
-
+import supprimer from "../supprimer.vue";
 
 
 export default {
@@ -18,19 +18,21 @@ export default {
   components: {
     comp_baradmin,
     popup_interview,
+    supprimer,
 
   },data() {
         return {
             current_extrait : {type:Extrait},
-            tags:[],
-            thumbnail: '/imgs/width551.png',
-            taillelist:0,            
-            selectedArtiste: "", //Artiste selectionner retourn null si rien
-            selectedQuestion: "",//Questio selectionner retourn null si rien 
+            thumbnail: '/imgs/width551.png',          
+            laselectedArtiste: "", //Artiste selectionner retourn null si rien
+            laselectedQuestion: "",//Questio selectionner retourn null si rien 
 
+            interviews:[],
             listeArtiste:[],    //liste des Artistes totals
             listeQuestion:[],   //liste des Questions totals
             tags:[],            //liste des tags totals
+            popupDelete: false,
+            searchValueTag:"",
 
             popup: false
         };
@@ -100,13 +102,13 @@ export default {
     SelectedArtisteId() {
       //reccupere l'artiste de la liste en reccuperant le nom de l'artiste selectionner
       //reccupere l'artiste de la liste
-      const artiste = this.listeArtiste.find(a => a.name === this.selectedArtiste);
+      const artiste = this.listeArtiste.find(a => a.name === this.laselectedArtiste);
 
       
 
       //verifie si artiste existe et n'es pas null
       if (artiste) {
-          this.current_extrait.artiste = artiste;
+          this.current_extrait.artiste = artiste.uuid;
           this.current_extrait.artiste_uuid = artiste.uuid;
         } else {
           this.current_extrait.artiste = null;
@@ -115,15 +117,15 @@ export default {
 
     },
 
-    SelectedQuestion() {
+    FoncSelectedQuestion() {
       //reccupere la Question de la liste en reccuperant le text de la Question selectionner
 
       //reccupere l'artiste de la liste
-      const question = this.listeQuestion.find(a => a.texte === this.selectedQuestion);
+      const question = this.listeQuestion.find(a => a.texte === this.laselectedQuestion);
 
       //verifie si question existe et n'es pas null
       if (question) {
-          this.current_extrait.question = question;
+          this.current_extrait.question = question.uuid;
           this.current_extrait.question_uuid = question.uuid;
           this.current_extrait.titre = question.texte;
         } else {
@@ -161,24 +163,34 @@ export default {
     console.log(this.current_extrait);
 
 
-    this.current_extrait.interview = await this.current_extrait.interview;
+    this.interviews = markRaw(await this.current_extrait.interviews());
 
-    this.current_extrait.tags = await this.current_extrait.tags;
+    console.log(this.interviews);
 
-    this.taillelist = await this.current_extrait.tags;
+    this.tags = markRaw(await this.current_extrait.tags());
 
-    this.selectedArtiste = await this.current_extrait.artiste, //Artiste selectionner retourn null si rien
-    this.selectedQuestion= await this.current_extrait.question,//Questio selectionner retourn null si rien 
+    console.log("ha");
+
+    if(await this.current_extrait.question != null){
+      this.laselectedQuestion = markRaw(await this.current_extrait.question).texte;
+    }
+
+    if(await this.current_extrait.artiste != null){
+      this.laselectedArtiste  = markRaw(await this.current_extrait.artiste).name;
+    }
+
     
-    console.log(this.selectedArtiste);
-    console.log(this.selectedQuestion);
+ 
+
+    console.log(this.laselectedArtiste);
+    console.log(this.laselectedQuestion);
 
     
     console.log("ha");
 
 
     
-    console.log(this.taillelist.length);
+    console.log(this.tags.length);
 
 
 
@@ -224,7 +236,7 @@ export default {
             <div class=" input-group mb-3" >
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
-                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="selectedQuestion" @input="SelectedQuestion"/>
+                <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
                 
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -239,7 +251,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="selectedArtiste" @input="SelectedArtisteId">
+                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
@@ -294,7 +306,7 @@ export default {
                       </tr>
                   </thead>
                   <tbody class="tobodd">
-                      <tr class="col" v-for="interview in this.current_extrait.interview">
+                      <tr class="col" v-for="interview in this.interviews">
                           <td> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> {{ interview.titre }} </RouterLink> </td>
                           <td> <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> modifier </button></RouterLink>  <RouterLink class="container container_extrait col "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/' + interview.uuid"> <button class="bt col"> supprimer </button> </RouterLink> </td>
                       </tr>
@@ -312,8 +324,10 @@ export default {
         <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
         <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-
+        <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
+                    src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
       </div>
+      <supprimer v-if="popupDelete" :Element_Supp="current_extrait" @closePopup="popupDelete = false" />
 
     </form>
     
@@ -334,17 +348,17 @@ export default {
       </section>
       <div class="row">
 
-        <ul v-if="this.taillelist.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
-            <li v-for="tag in this.taillelist " class="col">
+        <ul v-if="this.tags.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
+            <li v-for="tag in this.tags " class="col">
                 <div class="row">
                   <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
                   <p class="col">{{ tag.name }}</p>
-                  <button> - </button>
+                  <button :id="'tag' + tag.uuid" class="col bt" ><img src="/imgs/remove.svg"  class="col" alt="labelle tags" height="20" width="20"> </button>
                 </div>
             </li>
         </ul>
 
-        <ul v-else-if="this.taillelist == 0 " class="col">
+        <ul v-else-if="this.tags == 0 " class="col">
             <li class="row"> 
               <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
               <p  class="col">vide</p>
@@ -486,7 +500,6 @@ ul {
     scrollbar-color: var(---blanc) #A6A6A6;
     scrollbar-width: thin;
 }
-
 
 
 

@@ -89,15 +89,15 @@ export default class Extrait extends Model {
     this.#uploaded_at = value;
   }
 
-  async artiste() {
-    return await this.fetchDetail(this.#artiste, Artiste);
+  get artiste() {
+    return  this.fetchDetail(this.#artiste, Artiste);
   }
   set artiste(value) {
     this.#artiste_uuid = this.constructor.validateString(value, "artiste_uuid");
   }
 
-  async question() {
-    return await this.fetchDetail(this.#question, Question);
+  get question() {
+    return  this.fetchDetail(this.#question, Question);
   }
   set question(value) {
     this.#question_uuid = this.constructor.validateString(
