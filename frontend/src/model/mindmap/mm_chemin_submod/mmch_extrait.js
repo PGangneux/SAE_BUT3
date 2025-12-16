@@ -4,9 +4,11 @@ import mmch_CheminT from "./mmch_chemin.js";
 export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     mmch_obj;
+    #_previewurl;
 
     constructor({inst = null} = {}) {
         this.mmch_obj = inst;
+        this.#_previewurl = null;
     }
 
     static async mmch_list(args = {}) {
@@ -29,6 +31,15 @@ export default class mmch_Extrait extends mmch_CheminT {
             new mmch_Tag(null),
             new mmch_Interview(null),
             new mmch_Question(null),
+            ...items.map(item => new mmch_Extrait(item)),
+        ];
+    }
+
+    static async mmch_Preview(mminfo,parent,args = {}){
+        const finalArgs = { ...this.mmch_default_preview_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
             ...items.map(item => new mmch_Extrait(item)),
         ];
     }
@@ -75,21 +86,27 @@ export default class mmch_Extrait extends mmch_CheminT {
         return description.length > 0 ? description : ["no description extrait"];
     }
 
-    mmch_hasPreview() {
+    async #get_url(){
         if (!!this.mmch_obj) return null;
-        const extrait = this.mmch_obj;
-        return !!(extrait.youtube_url || extrait.vimeo_url);
-    }
-
-    async mmch_getPreview() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getPreview Extrait on empty obj");
+        if (this.#_previewurl) return this.#_previewurl;
         const extrait = this.mmch_obj;
         if (extrait.youtube_url) {
-            return extrait.url_miniature_yt;
+            this.#_previewurl = extrait.url_miniature_yt;
         } else if (extrait.vimeo_url) {
-            return await extrait.get_url_miniature_vimeo();
+            this.#_previewurl = await extrait.get_url_miniature_vimeo();
         } else {
             throw new Error("unreachable Extrait doesn't have url");
         }
+        return this.#_previewurl;
+    }
+
+    async mmch_hasMiniature() {
+        if (!!this.mmch_obj) return null;
+        return await this.#get_url() != null;
+    }
+
+    async mmch_getMiniature() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_getMiniature Extrait on empty obj");
+        return await this.#get_url();
     }
 }

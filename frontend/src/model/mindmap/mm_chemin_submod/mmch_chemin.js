@@ -2,9 +2,10 @@ export default class mmch_CheminT {
     static mmch_dbjsclass = null;
     static mmch_default_list_args = { limit: 5 };
     static mmch_default_search_args = { limit: 5 };
+    static mmch_default_preview_args = { limit: 1 };
     mmch_obj;
 
-    constructor(obj) {
+    constructor({obj} = {}) {
         if (new.target === mmch_CheminT) {
             throw new Error("Cannot instantiate abstract class mmch_CheminT");
         }
@@ -16,6 +17,10 @@ export default class mmch_CheminT {
 
     static async mmch_search(args = {}) {
         throw new Error("mmch_search must be defined in child");
+    }
+
+    static async mmch_Preview(mminfo,parent,args = {}){
+        throw new Error("mmch_Preview must be defined in child");
     }
 
     toJSON() {
@@ -44,7 +49,11 @@ export default class mmch_CheminT {
         return ["no description"];
     }
 
-    mmch_hasPreview() {
+    async mmch_hasMiniature() {
         return false;
+    }
+
+    async mmch_getMiniature() {
+        throw new Error("mmch_getMiniature must be defined in child");
     }
 }

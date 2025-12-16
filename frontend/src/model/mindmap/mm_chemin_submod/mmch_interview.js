@@ -4,9 +4,11 @@ import mmch_CheminT from "./mmch_chemin.js";
 export default class mmch_Interview extends mmch_CheminT {
     static mmch_dbjsclass = Interview;
     mmch_obj;
+    #_previewurl;
 
     constructor({ inst = null } = {}) {
         this.mmch_obj = inst;
+        this._previewurl = null;
     }
 
     static async mmch_list(args = {}) {
@@ -25,6 +27,15 @@ export default class mmch_Interview extends mmch_CheminT {
         return [
             new mmch_Extrait(null),
             new mmch_Tag(null),
+            ...items.map(item => new mmch_Interview(item)),
+        ];
+    }
+
+    static async mmch_Preview(mminfo,parent,args = {}){
+        const finalArgs = { ...this.mmch_default_preview_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
             ...items.map(item => new mmch_Interview(item)),
         ];
     }
@@ -53,8 +64,9 @@ export default class mmch_Interview extends mmch_CheminT {
         return description.length > 0 ? description : ["no description interview"];
     }
 
-    async mmch_getPreview() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getPreview interview on empty obj");
+    async #get_url(){
+        if (!!this.mmch_obj) return null;
+        if (this.#_previewurl) return this.#_previewurl;
         const interview = this.mmch_obj;
 
         const extraits = await interview.extraits();
@@ -64,12 +76,28 @@ export default class mmch_Interview extends mmch_CheminT {
         }
 
         const extrait = extraits[0];
+        if (!extrait) {
+            console.warn(`Extrait null pour l'interview ${interview}`);
+            return null;
+        }
+
         if (extrait.youtube_url) {
-            return extrait.url_miniature_yt;
+            this.#_previewurl = extrait.url_miniature_yt;
         } else if (extrait.vimeo_url) {
-            return await extrait.get_url_miniature_vimeo();
+            this.#_previewurl = await extrait.get_url_miniature_vimeo();
         } else {
             throw new Error("unreachable Extrait doesn't have url");
         }
+        return this.#_previewurl;
+    }
+
+    async mmch_hasMiniature() {
+        if (!!this.mmch_obj) return null;
+        return await this.#get_url() != null;
+    }
+
+    async mmch_getMiniature() {
+        if (!!this.mmch_obj) throw new Error("mmch mmch_Preview interview on empty obj");
+        return await this.#get_url();
     }
 }

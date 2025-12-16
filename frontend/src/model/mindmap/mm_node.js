@@ -18,6 +18,8 @@ export default class mm_Node {
     depth;
     /** @type {Array[mm_Node]} */
     childrens;
+    /** @type {boolean} */
+    ispreview;
     /** @type {number} */
     origin_angle;
     /** @type {mmch_CheminT} */
@@ -102,9 +104,9 @@ export default class mm_Node {
         if (this.thumbnailUrl) return this.thumbnailUrl;
         try {
             if (this.category === Extrait) {
-                this.thumbnailUrl = await this.category.mmch_getPreview();
+                this.thumbnailUrl = await this.category.mmch_getMiniature();
             } else if (this.category == Interview) {
-                this.thumbnailUrl = await this.category.mmch_getPreview();                
+                this.thumbnailUrl = await this.category.mmch_getMiniature();                
             } else {
                 throw new Error("unreachable mm_node category isn't Extrait or Interview in get_miniature");
             }

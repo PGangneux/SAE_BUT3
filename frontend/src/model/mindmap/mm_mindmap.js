@@ -12,8 +12,8 @@ export default class mm_Mindmap {
     nodes;
     /** @type {Array[mm_Node]} */
     chemin;
-    /** @type {Array[mm_Node]} */
-    previewnodes;
+    /** @type {Array[mm_Linkage]} */
+    previewlinkages;
     /** @type {boolean} */
     fullscreen;
     /** @type {boolean} */
@@ -43,12 +43,18 @@ export default class mm_Mindmap {
      * @param {any} interview_current 
      * @param {any} extrait_current 
      */
-    constructor(vueobj, interview_current, extrait_current) {
+    constructor(vueobj, interview_current, extrait_current) {        
+        // vue object reference
         this.vueobj = vueobj;
+        // mm data
         this.linkages = [];
         this.nodes = [];
-        this.chemin = [];
+        // mm preview data
         this.previewnodes = [];
+        this.previewlinkages = [];
+        // mm chemin
+        this.chemin = [];
+        // vars
         this.fullscreen = false;
         this.togglelegend = true;
         this.scale = 1;
@@ -60,6 +66,7 @@ export default class mm_Mindmap {
         this.dragging = false;
         this.searchval = "";
 
+        // funcs ref
         this.interview_current = interview_current;
         this.extrait_current = extrait_current;
     }
