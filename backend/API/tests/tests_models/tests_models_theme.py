@@ -55,10 +55,10 @@ class ThemeTestCase(Neo4jTestCase):
         self.assertEqual(found[0].name, "Art")
 
         props = found[0].__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['name'], "Art")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["name"], "Art")
         # description absent -> None
-        self.assertIsNone(props.get('description'))
+        self.assertIsNone(props.get("description"))
 
     def test_question_relation_integration(self):
         """Vérifie qu'une Question peut se relier à un Theme (test d'intégration relationnel)"""
@@ -71,7 +71,7 @@ class ThemeTestCase(Neo4jTestCase):
         # Vérifie via Cypher que la relation existe
         result, _ = db.cypher_query(
             "MATCH (q:Question {uuid:$q_uuid})-[:A_THEME]->(t:Theme {uuid:$t_uuid}) RETURN count(*)",
-            {'q_uuid': q.uuid, 't_uuid': theme.uuid}
+            {"q_uuid": q.uuid, "t_uuid": theme.uuid},
         )
         self.assertEqual(int(result[0][0]), 1)
 
@@ -79,7 +79,6 @@ class ThemeTestCase(Neo4jTestCase):
         q.theme.disconnect(theme)
         result_after, _ = db.cypher_query(
             "MATCH (q:Question {uuid:$q_uuid})-[:A_THEME]->(t:Theme {uuid:$t_uuid}) RETURN count(*)",
-            {'q_uuid': q.uuid, 't_uuid': theme.uuid}
+            {"q_uuid": q.uuid, "t_uuid": theme.uuid},
         )
         self.assertEqual(int(result_after[0][0]), 0)
-

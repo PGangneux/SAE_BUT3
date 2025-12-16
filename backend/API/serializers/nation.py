@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import Nation
 
 
-class NationSerializer(Base):
+class NationSerializer(BaseSerializer):
     """
     Sérializer du node Nation
     """
+
     name = serializers.CharField(required=True)
 
     # Output
@@ -19,4 +20,4 @@ class NationSerializer(Base):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return self.get_url('artiste-list', kwargs={'nation_uuid': nation.uuid})
+        return self.get_url("artiste-list", kwargs={"nation_uuid": nation.uuid})

@@ -45,9 +45,6 @@ class Recommandation(APIView):
     authentication_classes = []
     permission_classes = []
 
-    def get(self, request: HttpRequest) -> Response:
-        return self.post(request)
-
     def post(self, request: HttpRequest) -> Response:
         """L'Algorithme de recommandation de vidéos (Extrait / Interview)
             request.data:

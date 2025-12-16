@@ -1,22 +1,20 @@
 from rest_framework import serializers
-from ..models import Tag
-from ..serializers import BaseSerializer
+from neomodel import StructuredNode
+from ...models import Tag
+from ..base import BaseRelationShipSerializer
 
 
-class TagSerializer(BaseSerializer):
-    """
-    Sérializer du node Tag
-    """
-
-    uuid = serializers.CharField(read_only=True)
-    name = serializers.CharField(required=True)
+class RelationShipTagSerializer(BaseRelationShipSerializer):
+    name = serializers.CharField(read_only=True)
 
     # Outputs
     interviews = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(Tag, *args, **kwargs)
+    def __init__(
+        self, context_node: StructuredNode, relationship: str, *args, **kwargs
+    ):
+        super().__init__(Tag, context_node, relationship, *args, **kwargs)
 
     def get_interviews(self, tag):
         """

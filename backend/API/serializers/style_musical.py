@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import StyleMusical
 
 
-class StyleMusicalSerializer(Base):
+class StyleMusicalSerializer(BaseSerializer):
     """
     Sérializer du node Style Musical
     """
+
     name = serializers.CharField(required=True)
 
     # Output
@@ -19,4 +20,6 @@ class StyleMusicalSerializer(Base):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return self.get_url('artiste-list', kwargs={'stylemusical_uuid': style_musical.uuid})
+        return self.get_url(
+            "artiste-list", kwargs={"stylemusical_uuid": style_musical.uuid}
+        )

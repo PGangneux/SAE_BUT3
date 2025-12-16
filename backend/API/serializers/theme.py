@@ -1,14 +1,17 @@
 from rest_framework import serializers
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import Theme
 
 
-class ThemeSerializer(Base):
+class ThemeSerializer(BaseSerializer):
     """
     Sérializer du node Theme
     """
+
     name = serializers.CharField(required=True)
-    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
 
     # Outputs
     questions = serializers.SerializerMethodField(read_only=True)
@@ -20,4 +23,4 @@ class ThemeSerializer(Base):
         """
         Renvoie un lien propre vers les questions :
         """
-        return self.get_url('question-list', kwargs={'theme_uuid': theme.uuid})
+        return self.get_url("question-list", kwargs={"theme_uuid": theme.uuid})

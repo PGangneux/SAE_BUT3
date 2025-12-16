@@ -1,13 +1,14 @@
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import Utilisateur
 
 
-class UtilisateurSerializer(Base):
+class UtilisateurSerializer(BaseSerializer):
     """
     Sérializer du node Utilisateur
     """
+
     pseudo = serializers.CharField(required=True)
     prenom = serializers.CharField(required=True)
     nom = serializers.CharField(required=True)
@@ -28,41 +29,48 @@ class UtilisateurSerializer(Base):
         """
         Renvoie un lien propre vers les artistes :
         """
-        return self.get_url('artiste-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
+        return self.get_url(
+            "artiste-list", kwargs={"utilisateur_uuid": utilisateur.uuid}
+        )
 
     def get_regarder_interviews(self, utilisateur):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return self.get_url('interview-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
+        return self.get_url(
+            "interview-list", kwargs={"utilisateur_uuid": utilisateur.uuid}
+        )
 
     def get_regarder_extraits(self, utilisateur):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.get_url('extrait-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
+        return self.get_url(
+            "extrait-list", kwargs={"utilisateur_uuid": utilisateur.uuid}
+        )
 
     def get_recherches_questions(self, utilisateur):
         """
         Renvoie un lien propre vers les questions :
         """
-        return self.get_url('question-list', kwargs={'utilisateur_uuid': utilisateur.uuid})
+        return self.get_url(
+            "question-list", kwargs={"utilisateur_uuid": utilisateur.uuid}
+        )
 
     def create(self, validated_data):
         """
         Création d'un utilisateur
         """
         # hash password
-        validated_data['password'] = make_password(validated_data.pop('password'))
+        validated_data["password"] = make_password(validated_data.pop("password"))
         return super().create(validated_data)
-
 
     def update(self, utilisateur, validated_data):
         """
         Modification d'un utilisateur
         """
         # hash password
-        pwd = validated_data.pop('password', None)
+        pwd = validated_data.pop("password", None)
         if pwd:
-            validated_data['password'] = make_password(pwd)
+            validated_data["password"] = make_password(pwd)
         return super().update(utilisateur, validated_data)

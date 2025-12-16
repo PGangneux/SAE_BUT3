@@ -51,8 +51,8 @@ class NationTestCase(Neo4jTestCase):
         self.assertEqual(found[0].name, "Belgique")
 
         props = found[0].__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['name'], "Belgique")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["name"], "Belgique")
 
     def test_relation_with_artiste_nationalite(self):
         """Vérifie qu'un Artiste peut être relié comme NATIONALITE -> Nation"""
@@ -65,7 +65,7 @@ class NationTestCase(Neo4jTestCase):
         # Vérifier via une requête Cypher qu'il existe une relation Artiste-[:NATIONALITE]->Nation
         result, _ = db.cypher_query(
             "MATCH (a:Artiste)-[:NATIONALITE]->(n:Nation {uuid:$uuid}) RETURN count(a)",
-            {'uuid': nation.uuid}
+            {"uuid": nation.uuid},
         )
         self.assertEqual(int(result[0][0]), 1)
 
@@ -73,6 +73,6 @@ class NationTestCase(Neo4jTestCase):
         artiste.nationalite.disconnect(nation)
         result_after, _ = db.cypher_query(
             "MATCH (a:Artiste)-[:NATIONALITE]->(n:Nation {uuid:$uuid}) RETURN count(a)",
-            {'uuid': nation.uuid}
+            {"uuid": nation.uuid},
         )
         self.assertEqual(int(result_after[0][0]), 0)

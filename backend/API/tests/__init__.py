@@ -4,13 +4,15 @@ from ..management.commands.install_labels import Command
 
 TEST_BOLT_URL = "bolt://neo4j:testtest@localhost:17687"
 
+
 def _count_nodes_by_label_and_property(label, prop, value):
     q = f"""
     MATCH (n:{label} {{{prop}: $value}})
     RETURN count(n) AS c
     """
-    results, meta = db.cypher_query(q, {'value': value})
+    results, meta = db.cypher_query(q, {"value": value})
     return int(results[0][0])
+
 
 class Neo4jTestCase(TestCase):
     @classmethod
