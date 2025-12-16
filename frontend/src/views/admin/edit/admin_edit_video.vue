@@ -96,6 +96,10 @@ export default {
     },
 
 
+    Update(){
+      console.log(this.current_extrait);
+      this.current_extrait.update();
+    },
 
 
 
@@ -143,10 +147,30 @@ export default {
     async recupeQuestion(){
       //reccupere la liste des Questions
       this.listeQuestion =  markRaw(await Question.list());
-    }
+    },
 
 
-  },
+
+
+  ajoutertag(){
+      //permet d'ajouter un tag a l'extrait
+    },
+
+    removetag(idtags){
+      //permet de retirer un tag a l'extrait
+
+      console.log("ba")
+      if(this.tags == []){
+        console.log("pas d'element a retiré")
+      }else if (this.tags.includes(idtags)) {
+        this.tags.remove(idtags);
+        console.log("tags retiré")
+        
+      }
+      console.log(this.tags)
+    },
+
+    },
 
 
  async mounted() {
@@ -172,11 +196,17 @@ export default {
     console.log("ha");
 
     if(await this.current_extrait.question != null){
-      this.laselectedQuestion = markRaw(await this.current_extrait.question).texte;
+      const question =  markRaw(await this.current_extrait.question);
+      this.laselectedQuestion = question.texte;
+      this.current_extrait.question.uuid = question.uuid;
+      this.current_extrait.question = question.uuid;
     }
 
     if(await this.current_extrait.artiste != null){
-      this.laselectedArtiste  = markRaw(await this.current_extrait.artiste).name;
+      const artiste = markRaw(await this.current_extrait.artiste);
+      this.laselectedArtiste  = artiste.name;
+      this.current_extrait.artiste = artiste.uuid;
+      this.current_extrait.artiste.uuid = artiste.uuid;
     }
 
     
@@ -223,14 +253,23 @@ export default {
 
     <form action="" class="row" style="--bs-gutter-x: 0em;">
 
+
+
+
       <div class="row"  style="--bs-gutter-x: 0em;">
+        
         <RouterLink class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
           <img :src="thumbnail" class="migniature" alt="migniature">
         </RouterLink>
 
         <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           
-          
+        <div class="row"  style="--bs-gutter-x: 0em;">
+            <div class=" input-group mb-3" >
+                <span  class="input-group-text colovert" id="basic-addon3" > Titre :</span>
+                <input list="Questiondata" id="question" name="question" class="form-control"   v-model="this.current_extrait.titre"/>
+            </div>
+        </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
@@ -322,7 +361,7 @@ export default {
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
         <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
+        <button  type="button"   class="bt btn col" @click="Update" > <img src="/imgs/save.svg"  alt="Enregistrer"> Enregistrer </button>
         <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
         <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
                     src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
@@ -353,7 +392,7 @@ export default {
                 <div class="row">
                   <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
                   <p class="col">{{ tag.name }}</p>
-                  <button :id="'tag' + tag.uuid" class="col bt" ><img src="/imgs/remove.svg"  class="col" alt="labelle tags" height="20" width="20"> </button>
+                  <button :id="'tag-' + tag.uuid" @click="removetag(tag.uuid)" class="col bt" ><img src="/imgs/remove.svg"  class="col" alt="labelle tags" height="20" width="20"> </button>
                 </div>
             </li>
         </ul>
