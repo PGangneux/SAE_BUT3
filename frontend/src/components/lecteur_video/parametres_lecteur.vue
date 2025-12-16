@@ -47,6 +47,7 @@ export default {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
   width: auto;
   height: auto;
+  z-index: 10000;
 }
 
 .popup-content {
