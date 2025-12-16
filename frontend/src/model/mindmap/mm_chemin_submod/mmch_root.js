@@ -49,4 +49,8 @@ export default class mmch_Root extends mmch_CheminT {
         }
         return results;
     }
+
+    static async mmch_previewcat(mminfo, parent, args = {}) {
+        throw new Error("mmch_Root.mmch_previewcat doesn't have preview");
+    }
 }

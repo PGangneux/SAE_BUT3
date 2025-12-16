@@ -1,3 +1,4 @@
+// import mm_Node from "../mm_node";
 export default class mmch_CheminT {
     static mmch_dbjsclass = null;
 
@@ -19,7 +20,13 @@ export default class mmch_CheminT {
     }
 
     static async mmch_listcat(args = {}) {
-        throw new Error("mmch_listcat must be defined in child");
+        if (this.mmch_dbjsclass === null) throw new Error("mmch_listcat must be defined in child");
+        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
+            ...items.map(item => new this(item)),
+        ];
     }
 
     async mmch_listinst(args = {}) {
@@ -27,7 +34,13 @@ export default class mmch_CheminT {
     }
 
     static async mmch_searchcat(args = {}) {
-        throw new Error("mmch_searchcat must be defined in child");
+        if (this.mmch_dbjsclass === null) throw new Error("mmch_searchcat must be defined in child");
+        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.search(finalArgs);
+        return [
+            ...items.map(item => new this(item)),
+        ];
     }
 
     async mmch_searchinst(args = {}) {
@@ -35,7 +48,13 @@ export default class mmch_CheminT {
     }
 
     static async mmch_previewcat(mminfo, parent, args = {}) {
-        throw new Error("mmch_previewcat must be defined in child");
+        if (this.mmch_dbjsclass === null) throw new Error("mmch_previewcat must be defined in child");
+        const finalArgs = { ...this.mmch_default_previewcat_args, ...args };
+        // TODO : put recomendation algorithm here
+        const items = await this.mmch_dbjsclass.list(finalArgs);
+        return [
+            ...items.map(item => new this(item)),
+        ];
     }
 
     async mmch_previewinst(mminfo, parent, args = {}) {

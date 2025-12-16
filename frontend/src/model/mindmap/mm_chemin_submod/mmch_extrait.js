@@ -9,20 +9,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     /** @type {Extrait} */
     mmch_obj;
-    #_previewurl;
-
-    constructor(inst = null) {
-        super(inst);
-        this.#_previewurl = null;
-    }
-
-    static async mmch_listcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => new mmch_Extrait(item)),
-        ];
-    }
+    #_previewurl = null;
 
     async mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
@@ -37,13 +24,6 @@ export default class mmch_Extrait extends mmch_CheminT {
         ];
     }
 
-    static async mmch_searchcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
-        const items = await this.mmch_dbjsclass.search(finalArgs);
-        return [
-            ...items.map(item => new mmch_Extrait(item)),
-        ];
-    }
     async mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
         // TODO : put recomendation algorithm here
@@ -57,14 +37,6 @@ export default class mmch_Extrait extends mmch_CheminT {
         ];
     }
 
-    static async mmch_previewcat(mminfo, parent, args = {}) {
-        const finalArgs = { ...this.mmch_default_previewcat_args, ...args };
-        // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => new mmch_Extrait(item)),
-        ];
-    }
     async mmch_previewinst(mminfo, parent, args = {}) {
         const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here

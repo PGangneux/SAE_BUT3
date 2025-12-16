@@ -8,17 +8,6 @@ export default class mmch_Nation extends mmch_CheminT {
     /** @type {Nation} */
     mmch_obj;
 
-   constructor(inst = null) {
-       super(inst);
-    }
-
-    static async mmch_listcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => new mmch_Nation(item)),
-        ];
-    }
     async mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
         // TODO : put recomendation algorithm here
@@ -29,13 +18,6 @@ export default class mmch_Nation extends mmch_CheminT {
         ];
     }
 
-    static async mmch_searchcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
-        const items = await this.mmch_dbjsclass.search(finalArgs);
-        return [
-            ...items.map(item => new mmch_Nation(item)),
-        ];
-    }
     async mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
         const items = await this.mmch_dbjsclass.search(finalArgs);
@@ -45,14 +27,6 @@ export default class mmch_Nation extends mmch_CheminT {
         ];
     }
 
-    static async mmch_previewcat(mminfo, parent, args = {}) {
-        const finalArgs = { ...this.mmch_default_previewcat_args, ...args };
-        // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => new mmch_Nation(item)),
-        ];
-    }
     async mmch_previewinst(mminfo, parent, args = {}) {
         const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here

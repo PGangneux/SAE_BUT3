@@ -6,17 +6,6 @@ export default class mmch_Theme extends mmch_CheminT {
     /** @type {Theme} */
     mmch_obj;
 
-    constructor(inst = null) {
-        super(inst);
-    }
-
-    static async mmch_listcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_listcat_args, ...args };
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => new mmch_Theme(item)),
-        ];
-    }
     async mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
         const items = await this.mmch_dbjsclass.list(finalArgs);
@@ -26,28 +15,11 @@ export default class mmch_Theme extends mmch_CheminT {
         ];
     }
 
-    static async mmch_searchcat(args = {}) {
-        const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
-        const items = await Theme.search(finalArgs);
-        return [
-            new mmch_Question(),
-            ...items.map(item => new mmch_Theme(item)),
-        ];
-    }
     async mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_search_args, ...args };
         const items = await Theme.search(finalArgs);
         return [
             new mmch_Question(),
-            ...items.map(item => new mmch_Theme(item)),
-        ];
-    }
-
-    static async mmch_previewcat(mminfo,parent,args = {}){
-        const finalArgs = { ...this.mmch_default_preview_args, ...args };
-        // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
             ...items.map(item => new mmch_Theme(item)),
         ];
     }
