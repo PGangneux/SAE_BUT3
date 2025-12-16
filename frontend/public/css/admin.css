@@ -28,9 +28,13 @@
     inset: 0;
     z-index: 9998;
 
-    background: rgba(0, 0, 0, 0.3); /* assombrit un peu */
+    background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px); /* Safari */
+    -webkit-backdrop-filter: blur(8px);
+
+    display: flex;
+    align-items: center;      /* centre verticalement */
+    justify-content: center;  /* centre horizontalement */
 }
 
 

@@ -128,15 +128,67 @@ h1 {
     text-align: center;
 }
 
-button:disabled {
-    opacity: 0.5;
+/* ====== INPUT ====== */
+input[type="text"] {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-right: 8px;
+    min-width: 200px;
+}
+
+input[type="text"]:focus {
+    border-color: var(--vert-pale);
+    box-shadow: 0 0 0 2px rgba(0, 150, 0, 0.15);
+}
+
+
+/* ====== BOUTONS ====== */
+div > button {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-right: 6px;
+}
+
+/* Bouton créer */
+div > button:first-of-type {
+    background-color: #4caf50;
+    color: white;
+}
+
+div > button:first-of-type:hover:not(:disabled) {
+    background-color: #43a047;
+}
+
+/* Bouton ajouter */
+div > button:last-of-type {
+    background-color: #2196f3;
+    color: white;
+}
+
+div > button:last-of-type:hover:not(:disabled) {
+    background-color: #1e88e5;
+}
+
+div > button:disabled {
+    opacity: 0.45;
     cursor: not-allowed;
 }
 
+/* ====== ZONE TAGS ====== */
 .champ_tags {
     min-height: 30vh;
     background-color: var(--gris-moyen);
-    padding: 10px;
+    padding: 15px;
+    border-radius: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 .champ_tags ul {

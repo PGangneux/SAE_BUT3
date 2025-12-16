@@ -29,7 +29,8 @@ export default {
             popupDelete: false,
             create: false,
             searchAvailable: "",
-            searchPlaylist: ""
+            searchPlaylist: "",
+            chargement: false
         };
     },
     computed: {
@@ -158,11 +159,13 @@ export default {
         },
 
         async save() {
+            this.chargement = true
             this.current_interview.titre = this.titre;
             this.current_interview.description = this.description;
             this.current_interview.occasion = this.occasion
             this.current_interview = this.create ? await this.current_interview.create() : await this.current_interview.update();
             await this.current_interview.setExtraits(this.current_list_extraits);
+            this.chargement = false
         },
     },
 
@@ -290,6 +293,9 @@ export default {
 
     </div>
     <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
+    <div v-if="chargement" class="overlay">
+        <img src="/imgs/spinner.gif" alt="loading image...">
+    </div>
 </template>
 
 <style scoped>
