@@ -69,9 +69,9 @@ class Recommandation(APIView):
             Response: Les vidéos (Extrait / Interview)
         """
         data: dict = request.data
-        poids = data.get("weights", False)
+        poids = data.get("weights", {})
         print("poids:", poids)
-        filtres = data.get("filters", False)
+        filtres = data.get("filters", {})
         print("filtres:", filtres)
 
         user = get_current_user(request)
@@ -94,176 +94,154 @@ class Recommandation(APIView):
         print("uuid", video)
 
         # Algo complet
-        query = f"""
-            MATCH 
+        # Construction des parties de la requête
+        parts = {
+            "match": [],
+            "where": ["TRUE"],
+            "optional_match": [],
+            "with_clauses": [],
+            "return": [],
+        }
 
-            // Si utilisateur est connecté
-            {"(u:Utilisateur {uuid: $current_user})," if user else ""}
+        # === MATCH CLAUSE ===
+        if user:
+            parts["match"].append("(u:Utilisateur {uuid: $current_user})")
 
-            // Si la vidéo cliqué est fourni
-            {f"(c:{video_class}|{playlist_class}{" {uuid: $uuid}"})," if video else ""}
+        if video:
+            parts["match"].append(f"(c:{video_class}|{playlist_class} {{uuid: $uuid}})")
 
-            // La vidéo (Extrait / Interview ) que l'on veut recommander
-            (v:{video_class}|{playlist_class})
+        parts["match"].append(f"(v:{video_class}|{playlist_class})")
 
-            // Conditions
-            WHERE True
-            // Que la vidéo recommandé ne soit pas celle actuellement visionner
-            {"AND v.uuid <> c.uuid" if video else ""}
-            // Si utilisateur connecté, on retire les vidéos déjà regarder (TODO les mettre en derniers)
-            {"AND NOT ( (u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))" if user else ""}
+        # === WHERE CLAUSE ===
+        if video:
+            parts["where"].append("v.uuid <> c.uuid")
 
-            // Filtres
-            // Filtre par Thème
-            {
-                f"""AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*2..3]-(t:Theme) WHERE t.uuid = "}'{filtres.get("Thème")}'
-                {
-                    """
+        if user:
+            parts["where"].append(
+                "NOT ((u:Utilisateur)-[:REGARDER_EXTRAITS|REGARDER_INTERVIEWS]-(v))"
+            )
+
+        # Filtres dynamiques
+        filter_configs = {
+            "Thème": ("Theme", "*2..3"),
+            "Artiste": ("Artiste", "*..2"),
+            "StyleMusical": ("StyleMusical", "*2..3"),
+            "Nation": ("Nation", "*2..3"),
+            "Question": ("Question", "*..2"),
+            "Tag": ("Tag", "*0..3"),
+        }
+
+        excluded_relations = [
+            "REGARDER_EXTRAITS",
+            "REGARDER_INTERVIEWS",
+            "RECHERCHES_ARTISTES",
+            "RECHERCHES_QUESTIONS",
+        ]
+
+        for filtre_key, (node_type, path_length) in filter_configs.items():
+            if filtres.get(filtre_key):
+                # Gestion spéciale pour Tag avec le préfixe '!'
+                node_pattern = (
+                    f"!:{node_type}" if filtre_key == "Tag" else f"t:{node_type}"
+                )
+                node_var = "!" if filtre_key == "Tag" else "t"
+
+                filter_clause = f"""EXISTS {{
+                    MATCH p = SHORTEST 1 (v)-[{path_length}]-({node_pattern})
+                    WHERE {node_var}.uuid = '{filtres[filtre_key]}'
                     AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('Thème', False) else ""
-            }
+                    AND NONE(r IN relationships(p) WHERE type(r) IN {excluded_relations})
+                }}"""
+                parts["where"].append(filter_clause)
 
-            // Filtre par Artiste
-            {
-                f"""AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*..2]-(a:Artiste) WHERE a.uuid = "}'{filtres.get("Artiste")}'
-                {
-                    """
-                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('Artiste', False) else ""
-            }
+        # === OPTIONAL MATCH pour le scoring ===
+        score_configs = {
+            "Thème": ("Theme", "*0..3", "c_t", "v_t"),
+            "Artiste": ("Artiste", "*0..2", "c_a", "v_a"),
+            "Question": ("Question", "*0..2", "c_q", "v_q"),
+        }
 
-            // Filtre par Style Musical
-            {
-                f"""AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*2..3]-(s:StyleMusical) WHERE s.uuid = "}'{filtres.get("StyleMusical")}'
-                {
-                    """
-                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('StyleMusical', False) else ""
-            }
+        collections = []
+        score_parts = []
 
-            // Filtre par Nation
-            {
-                f"""AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*2..3]-(n:Nation) WHERE n.uuid = "}'{filtres.get("Nation")}'
-                {
-                    """
-                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('Nation', False) else ""
-            }
+        if video and poids:
+            for poids_key, (
+                node_type,
+                path_length,
+                c_var,
+                v_var,
+            ) in score_configs.items():
+                if poids.get(poids_key):
+                    parts["optional_match"].extend(
+                        [
+                            f"OPTIONAL MATCH (c)-[{path_length}]-({c_var}:{node_type})",
+                            f"OPTIONAL MATCH (v)-[{path_length}]-({v_var}:{node_type})",
+                        ]
+                    )
 
-            // Filtre par Question
-            {
-                f"""
-                AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*..2]-(q:Question) WHERE q.uuid = "}'{filtres.get("Question")}'
-                {
-                    """
-                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('Question', False) else ""
-            }
+                    collections.append(
+                        f"collect(DISTINCT {c_var}) AS {c_var}s, "
+                        f"collect(DISTINCT {v_var}) AS {v_var}s"
+                    )
 
-            // Filtre par Tag
-            {
-                f"""
-                AND EXISTS {"{ MATCH p = SHORTEST 1 (v)-[*0..3]-(!:Tag) WHERE !.uuid = "}'{filtres.get("Tag")}'
-                {
-                    """
-                    AND NONE(n IN nodes(p) WHERE n:Utilisateur)
-                    AND NONE(r IN relationships(p) WHERE type(r) IN ['REGARDER_EXTRAITS','REGARDER_INTERVIEWS','RECHERCHES_ARTISTES','RECHERCHES_QUESTIONS']) }
-                    """
-                }
-                """
-                if filtres and filtres.get('Tag', False) else ""
-            }
+                    count_var = f"nb{node_type}s"
+                    parts["with_clauses"].append(
+                        f"size([x IN {c_var}s WHERE x IN {v_var}s]) AS {count_var}"
+                    )
 
-            // Permet de compter les éléments en commun pour ordonner
-            // Récupère les thèmes des vidéos
-            {
-                "OPTIONAL MATCH (c)-[*0..3]-(c_t:Theme) OPTIONAL MATCH (v)-[*0..3]-(v_t:Theme)"
-                if poids and poids.get('Thème', False) and video else ""
-            }
+                    score_parts.append(f"{count_var} * {poids[poids_key]}")
 
-            // Récupère les artistes des vidéos
-            {
-                "OPTIONAL MATCH (c)-[*0..2]-(c_a:Artiste) OPTIONAL MATCH (v)-[*0..2]-(v_a:Artiste)"
-                if poids and poids.get('Artiste', False) and video else ""
-            }
+        # === Construction de la requête finale ===
+        query_parts = []
 
-            // Récupère les questions des vidéos
-            {
-                "OPTIONAL MATCH (c)-[*0..2]-(c_q:Question) OPTIONAL MATCH (v)-[*0..2]-(v_q:Question)"
-                if poids and poids.get('Question', False) and video else ""
-            }
+        # MATCH
+        query_parts.append("MATCH " + ",\n      ".join(parts["match"]))
 
-            // Liste
-            WITH {"c," if video else ""}
-            // Liste les thèmes des vidéos
-            {"collect(DISTINCT c_t) AS c_themes, collect(DISTINCT v_t) AS v_themes," if poids and poids.get('Thème', False) and video else ""}
+        # WHERE
+        query_parts.append("WHERE " + "\n  AND ".join(parts["where"]))
 
-            // Liste les artistes des vidéos
-            {"collect(DISTINCT c_a) AS c_artistes, collect(DISTINCT v_a) AS v_artistes," if poids and poids.get('Artiste', False) and video else ""}
-            
-            // Liste les questions des vidéos
-            {"collect(DISTINCT c_q) AS c_questions, collect(DISTINCT v_q) AS v_questions," if poids and poids.get('Question', False) and video else ""}
-            v
+        # OPTIONAL MATCH
+        if parts["optional_match"]:
+            query_parts.append("\n".join(parts["optional_match"]))
 
-            // Compte
-            WITH {"c," if video else ""}
+        # WITH (collections)
+        if collections:
+            with_items = ["c"] if video else []
+            with_items.extend(collections)
+            with_items.append("v")
+            query_parts.append("WITH " + ", ".join(with_items))
 
-            // Compte le nombre de thèmes
-            {"size([t IN c_themes WHERE t IN v_themes]) AS nbThemes," if poids and poids.get('Thème') and video else ""}
+        # WITH (counts + date)
+        if parts["with_clauses"] or video:
+            with_items = ["c"] if video else []
+            with_items.extend(parts["with_clauses"])
+            with_items.extend(["v", "coalesce(v.date, v.uploaded_at) AS date"])
+            query_parts.append("WITH " + ", ".join(with_items))
+        else:
+            query_parts.append("WITH v, coalesce(v.date, v.uploaded_at) AS date")
 
-            // Compte le nombre d'artistes
-            {"size([a IN c_artistes WHERE a IN v_artistes]) AS nbArtistes," if poids and poids.get('Artiste') and video else ""}
+        # RETURN
+        score_formula = " + ".join(score_parts) if score_parts else "0"
+        query_parts.append(f"RETURN v, {score_formula} AS score")
 
-            // Compte le nombre de questions
-            {"size([s IN c_questions WHERE s IN v_questions]) AS nbQuestions," if poids and poids.get('Question') and video else ""}
+        # ORDER BY
+        query_parts.append("ORDER BY score DESC, date DESC, rand() DESC")
 
-            // Champ de date non uniforme entre les extraits et les interviews
-            v, coalesce(v.date, v.uploaded_at) AS date
-            
-            // Ce que l'on renvoi à la fin de la requête CYPHER
-            RETURN v,
+        # LIMIT
+        query_parts.append("LIMIT $size")
 
-            // Création du score en fonction des weights
-            {f"nbThemes * {poids.get('Thème')} +" if poids and poids.get('Thème', False) and video else ""}
-            {f"nbArtistes * {poids.get('Artiste')} +" if poids and poids.get('Artiste', False) and video else ""}
-            {f"nbQuestions * {poids.get('Question')} +" if poids and poids.get('Question', False) and video else ""}
-            0 // Pour ne pas avoir de '+' dans le vide
-            AS score
+        # Assemblage final
+        query = "\n".join(query_parts)
 
-            // On ordonne par score puis par date et enfin de l'aléatoire
-            ORDER BY score DESC, date DESC, rand() DESC
-
-            // Le nombre de vidéo à renvoyer
-            LIMIT $size
-            """
-        filtre = {
+        # Paramètres
+        params = {
             "uuid": video,
             "current_user": user.uuid if user else None,
             "size": size,
         }
-        print(query, filtre)
+        print(query, params)
         try:
-            recommandations_cypher = db.cypher_query(query, filtre)[0]
+            recommandations_cypher = db.cypher_query(query, params)[0]
         except ServiceUnavailable:
             raise ConnexionDB()
 
