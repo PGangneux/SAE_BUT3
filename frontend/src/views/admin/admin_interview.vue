@@ -159,13 +159,14 @@ export default {
         },
 
         async save() {
-            this.chargement = true
+            this.chargement = true;
             this.current_interview.titre = this.titre;
             this.current_interview.description = this.description;
-            this.current_interview.occasion = this.occasion
+            this.current_interview.occasion = this.occasion;
             this.current_interview = this.create ? await this.current_interview.create() : await this.current_interview.update();
             await this.current_interview.setExtraits(this.current_list_extraits);
-            this.chargement = false
+            this.chargement = false;
+            this.$router.push(`/admin/interview/${this.current_interview.uuid}`)
         },
     },
 
