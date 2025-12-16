@@ -102,7 +102,7 @@ class Recommandation(APIView):
                 collect(DISTINCT c_q) AS c_questions,
                 collect(DISTINCT v_q) AS v_questions
 
-                WITH v, c, c_themes, v_themes, c_artistes, v_artistes, c_questions, v_questions,
+                WITH v, c,
                 size([t IN c_themes WHERE t IN v_themes]) AS nbThemes,
                 size([a IN c_artistes WHERE a IN v_artistes]) AS nbArtistes,
                 size([s IN c_questions WHERE s IN v_questions]) AS nbQuestions,
@@ -110,9 +110,6 @@ class Recommandation(APIView):
                 coalesce(v.date, v.uploaded_at) AS date
 
                 RETURN v,
-                [t IN c_themes WHERE t IN v_themes OR t IN c_themes],
-                [t IN c_artistes WHERE t IN v_artistes OR t IN c_artistes],
-                [t IN c_questions WHERE t IN v_questions OR t IN c_questions],
 
                 nbThemes * {poids.get('Thème', 0)} +
                 nbArtistes * {poids.get('Artiste', 0)} +
@@ -155,7 +152,7 @@ class Recommandation(APIView):
             for recommandation in recommandations_cypher
         ]
 
-        return Response(recommandations_cypher)
+        return Response(recommandations)
 
 
 
