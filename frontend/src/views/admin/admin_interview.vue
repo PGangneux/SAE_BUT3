@@ -25,8 +25,33 @@ export default {
             description: '',
             popupDelete: false,
             create: false,
+            searchAvailable: "",
+            searchPlaylist: ""
         };
     },
+    computed: {
+        filteredAvailableExtraits() {
+            if (!this.searchAvailable) return this.Extraitlist
+
+            return this.Extraitlist.filter(extrait =>
+                extrait.titre?.toLowerCase().includes(
+                    this.searchAvailable.toLowerCase()
+                )
+            )
+        },
+
+        filteredPlaylistExtraits() {
+            if (!this.searchPlaylist) return this.current_list_extraits
+
+            return this.current_list_extraits.filter(extrait =>
+                extrait.titre?.toLowerCase().includes(
+                    this.searchPlaylist.toLowerCase()
+                )
+            )
+        }
+    },
+
+
     methods: {
         /**
          * Démarre le drag d’un élément
@@ -196,15 +221,16 @@ export default {
                     </div>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search"
-                            aria-describedby="search-addon">
+                        <input type="text" class="form-control" placeholder="Search..." v-model="searchAvailable" />
+
+
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                     </div>
 
                     <ul class="drop-zone" @drop="onDrop($event, 'available')" @dragover="onDragOver($event)">
-                        <li v-for="extraitv1 in this.Extraitlist" :key="extraitv1.uuid" class="drag-el">
+                        <li v-for="extraitv1 in filteredAvailableExtraits" :key="extraitv1.uuid" class="drag-el">
                             <div class="drag-wrapper" draggable="true"
                                 @dragstart="startDrag($event, extraitv1, 'available')">
                                 <comp_petit_extrait :current_extrait=extraitv1 />
@@ -223,15 +249,15 @@ export default {
                     </div>
 
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search"
-                            aria-describedby="search-addon">
+                        <input type="text" class="form-control" placeholder="Search..." v-model="searchPlaylist" />
+
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
                     </div>
 
                     <ul class="drop-zone" @drop="onDrop($event, 'playlist')" @dragover="onDragOver($event)">
-                        <li v-for="extraitv2 in this.current_list_extraits" :key="extraitv2.uuid" class="drag-el">
+                        <li v-for="extraitv2 in filteredPlaylistExtraits" :key="extraitv2.uuid" class="drag-el">
                             <div class="drag-wrapper" draggable="true"
                                 @dragstart="startDrag($event, extraitv2, 'playlist')">
                                 <comp_petit_extrait :current_extrait=extraitv2 />
