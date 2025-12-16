@@ -8,7 +8,7 @@ import Interview from '../../../model/interview.js';
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 import supprimer from "../supprimer.vue";
-
+import tags from "../tags.vue"
 
 export default {
   name: "page_admin_detail_video",
@@ -19,6 +19,7 @@ export default {
     comp_baradmin,
     popup_interview,
     supprimer,
+    tags,
 
   },data() {
         return {
@@ -350,6 +351,17 @@ export default {
         </div>
       </div>
 
+      <div class="bottom_button">
+          <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
+              Ajouter un Extrait</RouterLink>
+          <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
+                  src="/imgs/add.svg" alt="add"> Ajouter une Playlist </RouterLink>
+          <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+                  alt="Enregistrer"> Enregistrer </button>
+          <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
+                  src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+      </div>
+
 
       <div class="row pad"  style="--bs-gutter-x: 0em;">
         <RouterLink  to="/admin/extrait/" class="btn button-blanc col"> Ajouter un Extrait <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
@@ -362,52 +374,10 @@ export default {
 
     </form>
     
-    <div class="row grisee "  style="--bs-gutter-x: 0em;">
-       <section class="row secondpart">
-          <h1 class="pcentrer col"  style="--bs-gutter-x: 0em;"> Meta Donnée </h1>
-          <button class="bt col"> <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
-          <div class="recherche col">
-                <div class="search-bar">
-                    <div class="input-group">
-                        <input type="text" class="form-control" v-model="searchValueTag" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                        <RouterLink to="/" class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
-                                <img src="/imgs/search.svg" alt="button search">
-                            </RouterLink>
-                    </div>
-                </div>
-            </div>
-      </section>
-      <div class="row">
-
-        <ul v-if="this.tags.length != 0" class="scroller2  row" style="--bs-gutter-x: 0em;" >
-            <li v-for="tag in this.tags " class="col">
-                <div class="row">
-                  <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-                  <p class="col">{{ tag.name }}</p>
-                  <button :id="'tag-' + tag.uuid" @click="removetag(tag.uuid)" class="col bt" ><img src="/imgs/remove.svg"  class="col" alt="labelle tags" height="20" width="20"> </button>
-                </div>
-            </li>
-        </ul>
-
-        <ul v-else-if="this.tags == 0 " class="col">
-            <li class="row"> 
-              <img src="/imgs/labeltags.svg" class="col" alt="labelle tags" height="50" width="50">
-              <p  class="col">vide</p>
-              <button class="col bt" ><img src="/imgs/remove.svg" class="col" alt="labelle tags" height="20" width="20"> </button>
-            </li>
-        </ul>
-
-        <ul v-else class="col">
-            <li> 
-                <p  class="col">erreur de Chargement</p>
-            </li>
-        </ul>        
+        <!-- Only render tags when current_extrait is loaded -->
+    <tags v-if="current_extrait" :video="current_extrait"></tags>
 
 
-
-
-      </div>
-    </div>
     
    
 
