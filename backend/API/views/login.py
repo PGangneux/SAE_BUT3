@@ -8,6 +8,7 @@ from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..models import Utilisateur
 
+
 class LoginView(APIView):
     """
     Permet de se connecter avec pseudo ou email + mot de passe.
@@ -43,7 +44,10 @@ class LoginView(APIView):
         stored_password = utilisateur.password
         valid = check_password(password, stored_password) or password == stored_password
         if not valid:
-            return Response({"detail": "Identifiants invalides."}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"detail": "Identifiants invalides."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         # Génération des tokens avec SimpleJWT
         refresh = RefreshToken.for_user(utilisateur)
@@ -54,7 +58,7 @@ class LoginView(APIView):
                 "refresh": str(refresh),
                 "access": str(access),
                 "utilisateur": self.request.build_absolute_uri(
-                    reverse('utilisateur-detail', kwargs={'uuid': utilisateur.uuid})
+                    reverse("utilisateur-detail", kwargs={"uuid": utilisateur.uuid})
                 ),
             },
             status=status.HTTP_200_OK,

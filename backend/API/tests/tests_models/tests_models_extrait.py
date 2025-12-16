@@ -14,7 +14,7 @@ class ExtraitTestCase(Neo4jTestCase):
             description="Un extrait de test",
             youtube_url="https://youtube.com/watch?v=abc123",
             vimeo_url="https://vimeo.com/123",
-            duree=120
+            duree=120,
         ).save()
 
         self.assertIsNotNone(extrait.uuid)
@@ -28,7 +28,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Extrait A",
             youtube_url="https://youtube.com/watch?v=test",
             vimeo_url="https://vimeo.com/test",
-            duree=60
+            duree=60,
         ).save()
 
         with self.assertRaises(UniqueProperty):
@@ -36,7 +36,7 @@ class ExtraitTestCase(Neo4jTestCase):
                 titre="Extrait B",
                 youtube_url="https://youtube.com/watch?v=test",
                 vimeo_url="https://vimeo.com/autre",
-                duree=30
+                duree=30,
             ).save()
 
         with self.assertRaises(UniqueProperty):
@@ -44,7 +44,7 @@ class ExtraitTestCase(Neo4jTestCase):
                 titre="Extrait C",
                 youtube_url="https://youtube.com/watch?v=autre",
                 vimeo_url="https://vimeo.com/test",
-                duree=30
+                duree=30,
             ).save()
 
     def test_update_description(self):
@@ -53,7 +53,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Extrait modif",
             youtube_url="https://youtube.com/watch?v=xyz",
             vimeo_url="https://vimeo.com/xyz",
-            duree=180
+            duree=180,
         ).save()
         extrait.description = "Nouvelle description"
         extrait.save()
@@ -67,7 +67,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="À supprimer",
             youtube_url="https://youtube.com/watch?v=del",
             vimeo_url="https://vimeo.com/del",
-            duree=90
+            duree=90,
         ).save()
         uuid = extrait.uuid
         extrait.delete()
@@ -80,7 +80,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Interview avec un artiste",
             youtube_url="https://youtube.com/watch?v=artist",
             vimeo_url="https://vimeo.com/artist",
-            duree=200
+            duree=200,
         ).save()
         artiste = Artiste(name="Angèle").save()
 
@@ -95,7 +95,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Question posée",
             youtube_url="https://youtube.com/watch?v=q1",
             vimeo_url="https://vimeo.com/q1",
-            duree=100
+            duree=100,
         ).save()
         question = Question(texte="Quel est ton parcours ?").save()
 
@@ -110,7 +110,7 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Extrait tagué",
             youtube_url="https://youtube.com/watch?v=tg1",
             vimeo_url="https://vimeo.com/tg1",
-            duree=150
+            duree=150,
         ).save()
         t1 = Tag(name="musique").save()
         t2 = Tag(name="interview").save()
@@ -127,12 +127,12 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Extrait interviewé",
             youtube_url="https://youtube.com/watch?v=int1",
             vimeo_url="https://vimeo.com/int1",
-            duree=210
+            duree=210,
         ).save()
         interview = Interview(titre="Interview de test").save()
 
         # Connect avec relation contenant la propriété position
-        extrait.interviews.connect(interview, {'position': 3})
+        extrait.interviews.connect(interview, {"position": 3})
 
         rels = extrait.interviews.relationship(interview)
         self.assertIsNotNone(rels)
@@ -144,9 +144,9 @@ class ExtraitTestCase(Neo4jTestCase):
             titre="Getter test",
             youtube_url="https://youtube.com/watch?v=getter",
             vimeo_url="https://vimeo.com/getter",
-            duree=300
+            duree=300,
         ).save()
         props = extrait.__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['titre'], "Getter test")
-        self.assertEqual(props['duree'], 300)
+        self.assertIn("uuid", props)
+        self.assertEqual(props["titre"], "Getter test")
+        self.assertEqual(props["duree"], 300)

@@ -7,5 +7,6 @@ class UtilisateurViewSet(BaseModelViewSet):
     """
     Renvoie les utilisateurs
     """
+
     def __init__(self, **kwargs):
         super().__init__(UtilisateurSerializer, Utilisateur, **kwargs)

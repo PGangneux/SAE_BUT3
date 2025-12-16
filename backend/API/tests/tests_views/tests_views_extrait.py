@@ -17,39 +17,41 @@ class ExtraitViewSetAPITests(Neo4jTestCase):
             description="Description 1",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=120
+            duree=120,
         ).save()
         self.extrait2 = Extrait(
             titre="Extrait Two",
             description="Description 2",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=90
+            duree=90,
         ).save()
 
     def test_list_extraits(self):
-        url = reverse('extrait-list')
+        url = reverse("extrait-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(any(e['uuid'] == self.extrait1.uuid for e in response.json()))
-        self.assertTrue(any(e['uuid'] == self.extrait2.uuid for e in response.json()))
+        self.assertTrue(any(e["uuid"] == self.extrait1.uuid for e in response.json()))
+        self.assertTrue(any(e["uuid"] == self.extrait2.uuid for e in response.json()))
 
     def test_search_extraits(self):
-        url = reverse('extrait-list') + "?search=Two"
+        url = reverse("extrait-list") + "?search=Two"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['uuid'], self.extrait2.uuid)
+        self.assertEqual(data[0]["uuid"], self.extrait2.uuid)
 
     def test_retrieve_extrait(self):
-        url = reverse('extrait-detail', kwargs={'uuid': self.extrait1.uuid})
+        url = reverse("extrait-detail", kwargs={"uuid": self.extrait1.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.extrait1.uuid)
+        self.assertEqual(response.json()["uuid"], self.extrait1.uuid)
 
     def test_retrieve_nonexistent_extrait(self):
-        url = reverse('extrait-detail', kwargs={'uuid': '00000000-0000-0000-0000-000000000000'})
+        url = reverse(
+            "extrait-detail", kwargs={"uuid": "00000000-0000-0000-0000-000000000000"}
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -64,7 +66,7 @@ class QuestionExtraitViewSetAPITests(Neo4jTestCase):
             description="Desc 1",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=150
+            duree=150,
         ).save()
         # <-- ici : titre sans le mot "Réponse" pour rendre la recherche univoque
         self.extrait2 = Extrait(
@@ -72,7 +74,7 @@ class QuestionExtraitViewSetAPITests(Neo4jTestCase):
             description="Desc 2",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=200
+            duree=200,
         ).save()
 
         # connexion des extraits à la question
@@ -80,34 +82,40 @@ class QuestionExtraitViewSetAPITests(Neo4jTestCase):
         self.extrait2.question.connect(self.question)
 
     def test_list_extraits_by_question(self):
-        url = reverse('extrait-list', kwargs={'question_uuid': self.question.uuid})
+        url = reverse("extrait-list", kwargs={"question_uuid": self.question.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(any(e['uuid'] == self.extrait1.uuid for e in response.json()))
-        self.assertTrue(any(e['uuid'] == self.extrait2.uuid for e in response.json()))
+        self.assertTrue(any(e["uuid"] == self.extrait1.uuid for e in response.json()))
+        self.assertTrue(any(e["uuid"] == self.extrait2.uuid for e in response.json()))
 
     def test_search_extraits_by_question(self):
-        url = reverse('extrait-list', kwargs={'question_uuid': self.question.uuid}) + "?search=Réponse"
+        url = (
+            reverse("extrait-list", kwargs={"question_uuid": self.question.uuid})
+            + "?search=Réponse"
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]['uuid'], self.extrait1.uuid)
+        self.assertEqual(data[0]["uuid"], self.extrait1.uuid)
 
     def test_retrieve_extrait_by_question(self):
-        url = reverse('extrait-detail', kwargs={
-            'question_uuid': self.question.uuid,
-            'uuid': self.extrait2.uuid
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={"question_uuid": self.question.uuid, "uuid": self.extrait2.uuid},
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.extrait2.uuid)
+        self.assertEqual(response.json()["uuid"], self.extrait2.uuid)
 
     def test_retrieve_nonexistent_extrait_by_question(self):
-        url = reverse('extrait-detail', kwargs={
-            'question_uuid': self.question.uuid,
-            'uuid': '00000000-0000-0000-0000-000000000000'
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "question_uuid": self.question.uuid,
+                "uuid": "00000000-0000-0000-0000-000000000000",
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -122,7 +130,7 @@ class InterviewExtraitViewSetAPITests(Neo4jTestCase):
             date=None,
             occasion="Occasion",
             description="Desc interview",
-            lieu="Lieu"
+            lieu="Lieu",
         ).save()
 
         # Création de deux extraits liés à l'interview avec positions différentes
@@ -131,55 +139,64 @@ class InterviewExtraitViewSetAPITests(Neo4jTestCase):
             description="Desc 2",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=110
+            duree=110,
         ).save()
         self.extrait_pos1 = Extrait(
             titre="Extrait position 1",
             description="Desc 1",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=95
+            duree=95,
         ).save()
 
         # Connexions avec la relation APPARTIENT_A et position
         # On met extrait_pos2 en position 2 et extrait_pos1 en position 1
-        self.extrait_pos2.interviews.connect(self.interview, {'position': 2})
-        self.extrait_pos1.interviews.connect(self.interview, {'position': 1})
+        self.extrait_pos2.interviews.connect(self.interview, {"position": 2})
+        self.extrait_pos1.interviews.connect(self.interview, {"position": 1})
 
     def test_list_extraits_by_interview_ordered(self):
-        url = reverse('extrait-list', kwargs={'interview_uuid': self.interview.uuid})
+        url = reverse("extrait-list", kwargs={"interview_uuid": self.interview.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
         # Vérifie que les deux extraits sont présents
-        self.assertTrue(any(e['uuid'] == self.extrait_pos1.uuid for e in data))
-        self.assertTrue(any(e['uuid'] == self.extrait_pos2.uuid for e in data))
+        self.assertTrue(any(e["uuid"] == self.extrait_pos1.uuid for e in data))
+        self.assertTrue(any(e["uuid"] == self.extrait_pos2.uuid for e in data))
         # Vérifie l'ordre par position (position 1 doit apparaître avant position 2)
         self.assertGreaterEqual(len(data), 2)
-        self.assertEqual(data[0]['uuid'], self.extrait_pos1.uuid)
-        self.assertEqual(data[1]['uuid'], self.extrait_pos2.uuid)
+        self.assertEqual(data[0]["uuid"], self.extrait_pos1.uuid)
+        self.assertEqual(data[1]["uuid"], self.extrait_pos2.uuid)
 
     def test_retrieve_extrait_by_interview(self):
-        url = reverse('extrait-detail', kwargs={
-            'interview_uuid': self.interview.uuid,
-            'uuid': self.extrait_pos2.uuid
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "interview_uuid": self.interview.uuid,
+                "uuid": self.extrait_pos2.uuid,
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.extrait_pos2.uuid)
+        self.assertEqual(response.json()["uuid"], self.extrait_pos2.uuid)
 
     def test_retrieve_nonexistent_extrait_by_interview(self):
-        url = reverse('extrait-detail', kwargs={
-            'interview_uuid': self.interview.uuid,
-            'uuid': '00000000-0000-0000-0000-000000000000'
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "interview_uuid": self.interview.uuid,
+                "uuid": "00000000-0000-0000-0000-000000000000",
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_interview_not_found_raises_NotFound(self):
-        url = reverse('extrait-list', kwargs={
-            'interview_uuid': str(uuid4()),
-        })
+        url = reverse(
+            "extrait-list",
+            kwargs={
+                "interview_uuid": str(uuid4()),
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -197,41 +214,44 @@ class TagExtraitViewSetAPITests(Neo4jTestCase):
             description="Desc tagué",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=80
+            duree=80,
         ).save()
         self.extrait_untagged = Extrait(
             titre="Extrait non tagué",
             description="Desc non tagué",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=70
+            duree=70,
         ).save()
 
         # Connexion du tag uniquement sur extrait_tagged
         self.extrait_tagged.tags_extrait.connect(self.tag)
 
     def test_list_extraits_by_tag(self):
-        url = reverse('extrait-list', kwargs={'tag_uuid': self.tag.uuid})
+        url = reverse("extrait-list", kwargs={"tag_uuid": self.tag.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        uuids = [e['uuid'] for e in response.json()]
+        uuids = [e["uuid"] for e in response.json()]
         self.assertIn(self.extrait_tagged.uuid, uuids)
         self.assertNotIn(self.extrait_untagged.uuid, uuids)
 
     def test_retrieve_extrait_by_tag(self):
-        url = reverse('extrait-detail', kwargs={
-            'tag_uuid': self.tag.uuid,
-            'uuid': self.extrait_tagged.uuid
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={"tag_uuid": self.tag.uuid, "uuid": self.extrait_tagged.uuid},
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.extrait_tagged.uuid)
+        self.assertEqual(response.json()["uuid"], self.extrait_tagged.uuid)
 
     def test_retrieve_nonexistent_extrait_by_tag(self):
-        url = reverse('extrait-detail', kwargs={
-            'tag_uuid': self.tag.uuid,
-            'uuid': '00000000-0000-0000-0000-000000000000'
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "tag_uuid": self.tag.uuid,
+                "uuid": "00000000-0000-0000-0000-000000000000",
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -249,40 +269,46 @@ class ArtisteExtraitViewSetAPITests(Neo4jTestCase):
             description="Desc artiste",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=140
+            duree=140,
         ).save()
         self.extrait_without_artist = Extrait(
             titre="Extrait sans artiste",
             description="Desc sans artiste",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=130
+            duree=130,
         ).save()
 
         # Connexion de l'artiste comme interviewer/participant sur extrait_with_artist
         self.extrait_with_artist.interviewer.connect(self.artiste)
 
     def test_list_extraits_by_artiste(self):
-        url = reverse('extrait-list', kwargs={'artiste_uuid': self.artiste.uuid})
+        url = reverse("extrait-list", kwargs={"artiste_uuid": self.artiste.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        uuids = [e['uuid'] for e in response.json()]
+        uuids = [e["uuid"] for e in response.json()]
         self.assertIn(self.extrait_with_artist.uuid, uuids)
         self.assertNotIn(self.extrait_without_artist.uuid, uuids)
 
     def test_retrieve_extrait_by_artiste(self):
-        url = reverse('extrait-detail', kwargs={
-            'artiste_uuid': self.artiste.uuid,
-            'uuid': self.extrait_with_artist.uuid
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "artiste_uuid": self.artiste.uuid,
+                "uuid": self.extrait_with_artist.uuid,
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.extrait_with_artist.uuid)
+        self.assertEqual(response.json()["uuid"], self.extrait_with_artist.uuid)
 
     def test_retrieve_nonexistent_extrait_by_artiste(self):
-        url = reverse('extrait-detail', kwargs={
-            'artiste_uuid': self.artiste.uuid,
-            'uuid': '00000000-0000-0000-0000-000000000000'
-        })
+        url = reverse(
+            "extrait-detail",
+            kwargs={
+                "artiste_uuid": self.artiste.uuid,
+                "uuid": "00000000-0000-0000-0000-000000000000",
+            },
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
