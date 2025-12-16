@@ -26,7 +26,7 @@ export default class mmch_CheminT extends mm_Node {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => new this(item)),
+            ...items.map(item => (infos) => new this(item)),
         ];
     }
 
@@ -40,7 +40,7 @@ export default class mmch_CheminT extends mm_Node {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.search(finalArgs);
         return [
-            ...items.map(item => new this(item)),
+            ...items.map(item => (infos) => new this(item)),
         ];
     }
 
@@ -54,7 +54,7 @@ export default class mmch_CheminT extends mm_Node {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => new this(item)),
+            ...items.map(item => (infos) => new this(item)),
         ];
     }
 

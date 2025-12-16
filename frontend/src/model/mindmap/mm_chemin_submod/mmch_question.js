@@ -16,7 +16,7 @@ export default class mmch_Question extends mmch_CheminT {
         return [
             new mmch_Extrait(null),
             new mmch_Theme(null),
-            ...items.map(item => new mmch_Question(item)),
+            ...items.map(item => (infos) => new mmch_Question(item)),
         ];
     }
 
@@ -26,7 +26,7 @@ export default class mmch_Question extends mmch_CheminT {
         return [
             new mmch_Extrait(null),
             new mmch_Theme(null),
-            ...items.map(item => new mmch_Question(item)),
+            ...items.map(item => (infos) => new mmch_Question(item)),
         ];
     }
 
@@ -35,7 +35,7 @@ export default class mmch_Question extends mmch_CheminT {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => new mmch_Question(item)),
+            ...items.map(item => (infos) => new mmch_Question(item)),
         ];
     }
 

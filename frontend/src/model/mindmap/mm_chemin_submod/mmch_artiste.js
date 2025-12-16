@@ -15,10 +15,10 @@ export default class mmch_Artiste extends mmch_CheminT {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_obj.extraits();
         return [
-            new mmch_Extrait(null),
-            new mmch_Nation(null),
-            new mmch_StyleMusical(null),
-            ...items.map(item => new mmch_Extrait(item)),
+            mmch_Extrait,
+            mmch_Nation,
+            mmch_StyleMusical,
+            ...items.map(item => (infos) => new mmch_Extrait(...infos ,content=item)),
         ];
     }
     async mmch_searchinst(args = {}) {
@@ -29,7 +29,7 @@ export default class mmch_Artiste extends mmch_CheminT {
             new mmch_Extrait(null),
             new mmch_Nation(null),
             new mmch_StyleMusical(null),
-            ...items.map(item => new mmch_Artiste(item)),
+            ...items.map(item => (infos) => new mmch_Artiste(item)),
         ];
     }
 
@@ -38,7 +38,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => new mmch_Artiste(item)),
+            ...items.map(item => (infos) => new mmch_Artiste(item)),
         ];
     }
 

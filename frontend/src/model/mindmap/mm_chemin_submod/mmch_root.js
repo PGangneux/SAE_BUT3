@@ -27,23 +27,11 @@ export default class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
 
     static async mmch_listcat(args = {}) {
-        const results = [];
-        for (const Category of mm_CategorysDefault) {
-            const items = await Category.mmch_listcat(args);
-            results.push(...items);
-        }
-        return results;
+        return mm_CategorysDefault
     }
 
-    static async mmch_searchcat(args = {}) {
-        const allCategories = [...mm_CategorysDefault, ...mm_CategorysSearch];
-        const results = [];
-
-        for (const Category of allCategories) {
-            const items = await Category.mmch_searchcat(args);
-            results.push(...items);
-        }
-        return results;
+    static async mmch_searchcat(args = {}){
+        return [...mm_CategorysDefault, ...mm_CategorysSearch];
     }
 
     static async mmch_previewcat(mminfo, parent, args = {}) {

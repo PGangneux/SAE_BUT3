@@ -132,7 +132,7 @@ export function set_children_pos(mminfo, root) {
     let childrenWithoutContent = 0;
 
     for (let child of root.childrens) {
-        if (child.category.mmch_hasMiniature()) {
+        if (child.mmch_hasMiniature()) {
             childrenWithPreview++;
         } else if (child.category.mmch_obj) {
             childrenWithContent++;
