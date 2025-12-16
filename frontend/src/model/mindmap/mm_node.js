@@ -1,6 +1,5 @@
 import Extrait from "../extrait.js";
 import Interview from "../interview.js";
-import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 import mm_Mindmap from "./mm_mindmap.js";
 
 export default class mm_Node {
@@ -22,12 +21,8 @@ export default class mm_Node {
     ispreview;
     /** @type {number} */
     origin_angle;
-    /** @type {mmch_CheminT} */
-    category;
     /** @type {boolean} */
     loading;
-    /** @type {String} */
-    thumbnailUrl;
     /** @type {mm_Mindmap} */
     mminfo; // Reference to mindmap instance
 
@@ -37,10 +32,8 @@ export default class mm_Node {
     * @param {number} x x pos
     * @param {number} y y pos
     * @param {number} depth depth
-    * @param {mmch_CheminT} category mindmap chemin class db category mmch_Artiste 
-    *                                if mmch_obj == null it represent the class itself else an instance of class
     */
-    constructor(mminfo, x, y, depth, category) {
+    constructor(mminfo, x, y, depth) {
         this.mminfo = mminfo;
         // Both start at same position initially
         this.x = x;
@@ -50,9 +43,7 @@ export default class mm_Node {
         this.depth = depth;
         this.origin_angle = null;
         this.childrens = [];
-        this.category = category;
         this.loading = false;
-        this.thumbnailUrl = null;
     }
 
     toJSON() {
@@ -64,10 +55,7 @@ export default class mm_Node {
             depth: this.depth,
             childrens: this.childrens,
             origin_angle: this.origin_angle,
-            category: this.category,
             loading: this.loading,
-            thumbnailUrl: this.thumbnailUrl,
-            // mminfo: this.mminfo
         };
     }
 
@@ -75,7 +63,7 @@ export default class mm_Node {
     getStyle() {
         // console.table(this.toJSON());
 
-        const isVideoContent = this.isVideoContent();
+        const isVideoContent = false; // this.isVideoContent();
         const nodeDimensions = isVideoContent ?
             { width: 300, height: 150 } : // Squircle dimensions
             { width: 100, height: 100 };  // Round dimensions
@@ -96,25 +84,6 @@ export default class mm_Node {
             "font-size": sizetext + "px",
             "line-height": (scaledHeight * 0.8) + "px",
         };
-    }
-
-    // Get thumbnail URL
-    async get_miniature() {
-        if (!this.content) return null;
-        if (this.thumbnailUrl) return this.thumbnailUrl;
-        try {
-            if (this.category === Extrait) {
-                this.thumbnailUrl = await this.category.mmch_getMiniature();
-            } else if (this.category == Interview) {
-                this.thumbnailUrl = await this.category.mmch_getMiniature();                
-            } else {
-                throw new Error("unreachable mm_node category isn't Extrait or Interview in get_miniature");
-            }
-        } catch (err) {
-            console.error("Erreur lors de la récupération de la miniature :", err);
-            return null;
-        }
-        return this.thumbnailUrl;
     }
 
     // Animate to target position

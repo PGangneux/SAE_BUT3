@@ -1,5 +1,5 @@
-// import mm_Node from "../mm_node";
-export default class mmch_CheminT {
+import mm_Node from "../mm_node.js";
+export default class mmch_CheminT extends mm_Node {
     static mmch_dbjsclass = null;
 
     static mmch_default_listcat_args = { limit: 5 };
@@ -12,11 +12,12 @@ export default class mmch_CheminT {
     static mmch_default_previewinst_args = { limit: 1 };
     mmch_obj;
 
-    constructor(inst = null) {
+    constructor(mminfo, x, y, depth,content=null) {
+        super(mminfo, x, y, depth + 1);
         if (new.target === mmch_CheminT) {
             throw new Error("Cannot instantiate abstract class mmch_CheminT");
         }
-        this.mmch_obj = inst;
+        this.mmch_obj = content;
     }
 
     static async mmch_listcat(args = {}) {

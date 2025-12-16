@@ -1,16 +1,16 @@
 import { videoStore } from '../videoStore.js';
 import { mm_draw_root, mm_draw_update } from "./mm_func.js";
 import mm_Linkage from "./mm_linkage.js";
-import mm_Node from './mm_node.js';
+import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 
 export default class mm_Mindmap {
     /** @type {Object} */
     vueobj;
     /** @type {Array[mm_Linkage]} */
     linkages;
-    /** @type {Array[mm_Node]} */
+    /** @type {Array[mmch_CheminT]} */
     nodes;
-    /** @type {Array[mm_Node]} */
+    /** @type {Array[mmch_CheminT]} */
     chemin;
     /** @type {Array[mm_Linkage]} */
     previewlinkages;

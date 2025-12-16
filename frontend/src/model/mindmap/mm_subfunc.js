@@ -1,12 +1,12 @@
 import { markRaw } from "vue";
+import router from "../../router.js";
+import Model from "../model.js";
 import mm_Mindmap from "./mm_mindmap.js";
+import mm_Linkage from "./mm_linkage.js";
+import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
 import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
 import mmch_Interview from "./mm_chemin_submod/mmch_interview.js";
-import router from "../../router.js";
-import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
-import mm_Node from "./mm_node.js";
-import mm_Linkage from "./mm_linkage.js";
 
 /**
     check video
@@ -83,15 +83,16 @@ export function mm_clean_preview(mminfo){
 /**
     utils to create a child node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @param {mm_Node} node the parent node  
+ * @param {mmch_CheminT} node the parent node  
  * @param {mmch_CheminT} category the class of node  
+ * @param {Model} content the content of the node  
  * @param {boolean} createLink = true do we draw the white line or not
  * @param {boolean} isPreview = false whether this is a preview node
- * @return {mm_Node} the created child
+ * @return {mmch_CheminT} the created child
 */
-export function mm_createChildNode(mminfo, node, category, createLink = true, isPreview = false) {
+export function mm_createChildNode(mminfo, node, category,content=null, createLink = true, isPreview = false) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
-    const tmp_child = new mm_Node(mminfo, node.x, node.y, node.depth + 1, category);
+    const tmp_child = new category(mminfo, node.x, node.y, node.depth + 1,content);
     node.childrens.push(markRaw(tmp_child));
     if (isPreview){
         mminfo.previewnodes.push(markRaw(tmp_child));
@@ -114,7 +115,7 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
 /**
  * pos the children of a node in a circle
  * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @param {mm_Node} root the root node to witch the children has been added
+ * @param {mmch_CheminT} root the root node to witch the children has been added
  */
 export function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant

@@ -45,8 +45,8 @@ function mm_reset(mminfo) {
     mm_draw_onecat(mminfo, root);
 }
 
-/* 
-    draw the categories of one node
+/**
+ * draw the categories of one node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mm_Node} node the root node to apply the new nodes to
 */
