@@ -68,7 +68,7 @@ export default {
             `${ClientAPI.BASE_URL}api/recommandations`,
             JSON.stringify({'weights': weights}),
             ClientAPI.current_user ? true : false,
-            video ? {'video': video} : null
+            video ? {'video': video, 'size': 10} : null
           )
           .then(
             json => {
@@ -106,43 +106,37 @@ export default {
 
     async extraits_interviews_current_artiste() {
       this.selected = "artiste";
-
-      const artistes_current_video = [];
-
-      if (this.interview) {
-        for (const extrait of this.liste_extraits_current_interview) {
-          const artiste = await extrait.artiste;
-          if (artiste && !artistes_current_video.includes(artiste)) {
-            artistes_current_video.push(artiste);
-          }
-        }
-      } else {
-        const artiste = await this.extrait.artiste;
-        if (artiste) artistes_current_video.push(artiste);
+      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
+      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
+      let weights;
+      if (false) {
+        weights = localStorage.getItem('weights');
+        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
+        localStorage.setItem('weights', JSON.stringify(weights));
       }
-
-      const extraits_artiste = new Map();
-      const interviews_artiste = new Map();
-
-      for (const artiste of artistes_current_video) {
-        const extraits_artiste_all = await artiste.extraits;
-
-        for (const un_extrait of extraits_artiste_all) {
-          extraits_artiste.set(un_extrait.uuid, un_extrait);
-
-          const interviews_extrait_all = await un_extrait.interviews;
-          for (const un_interview of interviews_extrait_all || []) {
-            interviews_artiste.set(un_interview.uuid, un_interview);
-          }
-        }
+      else {
+        weights = this.get_reco_weights(videoStore.chemin);
       }
-
-      const artiste_videos = [
-        ...extraits_artiste.values(),
-        ...interviews_artiste.values()
-      ];
-
-      this.videos = markRaw(artiste_videos);
+      const artiste = markRaw(await this.extrait.artiste);
+      this.videos = markRaw(
+        await ClientAPI.post(
+          `${ClientAPI.BASE_URL}api/recommandations`,
+          JSON.stringify({'weights': weights, 'filters': {'Artiste': artiste.uuid}}),
+          ClientAPI.current_user ? true : false,
+          video ? {'video': video, 'size': 10} : null
+        )
+        .then(
+          json => {
+            return json.map(
+              (v) => {
+                if (v.type == 'Extrait') { return markRaw( new Extrait(v.value) ); }
+                else { return markRaw( new Interview(v.value) ); }
+              }
+            );
+          }
+        )
+      );
+      
     },
     
 
@@ -209,10 +203,10 @@ export default {
         <nav class="header-nav">
             <ul class="menu">
               <li @click="current_reco" :class="{selected: selected === 'reco'}">Recomendation</li>
-              <li @click="extraits_interviews_current_artiste" :class="{selected: selected === 'artiste'}">Artiste</li>
-              <li @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <!--si la video est un extrait-->
+              <li v-if="this.interview === null" @click="extraits_interviews_current_artiste" :class="{selected: selected === 'artiste'}">Artiste</li>
               <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
+              <li v-if="this.interview === null" @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'playlists'}">Playlists</li>
               
             </ul>
