@@ -2,6 +2,7 @@
 import { markRaw, nextTick} from 'vue';
 import Interview from '../../../model/interview.js';
 import Tags from '../../../model/tag.js';
+import Model from "../../../model/model.js";
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
@@ -25,7 +26,8 @@ export default {
 
     try {
         for (let interview of this.interviews) {
-            this.dico_interviews[interview.uuid] = {"length": (await interview.extraits()).length, "tags": markRaw(await interview.tags())};
+            const extraits = await interview.extraits()
+            this.dico_interviews[interview.uuid] = {"length": extraits.length, "tags": markRaw(await interview.tags()), "duree": Model.format_duree(interview.get_duree(extraits))};
         }
 
         this.tags = markRaw(await Tags.list())
@@ -54,85 +56,71 @@ export default {
 
 <comp_baradmin/>
 
-<h1 class="text-center">Interview-Playlist</h1>
+<div class="main">
 
-<div class="grisee row " style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px; height: 100%; ">
-    
-    <div class="col-md-4 main-trie">
 
-        <div class="row ">
-            <RouterLink  to="/admin/interview/creer/" type="button" class="btn button-blanc col"> Ajouter un Playlist <img src="/imgs/add_black.svg" alt="add" class="col "> </RouterLink>
-        </div>
+    <h1 class="text-center">Playlist</h1>
 
-        
-        <div class="container col recherche">
-            <div class="search-bar">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
-                            <img src="/imgs/search.svg" alt="button search">
-                        </button>
-                </div>
+
+    <div class="header">
+        <div class="search-wrapper">
+            <div class="input-group input-group-sm">
+                <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search..."
+                    aria-label="Search"
+                >
+                <button class="btn buttonsearch" type="button">
+                    <img src="/imgs/search.svg" alt="button search">
+                </button>
             </div>
         </div>
 
-        <div class="row">
-            <button class="bt btn col ">Date</button>
-            <button class="bt btn col ">Name</button>
-        </div>
-
-        <div class="row  trie-tags centrer">
-
-            <p class="row pcentrer">Trier par tag</p>
-
-            <!--tagfully futur probleme-->
-
-            <ul class="scroller ultagger row tagsfully">
-                <li class="col padd" v-for="tag in this.tags">
-                    <button class="btn btn-primary"> {{ tag.name }} </button>
-                </li>
-            </ul>
-        </div>
+        <RouterLink
+            to="/admin/interview/creer/"
+            class="btn btn-outline-light btn-add"
+        >
+            Ajouter une Playlist
+            <img src="/imgs/add.svg" alt="add">
+        </RouterLink>
     </div>
 
-    <div class="col-md-6 recherche aggrandir">
-            <table class=" ultagger table tables  table-bordered">
-                <thead>
-                    <tr>
-                        <th class="btgrisv2" scope=" col">Nom interview</th>
-                        <th class="btgrisv2" scope=" col">Nb video</th>
-                        <th class="btgrisv2" scope=" col">Tags</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                        <tr class="col"  v-for="interview in this.interviews">
-                            
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </RouterLink></td>
-                                <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? tags_to_string(this.dico_interviews[interview.uuid]["tags"]) : null }} </RouterLink> </td>
-                            
+
+    <div class="row">
+        <div class="col-md-6 aggrandir">
+                <table class=" ultagger table  table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="btgrisv2" scope="col">Nom interview</th>
+                            <th class="btgrisv2" scope="col">Nombres d'extraits</th>
+                            <th class="btgrisv2" scope="col">Durée de l'interview (en minutes)</th>
+
                         </tr>
-                    
-                </tbody>
-            </table>
-        
+                    </thead>
+                    <tbody>
+                        
+                            <tr class="col"  v-for="interview in this.interviews">
+                                
+                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
+                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </RouterLink></td>
+                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["duree"] : null}} </RouterLink></td>
+                            </tr>
+                        
+                    </tbody>
+                </table>
+            
+        </div>
     </div>
-</div>
 
-    
+</div>
 
 </template>
 
 
 <style scoped>
-
-.scroller {
-    width: 300px;
-    height: 100vh;
-    overflow-y: scroll;
-    scrollbar-color: var(---blanc) #A6A6A6;
-    scrollbar-width: thin;
+.main{
+    margin: 2%;
 }
 
 .btgrisv2{
@@ -141,114 +129,16 @@ export default {
     padding: 1em;
 }
 
-.allmighty {
-  position: fixed;        
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); 
-  z-index: 9999;          
-  padding: 1em 2em;
-  border: 1em solid;
-  border-color: var(--vert-neon);
-  border-radius: 6px;
-  cursor: pointer;
-}
 
-.ultagger {
-    list-style-type: none;
-
-}
-
-.tables{
-    height: 1em;
-    width: 100%;
-}
-
-.bt{
-    color: var(--blanc);
-    background-color:var(--vert-pale);
-    border-radius: 2em;
-    
-}
-
-
-
-.button-blanc{
-    background-color: var(--blanc);
-}
-
-.grisee{
-  background-color: var(--gris-moyen);
-}
-
-.centrer{
-justify-content: center
-}
-
-
-.recherche{
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
-
-.pcentrer{
-margin-top: 1em;
-margin-bottom: 1em;
-justify-content: center
-}
-
-.tagsfully{
-    width: 100%;
-    height:100%;
-}
-
-.main-trie{
-    padding: 2em;
-    background-color: var(--gris-moyen);
-}
-
-.trie-tags{
-    background-color: var(--gris-taupe);
-    margin-top: 1em;
-}
-
-ul> li{
-
-    padding-bottom: 1em;
-
-}
 
 .aggrandir{
   display: flex;
   flex-wrap: nowrap;
   list-style-type: none;
   flex-grow: 1;
+  padding-top: 1em;
+  padding-bottom: 1em;
 
-}
-
-.search-bar {
-    max-width: 500px;
-    margin: auto auto;
-}
-
-.search-bar .input-group {
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar .form-control {
-    border: none;
-    padding-left: 20px;
-}
-
-.search-bar .btn {
-    border: none;
-    padding: 10px 20px;
-}
-
-.buttonsearch{
-    background-color: var(--vert-pale);
 }
 
 
@@ -264,6 +154,43 @@ tr{
 td {
   height: 50px;
 }
+
+
+
+/* ===== HEADER ===== */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5em;
+}
+
+/* ===== SEARCH ===== */
+.search-wrapper {
+    max-width: 300px; /* taille réduite */
+    flex-grow: 1;
+}
+
+.input-group-sm input {
+    font-size: 0.9rem;
+}
+
+.buttonsearch {
+    background-color: var(--vert-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== BOUTON AJOUT ===== */
+.btn-add {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
 
 </style>
 

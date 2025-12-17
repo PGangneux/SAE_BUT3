@@ -1,14 +1,15 @@
 from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import Question, Theme
 from ..errors import NotFound
 
 
-class QuestionSerializer(Base):
+class QuestionSerializer(BaseSerializer):
     """
     Sérializer du node Question
     """
+
     texte = serializers.CharField(required=True)
 
     # Inputs
@@ -26,13 +27,15 @@ class QuestionSerializer(Base):
         Renvoie un lien propre vers le theme :
         """
         theme = question.theme.single()
-        return self.get_url('theme-detail', kwargs={'uuid': theme.uuid}) if theme else None
+        return (
+            self.get_url("theme-detail", kwargs={"uuid": theme.uuid}) if theme else None
+        )
 
     def get_extraits(self, question):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.get_url('extrait-list', kwargs={'question_uuid': question.uuid})
+        return self.get_url("extrait-list", kwargs={"question_uuid": question.uuid})
 
     def create(self, validated_data):
         """

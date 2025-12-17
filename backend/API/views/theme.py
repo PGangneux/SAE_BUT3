@@ -7,5 +7,6 @@ class ThemeViewSet(BaseModelViewSet):
     """
     Renvoie les thèmes
     """
+
     def __init__(self, **kwargs):
         super().__init__(ThemeSerializer, Theme, **kwargs)

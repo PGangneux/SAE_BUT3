@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from ..models import Tag
-from ..serializers import Base
+from ..serializers import BaseSerializer
 
 
-class TagSerializer(Base):
+class TagSerializer(BaseSerializer):
     """
     Sérializer du node Tag
     """

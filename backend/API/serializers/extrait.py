@@ -1,18 +1,23 @@
 from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..errors import NotFound
 from ..models import Artiste, Extrait, Question
 
 
-class ExtraitSerializer(Base):
+class ExtraitSerializer(BaseSerializer):
     """
     Sérializer du node Extrait
     """
+
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    youtube_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
+    youtube_url = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     vimeo_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     uploaded_at = serializers.DateField(required=False, allow_null=True)
     duree = serializers.IntegerField(required=True)
@@ -39,40 +44,50 @@ class ExtraitSerializer(Base):
         Renvoie un lien propre vers l'artiste :
         """
         artiste = extrait.interviewer.single()
-        return self.get_url('artiste-detail', kwargs={'uuid': artiste.uuid}) if artiste else None
+        return (
+            self.get_url("artiste-detail", kwargs={"uuid": artiste.uuid})
+            if artiste
+            else None
+        )
 
     def get_question(self, extrait):
         """
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return self.get_url('question-detail', kwargs={'uuid': question.uuid}) if question else None
+        return (
+            self.get_url("question-detail", kwargs={"uuid": question.uuid})
+            if question
+            else None
+        )
 
     def get_interviews(self, extrait):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return self.get_url('interview-list', kwargs={'extrait_uuid': extrait.uuid})
+        return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.get_url('tag-list', kwargs={'extrait_uuid': extrait.uuid})
-    
+        return self.get_url("tag-list", kwargs={"extrait_uuid": extrait.uuid})
+
     def get_position(self, extrait):
-        interview = self.context.get('interview')
-        return int(db.cypher_query(
-            "MATCH (e:Extrait {uuid:$extrait_uuid})-[r:APPARTIENT_A]->(i:Interview {uuid:$interview_uuid}) RETURN r.position AS pos",
-            {'extrait_uuid': extrait.uuid, 'interview_uuid': interview.uuid}
-        )[0][0][0])
+        interview = self.context.get("interview")
+        return int(
+            db.cypher_query(
+                "MATCH (e:Extrait {uuid:$extrait_uuid})-[r:APPARTIENT_A]->(i:Interview {uuid:$interview_uuid}) RETURN r.position AS pos",
+                {"extrait_uuid": extrait.uuid, "interview_uuid": interview.uuid},
+            )[0][0][0]
+        )
 
     def create(self, validated_data):
         """
         Création d'un extrait
         """
         artiste_uuid = validated_data.pop("artiste_uuid", None)
-        question_uuid = validated_data.pop('question_uuid', None)
+        question_uuid = validated_data.pop("question_uuid", None)
 
         extrait = super().create(validated_data)
 
@@ -97,7 +112,7 @@ class ExtraitSerializer(Base):
         Modification d'un extrait
         """
         artiste_uuid = validated_data.pop("artiste_uuid", None)
-        question_uuid = validated_data.pop('question_uuid', None)
+        question_uuid = validated_data.pop("question_uuid", None)
 
         extrait = super().update(extrait, validated_data)
 

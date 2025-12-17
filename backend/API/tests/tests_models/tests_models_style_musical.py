@@ -25,8 +25,8 @@ class StyleMusicalTestCase(Neo4jTestCase):
         self.assertEqual(style.name, "Blues")
         # Accès via .__dict__ ou .properties
         props = style.__properties__
-        self.assertEqual(props['name'], "Blues")
-        self.assertIsNotNone(props['uuid'])
+        self.assertEqual(props["name"], "Blues")
+        self.assertIsNotNone(props["uuid"])
 
     def test_update_property(self):
         """Test la mise à jour d'une propriété"""

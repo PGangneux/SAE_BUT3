@@ -14,7 +14,7 @@ class InterviewTestCase(Neo4jTestCase):
             date=date(2024, 5, 20),
             occasion="Festival",
             description="Description test",
-            lieu="Paris"
+            lieu="Paris",
         ).save()
 
         self.assertIsNotNone(iv.uuid)
@@ -63,7 +63,7 @@ class InterviewTestCase(Neo4jTestCase):
         # Vérifie relation avant suppression
         result_before, _ = db.cypher_query(
             "MATCH (i:Interview {uuid:$uuid})-[:TAGS_INTERVIEW]->(t:Tag) RETURN count(t)",
-            {'uuid': iv.uuid}
+            {"uuid": iv.uuid},
         )
         self.assertEqual(int(result_before[0][0]), 1)
 
@@ -76,7 +76,7 @@ class InterviewTestCase(Neo4jTestCase):
         # Mais plus de relation depuis une interview vers ce tag
         result_after, _ = db.cypher_query(
             "MATCH (:Interview)-[:TAGS_INTERVIEW]->(t:Tag {name:$name}) RETURN count(*)",
-            {'name': 'sport'}
+            {"name": "sport"},
         )
         self.assertEqual(int(result_after[0][0]), 0)
 
@@ -101,6 +101,6 @@ class InterviewTestCase(Neo4jTestCase):
         """Accès aux propriétés via __properties__"""
         iv = Interview(titre="PropsTest", date=date(2025, 1, 1), description="D").save()
         props = iv.__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['titre'], "PropsTest")
-        self.assertEqual(props['description'], "D")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["titre"], "PropsTest")
+        self.assertEqual(props["description"], "D")

@@ -7,5 +7,14 @@ class RegarderExtraitsViewSet(BaseRelationShipViewSet):
     """
     Renvoie les extraits qui ont été regardé par l'utilisateur
     """
+
     def __init__(self, **kwargs):
-        super().__init__(RegarderExtraitsSerializer, Extrait, 'utilisateur_uuid', Utilisateur, 'REGARDER_EXTRAITS', 'title', **kwargs)
+        super().__init__(
+            RegarderExtraitsSerializer,
+            Extrait,
+            "utilisateur_uuid",
+            Utilisateur,
+            "REGARDER_EXTRAITS",
+            "title",
+            **kwargs
+        )

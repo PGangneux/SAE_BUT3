@@ -14,7 +14,7 @@ class QuestionTestCase(Neo4jTestCase):
         # db_property='name' => propriété stockée sous 'name'
         self.assertEqual(q.texte, "Quel est ton style ?")
         props = q.__properties__
-        self.assertEqual(props['texte'], "Quel est ton style ?")
+        self.assertEqual(props["texte"], "Quel est ton style ?")
 
     def test_unique_texte_constraint(self):
         """Le texte doit être unique"""
@@ -54,8 +54,8 @@ class QuestionTestCase(Neo4jTestCase):
         self.assertEqual(found[0].texte, "Q1")
 
         props = found[0].__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['texte'], "Q1")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["texte"], "Q1")
 
     def test_relation_theme_connect_and_replace(self):
         """Connecter une Theme (A_THEME), vérifier, remplacer et déconnecter"""
@@ -90,7 +90,7 @@ class QuestionTestCase(Neo4jTestCase):
         # Vérifie relation avant suppression
         result_before, _ = db.cypher_query(
             "MATCH (q:Question {uuid:$uuid})-[:A_THEME]->(t:Theme) RETURN count(t)",
-            {'uuid': q.uuid}
+            {"uuid": q.uuid},
         )
         self.assertEqual(int(result_before[0][0]), 1)
 
@@ -104,6 +104,6 @@ class QuestionTestCase(Neo4jTestCase):
         # Plus aucune relation depuis une question vers ce theme
         result_after, _ = db.cypher_query(
             "MATCH (:Question)-[:A_THEME]->(t:Theme {name:$name}) RETURN count(*)",
-            {'name': 'Histoire'}
+            {"name": "Histoire"},
         )
         self.assertEqual(int(result_after[0][0]), 0)
