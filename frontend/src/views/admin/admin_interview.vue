@@ -216,6 +216,10 @@ export default {
             this.chargement = true;
             try {
                 this.current_interview.titre = this.titre;
+                // if(this.titre === ''){
+                // //     throw new Error("Le titre est obligatoire")
+                //     this.current_interview.titre = null;
+                // }
                 this.current_interview.description = this.description;
                 this.current_interview.occasion = this.occasion;
 
@@ -238,9 +242,14 @@ export default {
                 window.location.href = `/admin/interview/${this.current_interview.uuid}`;
 
             } catch (error) {
-                console.error('Erreur lors de la sauvegarde:', error);
-                this.message_error = error;
+                console.log(error.response)
+                console.error('Erreur lors de la sauvegarde:', error.toString());
+                this.message_error = error.toString();
                 this.popupError = true;
+                // setTimeout(()=>{
+                //     this.popupError = false;
+                // },7)
+                this.chargement = false;
             } finally {
                 this.chargement = false;
             }
@@ -371,7 +380,7 @@ export default {
         />
 
         <div class="bottom_button">
-            <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light">
+            <RouterLink to="/admin/extrait/" class="btn btn-outline-light">
                 <img src="/imgs/add.svg" alt="add"> Ajouter un Extrait
             </RouterLink>
             <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light">

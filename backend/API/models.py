@@ -2,7 +2,7 @@ from neomodel import (
     StructuredNode, StringProperty, DateProperty, UniqueIdProperty,
     IntegerProperty, RelationshipTo, StructuredRel,
     DateTimeProperty, ZeroOrMore, BooleanProperty,
-    ZeroOrOne
+    ZeroOrOne, RegexProperty, EmailProperty
 )
 from datetime import date
 
@@ -46,7 +46,7 @@ class Interview(StructuredNode):
     Noeud Interview
     """
     uuid = UniqueIdProperty()
-    titre = StringProperty(index=True)
+    titre = RegexProperty(unique_index=True, expression=r".+")
     date = DateProperty(index=True)
     occasion = StringProperty()
     description = StringProperty()
@@ -60,10 +60,10 @@ class Extrait(StructuredNode):
     Noeud Extrait
     """
     uuid = UniqueIdProperty()
-    titre = StringProperty()
+    titre = RegexProperty(unique_index=True, expression=r".+")
     description = StringProperty()
-    youtube_url = StringProperty(unique_index=True)
-    vimeo_url = StringProperty(unique_index=True)
+    youtube_url = StringProperty()
+    vimeo_url = StringProperty()
     uploaded_at = DateProperty(default=date.today())
     duree = IntegerProperty(required=True) # Nombre de seconde
 
@@ -97,10 +97,10 @@ class Utilisateur(StructuredNode):
     Noeud Utilisateur
     """
     uuid = UniqueIdProperty()
-    pseudo = StringProperty(unique_index=True, required=True)
-    prenom = StringProperty(required=True)
-    nom = StringProperty(required=True)
-    email = StringProperty(required=True, unique_index=True)
+    pseudo = RegexProperty(unique_index=True, required=True, expression=r".+")
+    prenom = RegexProperty(required=True, expression=r".+")
+    nom = RegexProperty(required=True, expression=r".+")
+    email = EmailProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
     is_admin = BooleanProperty(default=False)
 
@@ -115,11 +115,11 @@ class Nation(StructuredNode):
     Noeud Nation
     """
     uuid = UniqueIdProperty()
-    name = StringProperty(required=True, unique_index=True)
+    name = RegexProperty(required=True, expression=r".+")
 
 class Tag(StructuredNode):
     """
     Noeud Tag
     """
     uuid = UniqueIdProperty()
-    name = StringProperty(required=True, unique_index=True)
+    name = RegexProperty(required=True, expression=r".+")

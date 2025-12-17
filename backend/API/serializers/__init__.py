@@ -4,9 +4,9 @@ from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
 from neomodel import StructuredNode, RelationshipTo, db
-from neomodel.exceptions import UniqueProperty, DoesNotExist
+from neomodel.exceptions import UniqueProperty, DoesNotExist, DeflateError
 from ..models import Tag, Utilisateur
-from ..errors import ContextError, NotFound, ValidatorUnique
+from ..errors import ContextError, NotFound, ValidatorUnique, ValidatorRequired
 
 
 class Base(serializers.Serializer):
@@ -21,6 +21,7 @@ class Base(serializers.Serializer):
         return request.build_absolute_uri(reverse(url_name, kwargs=kwargs))
 
     def create(self, validated_data: dict) -> StructuredNode:
+        print(validated_data)
         instance: StructuredNode = self.Node(**validated_data)
         try:
             instance.save()
@@ -31,6 +32,9 @@ class Base(serializers.Serializer):
                     str(error.message), re.IGNORECASE
                     ).group("prop")
                 )
+        except DeflateError as error:
+            print()
+            raise ValidatorRequired(error.property_name)
         return instance
 
     def update(self, instance: StructuredNode, validated_data: dict) -> StructuredNode:
@@ -45,6 +49,8 @@ class Base(serializers.Serializer):
                     str(error.message), re.IGNORECASE
                     ).group("prop")
                 )
+        except DeflateError as error:
+            raise ValidatorRequired(error.property_name)
         return instance
 
 
