@@ -16,4 +16,11 @@ class BaseModelViewSet(BaseGenericViewSet, ModelViewSet):
         search_field: str = None,
         **kwargs
     ):
+        """ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
+
+        Args:
+            serializer_class (Serializer): Serializer du ViewSet
+            model_class (StructuredNode): type de node du ViewSet
+            search_field (str, optional): Champ utiliser pour la recherche si fourni. Defaults to None.
+        """
         super().__init__(serializer_class, model_class, search_field, **kwargs)

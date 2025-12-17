@@ -16,10 +16,14 @@ from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
+    """
+    Permet de charger la base de données avec des données de test
+    """
+
     help = "Charge la base de données avec des données simples"
 
     def handle(self, *args, **options):
-        results, headers = db.cypher_query("MATCH (n) detach delete n")
+        db.cypher_query("MATCH (n) detach delete n")
         self.stdout.write(self.style.SUCCESS("Base de données supprimé"))
         theme = Theme(uuid=1, name="Thème 1", description="Thème de test n°1").save()
         question = Question(uuid=1, texte="Question 1").save()
