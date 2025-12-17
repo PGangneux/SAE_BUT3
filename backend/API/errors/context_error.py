@@ -4,7 +4,9 @@ from neomodel import StructuredNode
 
 class ContextError(ValidationError):
     """
-    Erreur, code status et message pour erreur de contexte
+    Erreur dans le context
+    Node de context manquant
+    La vue demande un node dans le context mais n'en ressoit pas
     """
 
     def __init__(self, Class: StructuredNode = None):

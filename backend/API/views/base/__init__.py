@@ -1,3 +1,7 @@
+"""
+Ensemble des classes ViewSet contenant les méthodes génériques utilisé par leurs classes enfants
+"""
+
 from .base_generic import BaseGenericViewSet
 from .base_viewset import BaseModelViewSet
 from .sub_base_viewset import SubBaseModelViewSet

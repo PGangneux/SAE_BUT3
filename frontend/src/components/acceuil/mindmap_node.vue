@@ -1,181 +1,165 @@
 <script>
-import { mmInfo, mmLegendClassMap, mmNode } from "../../model/mindmap/mindmap_base.js";
+import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
 
 export default {
     name: "mindmap_node",
     props: {
-        node: {
-            type: mmNode,
+        node_instance: {
+            type: Object,
             required: true,
         },
-        mminfo: {
-            type: mmInfo,
-            required: true,
-        }
     },
     data() {
         return {
-            mmLegendClassMap: mmLegendClassMap,
-            thumbnailUrl: null,
+            mm_LegendClassMap: mm_LegendClassMap,
             thumbnailLoading: false,
             isAppearing: true,
-            // Default dimensions for different node types
-            nodeDimensions: {
-                default: { width: 100, height: 100 },
-                squircle: { width: 300, height: 150 }, // Adjust based on your design
-                round: { width: 100, height: 100 }
-            }
+            thumbnailUrl: null,
+            nodeTitle: 'Inconnue',
+            nodeDescription: [],
+            hasMiniature: false,
         };
     },
-    computed: {
-        isVideoContent() {
-            return this.node.content && (this.node.category.name === 'Extrait' || this.node.category.name === 'Interview');
+    methods: {
+        hasContent() {
+            // Safe check for content - handles markRaw objects
+            return this.node_instance.mmch_obj !== null && 
+                   this.node_instance.mmch_obj !== undefined;
         },
-        currentNodeDimensions() {
-            if (this.isVideoContent) {
-                return this.nodeDimensions.squircle;
+        async loadNodeData() {
+            // console.log("loading ", this.node_instance, this.node_instance.mmch_obj);
+            
+            // Use the safe hasContent method
+            if (this.hasContent()) {
+                try {
+                    this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Inconnue';
+                } catch (error) {
+                    console.error('Failed to load title:', error);
+                    this.nodeTitle = 'Inconnue';
+                }
             }
-            return this.nodeDimensions.round;
+
+            // Check if has miniature
+            this.thumbnailLoading = true;
+            try {
+                this.hasMiniature = await this.node_instance.mmch_hasMiniature();
+            } catch (error) {
+                console.error('Failed to check miniature:', error);
+                this.hasMiniature = false;
+            }
+
+            // Load miniature if available
+            if (this.hasMiniature) {
+                try {
+                    this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
+                } catch (error) {
+                    console.error('Failed to load thumbnail:', error);
+                    this.thumbnailUrl = null;
+                }
+            }
+            this.thumbnailLoading = false;
+
+            // Load description if available - fixed: check mmch_obj not content
+            if (this.hasContent() && this.hasMiniature) {
+                try {
+                    this.nodeDescription = await this.node_instance.mmch_getDescription();
+                } catch (error) {
+                    console.error('Failed to load description:', error);
+                    this.nodeDescription = [];
+                }
+            }
         }
     },
-    methods: {
-        getStyle() {
-            const baseWidth = this.currentNodeDimensions.width;
-            const baseHeight = this.currentNodeDimensions.height;
-            
-            const scaledWidth = baseWidth * this.mminfo.scale;
-            const scaledHeight = baseHeight * this.mminfo.scale;
-            const sizetext = 20 * this.mminfo.scale;
-            
-            // Calculate position - adjust for node center
-            const scaledX = (this.node.x * this.mminfo.scale) - (scaledWidth / 2);
-            const scaledY = (this.node.y * this.mminfo.scale) - (scaledHeight / 2);
-            
-            return {
-                "left": (scaledX + this.mminfo.offx) + "px",
-                "top": (scaledY + this.mminfo.offy) + "px",
-                "width": scaledWidth + "px",
-                "height": scaledHeight + "px",
-                "font-size": sizetext + "px",
-                "line-height": (scaledHeight * 0.8) + "px", // Adjust line-height based on height
-            };
+    computed: {
+        nodeSubtitle() {
+            return this.mm_LegendClassMap[this.node_instance.constructor.name] || 'Inconnue';
         },
+        nodeClass() {
+            const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
+            const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
+            const appearingClass = this.isAppearing ? 'mm_node_appearing' : '';
 
-        async get_miniature() {
-            if (!this.node.content) return null;
-            if (this.thumbnailUrl) return this.thumbnailUrl;
-            // await new Promise(resolve => { setTimeout(resolve, 1000); });
-
-            try {
-                // Cas 1 : c'est un extrait
-                if (this.node.category.name === 'Extrait') {
-                    return (this.node.content.url_miniature_yt
-                        /// await video.get_url_miniature_vimeo() || 
-                    );
-                }
-
-                // Cas 2 : c'est une interview
-                const extraits = await this.node.content.extraits();
-                if (!extraits || extraits.length === 0) {
-                    console.warn(`Aucun extrait trouvé pour l'interview ${this.node.content}`);
-                    return null;
-                }
-
-                const firstExtrait = extraits[0];
-
-                return (
-                    firstExtrait.url_miniature_yt
-                    /// await firstExtrait.get_url_miniature_vimeo() || 
-                );
-
-            } catch (err) {
-                console.error("Erreur lors de la récupération de la miniature :", err);
-                return null;
-            }
+            return `${baseClass} ${shapeClass} ${appearingClass}`;
         },
-    },
-    watch: {
-        'node.loading': {
-            async handler() {
-                if (this.isVideoContent) {
-                    this.thumbnailLoading = true;
-                    this.get_miniature().then(value => {
-                        this.thumbnailUrl = value;
-                        this.thumbnailLoading = false;
-                    }).catch(error => {
-                        console.error(error);
-                        this.thumbnailLoading = false;
-                    });
-                }
-            },
-            deep: true
+        // Computed property for safe content checking in template
+        hasContentComputed() {
+            return this.hasContent();
         }
     },
     async mounted() {
         setTimeout(() => {
             this.isAppearing = false;
         }, 50);
-        if (this.isVideoContent) {
-            this.thumbnailLoading = true;
-            this.get_miniature().then(value => {
-                this.thumbnailUrl = value;
-                this.thumbnailLoading = false;
-            }).catch(error => {
-                console.error(error);
-                this.thumbnailLoading = false;
-            });
-        }
+        
+        // Load all async data
+        await this.loadNodeData();
     },
 }
 </script>
 
 <template>
-    <div class="mm_node"
-        :class="`mmLegendColorMap${node.category.name} mm_node${isVideoContent ? 'Squircle' : 'Round'} ${isAppearing ? 'mm_node_appearing' : ''}`"
-        :style="getStyle()">
+    <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
         <div style="display: none;">
-            {{ this.node }}
+            thumbnailLoading {{ thumbnailLoading }}
+            isAppearing {{ isAppearing }}
+            thumbnailUrl {{ thumbnailUrl }}
+            nodeTitle {{ nodeTitle }}
+            nodeDescription {{ nodeDescription }}
+            hasMiniature {{ hasMiniature }}
+            hasContent {{ hasContentComputed }}
+            node_instance {{ node_instance.toJSON() }}
         </div>
-        <template v-if="node.loading" class="mm_node_loading-spinner">
-            <img src="/imgs/spinner.gif" alt="Loading..." />
-        </template>
-        <template v-else>
-            <template v-if="!node.content">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">{{ mmLegendClassMap[node.category.name] }}</p>
-                </div>
-            </template>
-            <template v-else-if="node.content && !isVideoContent">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">
-                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
-                    </p>
-                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
-                </div>
-            </template>
-            <template v-if="node.content && isVideoContent">
-                <div class="mm_node_content">
-                    <p class="mm_node_title">
-                        {{ node.content.name || node.content.titre || 'nom Inconnue' }}
-                    </p>
-                    <p class="mm_node_subtitle">{{ mmLegendClassMap[node.category.name] }}</p>
-                    <div class="mm_node_description">
-                        <p>uploaded_at : {{ this.node.content.uploaded_at }}</p>
-                        <p>duree : {{ this.node.content.duree }}</p>
-                    </div>
-                </div>
-                <div class="mm_node_preview">
-                    <template v-if="thumbnailLoading">
-                        <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
-                    </template>
-                    <template v-else-if="thumbnailUrl">
-                        <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
-                    </template>
-                    <template v-else>
-                        <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
-                    </template>
-                </div>
+
+        <!-- Case 1: No content -->
+        <template v-if="!hasContentComputed">
+            <div class="mm_node_content">
+                <p class="mm_node_title">{{ nodeSubtitle }}</p>
+                <template v-if="node_instance.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
+            </div>
+        </template>
+
+        <!-- Case 3: Has content and miniature -->
+        <template v-else-if="hasContentComputed && hasMiniature">
+            <div class="mm_node_content">
+                <p class="mm_node_title">
+                    {{ nodeTitle }}
+                </p>
+                <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
+                <div class="mm_node_description">
+                    <p v-for="(line, index) in nodeDescription" :key="index">
+                        {{ line }}
+                    </p>
+                </div>
+                <template v-if="node_instance.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+                </template>
+            </div>
+            <div class="mm_node_preview">
+                <template v-if="thumbnailLoading">
+                    <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
+                </template>
+                <template v-else-if="thumbnailUrl">
+                    <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                </template>
+                <template v-else>
+                    <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
+                </template>
+            </div>
+        </template>
+
+        <!-- Case 2: Has content but no miniature -->
+        <template v-else-if="hasContentComputed && !hasMiniature">
+            <div class="mm_node_content">
+                <p class="mm_node_title">
+                    {{ nodeTitle }}
+                </p>
+                <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
+                <template v-if="node_instance.loading">
+                    <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
+                </template>
+            </div>
         </template>
     </div>
 </template>
@@ -197,7 +181,6 @@ export default {
     transform: scale(0);
     opacity: 0;
     overflow: hidden;
-    /* Remove fixed max-height as it's now controlled by dimensions */
 }
 
 .mm_node:not(.mm_node_appearing) {

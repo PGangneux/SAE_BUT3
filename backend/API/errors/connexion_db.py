@@ -3,6 +3,11 @@ from rest_framework import status
 
 
 class ConnexionDB(APIException):
+    """
+    Erreur de connexion à la base de données
+    Base de données indisponible
+    """
+
     def __init__(self):
         super().__init__(
             {"DataBase Connexion Failed": "Retry After"},

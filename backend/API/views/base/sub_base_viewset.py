@@ -23,6 +23,17 @@ class SubBaseModelViewSet(BaseModelViewSet):
         ordered_by: str = None,
         **kwargs,
     ):
+        """Classe de base pour les ModelViewSets de sous endpoints
+
+        Args:
+            serializer_class (Serializer): Serializer du ViewSet
+            model_class (StructuredNode): type de node du ViewSet
+            router_lookup_field (str): nom du champ à récupérer dans l'url pour avoir le node de context
+            router_model_class (StructuredNode): type de node du context du ViewSet
+            relationship (str): nom de la relation entre le node et le node de context
+            search_field (str, optional): Champ utiliser pour la recherche si fourni. Defaults to None.
+            ordered_by (str, optional): Champ utiliser pour ordonner le queryset par défaut. Defaults to None.
+        """
         super().__init__(serializer_class, model_class, search_field, **kwargs)
         self.router_lookup_field: str = router_lookup_field
         self.router_model_class: StructuredNode = router_model_class
@@ -43,9 +54,9 @@ class SubBaseModelViewSet(BaseModelViewSet):
                         uuid[0]
                         for uuid in db.cypher_query(
                             # Requête CYPHER
-                            f"MATCH (n:{self.model_class.__name__})-[:{self.relationship}]-\
+                            f"MATCH (n:{self.model_class.__name__})-[r:{self.relationship}]-\
                         (:{str(self.router_model_class.__name__)} "
-                            + "{uuid: $uuid}) RETURN n.uuid",
+                            + "{uuid: $uuid}) RETURN n.uuid" + (f" ORDER BY {self.ordered_by} DESC" if self.ordered_by else ""),
                             {"uuid": self.kwargs[self.router_lookup_field]},
                         )[0]
                     ]
