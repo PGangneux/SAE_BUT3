@@ -32,7 +32,7 @@ export default class mmch_Interview extends mmch_CheminT {
         ];
     }
 
-    async mmch_previewinst(mminfo, parent, args = {}) {
+    async mmch_previewinst(mminfo, args = {}) {
         const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);

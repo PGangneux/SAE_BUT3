@@ -40,52 +40,65 @@ function mm_reset(mminfo) {
     mminfo.previewnodes = [];
 
     // create root
-    let root = new mmch_Root(mminfo, 0, 0, 0,null);
+    let root = new mmch_Root(mminfo, 0, 0, 0, null);
     mminfo.nodes.push(root);
-    mm_draw_onecat(mminfo, root);
+    mm_draw_onecat(mminfo, root, true);
 }
 
 /**
  * draw the categories of one node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT} node the root node to apply the new nodes to
+ * @param {boolean?} createLink? = true do we draw the white line or not
+ * @param {boolean?} isPreview? = false whether this is a preview node
 */
-async function mm_draw_onecat(mminfo, node) {
+async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false) {
     // 0. safe Guards
     // Video / preview-only nodes never expand
     console.log(node);
     if (node.ispreview) return;
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
-    const current_maxdepth = mminfo.chemin.length-1;
-        node.loading = true;
+    node.loading = true;
     try {
-        if (node.mmch_obj){
+        if (node.ispreview){
+            if (node.mmch_obj) {
+                // ─────────────────────────────
+                // 3a. expand PREVIEW NODE with CONTENT
+                // ─────────────────────────────
+                // do nothing
+                ;
+            } else {
+                // ─────────────────────────────
+                // 3b. expand PREVIEW NODE without content
+                // ─────────────────────────────
+                await node.mmch_previewinst(mminfo);
+            }
+        }
+        else if (node.mmch_obj) {
             // ─────────────────────────────
-            // 2. CONTENT NODE → CATEGORIES
+            // 1b. CONTENT NODE → CATEGORIES
             // ─────────────────────────────
-            
+        } else {
             // ─────────────────────────────
-            // 3. CONTENT NODE → PREVIEW
+            // 1a. CATEGORY NODE → CONTENT
             // ─────────────────────────────
-    } else {
-            // ─────────────────────────────
-            // 1. CATEGORY NODE → CONTENT
-            // ─────────────────────────────
-            const getnodefunc = mminfo.searchval ? 
+            const getnodefunc = mminfo.searchval ?
                 () => node.constructor.mmch_searchcat() :
                 () => node.constructor.mmch_listcat();
             getnodefunc().then(async catnodes => {
-                console.log(catnodes);
-                
                 catnodes.forEach(catnode => {
-                    console.log(catnode);
-                    
-                    mm_createChildNode(mminfo, node, catnode,null);
+                    mm_createChildNode(mminfo, node, catnode, null, createLink, isPreview);
                 });
             });
-        } 
+        }
+        if (node.depth < mminfo.chemin.length-1) {
+            // ─────────────────────────────
+            // 2. DRAW previes of subcategories
+            // ─────────────────────────────
+            Promise.all();
+        }
     } catch (err) {
         console.error("mm_draw_onecat error:", err);
-            }
-            node.loading = false;
+    }
+    node.loading = false;
 }

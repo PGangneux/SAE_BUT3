@@ -58,7 +58,7 @@ export default class mmch_CheminT extends mm_Node {
         ];
     }
 
-    async mmch_previewinst(mminfo, parent, args = {}) {
+    async mmch_previewinst(mminfo, args = {}) {
         throw new Error("mmch_previewinst must be defined in child");
     }
 

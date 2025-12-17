@@ -18,7 +18,7 @@ export default class mm_Node {
     /** @type {Array[mm_Node]} */
     childrens;
     /** @type {boolean} */
-    ispreview = false;
+    ispreview;
     /** @type {number} */
     origin_angle = null;
     /** @type {boolean} */
@@ -32,8 +32,9 @@ export default class mm_Node {
     * @param {number} x x pos
     * @param {number} y y pos
     * @param {number} depth depth
+    * @param {boolean} ispreview is a preview node
     */
-    constructor(mminfo, x, y, depth) {
+    constructor(mminfo, x, y, depth,ispreview = false) {
         this.mminfo = mminfo;
         // Both start at same position initially
         this.x = x;
@@ -42,6 +43,7 @@ export default class mm_Node {
         this.targetY = y;
         this.depth = depth;
         this.childrens = [];
+        this.ispreview = ispreview;
     }
 
     toJSON() {
