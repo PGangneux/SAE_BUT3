@@ -48,56 +48,9 @@ export default {
             tagsToDisconnect: [],
             tagsToCreate: [],  
         };
-    }
+    },
     
-    ,computed: {
-      youtubeUrl: {
-        get() {
-          if(this.current_extrait?.youtube_url != null){
-            return 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url;
-          }else if (this.current_extrait?.youtube_url == null){
-            return '';
-          }else{
-            return 'erreur...';
-          }
-         
-        },
-        set(value) {
-          const id = value.split('v=')[1];
-          if (id) this.current_extrait.youtube_url = id;
-        }
-      },
-
-      vimeoUrl: {
-        get() {
-
-          if(this.current_extrait?.vimeo_url != null){
-            return 'https://vimeo.com/' + this.current_extrait.vimeo_url;
-          }else if (this.current_extrait?.vimeo_url == null){
-            return '';
-          }else{
-            return 'erreur...';
-          }
-
-          
-        },
-        set(value) {
-          const id = value.split('/').pop();
-          if (id) this.current_extrait.vimeo_url = id;
-        }
-      },
-      description : {
-         get() {
-          return this.current_extrait?.description ? this.current_extrait.description : 'Chargement...';
-        },
-      },
-
-      question : {
-         get() {
-          return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
-        },
-      }
-  },
+    
 
 
   methods: {
@@ -142,6 +95,20 @@ export default {
             console.error('Erreur lors de la sauvegarde des tags:', error);
             throw error;
         }
+    },
+
+    creerNouveauArtiste(){
+      const newArtiste = new Artiste({});
+
+      if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
+        newArtiste.name = this.laselectedArtiste;
+        newArtiste.create()
+        this.listeArtiste.add(newArtiste);
+
+      }else{
+        console.log('artiste existe deja');
+      }
+      
     },
 
 
@@ -242,23 +209,106 @@ export default {
       
     },
 
+    async validateYouTubeVideo(url) {
+      // Extraire l'ID YouTube
+      if ((this.get_YT_videoId(url)==null || this.get_YT_videoId(url)=="") || !this.get_YT_videoId(url) ) {
+        console.log("URL YouTube invalide");
+        return '/imgs/width551.png';
+      }
+      const videoId = this.get_YT_videoId(url);
+      if (!videoId) {
+        console.log("URL YouTube invalide");
+        return '/imgs/width551.png';
+      }
+      try {
+        const response = await fetch(
+          `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            console.log("Vidéo introuvable");
+          } else {
+            console.log("Vidéo inaccessible");
+          }
+          return '/imgs/width551.png';
+        }
+        const data = await response.json();
+        return data.thumbnail_url;
+
+      } catch (error) {
+        return '/imgs/width551.png';
+      }
+    },
+
+
+    async validateVimeoVideo(url) {
+      // Extraire l'ID Vimeo
+      if (this.get_Vimeo_videoId(url)==null || this.get_Vimeo_videoId(url)=="" ||!this.get_Vimeo_videoId(url)) {
+        return '/imgs/width551.png';
+      }
+      const videoId = this.get_Vimeo_videoId(url);
+      if (!videoId) {
+        console.log("URL Vimeo invalide");
+        return '/imgs/width551.png';
+      }
+      
+      try {
+        const response = await fetch(
+          `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${videoId}`
+        );
+        
+        if (!response.ok) {
+          if(response.status === 404 ){
+            console.log("Vidéo introuvable")
+          }else{
+          console.log("Vidéo inaccessible")
+        }
+        return '/imgs/width551.png'
+        }
+        
+        const data = await response.json();
+        return data.thumbnail_url;
+      }
+        catch (error) {
+        return '/imgs/width551.png';
+      }
+    },
 
   async migniature_video(){
 
-        if(!this.create){
-          this.urlVimeoReconstruit ='https://www.youtube.com/watch?v='  + this.current_extrait.vimeo_url ;
-          this.urlyoutubeReconstruit = 'https://vimeo.com/' +  this.current_extrait.youtube_url;
+        if (this.urlVimeoReconstruit !=null && !this.urlVimeoReconstruit.includes('https') && this.urlVimeoReconstruit!='' ) {
+          this.urlVimeoReconstruit = 'https://vimeo.com/' +this.urlVimeoReconstruit ;
         }
 
-        
+        if (this.urlyoutubeReconstruit !=null && !this.urlyoutubeReconstruit.includes('https') && this.urlyoutubeReconstruit!='') {
+          this.urlyoutubeReconstruit = 'https://www.youtube.com/watch?v='  + this.urlyoutubeReconstruit;
+        }
+
+        try{
+          this.current_extrait.youtube_url = this.get_YT_videoId(this.urlyoutubeReconstruit);
+        }catch{
+          this.current_extrait.youtube_url="";
+          console.log('erreur');
+        }
+
+        try{
+          this.current_extrait.vimeo_url = await this.get_Vimeo_videoId(this.urlVimeoReconstruit);
+          console.log(this.current_extrait.vimeo_url);
+        }catch{
+          this.current_extrait.vimeo_url="";
+          console.log('erreur');
+        }
 
     
-        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
-        
-          this.thumbnail = await this.current_extrait.url_miniature_yt
+        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
+          
+          console.log(this.validateYouTubeVideo(this.urlyoutubeReconstruit));
+          this.thumbnail = await this.validateYouTubeVideo(this.urlyoutubeReconstruit);
             
         }else{
-            this.thumbnail = await this.current_extrait.url_miniature_vi()
+          console.log(this.validateVimeoVideo(this.urlVimeoReconstruit));
+          this.thumbnail = await this.validateVimeoVideo(this.urlVimeoReconstruit);
         }
   },
 
@@ -275,6 +325,26 @@ export default {
       }
       return null;
     },
+
+
+    get_Vimeo_videoId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname.includes("vimeo.com")) {
+          if (u.pathname.match(/^\/\d+$/)) {
+            return u.pathname.slice(1);
+          }
+          const match = u.pathname.match(/\/(\d+)$/);
+          if (match) return match[1];
+          if (u.pathname.startsWith("/video/")) {
+            return u.pathname.split("/")[2];
+          }
+        }
+      } catch {
+        console.warn("URL Vimeo invalide :", url);
+      }
+      return null;
+    }
 
   },
 
@@ -316,6 +386,8 @@ export default {
       this.current_extrait = markRaw( await new Extrait({}));
       this.create = true;
     }
+    this.urlVimeoReconstruit = this.current_extrait.vimeo_url;
+    this.urlyoutubeReconstruit =this.current_extrait.youtube_url;
     this.migniature_video()
 
     
@@ -372,13 +444,13 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
+                <input list="Artistedata" id="choixArtiste" name="choixArtiste" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
                 </datalist>
 
-                <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+                <button class="bt" type="button" @click="creerNouveauArtiste" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
           </div>
 
