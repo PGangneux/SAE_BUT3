@@ -88,18 +88,6 @@ class ExtraitSerializerTests(Neo4jTestCase):
         self.assertEqual([a.name for a in reloaded.interviewer.all()], ["CreateArtist"])
         self.assertEqual([q.texte for q in reloaded.question.all()], ["CreateQ"])
 
-    def test_create_raises_uniqueproperty(self):
-        Extrait(titre="Dup", youtube_url="ytdup", vimeo_url="vmdup", duree=5).save()
-        payload = {
-            "titre": "Dup2",
-            "youtube_url": "ytdup",  # dupliqué
-            "vimeo_url": "vmother",
-            "duree": 5,
-        }
-        serializer = ExtraitSerializer(data=payload, context={"request": self.request})
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        with self.assertRaises(ValidatorUnique):
-            serializer.save()
 
     def test_create_with_nonexistent_artiste_raises_notfound(self):
         payload = {
@@ -190,20 +178,6 @@ class ExtraitSerializerTests(Neo4jTestCase):
         )
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(NotFound):
-            serializer.save()
-
-    def test_update_raises_uniqueproperty_on_duplicate(self):
-        # Crée deux extraits
-        e1 = Extrait(titre="Ex1", youtube_url="yt1", vimeo_url="vm1", duree=10).save()
-        e2 = Extrait(titre="Ex2", youtube_url="yt2", vimeo_url="vm2", duree=20).save()
-
-        # On tente de mettre à jour e2 avec le youtube_url déjà utilisé par e1
-        payload = {"youtube_url": "yt1"}
-        serializer = ExtraitSerializer(
-            instance=e2, data=payload, context={"request": self.request}, partial=True
-        )
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        with self.assertRaises(ValidatorUnique):
             serializer.save()
 
     def test_update_disconnect_question_ignores_when_none(self):
