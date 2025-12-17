@@ -3,7 +3,8 @@ from rest_framework.exceptions import ValidationError
 
 class ValidatorUnique(ValidationError):
     """
-    Erreur, code status et message pour champ unique
+    Erreur de validation du champ
+    Une valeur déjà existante a été renseigné
     """
 
     def __init__(self, detail: str = ""):

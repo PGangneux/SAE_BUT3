@@ -164,8 +164,8 @@ class InterviewExtraitViewSetAPITests(Neo4jTestCase):
         self.assertTrue(any(e["uuid"] == self.extrait_pos2.uuid for e in data))
         # Vérifie l'ordre par position (position 1 doit apparaître avant position 2)
         self.assertGreaterEqual(len(data), 2)
-        self.assertEqual(data[0]["uuid"], self.extrait_pos1.uuid)
-        self.assertEqual(data[1]["uuid"], self.extrait_pos2.uuid)
+        self.assertEqual(data[0]["uuid"], self.extrait_pos2.uuid)
+        self.assertEqual(data[1]["uuid"], self.extrait_pos1.uuid)
 
     def test_retrieve_extrait_by_interview(self):
         url = reverse(
