@@ -98,15 +98,24 @@ export default {
 
                         </tr>
                     </thead>
-                    <tbody>
-                        
-                            <tr class="col"  v-for="interview in this.interviews">
-                                
-                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;" :to="{path:'/admin/interview/'+ interview.uuid}"> {{ interview.titre }} </RouterLink></td>
-                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["length"] : null}} </RouterLink></td>
-                                    <td class="col"> <RouterLink class="container container_extrait row "  style="text-decoration: none; color: inherit;"  :to="{path:'/admin/interview/'+ interview.uuid}"> {{ this.dico_interviews[interview.uuid] ? this.dico_interviews[interview.uuid]["duree"] : null}} </RouterLink></td>
-                            </tr>
-                        
+                    <tbody class="table-scroll">
+                        <tr v-for="interview in interviews" :key="interview.uuid">
+                            <td>
+                                <RouterLink class="container container_extrait" :to="`/admin/interview/${interview.uuid}`">
+                                    {{ interview.titre }}
+                                </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container container_extrait" :to="`/admin/interview/${interview.uuid}`">
+                                    {{ dico_interviews[interview.uuid]?.length }}
+                                </RouterLink>
+                            </td>
+                            <td>
+                                 <RouterLink class="container container_extrait":to="`/admin/interview/${interview.uuid}`">
+                                     {{ dico_interviews[interview.uuid]?.duree }}
+                                 </RouterLink>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             
@@ -141,7 +150,7 @@ export default {
 
 }
 
-
+/* ==== TABLE ==== */
 
 th {
   height: 50px;
@@ -154,6 +163,41 @@ tr{
 td {
   height: 50px;
 }
+
+.table-scroll {
+    display: block;
+    max-height: 40vh;      /* hauteur de la zone scrollable */
+    overflow-y: auto;
+    /* Firefox */
+    scrollbar-width: none;
+
+    /* IE / Edge */
+    -ms-overflow-style: none;
+}
+
+/* Chrome / Safari */
+.table-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+
+.table-scroll tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+thead tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+tr a{
+    text-decoration: none; 
+    color: inherit;
+}
+
 
 
 
@@ -193,5 +237,4 @@ td {
 
 
 </style>
-
 
