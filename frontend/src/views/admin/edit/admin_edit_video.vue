@@ -99,7 +99,16 @@ export default {
 
     creerNouveauArtiste(){
       const newArtiste = new Artiste({});
-      let nouveau_nom = document.getElementById("choixArtiste");
+
+      if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
+        newArtiste.name = this.laselectedArtiste;
+        newArtiste.create()
+        this.listeArtiste.add(newArtiste);
+
+      }else{
+        console.log('artiste existe deja');
+      }
+      
     },
 
 
@@ -441,7 +450,7 @@ export default {
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
                 </datalist>
 
-                <button class="bt" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+                <button class="bt" type="button" @click="creerNouveauArtiste" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
           </div>
 
