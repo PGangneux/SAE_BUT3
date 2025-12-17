@@ -9,8 +9,10 @@ import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
 import Tag from "../../model/tag.js";
 
+import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from './fn_save_tags.js';
+
 export default {
-    name: "page_admin_edit_interview",
+    name: "page_admin_interview",
     components: {
         comp_baradmin,
         comp_petit_extrait,
@@ -162,44 +164,15 @@ export default {
         },
 
         handleTagsCreated(tags) {
-            // Tags peut être un tableau ou un seul tag
-            if (Array.isArray(tags)) {
-                this.tagsToCreate = tags;
-            } else if (tags) {
-                // Si c'est un seul tag, vérifier s'il existe déjà
-                const exists = this.tagsToCreate.some(t => t.uuid === tags.uuid);
-                if (!exists) {
-                    this.tagsToCreate.push(tags);
-                }
-            }
+            handleTagsCreated(this, tags)
         },
 
         handleTagsDisconnected(tags) {
-            // Tags peut être un tableau ou un seul tag
-            if (Array.isArray(tags)) {
-                this.tagsToDisconnect = tags;
-            } else if (tags) {
-                // Si c'est un seul tag, vérifier s'il existe déjà
-                const exists = this.tagsToDisconnect.some(t => t.uuid === tags.uuid);
-                if (!exists) {
-                    this.tagsToDisconnect.push(tags);
-                }
-                // Retirer des tags connectés si présent
-                this.tagsConnected = this.tagsConnected.filter(t => t.uuid !== tags.uuid);
-            }
+            handleTagsDisconnected(this, tags)
         },
 
         handleTagsConnected(tag) {
-            // Un seul tag est ajouté à la fois
-            if (tag) {
-                // Vérifier s'il existe déjà
-                const exists = this.tagsConnected.some(t => t.uuid === tag.uuid);
-                if (!exists) {
-                    this.tagsConnected.push(tag);
-                }
-                // Retirer des tags déconnectés si présent
-                this.tagsToDisconnect = this.tagsToDisconnect.filter(t => t.uuid !== tag.uuid);
-            }
+            handleTagsConnected(this, tag)
         },
 
         async save_tags() {

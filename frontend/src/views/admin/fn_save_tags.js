@@ -1,4 +1,5 @@
 export function handleTagsCreated(ctx, tags) {
+    console.log(tags)
     if (Array.isArray(tags)) {
         ctx.tagsToCreate = tags;
     } else if (tags) {
@@ -22,6 +23,7 @@ export function handleTagsDisconnected(ctx, tags) {
 }
 
 export function handleTagsConnected(ctx, tag) {
+    console.log("connecterd")
     if (tag) {
         const exists = ctx.tagsConnected.some(t => t.uuid === tag.uuid);
         if (!exists) {
