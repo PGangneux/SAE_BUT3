@@ -4,12 +4,15 @@ import comp_baradmin from "../../components/components_admin/nav_admin.vue";
 import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
 import supprimer from "./supprimer.vue";
 import tags from "./tags.vue"
+import edit_success from "./gestion/edit_success.vue"
+import edit_error from './gestion/edit_error.vue';
 
 import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
 import Tag from "../../model/tag.js";
 
 import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from './fn_save_tags.js';
+
 
 export default {
     name: "page_admin_interview",
@@ -18,6 +21,8 @@ export default {
         comp_petit_extrait,
         supprimer,
         tags,
+        edit_success,
+        edit_error
     },
     data() {
         return {
@@ -33,10 +38,14 @@ export default {
             occasion: '',
             description: '',
             popupDelete: false,
+            popupSuccess: false,
+            popupError: false,
             create: false,
             searchAvailable: "",
             searchPlaylist: "",
-            chargement: false
+            chargement: false,
+            createMode: false,  
+            message_error: ''
         };
     },
     computed: {
@@ -209,28 +218,57 @@ export default {
                 this.current_interview.titre = this.titre;
                 this.current_interview.description = this.description;
                 this.current_interview.occasion = this.occasion;
-                
-                this.current_interview = this.create 
-                    ? await this.current_interview.create() 
-                    : await this.current_interview.update();
-                
+
+                let isCreate = this.create;
+
+                if (isCreate) {
+                    await this.current_interview.create();
+                } else {
+                    await this.current_interview.update();
+                }
+
                 await this.current_interview.setExtraits(this.current_list_extraits);
                 await this.save_tags();
-                
-                this.$router.push(`/admin/interview/${this.current_interview.uuid}`)
-                    .then(() => {
-                        window.location.reload();
-                    });
+
+                // Stocker les flags AVANT le reload
+                sessionStorage.setItem('popupSuccess', 'true');
+                sessionStorage.setItem('create', isCreate ? 'true' : 'false');
+
+                // Reload brutal
+                window.location.href = `/admin/interview/${this.current_interview.uuid}`;
 
             } catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error);
+                this.message_error = error;
+                this.popupError = true;
             } finally {
                 this.chargement = false;
             }
-        },
+        }
+
     },
 
     async mounted() {
+        // Popup succès après reload brutal
+        console.log("ssesion sotirae", sessionStorage.getItem('popupSuccess'))
+        if (sessionStorage.getItem('popupSuccess') === 'true') {
+            console.log("tetettetette")
+            this.popupSuccess = true;
+
+                // Déterminer si c'était en mode création ou modification
+            this.createMode = sessionStorage.getItem('create') === 'true';
+            console.log("createmode",this.createMode)
+
+            sessionStorage.removeItem('popupSuccess');
+            sessionStorage.removeItem('create');
+
+            // ⏱ cacher après 5 secondes
+            setTimeout(() => {
+                this.popupSuccess = false;
+            }, 5000);
+        }
+
+
         const allExtraits = markRaw(await Extrait.list());
 
         const InterviewId = this.$route.params.id;
@@ -349,6 +387,20 @@ export default {
     </div>
     
     <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
+    <!-- ✅ BON - s'affiche SEULEMENT quand popupSuccess est true -->
+    <edit_success 
+        v-if="popupSuccess && createMode"
+        message="Playlist créée !"
+    />
+    <edit_success 
+        v-else-if="popupSuccess && !createMode"
+        message="Modification enregistrée !"
+    />
+    <edit_error
+        v-if="popupError"
+        :message="this.message_error"
+    />
+
     <div v-if="chargement" class="overlay">
         <img src="/imgs/spinner.gif" alt="loading image...">
     </div>
