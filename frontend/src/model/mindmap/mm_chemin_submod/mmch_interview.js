@@ -18,7 +18,7 @@ export default class mmch_Interview extends mmch_CheminT {
         return [
             new mmch_Extrait(null),
             new mmch_Tag(null),
-            ...items.map(item => (infos) => new mmch_Interview(item)),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 
@@ -28,7 +28,7 @@ export default class mmch_Interview extends mmch_CheminT {
         return [
             new mmch_Extrait(null),
             new mmch_Tag(null),
-            ...items.map(item => (infos) => new mmch_Interview(item)),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 
@@ -37,7 +37,7 @@ export default class mmch_Interview extends mmch_CheminT {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => (infos) => new mmch_Interview(item)),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 

@@ -85,16 +85,30 @@ export function mm_clean_preview(mminfo){
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT} node the parent node  
  * @param {mmch_CheminT} category the class of node  
- * @param {Model?} content? the content of the node  
  * @param {boolean?} createLink? = true do we draw the white line or not
  * @param {boolean?} isPreview? = false whether this is a preview node
  * @return {mmch_CheminT} the created child
 */
-export function mm_createChildNode(mminfo, node, category,content=null, createLink = true, isPreview = false) {
+export function mm_createChildNode(mminfo, node, category, createLink = true, isPreview = false) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
-    const tmp_child = new (category(mminfo, node.x, node.y, node.depth,content));
+    let Cls, content;
+    // Determine if category is a simple class or a config object
+    if (category && typeof category.cls === 'function') {
+        // It's a config object { cls: mmch_Extrait, content: item }
+        Cls = category.cls;
+        content = category.content;
+    } else if (typeof category === 'function' && category.prototype) {
+        // It's a class constructor (like mmch_Extrait)
+        Cls = category;
+        content = null;
+    } else {
+        console.error("Invalid category passed to mm_createChildNode:", category);
+        return null;
+    }
+    // Create the instance
+    const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
     node.childrens.push(tmp_child);
-    if (isPreview){
+    if (isPreview) {
         mminfo.previewnodes.push(tmp_child);
         node.ispreview = true;
     } else {

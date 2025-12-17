@@ -18,13 +18,7 @@ export default class mmch_Artiste extends mmch_CheminT {
             mmch_Extrait,
             mmch_Nation,
             mmch_StyleMusical,
-            ...items.map(item => {
-                console.log("to be created mmch_Artist listcat", item);
-                return (infos) => {
-                    console.log("creating mmch_Artist listcat", infos);
-                    return new mmch_Extrait(...infos, content = item);
-                }
-            }),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
     async mmch_searchinst(args = {}) {
@@ -35,7 +29,7 @@ export default class mmch_Artiste extends mmch_CheminT {
             new mmch_Extrait(null),
             new mmch_Nation(null),
             new mmch_StyleMusical(null),
-            ...items.map(item => (infos) => new mmch_Artiste(item)),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 
@@ -44,7 +38,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         // TODO : put recomendation algorithm here
         const items = await this.mmch_dbjsclass.list(finalArgs);
         return [
-            ...items.map(item => (infos) => new mmch_Artiste(item)),
+            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 
