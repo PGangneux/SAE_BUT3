@@ -193,12 +193,12 @@ export default class ClientAPI {
         response = await fetch(url, opts);
       } else {
         this.clear_tokens();
-        throw new FetchError(response.status, response.statusText, response);
+        throw new FetchError(response.status, await response.json(), response);
       }
     }
 
     if (!response.ok) {
-      throw new FetchError(response.status, response.statusText, response);
+      throw new FetchError(response.status, await response.json(), response);
     }
 
     // Si pas de contenu (204), retourne null

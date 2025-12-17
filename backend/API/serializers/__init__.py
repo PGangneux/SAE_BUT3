@@ -1,8 +1,8 @@
 from .base import (
     BaseSerializer,
     BaseRelationShipSerializer,
-    RelationShipUtilisateurSerializer,
     RelationShipTagSerializer,
+    RelationShipUtilisateurSerializer,
 )
 from .theme import ThemeSerializer
 from .question import QuestionSerializer

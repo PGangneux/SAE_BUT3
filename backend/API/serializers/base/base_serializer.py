@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
 from neomodel import StructuredNode
-from neomodel.exceptions import UniqueProperty
-from ...errors import ValidatorUnique
+from neomodel.exceptions import UniqueProperty, DeflateError
+from ...errors import ValidatorUnique, ValidatorRequired
 
 
 class BaseSerializer(serializers.Serializer):
@@ -64,6 +64,9 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
+        except DeflateError as error:
+            print()
+            raise ValidatorRequired(error.property_name)
         return instance
 
     def update(self, instance: StructuredNode, validated_data: dict) -> StructuredNode:
@@ -92,4 +95,7 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
+        except DeflateError as error:
+            print()
+            raise ValidatorRequired(error.property_name)
         return instance
