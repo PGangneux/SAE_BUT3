@@ -39,7 +39,6 @@ function mm_reset(mminfo) {
     mminfo.nodes = [];
     mminfo.linkages = [];
     mminfo.previewnodes = [];
-
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
     mminfo.nodes.push(root);

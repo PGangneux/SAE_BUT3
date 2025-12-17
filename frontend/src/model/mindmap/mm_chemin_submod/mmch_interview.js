@@ -6,8 +6,6 @@ import mmch_Tag from "./mmch_tag.js";
 
 export default class mmch_Interview extends mmch_CheminT {
     static mmch_dbjsclass = Interview;
-    /** @type {Interview} */
-    mmch_obj;
     /** @type {String} */
     #previewurl = null;
     /** @type {Array[String]} */
