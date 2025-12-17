@@ -1,5 +1,6 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
+import mmch_Root  from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
 
 export default {
     name: "mindmap_node",
@@ -23,7 +24,11 @@ export default {
     methods: {
         async loadNodeData() {
             if (!this.node_instance.mmch_obj) {
-                this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+                if (this.node_instance.constructor != mmch_Root) {
+                    this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+                } else {
+                    this.nodeTitle = '';
+                }
                 return;
             }
             this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';

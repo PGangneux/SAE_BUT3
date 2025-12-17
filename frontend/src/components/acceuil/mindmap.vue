@@ -32,7 +32,7 @@ export default {
         searchValue(newVal) {
             this.searchval = newVal;
             this.mm_instance.searchval = this.searchval;
-            this.mm_instance.redraw_root();
+            this.mm_instance.draw_root();
         }
     },
 };
@@ -57,7 +57,7 @@ export default {
                 <button @click="mm_instance.zoomout()" @touchend="mm_instance.zoomout()">-</button>
                 <button @click="mm_instance.zoomreset()" @touchend="mm_instance.zoomreset()">reset zoom</button>
                 <button @click="mm_instance.centerOnNode(mm_instance.nodes[0])" @touchend="mm_instance.centerOnNode(mm_instance.nodes[0])">recenter</button>
-                <button @click="mm_instance.draw_root()" @touchend="mm_instance.redraw_root()">redraw</button>
+                <button @click="mm_instance.draw_root()" @touchend="mm_instance.draw_root()">redraw</button>
             </div>
             <div class="mm_legend_outer">
                 <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false" @touchend="mm_instance.togglelegend = false;">></button>
