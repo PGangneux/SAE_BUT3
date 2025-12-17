@@ -104,9 +104,7 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
     } else {
         console.error("Invalid category passed to mm_createChildNode:", category);
         return null;
-    }
-    console.log("create new node",Cls,content);
-    
+    }    
     // Create the instance
     const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
     node.childrens.push(markRaw(tmp_child));
