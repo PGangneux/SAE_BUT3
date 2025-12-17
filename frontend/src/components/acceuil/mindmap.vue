@@ -14,14 +14,14 @@ export default {
         let ext = this.extrait_current;        
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            mminst : new mm_Mindmap(this, inter, ext),
+            mm_instance : new mm_Mindmap(this, inter, ext),
             searchval : "",
         };
     },
     async mounted() {
         this.searchval = this.searchterm.get();
-        this.mminst.searchval = this.searchval;
-        this.mminst.draw_root();
+        this.mm_instance.searchval = this.searchval;
+        this.mm_instance.draw_root();
     },
     computed: {
         searchValue: {
@@ -31,8 +31,8 @@ export default {
     watch: {
         searchValue(newVal) {
             this.searchval = newVal;
-            this.mminst.searchval = this.searchval;
-            this.mminst.redraw_root();
+            this.mm_instance.searchval = this.searchval;
+            this.mm_instance.redraw_root();
         }
     },
 };
@@ -40,30 +40,30 @@ export default {
 
 <template>
     <div class="mm_main_relative" 
-        @mousedown="mminst.startDrag" @mouseup="mminst.stopDrag"
-        @mousemove="mminst.doDrag" @mouseleave="mminst.stopDrag"
-        @wheel="mminst.handleWheel"
-        @touchstart="mminst.startDragTouch" @touchend="mminst.stopDrag"
-        @touchmove="mminst.doDragTouch"
+        @mousedown="mm_instance.startDrag" @mouseup="mm_instance.stopDrag"
+        @mousemove="mm_instance.doDrag" @mouseleave="mm_instance.stopDrag"
+        @wheel="mm_instance.handleWheel"
+        @touchstart="mm_instance.startDragTouch" @touchend="mm_instance.stopDrag"
+        @touchmove="mm_instance.doDragTouch"
         >
-        <button class="mm_fullscreenbtn" @click="mminst.toggleFullscreen" @touchend="mminst.toggleFullscreen">
-            <img :src="mminst.fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
-                :alt="mminst.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
+        <button class="mm_fullscreenbtn" @click="mm_instance.toggleFullscreen" @touchend="mm_instance.toggleFullscreen">
+            <img :src="mm_instance.fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 
+                :alt="mm_instance.fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'" 
                 class="fullscreen-icon">
         </button>
         <div class="mm_control_outer">
             <div class="mm_controls">
-                <button @click="mminst.zoomin()" @touchend="mminst.zoomin()">+</button>
-                <button @click="mminst.zoomout()" @touchend="mminst.zoomout()">-</button>
-                <button @click="mminst.zoomreset()" @touchend="mminst.zoomreset()">reset zoom</button>
-                <button @click="mminst.centerOnNode(mminst.nodes[0])" @touchend="mminst.centerOnNode(mminst.nodes[0])">recenter</button>
-                <button @click="mminst.draw_root()" @touchend="mminst.redraw_root()">redraw</button>
+                <button @click="mm_instance.zoomin()" @touchend="mm_instance.zoomin()">+</button>
+                <button @click="mm_instance.zoomout()" @touchend="mm_instance.zoomout()">-</button>
+                <button @click="mm_instance.zoomreset()" @touchend="mm_instance.zoomreset()">reset zoom</button>
+                <button @click="mm_instance.centerOnNode(mm_instance.nodes[0])" @touchend="mm_instance.centerOnNode(mm_instance.nodes[0])">recenter</button>
+                <button @click="mm_instance.draw_root()" @touchend="mm_instance.redraw_root()">redraw</button>
             </div>
             <div class="mm_legend_outer">
-                <button v-if="mminst.togglelegend" @click="mminst.togglelegend = false" @touchend="mminst.togglelegend = false;">></button>
-                <button v-else @click="mminst.togglelegend = true" @touchend="mminst.togglelegend = true;"><</button>
+                <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false" @touchend="mm_instance.togglelegend = false;">></button>
+                <button v-else @click="mm_instance.togglelegend = true" @touchend="mm_instance.togglelegend = true;"><</button>
                 <transition name="mm_legend_anim">
-                    <div class="mm_legend" v-if="mminst.togglelegend">
+                    <div class="mm_legend" v-if="mm_instance.togglelegend">
                         <div v-for="(nameproper, nameclass) in mm_LegendClassMap">
                             <div class="mm_legend_cercle"
                                 :class="`mmLegendColorMap${nameclass}`"></div>
@@ -73,9 +73,9 @@ export default {
                 </transition>
             </div>
         </div>
-        <div v-for="link in mminst.linkages" :key="link.id" :style="link.getStyle(mminst.scale, mminst.offx, mminst.offy)" class="mm_linkage">
+        <div v-for="link in mm_instance.linkages" :key="link.id" :style="link.getStyle(mm_instance.scale, mm_instance.offx, mm_instance.offy)" class="mm_linkage">
         </div>
-        <mindmap_node v-for="node in mminst.nodes" :jsclass="node"
-            @click="mminst.handleClick(node);" @touchend="mminst.handleClick(node);" />
+        <mindmap_node v-for="node in mm_instance.nodes" :node_instance="node"
+            @click="mm_instance.handleClick(node);" @touchend="mm_instance.handleClick(node);" />
     </div>
 </template>

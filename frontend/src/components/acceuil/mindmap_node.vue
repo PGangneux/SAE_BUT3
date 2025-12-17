@@ -4,7 +4,7 @@ import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
 export default {
     name: "mindmap_node",
     props: {
-        jsclass: {
+        node_instance: {
             type: Object,
             required: true,
         },
@@ -23,16 +23,16 @@ export default {
     methods: {
         hasContent() {
             // Safe check for content - handles markRaw objects
-            return this.jsclass.mmch_obj !== null && 
-                   this.jsclass.mmch_obj !== undefined;
+            return this.node_instance.mmch_obj !== null && 
+                   this.node_instance.mmch_obj !== undefined;
         },
         async loadNodeData() {
-            // console.log("loading ", this.jsclass, this.jsclass.mmch_obj);
+            // console.log("loading ", this.node_instance, this.node_instance.mmch_obj);
             
             // Use the safe hasContent method
             if (this.hasContent()) {
                 try {
-                    this.nodeTitle = await this.jsclass.mmch_getTitle() || 'Inconnue';
+                    this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Inconnue';
                 } catch (error) {
                     console.error('Failed to load title:', error);
                     this.nodeTitle = 'Inconnue';
@@ -42,7 +42,7 @@ export default {
             // Check if has miniature
             this.thumbnailLoading = true;
             try {
-                this.hasMiniature = await this.jsclass.mmch_hasMiniature();
+                this.hasMiniature = await this.node_instance.mmch_hasMiniature();
             } catch (error) {
                 console.error('Failed to check miniature:', error);
                 this.hasMiniature = false;
@@ -51,7 +51,7 @@ export default {
             // Load miniature if available
             if (this.hasMiniature) {
                 try {
-                    this.thumbnailUrl = await this.jsclass.mmch_getMiniature();
+                    this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
                 } catch (error) {
                     console.error('Failed to load thumbnail:', error);
                     this.thumbnailUrl = null;
@@ -62,7 +62,7 @@ export default {
             // Load description if available - fixed: check mmch_obj not content
             if (this.hasContent() && this.hasMiniature) {
                 try {
-                    this.nodeDescription = await this.jsclass.mmch_getDescription();
+                    this.nodeDescription = await this.node_instance.mmch_getDescription();
                 } catch (error) {
                     console.error('Failed to load description:', error);
                     this.nodeDescription = [];
@@ -72,10 +72,10 @@ export default {
     },
     computed: {
         nodeSubtitle() {
-            return this.mm_LegendClassMap[this.jsclass.constructor.name] || 'Inconnue';
+            return this.mm_LegendClassMap[this.node_instance.constructor.name] || 'Inconnue';
         },
         nodeClass() {
-            const baseClass = `mm_node ${this.jsclass.mmch_getStyle()}`;
+            const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
             const appearingClass = this.isAppearing ? 'mm_node_appearing' : '';
 
@@ -98,7 +98,7 @@ export default {
 </script>
 
 <template>
-    <div class="mm_node" :class="nodeClass" :style="jsclass.getStyle()">
+    <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
         <div style="display: none;">
             thumbnailLoading {{ thumbnailLoading }}
             isAppearing {{ isAppearing }}
@@ -107,14 +107,14 @@ export default {
             nodeDescription {{ nodeDescription }}
             hasMiniature {{ hasMiniature }}
             hasContent {{ hasContentComputed }}
-            jsclass {{ jsclass.toJSON() }}
+            node_instance {{ node_instance.toJSON() }}
         </div>
 
         <!-- Case 1: No content -->
         <template v-if="!hasContentComputed">
             <div class="mm_node_content">
                 <p class="mm_node_title">{{ nodeSubtitle }}</p>
-                <template v-if="jsclass.loading">
+                <template v-if="node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>
@@ -132,7 +132,7 @@ export default {
                         {{ line }}
                     </p>
                 </div>
-                <template v-if="jsclass.loading">
+                <template v-if="node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>
@@ -156,7 +156,7 @@ export default {
                     {{ nodeTitle }}
                 </p>
                 <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
-                <template v-if="jsclass.loading">
+                <template v-if="node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>
