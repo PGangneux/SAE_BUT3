@@ -18,7 +18,13 @@ export default class mmch_Artiste extends mmch_CheminT {
             mmch_Extrait,
             mmch_Nation,
             mmch_StyleMusical,
-            ...items.map(item => (infos) => new mmch_Extrait(...infos ,content=item)),
+            ...items.map(item => {
+                console.log("to be created mmch_Artist listcat", item);
+                return (infos) => {
+                    console.log("creating mmch_Artist listcat", infos);
+                    return new mmch_Extrait(...infos, content = item);
+                }
+            }),
         ];
     }
     async mmch_searchinst(args = {}) {

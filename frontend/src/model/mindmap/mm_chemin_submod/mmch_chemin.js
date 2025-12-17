@@ -10,7 +10,7 @@ export default class mmch_CheminT extends mm_Node {
 
     static mmch_default_previewcat_args = { limit: 1 };
     static mmch_default_previewinst_args = { limit: 1 };
-    mmch_obj;
+    mmch_obj = null;
 
     constructor(mminfo, x, y, depth,content=null) {
         super(mminfo, x, y, depth + 1);
@@ -64,8 +64,9 @@ export default class mmch_CheminT extends mm_Node {
 
     toJSON() {
         return {
-            mmch_dbjsclass: this.mmch_dbjsclass,
+            mmch_dbjsclass: this.constructor.mmch_dbjsclass,
             mmch_obj: this.mmch_obj,
+            ...super.toJSON(),
         };
     }
 
