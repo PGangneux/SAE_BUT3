@@ -1,33 +1,56 @@
 from datetime import datetime
 from rest_framework import serializers
-from neomodel import StructuredNode, db
-from ...models import Utilisateur
+from neomodel import RelationshipManager, db, StructuredRel, RelationshipTo
+from ...models import DateHeureRel, Utilisateur, Artiste, Question, Extrait, Interview
 from ...errors import ContextError
 from . import BaseRelationShipSerializer
 
 
 class RelationShipUtilisateurSerializer(BaseRelationShipSerializer):
+    """
+    Classe de base contenant les méthodes pour la gestion des relations concernant les utilisateurs
+
+    Raises:
+        ContextError: node de context manquant
+    """
+
     # Outputs
     date_heure = serializers.SerializerMethodField(read_only=True)
 
-    def __init__(self, node: StructuredNode, relationship: str, *args, **kwargs):
+    def __init__(
+        self,
+        node: Artiste | Question | Interview | Extrait,
+        relationship: str,
+        *args,
+        **kwargs
+    ):
+        """Création du Serializer de RelationShip concernant les utilisateurs
+
+        Args:
+            node (Artiste|Question|Interview|Extrait): type de node, ayant un type de relationship existante avec Utilisateur
+            relationship (str): le nom de la relation entre node et Utilisateur
+        """
         super().__init__(node, Utilisateur, relationship, *args, **kwargs)
 
-    def get_date_heure(self, instance):
+    def get_date_heure(self, instance: Artiste | Question | Interview | Extrait) -> str:
+        """Renvoie la date de la relationship
+
+        Args:
+            instance (Artiste | Question | Interview | Extrait): instance du modèle
+
+        Raises:
+            ContextError: node de context manquant
+
+        Returns:
+            str: date de la relationship
         """
-        Renvoie la date et l'heure :
-        """
-        utilisateur = self.context.get(self.context_node.__name__.lower())
+        context_node_name: str = str(self.context_node.__name__)
+        utilisateur: Utilisateur = self.context.get(context_node_name.lower())
         if not utilisateur:
             raise ContextError(self.context_node)
-        query = (
-            "MATCH (i:"
-            + self.node.__name__
-            + " {uuid:$uuid})<-[r:"
-            + self.relationship.upper()
-            + "]-(e:Utilisateur {uuid:$utilisateur}) RETURN r"
+        relationship_manager: RelationshipManager = getattr(
+            utilisateur, self.relationship
         )
-        res = db.cypher_query(
-            query, {"uuid": instance.uuid, "utilisateur": utilisateur.uuid}
-        )[0][0]
-        return datetime.fromtimestamp(res[0].get("date_heure")).isoformat()
+        relationship: DateHeureRel = relationship_manager.relationship(instance)
+        date: datetime = relationship.date_heure
+        return date.isoformat()
