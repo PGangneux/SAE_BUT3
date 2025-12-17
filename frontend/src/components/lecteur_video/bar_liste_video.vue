@@ -66,7 +66,7 @@ export default {
         this.videos = markRaw(
           await ClientAPI.post(
             `${ClientAPI.BASE_URL}api/recommandations`,
-            JSON.stringify(weights),
+            JSON.stringify({'weights': weights}),
             ClientAPI.current_user ? true : false,
             video ? {'video': video} : null
           )

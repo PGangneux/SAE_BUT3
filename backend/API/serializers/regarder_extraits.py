@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateur
+from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Extrait
 
 
-class RegarderExtraitsSerializer(RelationShipUtilisateur):
+class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
     """
     Sérializer RelationShip regarder_extraits (Utilisateur <-> Extrait)
     """
@@ -21,30 +21,38 @@ class RegarderExtraitsSerializer(RelationShipUtilisateur):
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
-        super().__init__(Extrait, 'regarder_extraits', *args, **kwargs)
+        super().__init__(Extrait, "regarder_extraits", *args, **kwargs)
 
     def get_artiste(self, extrait):
         """
         Renvoie un lien propre vers l'artiste :
         """
         artiste = extrait.interviewer.single()
-        return self.get_url('artiste-detail', kwargs={'uuid': artiste.uuid}) if artiste else None
+        return (
+            self.get_url("artiste-detail", kwargs={"uuid": artiste.uuid})
+            if artiste
+            else None
+        )
 
     def get_question(self, extrait):
         """
         Renvoie un lien propre vers la question :
         """
         question = extrait.question.single()
-        return self.get_url('question-detail', kwargs={'uuid': question.uuid}) if question else None
+        return (
+            self.get_url("question-detail", kwargs={"uuid": question.uuid})
+            if question
+            else None
+        )
 
     def get_interviews(self, extrait):
         """
         Renvoie un lien propre vers les interviews :
         """
-        return self.get_url('interview-list', kwargs={'extrait_uuid': extrait.uuid})
+        return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.get_url('tag-list', kwargs={'extrait_uuid': extrait.uuid})
+        return self.get_url("tag-list", kwargs={"extrait_uuid": extrait.uuid})

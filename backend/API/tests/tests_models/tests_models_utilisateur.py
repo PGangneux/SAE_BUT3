@@ -7,13 +7,11 @@ from ...models import Artiste, Extrait, Interview, Question, Utilisateur
 
 class UtilisateurTestCase(Neo4jTestCase):
 
-    def make_user(self, pseudo="user1", prenom="P", nom="N", email="u@example.com", password="pwd"):
+    def make_user(
+        self, pseudo="user1", prenom="P", nom="N", email="u@example.com", password="pwd"
+    ):
         return Utilisateur(
-            pseudo=pseudo,
-            prenom=prenom,
-            nom=nom,
-            email=email,
-            password=password
+            pseudo=pseudo, prenom=prenom, nom=nom, email=email, password=password
         ).save()
 
     def test_creation_utilisateur_and_defaults(self):
@@ -35,7 +33,9 @@ class UtilisateurTestCase(Neo4jTestCase):
 
     def test_update_fields_and_persistence(self):
         """Mise à jour des champs et rechargement depuis la DB"""
-        u = self.make_user(pseudo="tmp", email="tmp@example.com", prenom="Jean", nom="Dup")
+        u = self.make_user(
+            pseudo="tmp", email="tmp@example.com", prenom="Jean", nom="Dup"
+        )
         u.prenom = "Jean-Baptiste"
         u.is_admin = True
         u.save()
@@ -62,7 +62,7 @@ class UtilisateurTestCase(Neo4jTestCase):
 
         rel = u.recherches_artistes.relationship(a)
         self.assertIsNotNone(rel)
-        self.assertTrue(hasattr(rel, 'date_heure'))
+        self.assertTrue(hasattr(rel, "date_heure"))
         self.assertIsInstance(rel.date_heure, datetime)
 
         # relation count
@@ -77,7 +77,7 @@ class UtilisateurTestCase(Neo4jTestCase):
 
         # custom_dt défini comme datetime "aware" en UTC
         custom_dt = datetime.now(timezone.utc) - timedelta(days=1)
-        u.recherches_artistes.connect(a, {'date_heure': custom_dt})
+        u.recherches_artistes.connect(a, {"date_heure": custom_dt})
 
         rel = u.recherches_artistes.relationship(a)
         self.assertIsInstance(rel.date_heure, datetime)
@@ -108,7 +108,9 @@ class UtilisateurTestCase(Neo4jTestCase):
         u.regarder_extraits.connect(e1)
         u.recherches_questions.connect(q1)
 
-        self.assertCountEqual([x.name for x in u.recherches_artistes.all()], ["A1", "A2"])
+        self.assertCountEqual(
+            [x.name for x in u.recherches_artistes.all()], ["A1", "A2"]
+        )
         self.assertEqual(len(u.regarder_interviews.all()), 1)
         self.assertEqual(len(u.regarder_extraits.all()), 1)
         self.assertEqual(len(u.recherches_questions.all()), 1)

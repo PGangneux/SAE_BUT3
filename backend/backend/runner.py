@@ -5,6 +5,7 @@ from API.management.commands.basic_load_bd import Command as basic_load_bd
 
 TEST_BOLT_URL = "bolt://neo4j:testtest@localhost:17687"
 
+
 class CustomTestRunner(DiscoverRunner):
     def setup_test_environment(self, **kwargs):
         super().setup_test_environment(**kwargs)

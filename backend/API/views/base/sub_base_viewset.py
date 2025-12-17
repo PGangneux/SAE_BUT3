@@ -11,10 +11,17 @@ class SubBaseModelViewSet(BaseModelViewSet):
     """
     Classe de base pour les ModelViewSets de sous endpoints
     """
+
     def __init__(
-            self, serializer_class: Serializer, model_class: StructuredNode,
-            router_lookup_field: str, router_model_class: StructuredNode,
-            relationship: str, search_field: str = None, ordered_by: str = None, **kwargs
+        self,
+        serializer_class: Serializer,
+        model_class: StructuredNode,
+        router_lookup_field: str,
+        router_model_class: StructuredNode,
+        relationship: str,
+        search_field: str = None,
+        ordered_by: str = None,
+        **kwargs,
     ):
         super().__init__(serializer_class, model_class, search_field, **kwargs)
         self.router_lookup_field: str = router_lookup_field
@@ -25,17 +32,27 @@ class SubBaseModelViewSet(BaseModelViewSet):
     def get_nodeset(self) -> NodeSet:
         try:
             # Vérifie que l'instance du router existe bien
-            self.router_model_class.nodes.get(uuid=self.kwargs[self.router_lookup_field])
-            return super().get_nodeset().filter(
-                uuid__in=[ uuid[0] for uuid in db.cypher_query(
-                    # Requête CYPHER
-                    f"MATCH (n:{self.model_class.__name__})-[:{self.relationship}]-\
-                        (:{str(self.router_model_class.__name__)} "+"{uuid: $uuid}) RETURN n.uuid",
-                    { 'uuid': self.kwargs[self.router_lookup_field] }
-                )[0]]
+            self.router_model_class.nodes.get(
+                uuid=self.kwargs[self.router_lookup_field]
+            )
+            return (
+                super()
+                .get_nodeset()
+                .filter(
+                    uuid__in=[
+                        uuid[0]
+                        for uuid in db.cypher_query(
+                            # Requête CYPHER
+                            f"MATCH (n:{self.model_class.__name__})-[:{self.relationship}]-\
+                        (:{str(self.router_model_class.__name__)} "
+                            + "{uuid: $uuid}) RETURN n.uuid",
+                            {"uuid": self.kwargs[self.router_lookup_field]},
+                        )[0]
+                    ]
+                )
             )
         except DoesNotExist:
             raise NotFound(self.router_model_class)
         # Dans le cas ou la base de données est inaccessible
-        except ServiceUnavailable: # pragma: no cover
-            raise ConnexionDB() # pragma: no cover
+        except ServiceUnavailable:  # pragma: no cover
+            raise ConnexionDB()  # pragma: no cover

@@ -7,13 +7,23 @@ class QuestionViewSet(BaseModelViewSet):
     """
     Renvoie les question
     """
+
     def __init__(self, **kwargs):
-        super().__init__(QuestionSerializer, Question, 'texte', **kwargs)
+        super().__init__(QuestionSerializer, Question, "texte", **kwargs)
 
 
 class ThemeQuestionViewSet(SubBaseModelViewSet):
     """
     Renvoie les questions qui appartiennent à un thème
     """
+
     def __init__(self, **kwargs):
-        super().__init__(QuestionSerializer, Question, 'theme_uuid', Theme, 'A_THEME', 'texte', **kwargs)
+        super().__init__(
+            QuestionSerializer,
+            Question,
+            "theme_uuid",
+            Theme,
+            "A_THEME",
+            "texte",
+            **kwargs
+        )

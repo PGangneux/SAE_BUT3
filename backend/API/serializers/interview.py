@@ -1,16 +1,19 @@
 from rest_framework import serializers
-from ..serializers import Base
+from ..serializers import BaseSerializer
 from ..models import Interview
 
 
-class InterviewSerializer(Base):
+class InterviewSerializer(BaseSerializer):
     """
     Sérializer du node Interview
     """
+
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date = serializers.DateField(required=False, allow_null=True)
     occasion = serializers.CharField(required=False, allow_blank=True, allow_null=True)
-    description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    description = serializers.CharField(
+        required=False, allow_blank=True, allow_null=True
+    )
     lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     # Outputs
@@ -24,10 +27,10 @@ class InterviewSerializer(Base):
         """
         Renvoie un lien propre vers les extraits :
         """
-        return self.get_url('extrait-list', kwargs={'interview_uuid': interview.uuid})
+        return self.get_url("extrait-list", kwargs={"interview_uuid": interview.uuid})
 
     def get_tags(self, interview):
         """
         Renvoie un lien propre vers les tags :
         """
-        return self.get_url('tag-list', kwargs={'interview_uuid': interview.uuid})
+        return self.get_url("tag-list", kwargs={"interview_uuid": interview.uuid})
