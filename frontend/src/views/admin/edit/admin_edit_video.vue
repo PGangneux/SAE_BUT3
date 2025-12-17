@@ -195,10 +195,42 @@ export default {
       
     },
 
+    async validateYouTubeVideo(url) {
+      // Extraire l'ID YouTube
+      if ((this.get_YT_videoId(url)==null || this.get_YT_videoId(url)=="") || !this.get_YT_videoId(url) ) {
+        console.log("URL YouTube invalide");
+        return '/imgs/width551.png';
+      }
+      const videoId = this.get_YT_videoId(url);
+      if (!videoId) {
+        console.log("URL YouTube invalide");
+        return '/imgs/width551.png';
+      }
+      try {
+        const response = await fetch(
+          `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`
+        );
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            console.log("Vidéo introuvable");
+          } else {
+            console.log("Vidéo inaccessible");
+          }
+          return '/imgs/width551.png';
+        }
+        const data = await response.json();
+        return data.thumbnail_url;
+
+      } catch (error) {
+        return '/imgs/width551.png';
+      }
+    },
+
 
     async validateVimeoVideo(url) {
       // Extraire l'ID Vimeo
-      if (this.get_Vimeo_videoId(url)) {
+      if (this.get_Vimeo_videoId(url)==null || this.get_Vimeo_videoId(url)=="" ||!this.get_Vimeo_videoId(url)) {
         return '/imgs/width551.png';
       }
       const videoId = this.get_Vimeo_videoId(url);
@@ -257,7 +289,8 @@ export default {
     
         if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
           
-          this.thumbnail = await this.current_extrait.url_miniature_yt;
+          console.log(this.validateYouTubeVideo(this.urlyoutubeReconstruit));
+          this.thumbnail = await this.validateYouTubeVideo(this.urlyoutubeReconstruit);
             
         }else{
           console.log(this.validateVimeoVideo(this.urlVimeoReconstruit));
