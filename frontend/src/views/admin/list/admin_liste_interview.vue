@@ -1,7 +1,6 @@
 <script>
 import { markRaw, nextTick} from 'vue';
 import Interview from '../../../model/interview.js';
-import Tags from '../../../model/tag.js';
 import Model from "../../../model/model.js";
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
@@ -14,27 +13,40 @@ export default {
 
   },data() {
         return {
-            interviews:{type:Interview},
+            allInterviews: [],   // liste complète
             dico_interviews:{},
-            tags:{type:Tags}
+            search: ""           // texte de recherche
         };
     },
 
 
   async mounted() {
-    this.interviews = markRaw(await Interview.list());
+    this.allInterviews = markRaw(await Interview.list());
 
     try {
-        for (let interview of this.interviews) {
+        for (let interview of this.allInterviews) {
             const extraits = await interview.extraits()
-            this.dico_interviews[interview.uuid] = {"length": extraits.length, "tags": markRaw(await interview.tags()), "duree": Model.format_duree(interview.get_duree(extraits))};
+            this.dico_interviews[interview.uuid] = {
+                "length": extraits.length, 
+                "tags": markRaw(await interview.tags()), 
+                "duree": Model.format_duree(interview.get_duree(extraits))
+            };
         }
 
-        this.tags = markRaw(await Tags.list())
     } catch (error) {
       console.error('Erreur lors de la récupération des interviews ou des extraits:', error);
     }
   },
+  computed: {
+    interviewsFiltrees() {
+        if (!this.search) return this.allInterviews;
+
+        return this.allInterviews.filter(inter =>
+            inter.titre.toLowerCase().includes(this.search.toLowerCase())
+        );
+    }
+  },
+  
   methods: {
     tags_to_string(tags_array) {
         let string_tags = "";
@@ -43,6 +55,7 @@ export default {
         }
         return string_tags.trim();
     },
+
 
    },
 };
@@ -66,14 +79,20 @@ export default {
         <div class="search-wrapper">
             <div class="input-group input-group-sm">
                 <input
+                    v-model="search"
                     type="text"
                     class="form-control"
-                    placeholder="Search..."
+                    placeholder="Titre d'une playlist..."
                     aria-label="Search"
+                    list="interviewData"
                 >
-                <button class="btn buttonsearch" type="button">
-                    <img src="/imgs/search.svg" alt="button search">
-                </button>
+                <datalist id="interviewData">
+                    <option 
+                        v-for="inter in allInterviews" 
+                        :key="inter.uuid" 
+                        :value="inter.titre"
+                    />
+                </datalist>
             </div>
         </div>
 
@@ -99,7 +118,7 @@ export default {
                         </tr>
                     </thead>
                     <tbody class="table-scroll">
-                        <tr v-for="interview in interviews" :key="interview.uuid">
+                        <tr v-for="interview in interviewsFiltrees" :key="interview.uuid">
                             <td>
                                 <RouterLink class="container container_extrait" :to="`/admin/interview/${interview.uuid}`">
                                     {{ interview.titre }}
