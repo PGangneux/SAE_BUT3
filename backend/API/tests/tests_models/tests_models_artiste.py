@@ -8,7 +8,9 @@ from ...models import Artiste, StyleMusical, Nation
 class ArtisteTestCase(Neo4jTestCase):
     def test_creation_artiste(self):
         """Création simple d'un artiste"""
-        artiste = Artiste(name="Daft Punk", info="Groupe de musique électronique").save()
+        artiste = Artiste(
+            name="Daft Punk", info="Groupe de musique électronique"
+        ).save()
         self.assertIsNotNone(artiste.uuid)
         self.assertEqual(artiste.name, "Daft Punk")
         self.assertEqual(artiste.info, "Groupe de musique électronique")
@@ -66,9 +68,9 @@ class ArtisteTestCase(Neo4jTestCase):
         """Test d'accès aux propriétés"""
         artiste = Artiste(name="Orelsan", info="Rappeur français").save()
         props = artiste.__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['name'], "Orelsan")
-        self.assertEqual(props['info'], "Rappeur français")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["name"], "Orelsan")
+        self.assertEqual(props["info"], "Rappeur français")
 
     def test_filtering_and_queries(self):
         """Test de récupération et filtrage"""
@@ -87,7 +89,7 @@ class ArtisteTestCase(Neo4jTestCase):
         # Avant suppression -> 1 relation entrante
         result, _ = db.cypher_query(
             "MATCH (s:StyleMusical {uuid:$uuid})<-[:STYLE]-() RETURN count(*)",
-            {'uuid': style.uuid}
+            {"uuid": style.uuid},
         )
         self.assertEqual(int(result[0][0]), 1)
 
@@ -97,7 +99,7 @@ class ArtisteTestCase(Neo4jTestCase):
         # Après suppression -> 0 relation entrante
         result_after, _ = db.cypher_query(
             "MATCH (s:StyleMusical {uuid:$uuid})<-[:STYLE]-() RETURN count(*)",
-            {'uuid': style.uuid}
+            {"uuid": style.uuid},
         )
         self.assertEqual(int(result_after[0][0]), 0)
 

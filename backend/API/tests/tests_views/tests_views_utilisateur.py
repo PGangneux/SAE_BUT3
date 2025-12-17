@@ -15,7 +15,7 @@ class UtilisateurViewSetAPITests(Neo4jTestCase):
             prenom="Prenom1",
             nom="Nom1",
             email=f"user1_{uuid4()}@example.com",
-            password="password1"
+            password="password1",
         ).save()
 
         self.utilisateur2 = Utilisateur(
@@ -23,34 +23,37 @@ class UtilisateurViewSetAPITests(Neo4jTestCase):
             prenom="Prenom2",
             nom="Nom2",
             email=f"user2_{uuid4()}@example.com",
-            password="password2"
+            password="password2",
         ).save()
 
     def test_list_utilisateurs(self):
         """
         Vérifie que la liste des utilisateurs est correctement renvoyée
         """
-        url = reverse('utilisateur-list')
+        url = reverse("utilisateur-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         data = response.json()
-        self.assertTrue(any(u['uuid'] == self.utilisateur1.uuid for u in data))
-        self.assertTrue(any(u['uuid'] == self.utilisateur2.uuid for u in data))
+        self.assertTrue(any(u["uuid"] == self.utilisateur1.uuid for u in data))
+        self.assertTrue(any(u["uuid"] == self.utilisateur2.uuid for u in data))
 
     def test_retrieve_utilisateur(self):
         """
         Vérifie qu'un utilisateur peut être récupéré individuellement
         """
-        url = reverse('utilisateur-detail', kwargs={'uuid': self.utilisateur1.uuid})
+        url = reverse("utilisateur-detail", kwargs={"uuid": self.utilisateur1.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()['uuid'], self.utilisateur1.uuid)
+        self.assertEqual(response.json()["uuid"], self.utilisateur1.uuid)
 
     def test_retrieve_nonexistent_utilisateur(self):
         """
         Vérifie qu'une requête sur un utilisateur inexistant renvoie 404
         """
-        url = reverse('utilisateur-detail', kwargs={'uuid': '00000000-0000-0000-0000-000000000000'})
+        url = reverse(
+            "utilisateur-detail",
+            kwargs={"uuid": "00000000-0000-0000-0000-000000000000"},
+        )
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

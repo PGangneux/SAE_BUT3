@@ -50,5 +50,5 @@ class TagTestCase(Neo4jTestCase):
         self.assertEqual(found[0].name, "hiphop")
 
         props = found[0].__properties__
-        self.assertIn('uuid', props)
-        self.assertEqual(props['name'], "hiphop")
+        self.assertIn("uuid", props)
+        self.assertEqual(props["name"], "hiphop")
