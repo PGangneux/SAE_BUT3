@@ -1,0 +1,12 @@
+the db model links are
+ Artiste: [Extrait,Nation,StyleMusical,],
+    Extrait: [Artiste,Tag,Interview,Question,],
+    Interview: [Extrait,Tag,],
+    Nation: [Artiste,],
+    Question: [Extrait,Theme,],
+    StyleMusical: [Artiste,],
+    Tag: [Extrait,Interview,],
+    Theme: [Question,],
+
+// TODO : put recomendation algorithm here
+const items = await Extrait.list(finalArgs);
