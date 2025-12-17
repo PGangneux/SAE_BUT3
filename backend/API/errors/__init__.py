@@ -3,4 +3,4 @@ from .not_found import NotFound
 from .context_error import ContextError
 from .connexion_db import ConnexionDB
 from .order_error import OrderError
-from .validator_required import ValidationError
+from .validator_required import ValidatorRequired
