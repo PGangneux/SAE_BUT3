@@ -56,19 +56,29 @@ export default {
   methods: {
 
     handleTagsCreated(tags) {
+      console.log("htct1");
         handleTagsCreated(this, tags)
+        console.log("htct2", this.tagsToCreate);
     },
 
     handleTagsDisconnected(tags) {
+      console.log("htd1");
         handleTagsDisconnected(this, tags)
+        console.log("htd2",this.tagsToDisconnect);
     },
 
     handleTagsConnected(tag) {
+
+      
+            
+           
+      console.log("htc1");
         handleTagsConnected(this, tag)
+        console.log("htc2",this.tagsConnected);
     },
 
     async save_tags() {
-        console.log("save tags")
+        console.log("save tags",this.current_extrait);
         try {
             // Connecter les tags existants
             for (const tag of this.tagsConnected) {
@@ -119,12 +129,14 @@ export default {
       this.current_extrait.duree = 0;
 
       this.popupEnregistrer = true;
-      
+      console.log('deb')
       await this.current_extrait.create();
+      console.log('ga')
       
-      this.new_extrait = new markRaw(new Extrait({}));
+      //this.new_extrait = new markRaw(new Extrait({}));
 
-      await this.save_tags()
+      await this.save_tags();
+      console.log('fa')
   
       console.log("creer");
       
@@ -135,18 +147,19 @@ export default {
       this.popup = !this.popup
     },
 
-    modificationDonnees(){
+   async modificationDonnees(){
       if (this.create) {
-          this.enregistrer();
+          await this.enregistrer();
       } else {
-        this.Update();
+        await this.Update();
       }
     },
 
 
-    Update(){
+    async Update(){
       console.log(this.current_extrait);
       this.current_extrait.update();
+      await this.save_tags();
     },
 
 
