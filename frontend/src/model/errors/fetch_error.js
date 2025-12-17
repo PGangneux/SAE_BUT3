@@ -34,7 +34,9 @@ export default class FetchError extends Error {
 
     get isNotFound() { return (typeof this.detail == 'object' && this.status == 404 && 'Not Found' in this.detail); }
 
-    get isUniqueProperty() { return (typeof this.detail == 'object' && this.status == 400 && 'Unique Property' in this.detail); }
+    get isUniqueProperty() { return (typeof(this.detail) == 'object' && this.status == 400 && 'Unique Property' in this.detail); }
+
+    get isRequiredProperty() { return (typeof(this.detail) == 'object' && this.status == 400 && 'Required Property' in this.detail); }
 
     get isContextError() { return (typeof this.detail == 'object' && this.status == 400 && 'Context error' in this.detail); }
 
@@ -57,6 +59,11 @@ export default class FetchError extends Error {
                 return `L'élément recherché n'a pas été retrouvé : ${this.detail['Context error']}`;
             } else if (this.isPermission) {
                 return `Vous n'avez pas la permission pour effectuer cette action`;
+            } else if (this.isRequiredProperty) {
+                return `La propriété ${this.detail['Required Property']} est requise`
+            }
+            else{
+                return "Erreur 55";
             }
         } else if (this.isServer) {
             // Lorsque la connexion à l'API se réalise mais pas celle à la bd (non implémenté dans l'API)

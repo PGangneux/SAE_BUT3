@@ -196,19 +196,16 @@ export default class Model {
         `Cannot create ${this.constructor.name} that already has a UUID`
       );
     }
-    try {
-      return await ClientAPI.post(
-        await ClientAPI.endpoints(this.constructor.endpoint),
-        JSON.stringify(this.toJSON())
-      )
-        // Charger les nouvelles données dans l'instance
-        .then((json) => {
-          return this.fromJSON(json);
-        });
-    } catch (error) {
-      console.error(error.toString());
-      return null;
-    }
+
+    return await ClientAPI.post(
+      await ClientAPI.endpoints(this.constructor.endpoint),
+      JSON.stringify(this.toJSON())
+    )
+      // Charger les nouvelles données dans l'instance
+      .then((json) => {
+        return this.fromJSON(json);
+      });
+
   }
 
   /**
