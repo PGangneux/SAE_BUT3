@@ -102,9 +102,36 @@ export default {
 
     async extraits_current_question(){
       this.selected = "questions"
-      /// console.log("current extrait:", this.extrait)
-      /// console.log(await this.extrait.question.then(question => { return question.extraits}))
-      this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits()}))
+      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
+      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
+      let weights;
+      if (false) {
+        weights = localStorage.getItem('weights');
+        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
+        localStorage.setItem('weights', JSON.stringify(weights));
+      }
+      else {
+        weights = this.get_reco_weights(videoStore.chemin);
+      }
+      const question = markRaw(await this.extrait.question);
+      this.videos = markRaw(
+        await ClientAPI.post(
+          `${ClientAPI.BASE_URL}api/recommandations`,
+          JSON.stringify({'weights': weights, 'filters': {'Question': question.uuid}}),
+          ClientAPI.current_user ? true : false,
+          video ? {'video': video, 'size': 10} : null
+        )
+        .then(
+          json => {
+            return json.map(
+              (v) => {
+                if (v.type == 'Extrait') { return markRaw( new Extrait(v.value) ); }
+                else { return markRaw( new Interview(v.value) ); }
+              }
+            );
+          }
+        )
+      );
     },
 
     async extraits_interviews_current_artiste() {
@@ -140,6 +167,41 @@ export default {
         )
       );
       
+    },
+
+    async extrait_current_theme(){
+      this.selected = "thèmes"
+      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
+      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
+      let weights;
+      if (false) {
+        weights = localStorage.getItem('weights');
+        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
+        localStorage.setItem('weights', JSON.stringify(weights));
+      }
+      else {
+        weights = this.get_reco_weights(videoStore.chemin);
+      }
+      const question = markRaw(await this.extrait.question);
+      const theme = markRaw(await question.theme);
+      this.videos = markRaw(
+        await ClientAPI.post(
+          `${ClientAPI.BASE_URL}api/recommandations`,
+          JSON.stringify({'weights': weights, 'filters': {'Thème': theme.uuid}}),
+          ClientAPI.current_user ? true : false,
+          video ? {'video': video, 'size': 10} : null
+        )
+        .then(
+          json => {
+            return json.map(
+              (v) => {
+                if (v.type == 'Extrait') { return markRaw( new Extrait(v.value) ); }
+                else { return markRaw( new Interview(v.value) ); }
+              }
+            );
+          }
+        )
+      );
     },
     
 
@@ -209,7 +271,7 @@ export default {
               <!--si la video est un extrait-->
               <li v-if="this.interview === null" @click="extraits_interviews_current_artiste" :class="{selected: selected === 'artiste'}">Artiste</li>
               <li v-if="this.interview === null" @click="extraits_current_question" :class="{ selected: selected === 'questions' }">Questions</li>
-              <li v-if="this.interview === null" @click="" :class="{selected: selected === 'thèmes'}">Thèmes</li>
+              <li v-if="this.interview === null" @click="extrait_current_theme" :class="{selected: selected === 'thèmes'}">Thèmes</li>
               <li v-if="this.interview === null" @click="interview_current_extrait" :class="{selected: selected === 'playlists'}">Playlists</li>
               
             </ul>
