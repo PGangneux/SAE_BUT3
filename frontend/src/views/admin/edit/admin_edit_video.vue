@@ -97,6 +97,11 @@ export default {
         }
     },
 
+    creerNouveauArtiste(){
+      const newArtiste = new Artiste({});
+      let nouveau_nom = document.getElementById("choixArtiste");
+    },
+
 
     async enregistrer(){
       //fonction pour enregistrer un extraits dans L'api
@@ -430,7 +435,7 @@ export default {
           <div class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Artiste :</span>
-                <input list="Artistedata" id="choix" name="choix" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
+                <input list="Artistedata" id="choixArtiste" name="choixArtiste" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedArtiste" @input="SelectedArtisteId">
                 
                 <datalist id="Artistedata">
                 <option v-for="artiste in listeArtiste" :key="artiste.id" :value="artiste.name" :label="artiste.name" > </option> 
