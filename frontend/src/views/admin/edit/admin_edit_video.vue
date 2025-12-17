@@ -42,56 +42,9 @@ export default {
             urlVimeoReconstruit:"",
             urlyoutubeReconstruit:"",
         };
-    }
+    },
     
-    ,computed: {
-      youtubeUrl: {
-        get() {
-          if(this.current_extrait?.youtube_url != null){
-            return 'https://www.youtube.com/watch?v=' + this.current_extrait.youtube_url;
-          }else if (this.current_extrait?.youtube_url == null){
-            return '';
-          }else{
-            return 'erreur...';
-          }
-         
-        },
-        set(value) {
-          const id = value.split('v=')[1];
-          if (id) this.current_extrait.youtube_url = id;
-        }
-      },
-
-      vimeoUrl: {
-        get() {
-
-          if(this.current_extrait?.vimeo_url != null){
-            return 'https://vimeo.com/' + this.current_extrait.vimeo_url;
-          }else if (this.current_extrait?.vimeo_url == null){
-            return '';
-          }else{
-            return 'erreur...';
-          }
-
-          
-        },
-        set(value) {
-          const id = value.split('/').pop();
-          if (id) this.current_extrait.vimeo_url = id;
-        }
-      },
-      description : {
-         get() {
-          return this.current_extrait?.description ? this.current_extrait.description : 'Chargement...';
-        },
-      },
-
-      question : {
-         get() {
-          return this.current_extrait?.question ? this.current_extrait.question : 'Chargement...';
-        },
-      }
-  },
+    
 
 
   methods: {
@@ -193,22 +146,36 @@ export default {
     },
 
 
+  
+
   async migniature_video(){
 
-        if(!this.create){
-          this.urlVimeoReconstruit ='https://www.youtube.com/watch?v='  + this.current_extrait.vimeo_url ;
-          this.urlyoutubeReconstruit = 'https://vimeo.com/' +  this.current_extrait.youtube_url;
+        if (!this.urlVimeoReconstruit.includes('https') && this.urlVimeoReconstruit!='' ) {
+          this.urlVimeoReconstruit = 'https://vimeo.com/' +this.urlVimeoReconstruit ;
         }
 
-        
+        if (!this.urlyoutubeReconstruit.includes('https') && this.urlyoutubeReconstruit!='') {
+          this.urlyoutubeReconstruit = 'https://www.youtube.com/watch?v='  + this.urlyoutubeReconstruit;
+        }
+
+        try{
+          this.current_extrait.youtube_url = this.get_YT_videoId(this.urlyoutubeReconstruit);
+        }catch{
+          this.current_extrait.youtube_url="";
+
+          this.thumbnail='/imgs/width551.png';
+          console.log('erreur');
+        }
 
     
-        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) ) {
-        
+        if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
+          
           this.thumbnail = await this.current_extrait.url_miniature_yt
             
         }else{
-            this.thumbnail = await this.current_extrait.url_miniature_vi()
+            this.current_extrait.vimeo_url= this.urlVimeoReconstruit
+
+            this.thumbnail = await this.current_extrait.get_url_miniature_vimeo()
         }
   },
 
@@ -266,6 +233,8 @@ export default {
       this.current_extrait = markRaw( await new Extrait({}));
       this.create = true;
     }
+    this.urlVimeoReconstruit = this.current_extrait.vimeo_url;
+    this.urlyoutubeReconstruit =this.current_extrait.youtube_url;
     this.migniature_video()
 
     
