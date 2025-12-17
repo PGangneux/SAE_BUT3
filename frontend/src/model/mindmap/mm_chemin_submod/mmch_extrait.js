@@ -50,7 +50,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch description extrait on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description extrait on empty obj");
         if (this.#description) return this.#description;
         const description = [];
         const extrait = this.mmch_obj;
@@ -90,7 +90,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     }
 
     async #get_url() {
-        if (!!this.mmch_obj) return null;
+        if (!this.mmch_obj) return null;
         if (this.#previewurl) return this.#previewurl;
         const extrait = this.mmch_obj;
         if (extrait.youtube_url) {
@@ -104,12 +104,12 @@ export default class mmch_Extrait extends mmch_CheminT {
     }
 
     async mmch_hasMiniature() {
-        if (!!this.mmch_obj) return null;
+        if (!this.mmch_obj) return null;
         return await this.#get_url() != null;
     }
 
     async mmch_getMiniature() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getMiniature Extrait on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch mmch_getMiniature Extrait on empty obj");
         return await this.#get_url();
     }
 }

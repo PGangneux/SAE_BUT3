@@ -1,5 +1,6 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
+import mmch_Root  from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
 
 export default {
     name: "mindmap_node",
@@ -21,59 +22,29 @@ export default {
         };
     },
     methods: {
-        hasContent() {
-            // Safe check for content - handles markRaw objects
-            return this.node_instance.mmch_obj !== null && 
-                   this.node_instance.mmch_obj !== undefined;
-        },
         async loadNodeData() {
-            // console.log("loading ", this.node_instance, this.node_instance.mmch_obj);
-            
-            // Use the safe hasContent method
-            if (this.hasContent()) {
-                try {
-                    this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Inconnue';
-                } catch (error) {
-                    console.error('Failed to load title:', error);
-                    this.nodeTitle = 'Inconnue';
+            if (!this.node_instance.mmch_obj) {
+                if (this.node_instance.constructor != mmch_Root) {
+                    this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+                } else {
+                    this.nodeTitle = '';
                 }
+                return;
             }
-
+            this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
             // Check if has miniature
+            // Load description
+            this.nodeDescription = await this.node_instance.mmch_getDescription();
             this.thumbnailLoading = true;
-            try {
-                this.hasMiniature = await this.node_instance.mmch_hasMiniature();
-            } catch (error) {
-                console.error('Failed to check miniature:', error);
-                this.hasMiniature = false;
-            }
-
+            this.hasMiniature = await this.node_instance.mmch_hasMiniature();
             // Load miniature if available
             if (this.hasMiniature) {
-                try {
-                    this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
-                } catch (error) {
-                    console.error('Failed to load thumbnail:', error);
-                    this.thumbnailUrl = null;
-                }
+                this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
             }
             this.thumbnailLoading = false;
-
-            // Load description if available - fixed: check mmch_obj not content
-            if (this.hasContent() && this.hasMiniature) {
-                try {
-                    this.nodeDescription = await this.node_instance.mmch_getDescription();
-                } catch (error) {
-                    console.error('Failed to load description:', error);
-                    this.nodeDescription = [];
-                }
-            }
         }
     },
     computed: {
-        nodeSubtitle() {
-            return this.mm_LegendClassMap[this.node_instance.constructor.name] || 'Inconnue';
-        },
         nodeClass() {
             const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
@@ -81,16 +52,11 @@ export default {
 
             return `${baseClass} ${shapeClass} ${appearingClass}`;
         },
-        // Computed property for safe content checking in template
-        hasContentComputed() {
-            return this.hasContent();
-        }
     },
     async mounted() {
         setTimeout(() => {
             this.isAppearing = false;
         }, 50);
-        
         // Load all async data
         await this.loadNodeData();
     },
@@ -100,20 +66,20 @@ export default {
 <template>
     <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
         <div style="display: none;">
+            typeof node_instance {{ typeof this.node_instance }}
             thumbnailLoading {{ thumbnailLoading }}
             isAppearing {{ isAppearing }}
             thumbnailUrl {{ thumbnailUrl }}
             nodeTitle {{ nodeTitle }}
             nodeDescription {{ nodeDescription }}
             hasMiniature {{ hasMiniature }}
-            hasContent {{ hasContentComputed }}
-            node_instance {{ node_instance.toJSON() }}
+            node_instance {{ this.node_instance }}
         </div>
 
         <!-- Case 1: No content -->
-        <template v-if="!hasContentComputed">
+        <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">
-                <p class="mm_node_title">{{ nodeSubtitle }}</p>
+                <p class="mm_node_title">{{ nodeTitle }}</p>
                 <template v-if="node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
@@ -121,7 +87,7 @@ export default {
         </template>
 
         <!-- Case 3: Has content and miniature -->
-        <template v-else-if="hasContentComputed && hasMiniature">
+        <template v-else-if="this.node_instance.mmch_obj && hasMiniature">
             <div class="mm_node_content">
                 <p class="mm_node_title">
                     {{ nodeTitle }}
@@ -150,12 +116,17 @@ export default {
         </template>
 
         <!-- Case 2: Has content but no miniature -->
-        <template v-else-if="hasContentComputed && !hasMiniature">
+        <template v-else-if="this.node_instance.mmch_obj && !hasMiniature">
             <div class="mm_node_content">
                 <p class="mm_node_title">
                     {{ nodeTitle }}
                 </p>
                 <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
+                <div class="mm_node_description">
+                    <p v-for="(line, index) in nodeDescription" :key="index">
+                        {{ line }}
+                    </p>
+                </div>
                 <template v-if="node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>

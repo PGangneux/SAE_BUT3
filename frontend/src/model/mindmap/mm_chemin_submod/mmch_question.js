@@ -43,13 +43,13 @@ export default class mmch_Question extends mmch_CheminT {
     }
 
     async mmch_getTitle() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle question on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch mmch_getTitle question on empty obj");
         const question = this.mmch_obj;
         return question.texte.substring(0, 50);
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch description question on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description question on empty obj");
         if (this.#description) return this.#description;
         const description = [];
         const question = this.mmch_obj;
