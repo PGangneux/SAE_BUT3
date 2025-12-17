@@ -120,13 +120,22 @@ class Recommandation(APIView):
 
         # Filtres dynamiques
         filter_configs = {
-            "Thème": ("Theme", "*2..3"),
+            "Thème": ("Theme", "*..3"),
             "Artiste": ("Artiste", "*..2"),
-            "StyleMusical": ("StyleMusical", "*2..3"),
-            "Nation": ("Nation", "*2..3"),
+            "StyleMusical": ("StyleMusical", "*..3"),
+            "Nation": ("Nation", "*..3"),
             "Question": ("Question", "*..2"),
-            "Tag": ("Tag", "*0..3"),
+            "Tag": ("Tag", "*..3"),
         }
+        # Pour des causes de retro compatibilités
+        # filter_configs = {
+        #     "Thème": ("Theme", "*2..3"),
+        #     "Artiste": ("Artiste", "*..2"),
+        #     "StyleMusical": ("StyleMusical", "*2..3"),
+        #     "Nation": ("Nation", "*2..3"),
+        #     "Question": ("Question", "*..2"),
+        #     "Tag": ("Tag", "*0..3"),
+        # }
 
         excluded_relations = [
             "REGARDER_EXTRAITS",
@@ -142,9 +151,15 @@ class Recommandation(APIView):
                     f"!:{node_type}" if filtre_key == "Tag" else f"t:{node_type}"
                 )
                 node_var = "!" if filtre_key == "Tag" else "t"
-
+                # Pour des questions de retro compatibilité avec les anciennes versions de neo4j
+                # filter_clause = f"""EXISTS {{
+                #     MATCH p = SHORTEST 1 (v)-[{path_length}]-({node_pattern})
+                #     WHERE {node_var}.uuid = '{filtres[filtre_key]}'
+                #     AND NONE(n IN nodes(p) WHERE n:Utilisateur)
+                #     AND NONE(r IN relationships(p) WHERE type(r) IN {excluded_relations})
+                # }}"""
                 filter_clause = f"""EXISTS {{
-                    MATCH p = SHORTEST 1 (v)-[{path_length}]-({node_pattern})
+                    MATCH p = shortestPath((v:{video_class}|{playlist_class})-[{path_length}]-({node_pattern}))
                     WHERE {node_var}.uuid = '{filtres[filtre_key]}'
                     AND NONE(n IN nodes(p) WHERE n:Utilisateur)
                     AND NONE(r IN relationships(p) WHERE type(r) IN {excluded_relations})
