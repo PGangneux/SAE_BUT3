@@ -120,7 +120,8 @@ class Utilisateur(StructuredNode):
     pseudo = RegexProperty(unique_index=True, required=True, expression=r".+")
     prenom = RegexProperty(required=True, expression=r".+")
     nom = RegexProperty(required=True, expression=r".+")
-    email = EmailProperty(required=True, unique_index=True)
+    email = StringProperty(required=True, unique_index=True)
+    # email = EmailProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
     is_admin = BooleanProperty(default=False)
 

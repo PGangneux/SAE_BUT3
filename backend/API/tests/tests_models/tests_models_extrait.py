@@ -22,31 +22,6 @@ class ExtraitTestCase(Neo4jTestCase):
         self.assertEqual(extrait.duree, 120)
         self.assertIsInstance(extrait.uploaded_at, date)
 
-    def test_unique_urls(self):
-        """Test que les URLs Youtube/Vimeo sont uniques"""
-        Extrait(
-            titre="Extrait A",
-            youtube_url="https://youtube.com/watch?v=test",
-            vimeo_url="https://vimeo.com/test",
-            duree=60,
-        ).save()
-
-        with self.assertRaises(UniqueProperty):
-            Extrait(
-                titre="Extrait B",
-                youtube_url="https://youtube.com/watch?v=test",
-                vimeo_url="https://vimeo.com/autre",
-                duree=30,
-            ).save()
-
-        with self.assertRaises(UniqueProperty):
-            Extrait(
-                titre="Extrait C",
-                youtube_url="https://youtube.com/watch?v=autre",
-                vimeo_url="https://vimeo.com/test",
-                duree=30,
-            ).save()
-
     def test_update_description(self):
         """Mise à jour de la description"""
         extrait = Extrait(

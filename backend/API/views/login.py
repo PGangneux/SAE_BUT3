@@ -3,7 +3,7 @@ from django.urls import reverse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from neomodel import DoesNotExist
+from neomodel import DoesNotExist, DeflateError
 from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.tokens import RefreshToken
 from ..models import Utilisateur
@@ -30,11 +30,11 @@ class LoginView(APIView):
 
         # Recherche par email ou pseudo
         try:
-            utilisateur = Utilisateur.nodes.get(email=identifiant)
+            utilisateur = Utilisateur.nodes.get(pseudo=identifiant)
         except DoesNotExist:
             try:
-                utilisateur = Utilisateur.nodes.get(pseudo=identifiant)
-            except DoesNotExist:
+                utilisateur = Utilisateur.nodes.get(email=identifiant)
+            except:
                 return Response(
                     {"detail": "Identifiants invalides."},
                     status=status.HTTP_401_UNAUTHORIZED,
