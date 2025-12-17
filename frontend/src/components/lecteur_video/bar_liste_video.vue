@@ -41,7 +41,8 @@ export default {
     get_reco_weights(chemin){
       const weights = {};
       chemin.forEach((value, index, array) => {
-        weights[value.category.name] = array.length - index;
+        console.log("bar_list_video get_reco_weights", value, value.mmch_dbjsclass.name);
+        weights[value.mmch_dbjsclass.name] = array.length - index;
       });
       return weights;
     },
