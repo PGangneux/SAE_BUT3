@@ -40,7 +40,7 @@ export default class mmch_Theme extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch description theme on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description theme on empty obj");
         if (this.#description) return this.#description;
         const description = [];
         const theme = this.mmch_obj;

@@ -45,7 +45,7 @@ export default class mmch_Interview extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch description interview on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description interview on empty obj");
         if (this.#description) return this.#description;
         const description = [];
         const interview = this.mmch_obj;
@@ -67,7 +67,7 @@ export default class mmch_Interview extends mmch_CheminT {
     }
 
     async #get_url() {
-        if (!!this.mmch_obj) return null;
+        if (!this.mmch_obj) return null;
         if (this.#previewurl) return this.#previewurl;
         const interview = this.mmch_obj;
 
@@ -94,12 +94,12 @@ export default class mmch_Interview extends mmch_CheminT {
     }
 
     async mmch_hasMiniature() {
-        if (!!this.mmch_obj) return null;
+        if (!this.mmch_obj) return null;
         return await this.#get_url() != null;
     }
 
     async mmch_getMiniature() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_preview interview on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch mmch_preview interview on empty obj");
         return await this.#get_url();
     }
 }

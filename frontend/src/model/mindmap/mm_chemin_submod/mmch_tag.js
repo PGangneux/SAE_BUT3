@@ -41,7 +41,7 @@ export default class mmch_Tag extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle tag on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch mmch_getTitle tag on empty obj");
         return "";
     }
 }

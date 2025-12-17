@@ -75,7 +75,7 @@ export default class mmch_CheminT extends mm_Node {
     }
 
     async mmch_getTitle() {
-        if (!!this.mmch_obj) throw new Error("mmch mmch_getTitle generic on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch mmch_getTitle generic on empty obj");
         const obj = this.mmch_obj;
         if (obj.name) return obj.name;
         if (obj.titre) return obj.titre;

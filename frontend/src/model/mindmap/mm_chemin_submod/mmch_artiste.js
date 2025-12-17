@@ -47,7 +47,7 @@ export default class mmch_Artiste extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
         if (this.#description) return this.#description;
         const description = [];
 
