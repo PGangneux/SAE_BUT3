@@ -8,10 +8,6 @@ export default {
             type: Object,
             required: true,
         },
-        jsmm: {
-            type: Object,
-            required: true,
-        }
     },
     data() {
         return {
