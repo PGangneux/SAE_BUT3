@@ -14,6 +14,8 @@ export default class mm_Mindmap {
     chemin;
     /** @type {Array[mm_Linkage]} */
     previewlinkages;
+    /** @type {Array[mmch_CheminT]} */
+    previewnodes;
     /** @type {boolean} */
     fullscreen;
     /** @type {boolean} */
@@ -51,6 +53,7 @@ export default class mm_Mindmap {
         this.nodes = [];
         // mm preview data
         this.previewlinkages = [];
+        this.previewnodes = [];
         // mm chemin
         this.chemin = [];
         // vars
