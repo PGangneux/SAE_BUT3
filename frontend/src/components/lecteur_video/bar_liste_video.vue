@@ -101,7 +101,7 @@ export default {
       this.selected = "questions"
       /// console.log("current extrait:", this.extrait)
       /// console.log(await this.extrait.question.then(question => { return question.extraits}))
-      this.videos = markRaw(await this.extrait.question().then(question => { return question.extraits()}))
+      this.videos = markRaw(await this.extrait.question.then(question => { return question.extraits()}))
     },
 
     async extraits_interviews_current_artiste() {
@@ -111,13 +111,13 @@ export default {
 
       if (this.interview) {
         for (const extrait of this.liste_extraits_current_interview) {
-          const artiste = await extrait.artiste();
+          const artiste = await extrait.artiste;
           if (artiste && !artistes_current_video.includes(artiste)) {
             artistes_current_video.push(artiste);
           }
         }
       } else {
-        const artiste = await this.extrait.artiste();
+        const artiste = await this.extrait.artiste;
         if (artiste) artistes_current_video.push(artiste);
       }
 
@@ -125,12 +125,12 @@ export default {
       const interviews_artiste = new Map();
 
       for (const artiste of artistes_current_video) {
-        const extraits_artiste_all = await artiste.extraits();
+        const extraits_artiste_all = await artiste.extraits;
 
         for (const un_extrait of extraits_artiste_all) {
           extraits_artiste.set(un_extrait.uuid, un_extrait);
 
-          const interviews_extrait_all = await un_extrait.interviews();
+          const interviews_extrait_all = await un_extrait.interviews;
           for (const un_interview of interviews_extrait_all || []) {
             interviews_artiste.set(un_interview.uuid, un_interview);
           }

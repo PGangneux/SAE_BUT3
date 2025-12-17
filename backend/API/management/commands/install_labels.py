@@ -4,7 +4,11 @@ from neomodel import install_all_labels
 
 
 class Command(BaseCommand):
-    help = "Crée tous les labels et contraintes uniques Neo4j pour les modèles StructuredNode"
+    """
+    Permet d'enregistrer l'ensemble des labels et contraintes du model vers la base de données neo4j
+    """
+
+    help = "Crée tous les labels et contraintes Neo4j pour les modèles StructuredNode"
 
     def handle(self, *args, **options):
         for row in db.cypher_query("SHOW CONSTRAINTS")[0]:

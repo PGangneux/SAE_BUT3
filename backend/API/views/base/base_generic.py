@@ -11,6 +11,16 @@ from ...errors import NotFound, ConnexionDB, OrderError
 
 
 class BaseGenericViewSet(GenericViewSet):
+    """
+    Classe de base contenant les méthodes pour les viewsets de l'api
+
+    Raises:
+        ValidationError: Données du mauvais type
+        ConnexionDB: Base de données indisponible
+        NotFound: Instance introuvable
+        OrderError: Erreur dans le champ pour ordonner
+    """
+
     lookup_field = "uuid"
     authentication_classes = []
     permission_classes = []
@@ -22,16 +32,24 @@ class BaseGenericViewSet(GenericViewSet):
         search_field: str = None,
         **kwargs,
     ):
+        """ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
+
+        Args:
+            serializer_class (Serializer): Serializer du ViewSet
+            model_class (StructuredNode): type de node du ViewSet
+            search_field (str, optional): Champ utiliser pour la recherche si fourni. Defaults to None.
+        """
         super().__init__(**kwargs)
         self.serializer_class: Serializer = serializer_class
         self.model_class: StructuredNode = model_class
         self.search_field: str = search_field
 
     def get_nodeset(self) -> NodeSet:
-        """Récupère le nodeset de la view, même chose qu'un queryset mais pour neomodel
+        """Récupère le nodeset de la view,
+        même chose qu'un queryset mais pour neomodel
 
         Returns:
-            NodeSet: ensemble de structurenode du modèle
+            NodeSet: ensemble de StructuredNode du modèle
         """
         return self.model_class.nodes
 
