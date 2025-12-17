@@ -31,7 +31,7 @@ export default {
                    this.jsclass.mmch_obj !== undefined;
         },
         async loadNodeData() {
-            console.log("loading ", this.jsclass, this.jsclass.mmch_obj);
+            // console.log("loading ", this.jsclass, this.jsclass.mmch_obj);
             
             // Use the safe hasContent method
             if (this.hasContent()) {

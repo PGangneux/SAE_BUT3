@@ -1,4 +1,4 @@
-// import { markRaw } from "vue";
+import { markRaw } from "vue";
 import router from "../../router.js";
 import Model from "../model.js";
 import mm_Mindmap from "./mm_mindmap.js";
@@ -105,21 +105,23 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
         console.error("Invalid category passed to mm_createChildNode:", category);
         return null;
     }
+    console.log("create new node",Cls,content);
+    
     // Create the instance
     const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
-    node.childrens.push(tmp_child);
+    node.childrens.push(markRaw(tmp_child));
     if (isPreview) {
-        mminfo.previewnodes.push(tmp_child);
+        mminfo.previewnodes.push(markRaw(tmp_child));
         node.ispreview = true;
     } else {
-        mminfo.nodes.push(tmp_child);
+        mminfo.nodes.push(markRaw(tmp_child));
     }
     if (createLink) {
         const linkage = new mm_Linkage(node, tmp_child, thickness_base * (1 / node.depth));
         if (isPreview) {
-            mminfo.previewlinkages.push(linkage);
+            mminfo.previewlinkages.push(markRaw(linkage));
         } else {
-            mminfo.linkages.push(linkage);
+            mminfo.linkages.push(markRaw(linkage));
         }
     }
     set_children_pos(mminfo, node);

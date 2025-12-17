@@ -1,6 +1,7 @@
 import Extrait from "../../extrait.js";
 import StyleMusical from "../../style_musical.js";
 import mmch_CheminT from "./mmch_chemin.js";
+import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Artiste from "./mmch_artiste.js";
 
 export default class mmch_StyleMusical extends mmch_CheminT {
@@ -8,32 +9,33 @@ export default class mmch_StyleMusical extends mmch_CheminT {
     /** @type {StyleMusical} */
     mmch_obj;
 
-    async mmch_listinst(args = {}) {
+    async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
+        yield mmch_Artiste;
         // TODO : put recomendation algorithm here
-        const items = await Extrait.list(finalArgs);
-        return [
-            new mmch_Artiste(null),
-            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
-        ];
+        const recommend = await Extrait.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: mmch_Extrait, content: item };
+        }
     }
 
-    async mmch_searchinst(args = {}) {
+    async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
-        const items = await this.mmch_dbjsclass.search(finalArgs);
-        return [
-            new mmch_Artiste(null),
-            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
-        ];
+        yield mmch_Artiste;
+        // TODO : put recomendation algorithm here
+        const recommend = await Extrait.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: mmch_Extrait, content: item };
+        }
     }
 
-    async mmch_previewinst(mminfo, args = {}) {
+    async* mmch_previewinst(mminfo, args = {}) {
         const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
-        ];
+        const recommend = await Extrait.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: mmch_Extrait, content: item };
+        }
     }
 
     async mmch_getDescription() {

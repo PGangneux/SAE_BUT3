@@ -9,45 +9,49 @@ export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     /** @type {Extrait} */
     mmch_obj;
-    #_previewurl = null;
+    #previewurl = null;
+    /** @type {Array[String]} */
+    #description = null;
 
-    async mmch_listinst(args = {}) {
+    async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
+        yield mmch_Artiste;
+        yield mmch_Tag;
+        yield mmch_Interview;
+        yield mmch_Question;
+
         // TODO : put recomendation algorithm here
-        const items = await Extrait.list(finalArgs);
-        return [
-            new mmch_Artiste(null),
-            new mmch_Tag(null),
-            new mmch_Interview(null),
-            new mmch_Question(null),
-            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
-        ];
+        const recommend = await Extrait.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: mmch_Extrait, content: item };
+        }
     }
 
-    async mmch_searchinst(args = {}) {
+    async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
+        yield mmch_Artiste;
+        yield mmch_Tag;
+        yield mmch_Interview;
+        yield mmch_Question;
         // TODO : put recomendation algorithm here
-        const items = await Extrait.list(finalArgs);
+        const items = await Extrait.search(finalArgs);
         return [
-            new mmch_Artiste(null),
-            new mmch_Tag(null),
-            new mmch_Interview(null),
-            new mmch_Question(null),
             ...items.map(item => ({ cls: mmch_Extrait, content: item })),
         ];
     }
 
-    async mmch_previewinst(mminfo, args = {}) {
+    async* mmch_previewinst(mminfo, args = {}) {
         const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => ({ cls: mmch_Extrait, content: item })),
-        ];
+        const recommend = await Extrait.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: mmch_Extrait, content: item };
+        }
     }
 
     async mmch_getDescription() {
         if (!!this.mmch_obj) throw new Error("mmch description extrait on empty obj");
+        if (this.#description) return this.#description;
         const description = [];
         const extrait = this.mmch_obj;
         try {
@@ -81,21 +85,22 @@ export default class mmch_Extrait extends mmch_CheminT {
             }
         } catch (error) { console.warn(error); }
 
-        return description.length > 0 ? description : ["no description extrait"];
+        this.#description = description.length > 0 ? description : ["no description extrait"];
+        return this.#description;
     }
 
     async #get_url() {
         if (!!this.mmch_obj) return null;
-        if (this.#_previewurl) return this.#_previewurl;
+        if (this.#previewurl) return this.#previewurl;
         const extrait = this.mmch_obj;
         if (extrait.youtube_url) {
-            this.#_previewurl = extrait.url_miniature_yt;
+            this.#previewurl = extrait.url_miniature_yt;
         } else if (extrait.vimeo_url) {
-            this.#_previewurl = await extrait.get_url_miniature_vimeo();
+            this.#previewurl = await extrait.get_url_miniature_vimeo();
         } else {
             throw new Error("unreachable Extrait doesn't have url");
         }
-        return this.#_previewurl;
+        return this.#previewurl;
     }
 
     async mmch_hasMiniature() {

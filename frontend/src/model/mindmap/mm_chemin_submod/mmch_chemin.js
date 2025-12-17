@@ -12,7 +12,7 @@ export default class mmch_CheminT extends mm_Node {
     static mmch_default_previewinst_args = { limit: 1 };
     mmch_obj = null;
 
-    constructor(mminfo, x, y, depth,content=null) {
+    constructor(mminfo, x, y, depth, content = null) {
         super(mminfo, x, y, depth + 1);
         if (new.target === mmch_CheminT) {
             throw new Error("Cannot instantiate abstract class mmch_CheminT");
@@ -20,45 +20,45 @@ export default class mmch_CheminT extends mm_Node {
         this.mmch_obj = content;
     }
 
-    static async mmch_listcat(args = {}) {
+    static async* mmch_listcat(args = {}) {
         if (this.mmch_dbjsclass === null) throw new Error("mmch_listcat must be defined in child");
         const finalArgs = { ...this.mmch_default_listcat_args, ...args };
         // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => ({ cls: this, content: item })),
-        ];
+        const recommend = await this.mmch_dbjsclass.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: this, content: item };
+        }
     }
 
-    async mmch_listinst(args = {}) {
+    async* mmch_listinst(args = {}) {
         throw new Error("mmch_listinst must be defined in child");
     }
 
-    static async mmch_searchcat(args = {}) {
+    static async* mmch_searchcat(args = {}) {
         if (this.mmch_dbjsclass === null) throw new Error("mmch_searchcat must be defined in child");
         const finalArgs = { ...this.mmch_default_searchcat_args, ...args };
         // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.search(finalArgs);
-        return [
-            ...items.map(item => ({ cls: this, content: item })),
-        ];
+        const recommend = await this.mmch_dbjsclass.search(finalArgs);
+        for (const item of recommend) {
+            yield { cls: this, content: item };
+        }
     }
 
-    async mmch_searchinst(args = {}) {
+    async* mmch_searchinst(args = {}) {
         throw new Error("mmch_searchinst must be defined in child");
     }
 
-    static async mmch_previewcat(mminfo, parent, args = {}) {
+    static async* mmch_previewcat(mminfo, args = {}) {
         if (this.mmch_dbjsclass === null) throw new Error("mmch_previewcat must be defined in child");
         const finalArgs = { ...this.mmch_default_previewcat_args, ...args };
         // TODO : put recomendation algorithm here
-        const items = await this.mmch_dbjsclass.list(finalArgs);
-        return [
-            ...items.map(item => ({ cls: this, content: item })),
-        ];
+        const recommend = await this.mmch_dbjsclass.list(finalArgs);
+        for (const item of recommend) {
+            yield { cls: this, content: item };
+        }
     }
 
-    async mmch_previewinst(mminfo, args = {}) {
+    async* mmch_previewinst(mminfo, args = {}) {
         throw new Error("mmch_previewinst must be defined in child");
     }
 

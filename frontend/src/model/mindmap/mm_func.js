@@ -2,6 +2,7 @@ import { mm_chemin_filter, mm_createChildNode, mm_clean_preview } from "./mm_sub
 import mm_Mindmap from "./mm_mindmap.js";
 import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
+import { markRaw } from "vue";
 
 /**
     redraw everynode from root
@@ -40,7 +41,7 @@ function mm_reset(mminfo) {
     mminfo.previewnodes = [];
 
     // create root
-    let root = new mmch_Root(mminfo, 0, 0, 0, null);
+    let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
     mminfo.nodes.push(root);
     mm_draw_onecat(mminfo, root, true);
 }
@@ -71,13 +72,20 @@ async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false
                 // ─────────────────────────────
                 // 3b. expand PREVIEW NODE without content
                 // ─────────────────────────────
-                await node.mmch_previewinst(mminfo);
+                // Handle async* generator
+                for await (const catnode of node.mmch_previewinst(mminfo)) {
+                    mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
+                }
             }
         }
         else if (node.mmch_obj) {
             // ─────────────────────────────
             // 1b. CONTENT NODE → CATEGORIES
             // ─────────────────────────────
+            // Handle async* generator for instance methods
+            for await (const instnode of node.mmch_listinst()) {
+                mm_createChildNode(mminfo, node, instnode, createLink, isPreview);
+            }
         } else {
             // ─────────────────────────────
             // 1a. CATEGORY NODE → CONTENT
@@ -85,20 +93,22 @@ async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false
             const getnodefunc = mminfo.searchval ?
                 () => node.constructor.mmch_searchcat() :
                 () => node.constructor.mmch_listcat();
-            getnodefunc().then(async catnodes => {
-                catnodes.forEach(catnode => {
-                    mm_createChildNode(mminfo, node, catnode, null, createLink, isPreview);
-                });
-            });
+            
+            // Handle async* generator for static methods
+            for await (const catnode of getnodefunc()) {
+                mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
+            }
         }
         if (node.depth < mminfo.chemin.length-1) {
             // ─────────────────────────────
-            // 2. DRAW previes of subcategories
+            // 2. DRAW previews of subcategories
             // ─────────────────────────────
-            Promise.all();
+            // You might need to handle async generators here too
+            // depending on what Promise.all() was doing
+            // Promise.all();
         }
     } catch (err) {
         console.error("mm_draw_onecat error:", err);
     }
-    node.loading = false;
+    node.loading = false;    
 }

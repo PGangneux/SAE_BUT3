@@ -50,7 +50,6 @@ export default class mm_Mindmap {
         this.linkages = [];
         this.nodes = [];
         // mm preview data
-        this.previewnodes = [];
         this.previewlinkages = [];
         // mm chemin
         this.chemin = [];
@@ -75,7 +74,6 @@ export default class mm_Mindmap {
         return {
             // linkages: this.linkages,
             // nodes: this.nodes,
-            // previewnodes: this.previewnodes,
             chemin: this.chemin,
             fullscreen: this.fullscreen,
             togglelegend: this.togglelegend,
@@ -160,6 +158,7 @@ export default class mm_Mindmap {
         this.centerOnNode(node);
         this.chemin.push(node);
         videoStore.chemin = this.chemin;
+        console.log("mm hanldeclick",this.chemin);
         mm_draw_update(this);
     }
 

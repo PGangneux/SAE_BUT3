@@ -26,15 +26,22 @@ class mm_Root {
 export default class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
 
-    static async mmch_listcat(args = {}) {
-        return mm_CategorysDefault
+    static async* mmch_listcat(args = {}) {
+        for (const category of mm_CategorysDefault) {
+            yield category;
+        }
     }
 
-    static async mmch_searchcat(args = {}){
-        return [...mm_CategorysDefault, ...mm_CategorysSearch];
+    static async* mmch_searchcat(args = {}){
+        for (const category of mm_CategorysDefault) {
+            yield category;
+        }
+        for (const category of mm_CategorysSearch) {
+            yield category;
+        }
     }
 
-    static async mmch_previewcat(mminfo, parent, args = {}) {
+    static async* mmch_previewcat(mminfo, parent, args = {}) {
         throw new Error("mmch_Root.mmch_previewcat doesn't have preview");
     }
 }
