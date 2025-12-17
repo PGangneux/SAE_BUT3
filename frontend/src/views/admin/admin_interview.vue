@@ -7,9 +7,12 @@ import tags from "./tags.vue"
 
 import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
+import Tag from "../../model/tag.js";
+
+import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from './fn_save_tags.js';
 
 export default {
-    name: "page_admin_edit_interview",
+    name: "page_admin_interview",
     components: {
         comp_baradmin,
         comp_petit_extrait,
@@ -21,6 +24,9 @@ export default {
             Extraitlist: [],
             current_interview: null,
             current_list_extraits: [],
+            tagsConnected: [],
+            tagsToDisconnect: [],
+            tagsToCreate: [],
             taillelist1: 0,
             taillelist2: 0,
             titre: '',
@@ -145,7 +151,6 @@ export default {
                     this.current_list_extraits = this.current_list_extraits.map(e => markRaw(e));
                     this.Extraitlist = this.Extraitlist.map(e => markRaw(e));
                 }
-
             } else if (targetList === 'available') {
                 // ----------------------
                 // Déplacer vers le début de la liste disponible
@@ -158,21 +163,75 @@ export default {
             this.taillelist2 = this.current_list_extraits.length;
         },
 
+        handleTagsCreated(tags) {
+            handleTagsCreated(this, tags)
+        },
+
+        handleTagsDisconnected(tags) {
+            handleTagsDisconnected(this, tags)
+        },
+
+        handleTagsConnected(tag) {
+            handleTagsConnected(this, tag)
+        },
+
+        async save_tags() {
+            try {
+                // Connecter les tags existants
+                for (const tag of this.tagsConnected) {
+                    await this.current_interview.connect_tag(tag);
+                }
+                
+                // Créer et connecter les nouveaux tags
+                for (const tagData of this.tagsToCreate) {
+                    const newTag = await new Tag({ name: tagData.name }).create();
+                    await this.current_interview.connect_tag(newTag);
+                }
+                
+                // Déconnecter les tags
+                for (const tag of this.tagsToDisconnect) {
+                    await this.current_interview.disconnect_tag(tag);
+                }
+                
+                // Réinitialiser les listes après sauvegarde
+                this.tagsConnected = [];
+                this.tagsToCreate = [];
+                this.tagsToDisconnect = [];
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde des tags:', error);
+                throw error;
+            }
+        },
+
         async save() {
-            this.chargement = true
-            this.current_interview.titre = this.titre;
-            this.current_interview.description = this.description;
-            this.current_interview.occasion = this.occasion
-            this.current_interview = this.create ? await this.current_interview.create() : await this.current_interview.update();
-            await this.current_interview.setExtraits(this.current_list_extraits);
-            this.chargement = false
+            this.chargement = true;
+            try {
+                this.current_interview.titre = this.titre;
+                this.current_interview.description = this.description;
+                this.current_interview.occasion = this.occasion;
+                
+                this.current_interview = this.create 
+                    ? await this.current_interview.create() 
+                    : await this.current_interview.update();
+                
+                await this.current_interview.setExtraits(this.current_list_extraits);
+                await this.save_tags();
+                
+                this.$router.push(`/admin/interview/${this.current_interview.uuid}`)
+                    .then(() => {
+                        window.location.reload();
+                    });
+
+            } catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error);
+            } finally {
+                this.chargement = false;
+            }
         },
     },
 
     async mounted() {
         const allExtraits = markRaw(await Extrait.list());
-
-        
 
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
@@ -190,20 +249,16 @@ export default {
             // pré-remplissage du formulaire
             this.titre = this.current_interview.titre;
             this.description = this.current_interview.description;
-            this.occasion = this.current_interview.occasion
-        }
-
-        else {
-            this.create = true
+            this.occasion = this.current_interview.occasion;
+        } else {
+            this.create = true;
             this.current_interview = markRaw(new Interview({}));
             this.Extraitlist = allExtraits;
-
         }
+        
         this.taillelist1 = this.Extraitlist.length;
-
-
-
     },
+
 };
 </script>
 
@@ -217,11 +272,9 @@ export default {
         <textarea type="aera" v-model="description" placeholder="Description" class="form-control"></textarea>
         <input v-model="occasion" class="form-control" placeholder="Occasion" />
 
-
         <div class="row row_gap">
             <div class="col-md-4 aggrandir div_extrait_dispo">
                 <div class="pcentrer ">
-
                     <div class="row">
                         <h1> Disponible </h1>
                         <h2> Total Extraits : {{ this.taillelist1 }}</h2>
@@ -229,8 +282,6 @@ export default {
 
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search..." v-model="searchAvailable" />
-
-
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
@@ -249,7 +300,6 @@ export default {
 
             <div class="col-md-4 aggrandir div_extrait_playlist">
                 <div class="pcentrer ">
-
                     <div class="row">
                         <h1> Playlist</h1>
                         <h2> Total Extraits : {{ this.taillelist2 }}</h2>
@@ -257,7 +307,6 @@ export default {
 
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search..." v-model="searchPlaylist" />
-
                         <button class="btn btn-outline-secondary" type="button" id="search-addon">
                             <img src="/imgs/search.svg" alt="button search">
                         </button>
@@ -274,24 +323,31 @@ export default {
                 </div>
             </div>
         </div>
-
         <!-- Only render tags when current_interview is loaded -->
-        <tags v-if="current_interview" :video="current_interview"></tags>
+        <tags 
+            v-if="current_interview"
+            :video="current_interview"
+            @update:tagsCreated="handleTagsCreated"
+            @update:tagsDisconnected="handleTagsDisconnected"
+            @update:tagsConnected="handleTagsConnected"
+        />
 
         <div class="bottom_button">
-            <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
-                Ajouter un Extrait</RouterLink>
-            <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light"> <img
-                    src="/imgs/add.svg" alt="add"> Ajouter une Playlist </RouterLink>
-            <button @click="save()" type="submit" class="btn btn-outline-success"> <img src="/imgs/save.svg"
-                    alt="Enregistrer"> Enregistrer </button>
-            <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
-                    src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+            <RouterLink to="/admin/extrait/creer/" class="btn btn-outline-light">
+                <img src="/imgs/add.svg" alt="add"> Ajouter un Extrait
+            </RouterLink>
+            <RouterLink v-if="!create" to="/admin/interview/creer/" type="button" class="btn btn-outline-light">
+                <img src="/imgs/add.svg" alt="add"> Ajouter une Playlist
+            </RouterLink>
+            <button @click="save()" type="submit" class="btn btn-outline-success">
+                <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer
+            </button>
+            <button @click="this.popupDelete = true" type="button" class="btn btn-outline-danger">
+                <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer
+            </button>
         </div>
-
-        
-
     </div>
+    
     <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
     <div v-if="chargement" class="overlay">
         <img src="/imgs/spinner.gif" alt="loading image...">
@@ -429,6 +485,5 @@ h1 {
 
 .aggrandir h1 {
     margin-top: 2%;
-    ;
 }
 </style>

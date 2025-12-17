@@ -9,6 +9,9 @@ import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 import supprimer from "../supprimer.vue";
 import tags from "../tags.vue"
+import Tag from "../../../model/tag.js";
+
+import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from '../fn_save_tags.js';
 
 export default {
   name: "page_admin_detail_video",
@@ -31,7 +34,6 @@ export default {
             interviews:[],
             listeArtiste:[],    //liste des Artistes totals
             listeQuestion:[],   //liste des Questions totals
-            tags:[],            //liste des tags totals
             popupDelete: false,
             searchValueTag:"",
             create:false,
@@ -41,6 +43,10 @@ export default {
             
             urlVimeoReconstruit:"",
             urlyoutubeReconstruit:"",
+
+            tagsConnected: [],
+            tagsToDisconnect: [],
+            tagsToCreate: [],  
         };
     }
     
@@ -96,6 +102,48 @@ export default {
 
   methods: {
 
+    handleTagsCreated(tags) {
+        handleTagsCreated(this, tags)
+    },
+
+    handleTagsDisconnected(tags) {
+        handleTagsDisconnected(this, tags)
+    },
+
+    handleTagsConnected(tag) {
+        handleTagsConnected(this, tag)
+    },
+
+    async save_tags() {
+        console.log("save tags")
+        try {
+            // Connecter les tags existants
+            for (const tag of this.tagsConnected) {
+                console.log(tag)
+                await this.current_extrait.connect_tag(tag);
+            }
+            
+            // Créer et connecter les nouveaux tags
+            for (const tagData of this.tagsToCreate) {
+                const newTag = await new Tag({ name: tagData.name }).create();
+                await this.current_extrait.connect_tag(newTag);
+            }
+            
+            // Déconnecter les tags
+            for (const tag of this.tagsToDisconnect) {
+                await this.current_extrait.disconnect_tag(tag);
+            }
+            
+            // Réinitialiser les listes après sauvegarde
+            this.tagsConnected = [];
+            this.tagsToCreate = [];
+            this.tagsToDisconnect = [];
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde des tags:', error);
+            throw error;
+        }
+    },
+
 
     async enregistrer(){
       //fonction pour enregistrer un extraits dans L'api
@@ -108,6 +156,8 @@ export default {
       await this.current_extrait.create();
       
       this.new_extrait = new markRaw(new Extrait({}));
+
+      await this.save_tags()
   
       console.log("creer");
       
@@ -402,11 +452,16 @@ export default {
       <supprimer v-if="popupDelete" :Element_Supp="current_extrait" @closePopup="popupDelete = false" />
 
     </form>
-    
-        <!-- Only render tags when current_extrait is loaded -->
-    <tags v-if="current_extrait" :video="current_extrait"></tags>
+  
 
-
+    <!-- Only render tags when current_interview is loaded -->
+    <tags 
+        v-if="current_extrait"
+        :video="current_extrait"
+        @update:tagsCreated="handleTagsCreated"
+        @update:tagsDisconnected="handleTagsDisconnected"
+        @update:tagsConnected="handleTagsConnected"
+    />
     
    
 

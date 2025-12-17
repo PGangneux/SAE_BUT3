@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import Model from '../../model/model';
+
 export default {
   name: 'miniature_video',
   props: ["video"],
@@ -44,26 +46,11 @@ export default {
     },
 
     async get_duree(video, extraits) {
-      function format_duree(duree_seconds) {
-        const hours = Math.floor(duree_seconds / 3600);
-        const minutes = Math.floor((duree_seconds % 3600) / 60);
-        const seconds = duree_seconds % 60;
-
-        let formatted = "";
-        if (hours > 0) formatted += String(hours).padStart(2, "0") + ":";
-        formatted += String(minutes).padStart(2, "0") + ":";
-        formatted += String(seconds).padStart(2, "0");
-
-        return formatted;
-      }
-
       let time = 0;
       try {
         if (extraits) {
           // Si c’est une interview
-          for (let extrait of extraits) {
-            time += extrait.duree;
-          }
+          time = this.video.get_duree(extraits);
         } else {
           // Si c’est un extrait
           time = video.duree;
@@ -71,8 +58,8 @@ export default {
       } catch (err) {
         console.error("Erreur dans get_duree :", err);
       }
-
-      return format_duree(time);
+      console.log("time", time)
+      return Model.format_duree(time);
     },
 
     async update_miniature(){
