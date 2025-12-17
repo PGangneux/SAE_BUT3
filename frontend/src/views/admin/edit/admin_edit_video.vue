@@ -196,15 +196,46 @@ export default {
     },
 
 
-  
+    async validateVimeoVideo(url) {
+      // Extraire l'ID Vimeo
+      if (this.get_Vimeo_videoId(url)) {
+        return '/imgs/width551.png';
+      }
+      const videoId = this.get_Vimeo_videoId(url);
+      if (!videoId) {
+        console.log("URL Vimeo invalide");
+        return '/imgs/width551.png';
+      }
+      
+      try {
+        const response = await fetch(
+          `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${videoId}`
+        );
+        
+        if (!response.ok) {
+          if(response.status === 404 ){
+            console.log("Vidéo introuvable")
+          }else{
+          console.log("Vidéo inaccessible")
+        }
+        return '/imgs/width551.png'
+        }
+        
+        const data = await response.json();
+        return data.thumbnail_url;
+      }
+        catch (error) {
+        return '/imgs/width551.png';
+      }
+    },
 
   async migniature_video(){
 
-        if (!this.urlVimeoReconstruit.includes('https') && this.urlVimeoReconstruit!='' ) {
+        if (this.urlVimeoReconstruit !=null && !this.urlVimeoReconstruit.includes('https') && this.urlVimeoReconstruit!='' ) {
           this.urlVimeoReconstruit = 'https://vimeo.com/' +this.urlVimeoReconstruit ;
         }
 
-        if (!this.urlyoutubeReconstruit.includes('https') && this.urlyoutubeReconstruit!='') {
+        if (this.urlyoutubeReconstruit !=null && !this.urlyoutubeReconstruit.includes('https') && this.urlyoutubeReconstruit!='') {
           this.urlyoutubeReconstruit = 'https://www.youtube.com/watch?v='  + this.urlyoutubeReconstruit;
         }
 
@@ -212,20 +243,25 @@ export default {
           this.current_extrait.youtube_url = this.get_YT_videoId(this.urlyoutubeReconstruit);
         }catch{
           this.current_extrait.youtube_url="";
+          console.log('erreur');
+        }
 
-          this.thumbnail='/imgs/width551.png';
+        try{
+          this.current_extrait.vimeo_url = await this.get_Vimeo_videoId(this.urlVimeoReconstruit);
+          console.log(this.current_extrait.vimeo_url);
+        }catch{
+          this.current_extrait.vimeo_url="";
           console.log('erreur');
         }
 
     
         if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
           
-          this.thumbnail = await this.current_extrait.url_miniature_yt
+          this.thumbnail = await this.current_extrait.url_miniature_yt;
             
         }else{
-            this.current_extrait.vimeo_url= this.urlVimeoReconstruit
-
-            this.thumbnail = await this.current_extrait.get_url_miniature_vimeo()
+          console.log(this.validateVimeoVideo(this.urlVimeoReconstruit));
+          this.thumbnail = await this.validateVimeoVideo(this.urlVimeoReconstruit);
         }
   },
 
@@ -242,6 +278,26 @@ export default {
       }
       return null;
     },
+
+
+    get_Vimeo_videoId(url) {
+      try {
+        const u = new URL(url);
+        if (u.hostname.includes("vimeo.com")) {
+          if (u.pathname.match(/^\/\d+$/)) {
+            return u.pathname.slice(1);
+          }
+          const match = u.pathname.match(/\/(\d+)$/);
+          if (match) return match[1];
+          if (u.pathname.startsWith("/video/")) {
+            return u.pathname.split("/")[2];
+          }
+        }
+      } catch {
+        console.warn("URL Vimeo invalide :", url);
+      }
+      return null;
+    }
 
   },
 
