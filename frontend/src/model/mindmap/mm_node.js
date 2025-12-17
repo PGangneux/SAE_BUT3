@@ -63,6 +63,12 @@ export default class mm_Node {
     getStyle() {
         // console.table(this.toJSON());
 
+        if (this.x == NaN || this.y == NaN) {
+            console.warn("Node has NaN position", this);
+            this.x = this.targetX;
+            this.y = this.targetY;
+        }
+
         const isVideoContent = false; // this.isVideoContent();
         const nodeDimensions = isVideoContent ?
             { width: 300, height: 150 } : // Squircle dimensions
