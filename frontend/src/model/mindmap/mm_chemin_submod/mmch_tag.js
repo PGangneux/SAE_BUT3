@@ -6,8 +6,6 @@ import mmch_Interview from "./mmch_interview.js";
 
 export default class mmch_Tag extends mmch_CheminT {
     static mmch_dbjsclass = Tag;
-    /** @type {Tag} */
-    mmch_obj;
 
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };

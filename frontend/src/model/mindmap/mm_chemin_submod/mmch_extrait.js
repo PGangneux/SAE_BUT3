@@ -7,8 +7,7 @@ import mmch_Question from "./mmch_question.js";
 
 export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
-    /** @type {Extrait} */
-    mmch_obj;
+    /** @type {String} */
     #previewurl = null;
     /** @type {Array[String]} */
     #description = null;

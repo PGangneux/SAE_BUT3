@@ -6,8 +6,6 @@ import mmch_Artiste from "./mmch_artiste.js";
 
 export default class mmch_StyleMusical extends mmch_CheminT {
     static mmch_dbjsclass = StyleMusical;
-    /** @type {StyleMusical} */
-    mmch_obj;
 
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
