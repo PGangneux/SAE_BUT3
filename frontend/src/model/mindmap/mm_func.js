@@ -1,15 +1,16 @@
-import { mm_chemin_filter, mm_createChildNode, mm_clean_preview } from "./mm_subfunc.js"
+import { markRaw } from "vue";
+import { mm_chemin_filter, mm_clean_preview } from "./mm_func_chemin.js"
+import { mm_createChildNode, set_children_pos } from "./mm_func_node.js"
 import mm_Mindmap from "./mm_mindmap.js";
 import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
 import mmch_Root from "./mm_chemin_submod/mmch_root.js";
-import { markRaw } from "vue";
 
 /**
     redraw everynode from root
  * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
 export async function mm_draw_root(mminfo) {
-    mm_reset(mminfo);
+    mm_reset_hard(mminfo);
     let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return;
     for (const cheminpath of mminfo.chemin) {
@@ -34,7 +35,7 @@ export async function mm_draw_update(mminfo) {
     recreate the root node and reset everything
  * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
-function mm_reset(mminfo) {
+function mm_reset_hard(mminfo) {
     // reset everything
     mminfo.nodes = [];
     mminfo.linkages = [];
@@ -42,7 +43,7 @@ function mm_reset(mminfo) {
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
     mminfo.nodes.push(root);
-    mm_draw_onecat(mminfo, root,false);
+    mm_draw_onecat(mminfo, root, false);
 }
 
 /**
@@ -60,7 +61,7 @@ async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
     node.loading = true;
     try {
-        if (node.ispreview){
+        if (node.ispreview) {
             if (node.mmch_obj) {
                 // ─────────────────────────────
                 // 3a. expand PREVIEW NODE with CONTENT
@@ -92,13 +93,13 @@ async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false
             const getnodefunc = mminfo.searchval ?
                 () => node.constructor.mmch_searchcat() :
                 () => node.constructor.mmch_listcat();
-            
+
             // Handle async* generator for static methods
             for await (const catnode of getnodefunc()) {
                 mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
             }
         }
-        if (node.depth < mminfo.chemin.length-1) {
+        if (node.depth < mminfo.chemin.length - 1) {
             // ─────────────────────────────
             // 2. DRAW previews of subcategories
             // ─────────────────────────────
@@ -109,5 +110,5 @@ async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false
     } catch (err) {
         console.error("mm_draw_onecat error:", err);
     }
-    node.loading = false;    
+    node.loading = false;
 }
