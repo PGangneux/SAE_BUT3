@@ -130,6 +130,100 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
 }
 
 /**
+ * Compare two nodes for equality
+ * Compares by: 1) reference, 2) class type, 3) object content (UUID), 4) position for non-content nodes
+ * @param {mmch_CheminT} one - First node to compare
+ * @param {mmch_CheminT} other - Second node to compare
+ * @returns {boolean} - True if nodes are considered equal
+ */
+export function mm_find_compare(one, other) {
+    if (!one || !other) return false;
+    if (one === other) return true;
+    if (one.constructor !== other.constructor) return false;
+    
+    if (one.mmch_obj && other.mmch_obj) {
+        if (one.mmch_obj.uuid && other.mmch_obj.uuid) {
+            return one.mmch_obj.uuid === other.mmch_obj.uuid;
+        }
+        return one.mmch_obj === other.mmch_obj;
+    }
+    
+    if (!one.mmch_obj && !other.mmch_obj) {
+        return one.x === other.x && one.y === other.y && one.depth === other.depth;
+    }
+    
+    return false;
+}
+
+/**
+ * Find a node in the mindmap using multiple search strategies
+ * First searches in the current path (chemin), then searches from root
+ * @param {mm_Mindmap} mminfo - The mindmap instance
+ * @param {mmch_CheminT} searched - The node to search for
+ * @returns {Array<mmch_CheminT>|null} - Path to found node or null if not found
+ */
+export function mm_find_node(mminfo, searched) {
+    return mm_find_top(mminfo, searched) || mm_find_fromroot(mminfo, searched);
+}
+
+/**
+ * Search for a node starting from the current navigation path (chemin)
+ * Checks nodes in the chemin, then searches recursively through children
+ * @param {mm_Mindmap} mminfo - The mindmap instance
+ * @param {mmch_CheminT} searched - The node to search for
+ * @returns {Array<mmch_CheminT>|null} - Path to found node or null if not found
+ */
+function mm_find_top(mminfo, searched) {
+    if (!searched || mminfo.chemin.length === 0) return null;
+    
+    // Check chemin nodes
+    for (let i = 0; i < mminfo.chemin.length; i++) {
+        if (mm_find_compare(mminfo.chemin[i], searched)) {
+            return mminfo.chemin.slice(0, i + 1);
+        }
+    }
+    
+    // Use DFS to search through children of last chemin node
+    const lastNode = mminfo.chemin[mminfo.chemin.length - 1];
+    return dfs_search_stack(lastNode, searched, mminfo.chemin);
+}
+
+/**
+ * Search for a node starting from the root node (full depth-first search)
+ * @param {mm_Mindmap} mminfo - The mindmap instance
+ * @param {mmch_CheminT} searched - The node to search for
+ * @returns {Array<mmch_CheminT>|null} - Path from root to found node or null if not found
+ */
+function mm_find_fromroot(mminfo, searched) {
+    if (!searched || mminfo.nodes.length === 0) return null;
+    return dfs_search_stack(mminfo.nodes[0], searched, [mminfo.nodes[0]]);
+}
+
+/**
+ * Generic Depth-First Search function using a stack
+ * @param {mmch_CheminT} startNode - Node to start search from
+ * @param {mmch_CheminT} searched - Node to search for
+ * @param {Array<mmch_CheminT>} initialPath - Initial path to startNode
+ * @returns {Array<mmch_CheminT>|null} - Complete path if found, null otherwise
+ */
+function dfs_search_stack(startNode, searched, initialPath) {
+    const stack = [{ node: startNode, path: initialPath }];
+    
+    while (stack.length > 0) {
+        const { node, path } = stack.pop();        
+        if (mm_find_compare(node, searched)) {
+            return [...path, node];
+        }
+        // Push children to stack (in reverse order for DFS)
+        for (let i = node.childrens.length - 1; i >= 0; i--) {
+            const child = node.childrens[i];
+            stack.push({ node: child, path: [...path, child] });
+        }
+    }
+    return null;
+}
+
+/**
  * pos the children of a node in a circle
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT} root the root node to witch the children has been added
