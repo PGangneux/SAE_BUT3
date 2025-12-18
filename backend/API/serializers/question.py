@@ -14,7 +14,7 @@ class QuestionSerializer(BaseSerializer):
 
     # Inputs
     input_fields = {"theme_uuid": {"relationship": "theme", "node": Theme}}
-    theme_uuid = serializers.CharField(write_only=True, required=False)
+    theme_uuid = serializers.CharField(write_only=True, required=True)
 
     # Outputs
     theme = serializers.SerializerMethodField(read_only=True)
