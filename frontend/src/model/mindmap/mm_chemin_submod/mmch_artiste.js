@@ -3,7 +3,6 @@ import Artiste from "../../artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Nation from "./mmch_nation.js";
-import mmch_StyleMusical from "./mmch_style_musical.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
@@ -14,7 +13,6 @@ export default class mmch_Artiste extends mmch_CheminT {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
         yield mmch_Extrait;
         yield mmch_Nation;
-        yield mmch_StyleMusical;
 
         // TODO : put recomendation algorithm here
         const recommend = await this.mmch_obj.extraits();
@@ -26,7 +24,6 @@ export default class mmch_Artiste extends mmch_CheminT {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
         yield mmch_Extrait;
         yield mmch_Nation;
-        yield mmch_StyleMusical;
 
         // TODO : put recomendation algorithm here
         const recommend = await this.mmch_dbjsclass.search(finalArgs);
