@@ -1,7 +1,6 @@
 import Model from "./model.js";
 import Nation from "./nation.js";
 import Extrait from "./extrait.js";
-import ClientAPI from "./clientAPI.js";
 
 export default class Artiste extends Model {
     #name;
