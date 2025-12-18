@@ -64,7 +64,6 @@ class Interview(StructuredNode):
     date = DateProperty(index=True)
     occasion = StringProperty()
     description = StringProperty()
-    lieu = StringProperty()
 
     tags_interview = RelationshipTo("Tag", "TAGS_INTERVIEW", ZeroOrMore)
 
@@ -79,6 +78,7 @@ class Extrait(StructuredNode):
     description = StringProperty()
     youtube_url = StringProperty()
     vimeo_url = StringProperty()
+    lieu = StringProperty()
     uploaded_at = DateProperty(default=date.today())
     duree = IntegerProperty(required=True)  # Nombre de seconde
 

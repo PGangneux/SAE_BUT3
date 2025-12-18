@@ -32,7 +32,6 @@ class InterviewSerializerTests(Neo4jTestCase):
             "date": date(2024, 3, 15),
             "occasion": "Festival",
             "description": "Description test",
-            "lieu": "Paris",
         }
         serializer = InterviewSerializer(
             data=payload, context={"request": self.request}
@@ -46,7 +45,6 @@ class InterviewSerializerTests(Neo4jTestCase):
         self.assertEqual(reloaded.date, date(2024, 3, 15))
         self.assertEqual(reloaded.occasion, "Festival")
         self.assertEqual(reloaded.description, "Description test")
-        self.assertEqual(reloaded.lieu, "Paris")
 
     # --- Mise à jour ---
     def test_update_interview_success(self):
@@ -55,7 +53,6 @@ class InterviewSerializerTests(Neo4jTestCase):
             date=date(2024, 1, 1),
             occasion="Old Occasion",
             description="Old Desc",
-            lieu="Old Lieu",
         ).save()
 
         payload = {
@@ -63,7 +60,6 @@ class InterviewSerializerTests(Neo4jTestCase):
             "date": date(2024, 4, 1),
             "occasion": "Updated Occasion",
             "description": "Updated Desc",
-            "lieu": "Updated Lieu",
         }
         serializer = InterviewSerializer(
             instance=interview, data=payload, context={"request": self.request}
@@ -77,4 +73,3 @@ class InterviewSerializerTests(Neo4jTestCase):
         self.assertEqual(ex.date, date(2024, 4, 1))
         self.assertEqual(ex.occasion, "Updated Occasion")
         self.assertEqual(ex.description, "Updated Desc")
-        self.assertEqual(ex.lieu, "Updated Lieu")
