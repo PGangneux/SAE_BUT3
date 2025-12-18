@@ -58,7 +58,6 @@ export default {
       } catch (err) {
         console.error("Erreur dans get_duree :", err);
       }
-      console.log("time", time)
       return Model.format_duree(time);
     },
 
