@@ -36,7 +36,7 @@ class QuestionSerializerTests(Neo4jTestCase):
 
     def test_create_raises_uniqueproperty(self):
         Question(texte="DupQ").save()
-        payload = {"texte": "DupQ"}  # doublon
+        payload = {"texte": "DupQ", "theme_uuid": Theme(name="Theme test").save().uuid}  # doublon
         serializer = QuestionSerializer(data=payload, context={"request": self.request})
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(ValidatorUnique):
@@ -92,7 +92,10 @@ class QuestionSerializerTests(Neo4jTestCase):
         question = Question(texte="Q2").save()
         payload = {"texte": "Q1"}  # conflit unique
         serializer = QuestionSerializer(
-            instance=question, data=payload, context={"request": self.request}
+            instance=question,
+            data=payload,
+            context={"request": self.request},
+            partial=True,
         )
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(ValidatorUnique):
