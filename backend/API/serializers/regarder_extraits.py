@@ -13,6 +13,7 @@ class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
     description = serializers.CharField(read_only=True)
     youtube_url = serializers.CharField(read_only=True)
     vimeo_url = serializers.CharField(read_only=True)
+    lieu = serializers.CharField(read_only=True)
     uploaded_at = serializers.DateField(read_only=True)
     duree = serializers.IntegerField(read_only=True)
     artiste = serializers.SerializerMethodField(read_only=True)

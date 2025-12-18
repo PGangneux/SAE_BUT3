@@ -14,12 +14,14 @@ class ExtraitTestCase(Neo4jTestCase):
             description="Un extrait de test",
             youtube_url="https://youtube.com/watch?v=abc123",
             vimeo_url="https://vimeo.com/123",
+            lieu="Paris",
             duree=120,
         ).save()
 
         self.assertIsNotNone(extrait.uuid)
         self.assertEqual(extrait.titre, "Extrait 1")
         self.assertEqual(extrait.duree, 120)
+        self.assertEqual(extrait.lieu, "Paris")
         self.assertIsInstance(extrait.uploaded_at, date)
 
     def test_update_description(self):

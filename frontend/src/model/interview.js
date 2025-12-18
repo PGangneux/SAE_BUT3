@@ -7,7 +7,6 @@ export default class Interview extends Model {
   #date;
   #occasion;
   #description;
-  #lieu;
   #extraits;
   #tags;
   #duree;
@@ -19,7 +18,6 @@ export default class Interview extends Model {
     date,
     occasion,
     description,
-    lieu,
     extraits,
     tags,
   }) {
@@ -28,7 +26,6 @@ export default class Interview extends Model {
     this.#date = date;
     this.#occasion = occasion;
     this.#description = description;
-    this.#lieu = lieu;
     this.#extraits = extraits;
     this.#tags = tags;
     this.#duree = 0;
@@ -66,18 +63,11 @@ export default class Interview extends Model {
     this.#description = Model.validateString(value, "description");
   }
 
-  get lieu() {
-    return this.#lieu;
-  }
-  set lieu(value) {
-    this.#lieu = Model.validateString(value, "lieu");
-  }
-
   async extraits(args) {
     return await this.fetchList(this.#extraits, Extrait, args);
   }
 
-  get_duree(extraits){
+  get_duree(extraits) {
     let time = 0;
     for (let extrait of extraits) {
       time += extrait.duree;
@@ -162,7 +152,6 @@ export default class Interview extends Model {
     this.#date = json.date;
     this.#occasion = json.occasion;
     this.#description = json.description;
-    this.#lieu = json.lieu;
     this.#extraits = json.extraits;
     this.#tags = json.tags;
     return this;
@@ -175,7 +164,6 @@ export default class Interview extends Model {
       date: this.#date,
       occasion: this.#occasion,
       description: this.#description,
-      lieu: this.#lieu,
     };
   }
 }

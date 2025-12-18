@@ -57,6 +57,7 @@ export default class mmch_Extrait extends mmch_CheminT {
             const question = await extrait.question();
             if (question && question.texte) {
                 description.push(`Question: ${question.texte.substring(0, 50)}...`);
+            if (extrait.lieu) description.push(`Lieu: ${extrait.lieu}`);
             }
         } catch (error) { console.warn(error); }
 

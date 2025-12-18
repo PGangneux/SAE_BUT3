@@ -88,7 +88,6 @@ class ExtraitSerializerTests(Neo4jTestCase):
         self.assertEqual([a.name for a in reloaded.interviewer.all()], ["CreateArtist"])
         self.assertEqual([q.texte for q in reloaded.question.all()], ["CreateQ"])
 
-
     def test_create_with_nonexistent_artiste_raises_notfound(self):
         payload = {
             "titre": "NoArtist",
@@ -133,6 +132,7 @@ class ExtraitSerializerTests(Neo4jTestCase):
             "youtube_url": "ytnew",
             "vimeo_url": "vmnew",
             "duree": 99,
+            "lieu": "Paris",
             "artiste_uuid": artiste_new.uuid,
             "question_uuid": q_new.uuid,
         }
@@ -147,6 +147,7 @@ class ExtraitSerializerTests(Neo4jTestCase):
         self.assertEqual(ex.youtube_url, "ytnew")
         self.assertEqual(ex.vimeo_url, "vmnew")
         self.assertEqual(ex.duree, 99)
+        self.assertEqual(ex.lieu, "Paris")
         self.assertEqual([a.name for a in ex.interviewer.all()], ["NewA"])
         self.assertEqual([q.texte for q in ex.question.all()], ["Qnew"])
 

@@ -49,7 +49,6 @@ export default class mmch_Interview extends mmch_CheminT {
         const interview = this.mmch_obj;
 
         if (interview.date) description.push(`Date: ${new Date(interview.date).toLocaleDateString()}`);
-        if (interview.lieu) description.push(`Lieu: ${interview.lieu}`);
         if (interview.occasion) description.push(`Occasion: ${interview.occasion}`);
 
         try {

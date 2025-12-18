@@ -14,7 +14,6 @@ class InterviewSerializer(BaseSerializer):
     description = serializers.CharField(
         required=False, allow_blank=True, allow_null=True
     )
-    lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     # Outputs
     extraits = serializers.SerializerMethodField(read_only=True)
