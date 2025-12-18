@@ -43,6 +43,9 @@ router_style_musical.register(
     r"artistes", StyleMusicalArtisteViewSet, basename="artiste"
 )
 
+router.register(r"occasions", OccasionViewSet, basename="occasion")
+router_occasion = NestedDefaultRouter(router, r"occasions", lookup="occasion")
+router_occasion.register(r"interviews", OccationInterviewViewSet, basename="interview")
 
 router.register(r"nations", NationViewSet, basename="nation")
 router_nation = NestedDefaultRouter(router, r"nations", lookup="nation")
@@ -77,6 +80,7 @@ urlpatterns = [
     path("", include(router_nation.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
+    path("", include(router_occasion.urls)),
     path("login/", LoginView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),

@@ -38,7 +38,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
         # date_heure is iso string
         self.assertIsInstance(data["date_heure"], str)
         self.assertEqual(data["name"], self.artiste.name)
-        self.assertEqual(data["info"], self.artiste.info)
         self.assertIn(str(self.nation.uuid), data["nation"])
         self.assertIn(str(self.artiste.uuid), data["styles"])
         self.assertIn(str(self.artiste.uuid), data["extraits"])

@@ -8,7 +8,7 @@ from .extrait import (
     QuestionExtraitViewSet,
     InterviewExtraitViewSet,
 )
-from .interview import InterviewViewSet, TagInterviewViewSet
+from .interview import InterviewViewSet, TagInterviewViewSet, OccationInterviewViewSet
 from .artiste import ArtisteViewSet, NationArtisteViewSet, StyleMusicalArtisteViewSet
 from .utilisateur import UtilisateurViewSet
 from .style_musical import StyleMusicalViewSet
@@ -22,6 +22,7 @@ from .recherches_questions import RecherchesQuestionsViewSet
 from .interviews import InterviewsViewSet
 from .tags_extrait import TagsExtraitRelationShipViewSet
 from .tags_interview import TagsInterviewRelationShipViewSet
+from .occasion import OccasionViewSet
 from .login import LoginView
 from .recommandation import Recommandation
 
@@ -55,6 +56,8 @@ __all__ = (
     "InterviewsViewSet",
     "TagsExtraitRelationShipViewSet",
     "TagsInterviewRelationShipViewSet",
+    "OccationInterviewViewSet",
+    "OccasionViewSet",
     "LoginView",
     "Recommandation",
 )

@@ -11,7 +11,6 @@ class ArtisteSerializer(BaseSerializer):
     """
 
     name = serializers.CharField(required=True)
-    info = serializers.CharField(required=False, allow_blank=True, allow_null=True)
 
     # Input
     nation_uuid = serializers.CharField(

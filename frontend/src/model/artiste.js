@@ -6,16 +6,14 @@ import ClientAPI from "./clientAPI.js";
 
 export default class Artiste extends Model {
     #name;
-    #info;
     #nation;
     #styles;
     #extraits;
     #nation_uuid;
 
-    constructor({uuid,name,info, nation, styles, extraits}){
+    constructor({uuid, name, nation, styles, extraits}){
         super(uuid);
         this.#name = name;
-        this.#info = info;
         this.#nation = nation;
         this.#styles = styles;
         this.#extraits = extraits;
@@ -26,9 +24,6 @@ export default class Artiste extends Model {
 
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
-
-    get info() { return this.#info; }
-    set info(value) { this.#info = this.validateString(value, "info"); }
 
     get nation() { return this.fetchDetail(this.#nation, Nation); }
     set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
@@ -56,7 +51,6 @@ export default class Artiste extends Model {
     fromJSON(json) {
         super.fromJSON(json);
         this.#name = json.name;
-        this.#info = json.info;
         this.#nation = json.nation;
         this.#styles = json.styles;
         this.#extraits = json.extraits;
@@ -67,7 +61,6 @@ export default class Artiste extends Model {
         return {
             uuid: this.uuid,
             name: this.#name,
-            info: this.#info,
             nation_uuid: this.#nation_uuid,
         };
     }

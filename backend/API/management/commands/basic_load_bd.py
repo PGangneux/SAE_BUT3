@@ -11,6 +11,7 @@ from ...models import (
     Tag,
     Theme,
     Utilisateur,
+    Occasion,
 )
 from django.contrib.auth.hashers import make_password
 
@@ -30,11 +31,11 @@ class Command(BaseCommand):
         style = StyleMusical(uuid=1, name="Style Musical 1").save()
         artiste = Artiste(uuid=1, name="Artiste 1", info="Artiste de test n°1").save()
         artiste2 = Artiste(uuid=2, name="Artiste 2", info="Artiste de test n°2").save()
+        occasion = Occasion(uuid="o1", name="Festival de la Musique").save()
         interview = Interview(
             uuid=1000,
             titre="Interview 1",
             date=date.today(),
-            occasion="Festival de la Musique",
             description="Interview 1 de l'Artiste 1",
             lieu="Paris",
         ).save()
@@ -42,7 +43,6 @@ class Command(BaseCommand):
             uuid=1001,
             titre="Interview 2",
             date=date.today(),
-            occasion="Festival de la Musique Orléans",
             description="Interview 2 de l'Artiste 2",
             lieu="Orléans",
         ).save()
@@ -176,6 +176,8 @@ class Command(BaseCommand):
             duree=108,
         ).save()
 
+        interview.occasion.connect(occasion)
+        interview2.occasion.connect(occasion)
         question.theme.connect(theme)
         artiste.style.connect(style)
         artiste.nationalite.connect(nation)
