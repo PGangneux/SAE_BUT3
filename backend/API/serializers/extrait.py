@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
-from neomodel import db
+from neomodel import db, RelationshipManager, NodeSet
 from ..serializers import BaseSerializer
 from ..errors import NotFound
 from ..models import Artiste, Extrait, Question
@@ -31,6 +31,7 @@ class ExtraitSerializer(BaseSerializer):
     artiste = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
+    audios = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
     position = serializers.SerializerMethodField(read_only=True)
 
@@ -67,6 +68,14 @@ class ExtraitSerializer(BaseSerializer):
         Renvoie un lien propre vers les interviews :
         """
         return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
+
+    def get_audios(self, extrait: Extrait):
+        """Renvoie un lien vers les audios
+
+        Args:
+            extrait (Extrait): un extrait
+        """
+        return self.get_url("audio-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """
@@ -115,7 +124,7 @@ class ExtraitSerializer(BaseSerializer):
         artiste_uuid = validated_data.pop("artiste_uuid", None)
         question_uuid = validated_data.pop("question_uuid", None)
 
-        extrait = super().update(extrait, validated_data)
+        extrait: Extrait = super().update(extrait, validated_data)
 
         # update question relation if provided
         if question_uuid is not None:

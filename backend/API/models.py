@@ -75,7 +75,17 @@ class Extrait(StructuredNode):
         "Interview", "APPARTIENT_A", ZeroOrMore, PositionExtraitRel
     )
     question = RelationshipTo("Question", "POSE", ZeroOrOne)
+    audios = RelationshipTo("Audio", "AUDIOS", ZeroOrMore)
     tags_extrait = RelationshipTo("Tag", "TAGS_EXTRAIT", ZeroOrMore)
+
+
+class Audio(StructuredNode):
+    """
+    Noeud Audio
+    """
+
+    uuid = UniqueIdProperty()
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
 
 class Question(StructuredNode):

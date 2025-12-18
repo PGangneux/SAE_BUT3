@@ -20,6 +20,7 @@ router_question.register(r"extraits", QuestionExtraitViewSet, basename="extrait"
 router.register(r"extraits", ExtraitViewSet, basename="extrait")
 router_extrait = NestedDefaultRouter(router, r"extraits", lookup="extrait")
 router_extrait.register(r"interviews", InterviewsViewSet, basename="interview")
+router_extrait.register(r"audios", AudiosViewSet, basename="audio")
 router_extrait.register(r"tags", TagsExtraitRelationShipViewSet, basename="tag")
 
 
@@ -32,6 +33,11 @@ router_interview.register(r"tags", TagsInterviewRelationShipViewSet, basename="t
 router.register(r"artistes", ArtisteViewSet, basename="artiste")
 router_artiste = NestedDefaultRouter(router, r"artistes", lookup="artiste")
 router_artiste.register(r"extraits", ArtisteExtraitViewSet, basename="extrait")
+
+
+router.register(r"audios", AudioViewSet, basename="audio")
+router_audio = NestedDefaultRouter(router, r"audios", lookup="audio")
+router_audio.register(r"extraits", AudioExtraitViewSet, basename="extrait")
 
 
 router.register(r"tags", TagViewSet, basename="tag")
@@ -58,6 +64,7 @@ urlpatterns = [
     path("", include(router_extrait.urls)),
     path("", include(router_interview.urls)),
     path("", include(router_artiste.urls)),
+    path("", include(router_audio.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
     path("login/", LoginView.as_view(), name="login"),

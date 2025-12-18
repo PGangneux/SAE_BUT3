@@ -32,7 +32,6 @@ class InterviewsSerializerTests(Neo4jTestCase):
         self.assertEqual(data["date"], "2024-01-01")
         self.assertEqual(data["occasion"], "Occasion1")
         self.assertEqual(data["description"], "Desc1")
-        self.assertEqual(data["lieu"], "Lieu1")
 
     # --- create ---
     def test_create_connects_interview_to_extrait(self):

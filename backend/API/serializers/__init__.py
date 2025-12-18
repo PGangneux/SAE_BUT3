@@ -18,6 +18,8 @@ from .recherches_questions import RecherchesQuestionsSerializer
 from .interviews import InterviewsSerializer, PositionInputSerializer
 from .tags_extrait import TagsExtraitRelationShipSerializer
 from .tags_interview import TagsInterviewRelationShipSerializer
+from .audio import AudioSerializer
+from .audios import AudiosSerializer
 
 __all__ = (
     "BaseSerializer",
@@ -39,4 +41,6 @@ __all__ = (
     "PositionInputSerializer",
     "TagsExtraitRelationShipSerializer",
     "TagsInterviewRelationShipSerializer",
+    "AudioSerializer",
+    "AudiosSerializer",
 )
