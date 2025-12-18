@@ -32,15 +32,6 @@ class DateHeureRel(StructuredRel):
     date_heure = DateTimeProperty(default_now=True)
 
 
-class StyleMusical(StructuredNode):
-    """
-    Noeud Style Musical
-    """
-
-    uuid = UniqueIdProperty()
-    name = StringProperty(required=True, unique_index=True)
-
-
 class Artiste(StructuredNode):
     """
     Noeud Artiste
@@ -49,7 +40,6 @@ class Artiste(StructuredNode):
     uuid = UniqueIdProperty()
     name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
-    style = RelationshipTo("StyleMusical", "STYLE", ZeroOrMore)
     nationalite = RelationshipTo("Nation", "NATIONALITE", ZeroOrOne)
 
 

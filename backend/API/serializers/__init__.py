@@ -10,10 +10,8 @@ from .extrait import ExtraitSerializer
 from .interview import InterviewSerializer
 from .artiste import ArtisteSerializer
 from .utilisateur import UtilisateurSerializer
-from .style_musical import StyleMusicalSerializer
 from .nation import NationSerializer
 from .tag import TagSerializer
-from .style import StyleRelationShipSerializer
 from .recherches_artistes import RecherchesArtistesSerializer
 from .regarder_interviews import RegarderInterviewsSerializer
 from .regarder_extraits import RegarderExtraitsSerializer
@@ -34,10 +32,8 @@ __all__ = (
     "InterviewSerializer",
     "ArtisteSerializer",
     "UtilisateurSerializer",
-    "StyleMusicalSerializer",
     "NationSerializer",
     "TagSerializer",
-    "StyleRelationShipSerializer",
     "RecherchesArtistesSerializer",
     "RegarderInterviewsSerializer",
     "RegarderExtraitsSerializer",

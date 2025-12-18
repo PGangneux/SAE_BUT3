@@ -31,12 +31,11 @@ class ArtisteSerializerTests(Neo4jTestCase):
         data2 = serializer2.data
         self.assertIsNone(data2["nation"])
 
-    def test_get_styles_and_extraits_urls(self):
-        """Vérifie que get_styles et get_extraits renvoient des URLs valides"""
+    def test_get_extraits_urls(self):
+        """Vérifie que get_extraits renvoient des URLs valides"""
         artiste = Artiste(name="ArtistLinks").save()
         serializer = ArtisteSerializer(artiste, context={"request": self.request})
         data = serializer.data
-        self.assertIn(str(artiste.uuid), data["styles"])
         self.assertIn(str(artiste.uuid), data["extraits"])
 
     def test_create_success_with_nation(self):

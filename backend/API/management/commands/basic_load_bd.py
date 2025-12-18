@@ -7,7 +7,6 @@ from ...models import (
     Extrait,
     Nation,
     Question,
-    StyleMusical,
     Tag,
     Theme,
     Utilisateur,
@@ -28,7 +27,6 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS("Base de données supprimé"))
         theme = Theme(uuid=1, name="Thème 1", description="Thème de test n°1").save()
         question = Question(uuid=1, texte="Question 1").save()
-        style = StyleMusical(uuid=1, name="Style Musical 1").save()
         artiste = Artiste(uuid=1, name="Artiste 1", info="Artiste de test n°1").save()
         artiste2 = Artiste(uuid=2, name="Artiste 2", info="Artiste de test n°2").save()
         occasion = Occasion(uuid="o1", name="Festival de la Musique").save()
@@ -179,9 +177,7 @@ class Command(BaseCommand):
         interview.occasion.connect(occasion)
         interview2.occasion.connect(occasion)
         question.theme.connect(theme)
-        artiste.style.connect(style)
         artiste.nationalite.connect(nation)
-        artiste2.style.connect(style)
         artiste2.nationalite.connect(nation)
         extrait1.interviews.connect(interview, {"position": 0})
         extrait2.interviews.connect(interview, {"position": 1})

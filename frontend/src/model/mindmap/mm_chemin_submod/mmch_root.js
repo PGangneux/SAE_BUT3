@@ -4,13 +4,11 @@ import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
 import mmch_Nation from "./mmch_nation.js";
 import mmch_Question from "./mmch_question.js";
-import mmch_StyleMusical from "./mmch_style_musical.js";
 import mmch_Theme from "./mmch_theme.js";
 
 const mm_CategorysDefault = [
     mmch_Artiste,
     mmch_Nation,
-    mmch_StyleMusical,
     mmch_Theme,
 ];
 

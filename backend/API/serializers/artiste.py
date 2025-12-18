@@ -20,7 +20,6 @@ class ArtisteSerializer(BaseSerializer):
 
     # Output
     nation = serializers.SerializerMethodField(read_only=True)
-    styles = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
@@ -36,12 +35,6 @@ class ArtisteSerializer(BaseSerializer):
             if nation
             else None
         )
-
-    def get_styles(self, artiste):
-        """
-        Renvoie un lien propre vers les styles :
-        """
-        return self.get_url("style-list", kwargs={"artiste_uuid": artiste.uuid})
 
     def get_extraits(self, artiste):
         """
