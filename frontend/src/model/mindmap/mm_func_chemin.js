@@ -78,6 +78,44 @@ export function mm_clean_preview(mminfo){
 }
 
 /**
+ * Convert preview nodes to regular nodes when they become part of the main path
+ * @param {mm_Mindmap} mminfo - The mindmap instance
+ * @param {mmch_CheminT} targetNode - The node that was just clicked
+ */
+export function mm_convert_preview_to_regular(mminfo, targetNode) {
+    // Convert the target node if it is a preview node
+    if (targetNode.ispreview) {
+        targetNode.ispreview = false;
+        
+        // Remove from preview nodes array and add to regular nodes array
+        const previewIndex = mminfo.previewnodes.indexOf(targetNode);
+        if (previewIndex !== -1) {
+            mminfo.previewnodes.splice(previewIndex, 1);
+            mminfo.nodes.push(targetNode);
+        }
+        
+        // Process preview links that connect to the target node
+        for (let i = mminfo.previewlinkages.length - 1; i >= 0; i--) {
+            const linkage = mminfo.previewlinkages[i];
+            if (linkage.toNode === targetNode) {
+                linkage.ispreview = false;
+                mminfo.linkages.push(linkage);
+                mminfo.previewlinkages.splice(i, 1);
+            }
+        }
+        
+        // Recursively process parent node if it is also a preview node
+        const parent = mminfo.nodes.find(node => 
+            node.childrens && node.childrens.includes(targetNode)
+        );
+        
+        if (parent && parent.ispreview) {
+            mm_convert_preview_to_regular(mminfo, parent);
+        }
+    }
+}
+
+/**
  * Compare two nodes for equality
  * Compares by: 1) reference, 2) class type, 3) object content (UUID), 4) position for non-content nodes
  * @param {mmch_CheminT} one - First node to compare
