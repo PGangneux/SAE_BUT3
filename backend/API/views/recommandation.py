@@ -55,7 +55,7 @@ class Recommandation(APIView):
              - weights : dict (Thème, Question, Artiste)
                 key: Nom de la classe du node
                 value: weight de la classe (number)
-             - filters : dict (Thème, Question, Artiste, Nation, StyleMusical, Tag)
+             - filters : dict (Thème, Question, Artiste, Nation, Tag)
                 key: Nom de la classe du filtre
                 value: uuid de l'instance
 
@@ -132,7 +132,6 @@ class Recommandation(APIView):
         filter_configs = {
             "Thème": ("Theme", "*..3"),
             "Artiste": ("Artiste", "*..2"),
-            "StyleMusical": ("StyleMusical", "*..3"),
             "Nation": ("Nation", "*..3"),
             "Question": ("Question", "*..2"),
             "Tag": ("Tag", "*..3"),
@@ -141,7 +140,6 @@ class Recommandation(APIView):
         # filter_configs = {
         #     "Thème": ("Theme", "*2..3"),
         #     "Artiste": ("Artiste", "*..2"),
-        #     "StyleMusical": ("StyleMusical", "*2..3"),
         #     "Nation": ("Nation", "*2..3"),
         #     "Question": ("Question", "*..2"),
         #     "Tag": ("Tag", "*0..3"),

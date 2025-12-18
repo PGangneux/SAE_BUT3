@@ -2,7 +2,7 @@ from uuid import uuid4
 from django.test import RequestFactory
 from ...serializers import RecherchesArtistesSerializer
 from ...errors import ContextError, NotFound
-from ...models import Utilisateur, Artiste, Nation, StyleMusical, Extrait
+from ...models import Utilisateur, Artiste, Nation, Extrait
 from ...tests import Neo4jTestCase
 
 
@@ -22,8 +22,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
         self.artiste = Artiste(name="Artiste1", info="Info1").save()
         self.nation = Nation(name="France").save()
         self.artiste.nationalite.connect(self.nation)
-        self.style = StyleMusical(name="Jazz").save()
-        self.artiste.style.connect(self.style)
         self.extrait = Extrait(titre="Extrait1", duree=100).save()
         self.extrait.interviewer.connect(self.artiste)
 
@@ -40,7 +38,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
         self.assertEqual(data["name"], self.artiste.name)
         self.assertEqual(data["info"], self.artiste.info)
         self.assertIn(str(self.nation.uuid), data["nation"])
-        self.assertIn(str(self.artiste.uuid), data["styles"])
         self.assertIn(str(self.artiste.uuid), data["extraits"])
 
     def test_get_date_heure_raises_contexterror_without_utilisateur(self):

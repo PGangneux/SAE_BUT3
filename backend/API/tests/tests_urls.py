@@ -9,7 +9,6 @@ from ..models import (
     Interview,
     Nation,
     Question,
-    StyleMusical,
     Tag,
     Theme,
     Utilisateur,
@@ -205,54 +204,6 @@ class URLsAPITests(Neo4jTestCase):
         self.assertEqual(
             self.client.get(
                 reverse("extrait-list", kwargs={"artiste_uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-list", kwargs={"artiste_uuid": self.artiste.uuid})
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-list", kwargs={"artiste_uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-
-    def test_styles_musical_urls(self):
-        self.style_musical: StyleMusical = StyleMusical(name="Test").save()
-        self.assertEqual(
-            self.client.get(reverse("style-musical-list")).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse(
-                    "style-musical-detail", kwargs={"uuid": self.style_musical.uuid}
-                )
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-musical-detail", kwargs={"uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse(
-                    "artiste-list",
-                    kwargs={"stylemusical_uuid": self.style_musical.uuid},
-                )
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("artiste-list", kwargs={"stylemusical_uuid": self.uuid})
             ).status_code,
             status.HTTP_404_NOT_FOUND,
         )

@@ -32,16 +32,6 @@ router_interview.register(r"tags", TagsInterviewRelationShipViewSet, basename="t
 router.register(r"artistes", ArtisteViewSet, basename="artiste")
 router_artiste = NestedDefaultRouter(router, r"artistes", lookup="artiste")
 router_artiste.register(r"extraits", ArtisteExtraitViewSet, basename="extrait")
-router_artiste.register(r"styles", ArtisteStyleRelationShipViewSet, basename="style")
-
-
-router.register(r"styles-musicaux", StyleMusicalViewSet, basename="style-musical")
-router_style_musical = NestedDefaultRouter(
-    router, r"styles-musicaux", lookup="stylemusical"
-)
-router_style_musical.register(
-    r"artistes", StyleMusicalArtisteViewSet, basename="artiste"
-)
 
 
 router.register(r"nations", NationViewSet, basename="nation")
@@ -73,7 +63,6 @@ urlpatterns = [
     path("", include(router_extrait.urls)),
     path("", include(router_interview.urls)),
     path("", include(router_artiste.urls)),
-    path("", include(router_style_musical.urls)),
     path("", include(router_nation.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
