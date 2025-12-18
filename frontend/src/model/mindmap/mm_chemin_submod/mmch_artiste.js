@@ -7,7 +7,7 @@ import mmch_StyleMusical from "./mmch_style_musical.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
-    /** @type {Array[String]} */
+    /** @type {Array<[String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {

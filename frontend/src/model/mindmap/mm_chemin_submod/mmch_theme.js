@@ -5,7 +5,7 @@ import mmch_Question from "./mmch_question.js";
 
 export default class mmch_Theme extends mmch_CheminT {
     static mmch_dbjsclass = Theme;
-    /** @type {Array[String]} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {

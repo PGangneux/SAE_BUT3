@@ -6,15 +6,15 @@ import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 export default class mm_Mindmap {
     /** @type {Object} */
     vueobj;
-    /** @type {Array[mm_Linkage]} */
+    /** @type {Array<mm_Linkage>} */
     linkages;
-    /** @type {Array[mmch_CheminT]} */
+    /** @type {Array<mmch_CheminT>} */
     nodes;
-    /** @type {Array[mmch_CheminT]} */
+    /** @type {Array<mmch_CheminT>} */
     chemin;
-    /** @type {Array[mm_Linkage]} */
+    /** @type {Array<mm_Linkage>} */
     previewlinkages;
-    /** @type {Array[mmch_CheminT]} */
+    /** @type {Array<mmch_CheminT>} */
     previewnodes;
     /** @type {boolean} */
     fullscreen;

@@ -6,7 +6,7 @@ import mmch_Artiste from "./mmch_artiste.js";
 
 export default class mmch_Nation extends mmch_CheminT {
     static mmch_dbjsclass = Nation;
-    /** @type {Array[String]} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
