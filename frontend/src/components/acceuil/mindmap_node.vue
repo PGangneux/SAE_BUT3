@@ -17,6 +17,7 @@ export default {
             isAppearing: true,
             thumbnailUrl: null,
             nodeTitle: 'Inconnue',
+            nodeSubtitle : "Inconnue",
             nodeDescription: [],
             hasMiniature: false,
         };
@@ -30,6 +31,8 @@ export default {
                     this.nodeTitle = '';
                 }
                 return;
+            } else {
+                this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
             }
             this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
             // Check if has miniature
