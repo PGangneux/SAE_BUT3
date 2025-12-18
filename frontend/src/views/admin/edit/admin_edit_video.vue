@@ -112,14 +112,16 @@ export default {
     },
 
     creerNouveauArtiste(){
-      const newArtiste = new Artiste({});
+      
 
       if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
+        const newArtiste = new Artiste({});
         newArtiste.name = this.laselectedArtiste;
         newArtiste.create()
         this.listeArtiste.add(newArtiste);
 
       }else{
+        alert('l\'artiste existe deja')
         console.log('artiste existe deja');
       }
       

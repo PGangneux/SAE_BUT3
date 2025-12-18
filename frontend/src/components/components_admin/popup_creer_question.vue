@@ -37,7 +37,22 @@ export default {
         },
 
 
-        creerExtrait(e) {
+
+        creerNouvelleQuestion(){
+            const newQuestion = new Question({});
+
+            if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+                newQuestion.name = this.laselectedQuestion;
+                newQuestion.create()
+                this.listeQuestion.add(newQuestion);
+
+            }else{
+                console.log('question existe deja');
+            }
+        
+        },
+
+        creerQuestion(e) {
             const value = e.submitter.value
 
             if(value == "envoyer"){
@@ -76,7 +91,7 @@ export default {
     <div class="row collumpopu ">
         <h1 class="row"> creation une nouvelle question </h1>
 
-        <form class="row" @submit.prevent="creerExtrait">
+        <form class="row" @submit.prevent="creerQuestion">
             <div   style="--bs-gutter-x: 0em;">
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
@@ -89,7 +104,7 @@ export default {
 
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question theme :</span>
-                    <input list="Questiontheme" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
+                    <input list="Questiontheme" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  />
 
                     <datalist id="Questiontheme">
                     <option v-for="theme in listetheme" :key="theme.id" :value="theme.theme" :label="theme.name" > </option> 
@@ -98,8 +113,18 @@ export default {
                     <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
                 </div>
 
-                <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+
+                <div class=" input-group mb-3" > 
+                    <span  class="input-group-text colovert" id="basic-addon3" > description :</span>
+                    <input  id="question" name="description" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" />
+
+                </div>
+
+                <button @click="" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                   alt="Enregistrer"> Enregistrer </button>
+
+                <button @click="" type="button" class="btn  btn-outline-danger"> <img
+                  src="/imgs/delete.svg" alt="Annuler"> Annuler </button>
 
 
 
