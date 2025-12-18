@@ -67,11 +67,11 @@
     right: 30px;
     display: flex;
     flex-direction: column;
-    z-index: 100;
     align-items: flex-end
 }
 
 .mm_controls {
+    z-index: 100;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -108,6 +108,7 @@
 
 /* Legend with animation */
 .mm_legend_outer {
+    z-index: 100;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
