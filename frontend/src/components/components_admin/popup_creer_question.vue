@@ -1,18 +1,14 @@
 <script>
 import { markRaw } from 'vue';
-import Tags from '../../model/tag.js';
 
-import Theme from '../../../model/theme.js';
-import Question from "../../../model/question";
+
+import Theme from '../../model/theme.js';
+import Question from "../../model/question";
 
 
 export default {
     name: "popup_creer_question",
     props: {
-        Element_Creer: {
-            type:Object,
-            required:true
-        },
         popupCreerQuestion: {
             type:Boolean,
             required:true
@@ -27,7 +23,7 @@ export default {
     },
     methods: {
         changement_etat_popup () {
-            this.$emit('popup_creation_question', !this.popupCreerQuestion)
+            this.$emit('popupcreationquestion', !this.popupCreerQuestion)
         },
 
         async recupetheme(){
@@ -46,15 +42,15 @@ export default {
 
             if(value == "envoyer"){
                 alert("nous avons: " + value);
-                this.$emit('popup_creation_question', !this.popupCreerQuestion)
+                this.$emit('popupcreationquestion', !this.popupCreerQuestion)
             }else{
-                this.$emit('popup_creation_question', !this.popupCreerQuestion)
+                this.$emit('popupcreationquestion', !this.popupCreerQuestion)
             }
             
         }
         
     },
-    emits : [ "popup_creation_question"],   
+    emits : [ "popupcreationquestion"],   
     
     
     computed: {
@@ -77,30 +73,37 @@ export default {
 <div class="allmightygris" @click="changement_etat_popup"></div>
 
 <div class="grisee allmighty trie-tagsfoncer row">
-    <div class="col collumpopu ">
-        <h1> creation d'nouveau artiste </h1>
+    <div class="row collumpopu ">
+        <h1 class="row"> creation une nouvelle question </h1>
 
-        <form @submit.prevent="creerExtrait">
-            <div class="row"  style="--bs-gutter-x: 0em;">
+        <form class="row" @submit.prevent="creerExtrait">
+            <div   style="--bs-gutter-x: 0em;">
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-
                     <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
-
-                    <span  class="input-group-text colovert" id="basic-addon3" > Question theme :</span>
-                    <input list="Questiontheme" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
 
                     <datalist id="Questiondata">
                     <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
                     </datalist>
+                </div>
+
+                <div class=" input-group mb-3" >
+                    <span  class="input-group-text colovert" id="basic-addon3" > Question theme :</span>
+                    <input list="Questiontheme" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
 
                     <datalist id="Questiontheme">
                     <option v-for="theme in listetheme" :key="theme.id" :value="theme.theme" :label="theme.name" > </option> 
                     </datalist>
 
-
                     <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
                 </div>
+
+                <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+                  alt="Enregistrer"> Enregistrer </button>
+
+
+
+                    
             </div>
         </form>
 

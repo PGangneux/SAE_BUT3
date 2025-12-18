@@ -3,6 +3,7 @@ import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_creer_question from "../../../components/components_admin/popup_creer_question.vue";
 import Extrait from "../../../model/extrait";
 
 import Question from "../../../model/question";
@@ -21,6 +22,7 @@ export default {
   components: {
     comp_baradmin,
     popup_interview,
+    popup_creer_question,
     supprimer,
     tags,
 
@@ -41,6 +43,7 @@ export default {
             popup: false,
             popupSelectInterview: false, //Props pour popupSelectInterview
             popupEnregistrer:false,
+            popupCreerQuestion:false,
             
             urlVimeoReconstruit:"",
             urlyoutubeReconstruit:"",
@@ -159,7 +162,11 @@ export default {
     },
 
     popupchange(){
-      this.popup = !this.popup
+      this.popup = !this.popup;
+    },
+
+    popupchangequestion(){
+      this.popupCreerQuestion = !this.popupCreerQuestion;
     },
 
    async modificationDonnees(){
@@ -468,7 +475,7 @@ export default {
 
 
 
-                <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+                <button class="bt" type="button" @click="popupCreerQuestion = true" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" @click="popupCreerQuestion = true" alt="add" class="col "> </button>
             </div>
           </div>
 
@@ -568,6 +575,8 @@ export default {
     />
     
    
+   <div v-if="popupCreerQuestion === true">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" /> </div>
+
 
     <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 
