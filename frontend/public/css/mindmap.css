@@ -292,9 +292,15 @@
     overflow: hidden;
 }
 
-.mm_node:not(.mm_node_appearing) {
+.mm_node:not(.mm_node_appearing):not(.mm_node_disappearing) {
     transform: scale(1);
     opacity: 1;
+}
+
+.mm_node_disappearing {
+    transform: scale(0) !important;
+    opacity: 0 !important;
+    transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 .mm_node:hover {

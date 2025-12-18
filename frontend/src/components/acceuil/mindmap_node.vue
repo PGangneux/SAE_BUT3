@@ -1,6 +1,6 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import mmch_Root  from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
+import mmch_Root from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
 
 export default {
     name: "mindmap_node",
@@ -13,13 +13,14 @@ export default {
     data() {
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            thumbnailLoading: false,
             isAppearing: true,
-            thumbnailUrl: null,
+            isDisappearing: false,
             nodeTitle: 'Inconnue',
-            nodeSubtitle : "Inconnue",
+            nodeSubtitle: "Inconnue",
             nodeDescription: [],
             hasMiniature: false,
+            thumbnailLoading: false,
+            thumbnailUrl: null,
         };
     },
     methods: {
@@ -52,8 +53,9 @@ export default {
             const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
             const appearingClass = this.isAppearing ? 'mm_node_appearing' : '';
+            const disappearingClass = this.isDisappearing ? 'mm_node_disappearing' : '';
 
-            return `${baseClass} ${shapeClass} ${appearingClass}`;
+            return `${baseClass} ${shapeClass} ${appearingClass} ${disappearingClass}`;
         },
     },
     async mounted() {
@@ -62,6 +64,15 @@ export default {
         }, 50);
         // Load all async data
         await this.loadNodeData();
+    },
+    beforeUnmount() {
+        this.isDisappearing = true;
+        // Wait for animation to complete before actually unmounting
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, 1000);
+        });
     },
 }
 </script>
