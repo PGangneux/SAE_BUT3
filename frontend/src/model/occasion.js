@@ -5,7 +5,7 @@ export default class Occasion extends Model {
     #name;
     #interviews;
 
-    constructor({uuid, name, artistes}) {
+    constructor({ uuid, name, artistes }) {
         super(uuid);
         this.#name = name;
         this.#interviews = artistes;
@@ -25,9 +25,8 @@ export default class Occasion extends Model {
         return this;
     }
 
-    toJSON() {
-        const json = {}
-        if (this.uuid) json['uuid'] = this.uuid;
+    toJSON(json = {}) {
+        json = super.toJSON(json)
         if (this.name) json['name'] = this.name;
         return json;
     }

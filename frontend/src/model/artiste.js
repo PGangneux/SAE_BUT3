@@ -11,7 +11,7 @@ export default class Artiste extends Model {
     #extraits;
     #nation_uuid;
 
-    constructor({uuid, name, nation, styles, extraits}){
+    constructor({ uuid, name, nation, styles, extraits }) {
         super(uuid);
         this.#name = name;
         this.#nation = nation;
@@ -37,7 +37,7 @@ export default class Artiste extends Model {
      * @param {StyleMusical} style_musical 
      */
     async connect_styles(style_musical) {
-        await this.connect(this.#styles, {'uuid': style_musical.uuid});
+        await this.connect(this.#styles, { 'uuid': style_musical.uuid });
     }
 
     /**
@@ -57,11 +57,9 @@ export default class Artiste extends Model {
         return this;
     }
 
-    toJSON() {
-        return {
-            uuid: this.uuid,
-            name: this.#name,
-            nation_uuid: this.#nation_uuid,
-        };
+    toJSON(json = {}) {
+        json = super.toJSON(json)
+        if (this.name) json['name'] = this.name;
+        return json;
     }
 }

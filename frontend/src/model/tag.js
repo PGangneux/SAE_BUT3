@@ -31,10 +31,9 @@ export default class Tag extends Model {
         return this;
     }
 
-    toJSON() {
-        return {
-            uuid: this.uuid,
-            name: this.#name,
-        };
+    toJSON(json = {}) {
+        json = super.toJSON(json)
+        if (this.name) json['name'] = this.name;
+        return json;
     }
 }
