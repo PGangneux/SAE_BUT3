@@ -35,9 +35,9 @@ export default {
                 this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
             }
             this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
-            // Check if has miniature
             // Load description
             this.nodeDescription = await this.node_instance.mmch_getDescription();
+            // Check if has miniature
             this.thumbnailLoading = true;
             this.hasMiniature = await this.node_instance.mmch_hasMiniature();
             // Load miniature if available
