@@ -41,8 +41,6 @@ class Artiste(StructuredNode):
     name = StringProperty(required=True, unique_index=True)
     info = StringProperty()
 
-    nationalite = RelationshipTo("Nation", "NATIONALITE", ZeroOrOne)
-
 
 class Interview(StructuredNode):
     """
@@ -127,15 +125,6 @@ class Utilisateur(StructuredNode):
     recherches_questions = RelationshipTo(
         "Question", "RECHERCHES_QUESTIONS", ZeroOrMore, DateHeureRel
     )
-
-
-class Nation(StructuredNode):
-    """
-    Noeud Nation
-    """
-
-    uuid = UniqueIdProperty()
-    name = RegexProperty(unique_index=True, expression=r".+")
 
 
 class Tag(StructuredNode):

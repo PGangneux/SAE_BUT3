@@ -34,11 +34,6 @@ router_artiste = NestedDefaultRouter(router, r"artistes", lookup="artiste")
 router_artiste.register(r"extraits", ArtisteExtraitViewSet, basename="extrait")
 
 
-router.register(r"nations", NationViewSet, basename="nation")
-router_nation = NestedDefaultRouter(router, r"nations", lookup="nation")
-router_nation.register(r"artistes", NationArtisteViewSet, basename="artiste")
-
-
 router.register(r"tags", TagViewSet, basename="tag")
 router_tag = NestedDefaultRouter(router, r"tags", lookup="tag")
 router_tag.register(r"extraits", TagExtraitViewSet, basename="extrait")
@@ -63,7 +58,6 @@ urlpatterns = [
     path("", include(router_extrait.urls)),
     path("", include(router_interview.urls)),
     path("", include(router_artiste.urls)),
-    path("", include(router_nation.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
     path("login/", LoginView.as_view(), name="login"),

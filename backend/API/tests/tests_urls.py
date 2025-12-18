@@ -7,7 +7,6 @@ from ..models import (
     Artiste,
     Extrait,
     Interview,
-    Nation,
     Question,
     Tag,
     Theme,
@@ -204,36 +203,6 @@ class URLsAPITests(Neo4jTestCase):
         self.assertEqual(
             self.client.get(
                 reverse("extrait-list", kwargs={"artiste_uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-
-    def test_nation_urls(self):
-        self.nation: Nation = Nation(name="Test").save()
-        self.assertEqual(
-            self.client.get(reverse("nation-list")).status_code, status.HTTP_200_OK
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("nation-detail", kwargs={"uuid": self.nation.uuid})
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("nation-detail", kwargs={"uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("artiste-list", kwargs={"nation_uuid": self.nation.uuid})
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("artiste-list", kwargs={"nation_uuid": self.uuid})
             ).status_code,
             status.HTTP_404_NOT_FOUND,
         )
