@@ -61,35 +61,35 @@ export default class Extrait extends Model {
     return this.#titre;
   }
   set titre(value) {
-    this.#titre = this.constructor.validateString(value, "titre");
+    this.#titre = Extrait.validateString(value, "titre");
   }
 
   get description() {
     return this.#description;
   }
   set description(value) {
-    this.#description = this.constructor.validateString(value, "description");
+    this.#description = Extrait.validateString(value, "description");
   }
 
   get youtube_url() {
     return this.#youtube_url;
   }
   set youtube_url(value) {
-    this.#youtube_url = this.constructor.validateString(value, "youtube_url");
+    this.#youtube_url = Extrait.validateString(value, "youtube_url");
   }
 
   get vimeo_url() {
     return this.#vimeo_url;
   }
   set vimeo_url(value) {
-    this.#vimeo_url = this.constructor.validateString(value, "vimeo_url");
+    this.#vimeo_url = Extrait.validateString(value, "vimeo_url");
   }
 
   get lieu() {
     return this.#lieu;
   }
   set lieu(value) {
-    this.#lieu = this.constructor.validateString(value, 'lieu')
+    this.#lieu = Extrait.validateString(value, 'lieu')
   }
 
   get uploaded_at() {
@@ -103,14 +103,14 @@ export default class Extrait extends Model {
     return this.fetchDetail(this.#artiste, Artiste);
   }
   set artiste(value) {
-    this.#artiste_uuid = this.constructor.validateString(value, "artiste_uuid");
+    this.#artiste_uuid = Extrait.validateString(value, "artiste_uuid");
   }
 
   get question() {
     return this.fetchDetail(this.#question, Question);
   }
   set question(value) {
-    this.#question_uuid = this.constructor.validateString(
+    this.#question_uuid = Extrait.validateString(
       value,
       "question_uuid"
     );

@@ -25,13 +25,13 @@ export default class Artiste extends Model {
     static get endpoint() { return "artistes"; }
 
     get name() { return this.#name; }
-    set name(value) { this.#name = this.validateString(value, "name"); }
+    set name(value) { this.#name = Artiste.validateString(value, "name"); }
 
     get info() { return this.#info; }
-    set info(value) { this.#info = this.validateString(value, "info"); }
+    set info(value) { this.#info = Artiste.validateString(value, "info"); }
 
     get nation() { return this.fetchDetail(this.#nation, Nation); }
-    set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
+    set nation(value) { this.#nation_uuid = Artiste.validateString(value, "nation_uuid"); }
 
     async styles(args) { return await this.fetchList(this.#styles, StyleMusical, args); }
 

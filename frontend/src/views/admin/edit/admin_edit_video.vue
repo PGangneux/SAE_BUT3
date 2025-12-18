@@ -121,6 +121,20 @@ export default {
       
     },
 
+    creerNouvelleQuestion(){
+      const newQuestion = new Question({});
+
+      if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+        newQuestion.name = this.laselectedQuestion;
+        newQuestion.create()
+        this.listeQuestion.add(newQuestion);
+
+      }else{
+        console.log('question existe deja');
+      }
+      
+    },
+
 
     async enregistrer(){
       //fonction pour enregistrer un extraits dans L'api
