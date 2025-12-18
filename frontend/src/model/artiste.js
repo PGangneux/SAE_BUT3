@@ -1,5 +1,4 @@
 import Model from "./model.js";
-import Nation from "./nation.js";
 import StyleMusical from "./style_musical.js";
 import Extrait from "./extrait.js";
 import ClientAPI from "./clientAPI.js";
@@ -7,19 +6,15 @@ import ClientAPI from "./clientAPI.js";
 export default class Artiste extends Model {
     #name;
     #info;
-    #nation;
     #styles;
     #extraits;
-    #nation_uuid;
 
-    constructor({uuid,name,info, nation, styles, extraits}){
+    constructor({uuid,name,info, styles, extraits}){
         super(uuid);
         this.#name = name;
         this.#info = info;
-        this.#nation = nation;
         this.#styles = styles;
         this.#extraits = extraits;
-        this.#nation_uuid = null;
     }
 
     static get endpoint() { return "artistes"; }
@@ -29,9 +24,6 @@ export default class Artiste extends Model {
 
     get info() { return this.#info; }
     set info(value) { this.#info = this.validateString(value, "info"); }
-
-    get nation() { return this.fetchDetail(this.#nation, Nation); }
-    set nation(value) { this.#nation_uuid = this.validateString(value, "nation_uuid"); }
 
     async styles(args) { return await this.fetchList(this.#styles, StyleMusical, args); }
 
@@ -57,7 +49,6 @@ export default class Artiste extends Model {
         super.fromJSON(json);
         this.#name = json.name;
         this.#info = json.info;
-        this.#nation = json.nation;
         this.#styles = json.styles;
         this.#extraits = json.extraits;
         return this;
@@ -68,7 +59,6 @@ export default class Artiste extends Model {
             uuid: this.uuid,
             name: this.#name,
             info: this.#info,
-            nation_uuid: this.#nation_uuid,
         };
     }
 }

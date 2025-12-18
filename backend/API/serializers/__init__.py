@@ -11,7 +11,6 @@ from .interview import InterviewSerializer
 from .artiste import ArtisteSerializer
 from .utilisateur import UtilisateurSerializer
 from .style_musical import StyleMusicalSerializer
-from .nation import NationSerializer
 from .tag import TagSerializer
 from .style import StyleRelationShipSerializer
 from .recherches_artistes import RecherchesArtistesSerializer
@@ -34,7 +33,6 @@ __all__ = (
     "ArtisteSerializer",
     "UtilisateurSerializer",
     "StyleMusicalSerializer",
-    "NationSerializer",
     "TagSerializer",
     "StyleRelationShipSerializer",
     "RecherchesArtistesSerializer",

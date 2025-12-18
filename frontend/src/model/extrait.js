@@ -193,6 +193,11 @@ export default class Extrait extends Model {
     await this.disconnect(this.#interviews, interview);
   }
 
+  async create() {
+    console.log(this.toJSON());
+    return await super.create();
+  }
+
   fromJSON(json) {
     super.fromJSON(json);
     this.#titre = json.titre;
@@ -210,16 +215,16 @@ export default class Extrait extends Model {
   }
 
   toJSON() {
-    return {
-      uuid: this.uuid,
-      titre: this.#titre,
-      description: this.#description,
-      youtube_url: this.#youtube_url,
-      vimeo_url: this.#vimeo_url,
-      uploaded_at: this.#uploaded_at,
-      artiste_uuid: this.#artiste_uuid,
-      question_uuid: this.#question_uuid,
-      duree: this.#duree,
-    };
+    const json = {}
+    if (this.uuid) json['uuid'] = this.uuid
+    if (this.titre) json['titre'] = this.titre
+    if (this.description) json['description'] = this.description
+    if (this.youtube_url) json['youtube_url'] = this.youtube_url
+    if (this.vimeo_url) json['vimeo_url'] = this.vimeo_url
+    if (this.uploaded_at) json['uploaded_at'] = this.uploaded_at
+    if (this.#artiste_uuid) json['artiste_uuid'] = this.#artiste_uuid
+    if (this.#question_uuid) json['question_uuid'] = this.#question_uuid
+    if (this.duree != null | this.duree != undefined) json['duree'] = this.duree
+    return json;
   }
 }

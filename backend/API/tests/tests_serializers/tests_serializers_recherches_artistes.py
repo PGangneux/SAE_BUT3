@@ -2,7 +2,7 @@ from uuid import uuid4
 from django.test import RequestFactory
 from ...serializers import RecherchesArtistesSerializer
 from ...errors import ContextError, NotFound
-from ...models import Utilisateur, Artiste, Nation, StyleMusical, Extrait
+from ...models import Utilisateur, Artiste, StyleMusical, Extrait
 from ...tests import Neo4jTestCase
 
 
@@ -20,8 +20,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
             is_admin=False,
         ).save()
         self.artiste = Artiste(name="Artiste1", info="Info1").save()
-        self.nation = Nation(name="France").save()
-        self.artiste.nationalite.connect(self.nation)
         self.style = StyleMusical(name="Jazz").save()
         self.artiste.style.connect(self.style)
         self.extrait = Extrait(titre="Extrait1", duree=100).save()
@@ -39,7 +37,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
         self.assertIsInstance(data["date_heure"], str)
         self.assertEqual(data["name"], self.artiste.name)
         self.assertEqual(data["info"], self.artiste.info)
-        self.assertIn(str(self.nation.uuid), data["nation"])
         self.assertIn(str(self.artiste.uuid), data["styles"])
         self.assertIn(str(self.artiste.uuid), data["extraits"])
 

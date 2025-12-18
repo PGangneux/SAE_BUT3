@@ -8,7 +8,6 @@ import Questions from '../../model/question.js';
 import Themes from '../../model/theme.js';
 
 import Styles from '../../model/style_musical.js';
-import Nations from '../../model/nation.js';
 
 
 
@@ -35,8 +34,6 @@ export default {
 
             Themes:{type:Themes},
             Styles:{type:Styles},
-            Nations:{type:Nations},
-            
         };
     },
     async mounted() {
@@ -46,7 +43,6 @@ export default {
 
     this.Themes = markRaw(await Themes.list());
     this.Styles = markRaw(await Styles.list());
-    this.Nations = markRaw(await Nations.list());
 
     this.Tags = markRaw(await Tags.list());
 
@@ -182,7 +178,6 @@ export default {
                     <thead>
                         <tr>
                             <th class="btgrisv2  col">Artistes</th>
-                            <th class="btgrisv2  col">nation</th>
                             <th class="btgrisv2  col">styles</th>
                             <th class="btgrisv2  col">nb dans extraits  </th>
                             <th class="btgrisv2  col">nb dans interviews</th>
@@ -236,7 +231,6 @@ export default {
                     <thead>
                         <tr>
                             <th class="btgrisv2  col">Thème</th>
-                            <th class="btgrisv2  col">nation</th>
                             <th class="btgrisv2  col">styles</th>
                             <th class="btgrisv2  col">nb dans extraits  </th>
                             <th class="btgrisv2  col">nb dans interviews</th>
@@ -286,7 +280,6 @@ export default {
                     <thead>
                         <tr>
                             <th class="btgrisv2  col">Style</th>
-                            <th class="btgrisv2  col">nation</th>
                             <th class="btgrisv2  col">styles</th>
                             <th class="btgrisv2  col">nb dans extraits  </th>
                             <th class="btgrisv2  col">nb dans interviews</th>
@@ -303,55 +296,6 @@ export default {
                     </tbody>
                 </table>
             </section>
-
-        </section>
-
-
-
-
-
-
-        <section class="row ligne">
-            <h2 class="vert-neon">Nations</h2>
-
-            <section class="row">
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations total</span>
-                    <span class=" col input-group-text">{{this.Nations.length}}</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations utiliser</span>
-                    <span class=" col input-group-text">nb Nations utiliser</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations non utiliser</span>
-                    <span class=" col input-group-text">nb Nations non utiliser</span>
-                </section>
-
-            </section>
-
-            <section>
-                <table class="ultagger table tables table-striped">
-                    <thead>
-                        <tr>
-                            <th class="btgrisv2  col">Question</th>
-                            <th class="btgrisv2  col">Theme</th>
-                            <th class="btgrisv2  col">nb dans extraits</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tobodd scroller">
-                        <tr class="col" v-for="nation in this.Nations">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ nation.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
-                    </tbody>
-                </table>
-            </section>
-
 
         </section>
     </div>

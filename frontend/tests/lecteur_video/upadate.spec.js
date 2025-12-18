@@ -24,7 +24,7 @@ function mountComponent({ extrait, interview } = {}) {
 describe("page_lecteur_video - update()", () => {
 
   beforeAll(() => {
-    // Mock du Model global utilisé par Nation, Artiste, etc.
+    // Mock du Model global utilisé par Artiste, etc.
     vi.mock("../../src/model/model.js", () => {
       return {
         default: class Model {}

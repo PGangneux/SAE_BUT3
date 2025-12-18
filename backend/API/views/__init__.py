@@ -9,10 +9,9 @@ from .extrait import (
     InterviewExtraitViewSet,
 )
 from .interview import InterviewViewSet, TagInterviewViewSet
-from .artiste import ArtisteViewSet, NationArtisteViewSet, StyleMusicalArtisteViewSet
+from .artiste import ArtisteViewSet, StyleMusicalArtisteViewSet
 from .utilisateur import UtilisateurViewSet
 from .style_musical import StyleMusicalViewSet
-from .nation import NationViewSet
 from .tag import TagViewSet
 from .style import ArtisteStyleRelationShipViewSet
 from .recherches_artistes import RecherchesArtistesViewSet
@@ -41,11 +40,9 @@ __all__ = (
     "InterviewViewSet",
     "TagInterviewViewSet",
     "ArtisteViewSet",
-    "NationArtisteViewSet",
     "StyleMusicalArtisteViewSet",
     "UtilisateurViewSet",
     "StyleMusicalViewSet",
-    "NationViewSet",
     "TagViewSet",
     "ArtisteStyleRelationShipViewSet",
     "RecherchesArtistesViewSet",

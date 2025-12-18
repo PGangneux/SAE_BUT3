@@ -5,7 +5,6 @@ from ...models import (
     Artiste,
     Interview,
     Extrait,
-    Nation,
     Question,
     StyleMusical,
     Tag,
@@ -46,7 +45,6 @@ class Command(BaseCommand):
             description="Interview 2 de l'Artiste 2",
             lieu="Orléans",
         ).save()
-        nation = Nation(uuid=1, name="Test Nation").save()
         tag = Tag(uuid=1, name="Test Tag").save()
         utilisateur = Utilisateur(
             uuid=1,
@@ -178,9 +176,7 @@ class Command(BaseCommand):
 
         question.theme.connect(theme)
         artiste.style.connect(style)
-        artiste.nationalite.connect(nation)
         artiste2.style.connect(style)
-        artiste2.nationalite.connect(nation)
         extrait1.interviews.connect(interview, {"position": 0})
         extrait2.interviews.connect(interview, {"position": 1})
         extrait3.interviews.connect(interview, {"position": 2})

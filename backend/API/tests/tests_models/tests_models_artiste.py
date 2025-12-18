@@ -2,7 +2,7 @@ from neomodel.exceptions import UniqueProperty
 from neomodel.exceptions import DoesNotExist
 from neomodel import db
 from ...tests import Neo4jTestCase
-from ...models import Artiste, StyleMusical, Nation
+from ...models import Artiste, StyleMusical
 
 
 class ArtisteTestCase(Neo4jTestCase):
@@ -49,20 +49,6 @@ class ArtisteTestCase(Neo4jTestCase):
         connected_styles = [s.name for s in artiste.style.all()]
         self.assertCountEqual(connected_styles, ["Rap", "Trap"])
 
-    def test_relation_nationalite(self):
-        """Test de la relation NATIONALITE (Artiste → Nation)"""
-        artiste = Artiste(name="Shakira").save()
-        colombie = Nation(name="Colombie").save()
-        france = Nation(name="France").save()
-
-        artiste.nationalite.connect(colombie)
-        # On remplace la nationalité unique
-        artiste.nationalite.disconnect(colombie)
-        artiste.nationalite.connect(france)
-
-        connected_nations = [n.name for n in artiste.nationalite.all()]
-        self.assertEqual(len(connected_nations), 1)
-        self.assertEqual(connected_nations[0], "France")
 
     def test_getters_and_properties(self):
         """Test d'accès aux propriétés"""

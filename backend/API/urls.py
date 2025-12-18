@@ -44,9 +44,6 @@ router_style_musical.register(
 )
 
 
-router.register(r"nations", NationViewSet, basename="nation")
-router_nation = NestedDefaultRouter(router, r"nations", lookup="nation")
-router_nation.register(r"artistes", NationArtisteViewSet, basename="artiste")
 
 
 router.register(r"tags", TagViewSet, basename="tag")
@@ -74,7 +71,6 @@ urlpatterns = [
     path("", include(router_interview.urls)),
     path("", include(router_artiste.urls)),
     path("", include(router_style_musical.urls)),
-    path("", include(router_nation.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
     path("login/", LoginView.as_view(), name="login"),
