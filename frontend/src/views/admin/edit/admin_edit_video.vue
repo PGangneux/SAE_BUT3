@@ -4,7 +4,7 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import Extrait from "../../../model/extrait";
-import Interview from '../../../model/interview.js';
+
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 import supprimer from "../supprimer.vue";
@@ -34,6 +34,7 @@ export default {
             interviews:[],
             listeArtiste:[],    //liste des Artistes totals
             listeQuestion:[],   //liste des Questions totals
+            listetheme:[],   //liste des Questions totals
             popupDelete: false,
             searchValueTag:"",
             create:false,
@@ -223,6 +224,9 @@ export default {
       this.listeQuestion =  markRaw(await Question.list());
     },
 
+
+
+   
 
     popupchangeEnregistrer(){
       //permet de changer l'etat de la popup Enregistrer
@@ -457,10 +461,11 @@ export default {
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
                 <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
-                
+
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
                 </datalist>
+
 
 
                 <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
