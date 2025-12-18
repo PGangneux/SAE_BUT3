@@ -1,12 +1,12 @@
-import router from "../../router.js";
-import mm_Mindmap from "./mm_mindmap.js";
-import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
-import mmch_Root from "./mm_chemin_submod/mmch_root.js";
-import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
-import mmch_Interview from "./mm_chemin_submod/mmch_interview.js";
+import router from "../../../router.js";
+import mm_Mindmap from "../mm_mindmap.js";
+import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
+import mmch_Root from "../mm_chemin_submod/mmch_root.js";
+import mmch_Extrait from "../mm_chemin_submod/mmch_extrait.js";
+import mmch_Interview from "../mm_chemin_submod/mmch_interview.js";
 
 /**
-    check video
+ *  check video
  * @param {mm_Mindmap} mminfo mm_mindmap  
  * @return {boolean} if there is a goto video or not
 */
@@ -31,7 +31,7 @@ export function mm_checkvideo(mminfo) {
 }
 
 /**
-    filter chemin to maintain proper depth hierarchy
+ *  filter chemin to maintain proper depth hierarchy
  * @param {mm_Mindmap} mminfo mm_mindmap  
  * @return {boolean,boolean} change goto video , change in path
 */

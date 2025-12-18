@@ -1,11 +1,11 @@
 import { markRaw } from "vue";
-import mm_Mindmap from "./mm_mindmap.js";
-import mm_Linkage from "./mm_linkage.js";
-import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
-import mmch_Root from "./mm_chemin_submod/mmch_root.js";
+import mm_Mindmap from "../mm_mindmap.js";
+import mm_Linkage from "../mm_linkage.js";
+import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
+import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 
 /**
-    utils to create a child node
+ *  utils to create a child node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT} node the parent node  
  * @param {mmch_CheminT} category the class of node  

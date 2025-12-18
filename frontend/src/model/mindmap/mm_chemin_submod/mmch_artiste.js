@@ -48,11 +48,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         if (!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
         if (this.#description) return this.#description;
         const description = [];
-
-        try {
-            const nation = await artiste.nation();
-            if (nation && nation.name) description.push(`Pays: ${nation.name}`);
-        } catch (error) { console.warn(error); }
+        const artiste = this.mmch_obj;
 
         try {
             const styles = await artiste.styles({ limit: 3 });
