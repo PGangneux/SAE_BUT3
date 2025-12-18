@@ -231,7 +231,7 @@ export default {
         
         if (extrait) {
           await this.user.connect_extrait(extrait);
-          console.log(`Extrait ${extraitUuid} marqué comme vu (${Math.round((this.extraitsProgress[extraitUuid].maxProgress / this.extraitsProgress[extraitUuid].duration) * 100)}%)`);
+          console.log(`Extrait ${extraitUuid} marqué comme vu`);
         }
       } catch (error) {
         console.error(`Erreur lors du marquage de l'extrait ${extraitUuid}:`, error);

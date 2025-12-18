@@ -107,13 +107,16 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
     }    
     // Create the instance
     const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
+    // Add to parent's children
     node.childrens.push(markRaw(tmp_child));
+    // add to mminfo nodes or previewnodes
     if (isPreview) {
-        mminfo.previewnodes.push(markRaw(tmp_child));
         node.ispreview = true;
+        mminfo.previewnodes.push(markRaw(tmp_child));
     } else {
         mminfo.nodes.push(markRaw(tmp_child));
     }
+    // create linkage
     if (createLink) {
         const linkage = new mm_Linkage(node, tmp_child, thickness_base * (1 / node.depth));
         if (isPreview) {

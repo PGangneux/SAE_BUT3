@@ -47,6 +47,10 @@ class Recommandation(APIView):
 
     def post(self, request: HttpRequest) -> Response:
         """L'Algorithme de recommandation de vidéos (Extrait / Interview)
+            request.GET:
+             - video: str, uuid de la vidéo actuellement regarder
+             - size: int, nombre de vidéo maximum à renvoyer. default=10
+             - page: int, numéro de page de la pagination. default=0
             request.data:
              - weights : dict (Thème, Question, Artiste)
                 key: Nom de la classe du node
@@ -83,6 +87,12 @@ class Recommandation(APIView):
                 size: int = int(size)
             except:
                 raise ValidationError(detail="{size: numeric not string}")
+        page: str = request.GET.get("page", "0")
+        if page.isnumeric():
+            try:
+                page: int = int(page)
+            except:
+                raise ValidationError(detail="{page: numeric not string}")
 
         # Modulabilité du modèle
         video_class = Extrait.__name__
@@ -237,7 +247,10 @@ class Recommandation(APIView):
         query_parts.append(f"RETURN v, {score_formula} AS score")
 
         # ORDER BY
-        query_parts.append("ORDER BY score DESC, date DESC, rand() DESC")
+        query_parts.append("ORDER BY score DESC, date DESC")
+
+        # SKIP
+        query_parts.append("SKIP $size * $page")
 
         # LIMIT
         query_parts.append("LIMIT $size")
@@ -250,6 +263,7 @@ class Recommandation(APIView):
             "uuid": video,
             "current_user": user.uuid if user else None,
             "size": size,
+            "page": page,
         }
         print(query, params)
         try:

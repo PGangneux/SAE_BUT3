@@ -39,6 +39,7 @@ class RegarderExtraitsSerializerTests(Neo4jTestCase):
         self.assertEqual(data["titre"], self.extrait.titre)
         self.assertEqual(data["description"], self.extrait.description)
         self.assertEqual(data["duree"], self.extrait.duree)
+        self.assertEqual(data["lieu"], self.extrait.lieu)
         self.assertIn(str(self.artiste.uuid), data["artiste"])
         self.assertIn(str(self.question.uuid), data["question"])
         self.assertIn(str(self.extrait.uuid), data["interviews"])

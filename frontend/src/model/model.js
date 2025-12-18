@@ -59,7 +59,6 @@ export default class Model {
     if (hours > 0) formatted += String(hours).padStart(2, "0") + ":";
     formatted += String(minutes).padStart(2, "0") + ":";
     formatted += String(seconds).padStart(2, "0");
-    console.log("formated", formatted)
     return formatted;
   }
 

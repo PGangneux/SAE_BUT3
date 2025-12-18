@@ -19,6 +19,7 @@ class ExtraitSerializer(BaseSerializer):
         required=False, allow_blank=True, allow_null=True
     )
     vimeo_url = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     uploaded_at = serializers.DateField(required=False, allow_null=True)
     duree = serializers.IntegerField(required=True)
 

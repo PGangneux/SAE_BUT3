@@ -14,11 +14,11 @@ export default {
                     </li>
 
                     <li class="nav-item text-white">
-                        <RouterLink class="bt btn " to="/admin/extraits/"> Question-Extrait </RouterLink>
+                        <RouterLink class="bt btn " to="/admin/extraits/"> Extraits </RouterLink>
                     </li>
 
                     <li class="nav-item text-white">
-                        <RouterLink class="bt btn " to="/admin/interview">Interview-Playlist</RouterLink>
+                        <RouterLink class="bt btn " to="/admin/interview">Playlists</RouterLink>
                     </li>
                     
                     <li class="nav-item text-white ">

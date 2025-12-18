@@ -63,10 +63,9 @@ export default {
         <div v-else v-for="inter in redirect" :key="inter.uuid" class="local">
 
             <div @click="gotoInter(inter)">
-                <p>preview</p>
-                <miniature_video :video="inter" class="mini"/>
-                <h3>lieu {{ inter.lieu }}</h3>
-                <p>lieu {{ inter.description }}</p>
+                <p>{{ inter.titre }}</p>
+                <miniature_video :video="inter" class="mini" />
+                <p>{{ inter.description }}</p>
             </div>
         </div>
     </div>
@@ -80,6 +79,7 @@ export default {
     margin-bottom: 10px;
     cursor: pointer;
 }
+
 .local-flex {
     display: flex;
     flex-wrap: wrap;

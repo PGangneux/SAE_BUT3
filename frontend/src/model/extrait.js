@@ -10,6 +10,7 @@ export default class Extrait extends Model {
   #description;
   #youtube_url;
   #vimeo_url;
+  #lieu;
   #uploaded_at;
   #artiste;
   #question;
@@ -26,6 +27,7 @@ export default class Extrait extends Model {
     description,
     youtube_url,
     vimeo_url,
+    lieu,
     uploaded_at,
     artiste,
     question,
@@ -39,6 +41,7 @@ export default class Extrait extends Model {
     this.#description = description;
     this.#youtube_url = youtube_url;
     this.#vimeo_url = vimeo_url;
+    this.#lieu = lieu;
     this.#uploaded_at = uploaded_at;
     this.#artiste = artiste;
     this.#question = question;
@@ -82,6 +85,13 @@ export default class Extrait extends Model {
     this.#vimeo_url = this.constructor.validateString(value, "vimeo_url");
   }
 
+  get lieu() {
+    return this.#lieu;
+  }
+  set lieu(value) {
+    this.#lieu = this.constructor.validateString(value, 'lieu')
+  }
+
   get uploaded_at() {
     return this.#uploaded_at;
   }
@@ -90,14 +100,14 @@ export default class Extrait extends Model {
   }
 
   get artiste() {
-    return  this.fetchDetail(this.#artiste, Artiste);
+    return this.fetchDetail(this.#artiste, Artiste);
   }
   set artiste(value) {
     this.#artiste_uuid = this.constructor.validateString(value, "artiste_uuid");
   }
 
   get question() {
-    return  this.fetchDetail(this.#question, Question);
+    return this.fetchDetail(this.#question, Question);
   }
   set question(value) {
     this.#question_uuid = this.constructor.validateString(
@@ -131,8 +141,7 @@ export default class Extrait extends Model {
 
   async get_url_miniature_vimeo() {
     const response = await fetch(
-      `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${
-        this.#vimeo_url
+      `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.#vimeo_url
       }`
     );
     const data = await response.json();
@@ -199,6 +208,7 @@ export default class Extrait extends Model {
     this.#description = json.description;
     this.#youtube_url = json.youtube_url;
     this.#vimeo_url = json.vimeo_url;
+    this.#lieu = json.lieu;
     this.#uploaded_at = json.uploaded_at;
     this.#artiste = json.artiste;
     this.#question = json.question;
@@ -216,6 +226,7 @@ export default class Extrait extends Model {
       description: this.#description,
       youtube_url: this.#youtube_url,
       vimeo_url: this.#vimeo_url,
+      lieu: this.#lieu,
       uploaded_at: this.#uploaded_at,
       artiste_uuid: this.#artiste_uuid,
       question_uuid: this.#question_uuid,
