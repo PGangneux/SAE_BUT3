@@ -15,10 +15,8 @@ class InterviewsSerializer(BaseRelationShipSerializer):
     date = serializers.DateField(read_only=True)
     occasion = serializers.CharField(read_only=True)
     description = serializers.CharField(read_only=True)
-    lieu = serializers.CharField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
-    lieu = serializers.CharField(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(Interview, Extrait, "interviews", *args, **kwargs)

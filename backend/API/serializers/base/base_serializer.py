@@ -2,9 +2,9 @@ import re
 from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
-from neomodel import StructuredNode
-from neomodel.exceptions import UniqueProperty, DeflateError
-from ...errors import ValidatorUnique, ValidatorRequired
+from neomodel import StructuredNode, RelationshipManager, NodeSet
+from neomodel.exceptions import UniqueProperty, DeflateError, DoesNotExist, RequiredProperty
+from ...errors import ValidatorUnique, ValidatorRequired, NotFound
 
 
 class BaseSerializer(serializers.Serializer):
@@ -17,6 +17,10 @@ class BaseSerializer(serializers.Serializer):
     """
 
     uuid = serializers.CharField(read_only=True)
+
+    # Input:
+    # {"uuid": {"relationship": "attribut relationship dans node", "node": Classe de node}, }
+    input_fields = {}
 
     def __init__(self, node: StructuredNode, *args, **kwargs):
         """Création du Serializer pour un node du modèle
@@ -64,9 +68,19 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
-        except DeflateError as error:
-            print()
+        except (DeflateError, RequiredProperty) as error:
             raise ValidatorRequired(error.property_name)
+
+        for field in self.input_fields:
+            uuid: str = validated_data.pop(field, None)
+            if uuid:
+                node_class: StructuredNode = self.input_fields[field]["node"]
+                nodeset: NodeSet = node_class.nodes
+                relationship: RelationshipManager = instance.__dict__.get(self.input_fields[field]["relationship"])
+                try:
+                    relationship.connect(nodeset.get(uuid=uuid))
+                except DoesNotExist:
+                    raise NotFound(node_class)
         return instance
 
     def update(self, instance: StructuredNode, validated_data: dict) -> StructuredNode:
@@ -95,7 +109,22 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
-        except DeflateError as error:
-            print()
+        except (DeflateError, RequiredProperty) as error:
             raise ValidatorRequired(error.property_name)
+
+        for field in self.input_fields:
+            uuid: str = validated_data.pop(field, None)
+            if uuid:
+                node_class: StructuredNode = self.input_fields[field]["node"]
+                nodeset: NodeSet = node_class.nodes
+                relationship: RelationshipManager = instance.__dict__.get(self.input_fields[field]["relationship"])
+                try:
+                    if relationship.single():
+                        relationship.reconnect(
+                            relationship.single(), nodeset.get(uuid=uuid)
+                        )
+                    else:
+                        relationship.connect(nodeset.get(uuid=uuid))
+                except DoesNotExist:
+                    raise NotFound(node_class)
         return instance

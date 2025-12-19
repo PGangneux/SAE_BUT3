@@ -7,56 +7,40 @@ import Artistes from '../../model/artiste.js';
 import Questions from '../../model/question.js';
 import Themes from '../../model/theme.js';
 
-import Styles from '../../model/style_musical.js';
-import Nations from '../../model/nation.js';
-
-
-
-
-
 export default {
     name: "page_autres",
-    
+
     components: {
         comp_baradmin,
     },
     data() {
         return {
 
-            Tags:{type:Tags},
-            dico_tags:{},
+            Tags: { type: Tags },
+            dico_tags: {},
 
+            Questions: { type: Questions },
+            dico_questions: {},
 
-            Questions : {type:Questions},
-            dico_questions:{},
-            
-            Artistes : {type:Artistes},
-            dico_artistes:{},
+            Artistes: { type: Artistes },
+            dico_artistes: {},
 
-            Themes:{type:Themes},
-            Styles:{type:Styles},
-            Nations:{type:Nations},
-            
+            Themes: { type: Themes },
+
         };
     },
     async mounted() {
-    // console.log("mounted admin interview list");
-    this.Questions = markRaw(await Questions.list());
-    this.Artistes = markRaw(await Artistes.list());
+        // console.log("mounted admin interview list");
+        this.Questions = markRaw(await Questions.list());
+        this.Artistes = markRaw(await Artistes.list());
 
-    this.Themes = markRaw(await Themes.list());
-    this.Styles = markRaw(await Styles.list());
-    this.Nations = markRaw(await Nations.list());
+        this.Themes = markRaw(await Themes.list());
 
-    this.Tags = markRaw(await Tags.list());
+        this.Tags = markRaw(await Tags.list());
 
+        console.log(this.Questions)
 
-
-
-
-    console.log(this.Questions)
-
-  },
+    },
 
 };
 </script>
@@ -65,7 +49,7 @@ export default {
 
 
 <template>
-    <comp_baradmin/>
+    <comp_baradmin />
 
     <h1 class="text-center">Autres</h1>
 
@@ -77,7 +61,7 @@ export default {
 
                 <section class="col input-group mb-3">
                     <span class=" col input-group-text colovert">nb Questions total</span>
-                    <span class=" col input-group-text">{{this.Questions.length}}</span>
+                    <span class=" col input-group-text">{{ this.Questions.length }}</span>
                 </section>
 
                 <section class="col input-group mb-3">
@@ -103,10 +87,19 @@ export default {
                     </thead>
                     <tbody class="tobodd scroller">
                         <tr class="col" v-for="question in this.Questions">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ question.texte }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ question.texte }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </section>
@@ -117,11 +110,11 @@ export default {
         <section class="row ligne">
             <h2 class="vert-neon">Tags</h2>
 
-            <section class="row"> 
+            <section class="row">
 
                 <section class="col input-group mb-3">
                     <span class=" col input-group-text colovert">nb Tags total</span>
-                    <span class=" col input-group-text">{{this.Tags.length}}</span>
+                    <span class=" col input-group-text">{{ this.Tags.length }}</span>
                 </section>
 
                 <section class="col input-group mb-3">
@@ -141,15 +134,24 @@ export default {
                         <tr>
                             <th class="btgrisv2  col">name</th>
                             <th class="btgrisv2  col">nb dans interviews</th>
-                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans extraits </th>
                         </tr>
                     </thead>
                     <tbody class="tobodd scroller">
                         <tr class="col" v-for="tag in this.Tags">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ tag.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ tag.name }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </section>
@@ -182,32 +184,38 @@ export default {
                     <thead>
                         <tr>
                             <th class="btgrisv2  col">Artistes</th>
-                            <th class="btgrisv2  col">nation</th>
-                            <th class="btgrisv2  col">styles</th>
-                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans extraits </th>
                             <th class="btgrisv2  col">nb dans interviews</th>
                         </tr>
                     </thead>
                     <tbody class="tobodd scroller">
                         <tr class="col" v-for="artiste in this.Artistes">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ artiste.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ artiste.name }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </section>
 
         </section>
-
-
-
-
-        
-
-
 
 
         <section class="row ligne">
@@ -236,122 +244,36 @@ export default {
                     <thead>
                         <tr>
                             <th class="btgrisv2  col">Thème</th>
-                            <th class="btgrisv2  col">nation</th>
-                            <th class="btgrisv2  col">styles</th>
-                            <th class="btgrisv2  col">nb dans extraits  </th>
+                            <th class="btgrisv2  col">nb dans extraits </th>
                             <th class="btgrisv2  col">nb dans interviews</th>
                         </tr>
                     </thead>
                     <tbody class="tobodd scroller">
                         <tr class="col" v-for="theme in this.Themes">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ theme.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
-                    </tbody>
-                </table>
-            </section>
-
-        </section>
-
-
-
-
-
-        <section class="row ligne">
-            <h2 class="vert-neon">Styles</h2>
-            <section class="row">
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert"> nb Styles total</span>
-                    <span class=" col input-group-text ">{{ this.Styles.length }}</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Styles utiliser</span>
-                    <span class=" col input-group-text ">nb Artistes utiliser</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Styles non utiliser</span>
-                    <span class=" col input-group-text ">nb Artistes non utiliser</span>
-                </section>
-
-            </section>
-
-            <section>
-                <table class="ultagger table tables table-striped">
-                    <thead>
-                        <tr>
-                            <th class="btgrisv2  col">Style</th>
-                            <th class="btgrisv2  col">nation</th>
-                            <th class="btgrisv2  col">styles</th>
-                            <th class="btgrisv2  col">nb dans extraits  </th>
-                            <th class="btgrisv2  col">nb dans interviews</th>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ theme.name }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
+                            <td>
+                                <RouterLink class="container  row " style="text-decoration: none; color: inherit;"
+                                    :to="'/admin/interview/'"> {{ }} </RouterLink>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="tobodd scroller">
-                        <tr class="col" v-for="style in  this.Styles">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ style.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
                     </tbody>
                 </table>
             </section>
-
-        </section>
-
-
-
-
-
-
-        <section class="row ligne">
-            <h2 class="vert-neon">Nations</h2>
-
-            <section class="row">
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations total</span>
-                    <span class=" col input-group-text">{{this.Nations.length}}</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations utiliser</span>
-                    <span class=" col input-group-text">nb Nations utiliser</span>
-                </section>
-
-                <section class="col input-group mb-3">
-                    <span class=" col input-group-text colovert">nb Nations non utiliser</span>
-                    <span class=" col input-group-text">nb Nations non utiliser</span>
-                </section>
-
-            </section>
-
-            <section>
-                <table class="ultagger table tables table-striped">
-                    <thead>
-                        <tr>
-                            <th class="btgrisv2  col">Question</th>
-                            <th class="btgrisv2  col">Theme</th>
-                            <th class="btgrisv2  col">nb dans extraits</th>
-                        </tr>
-                    </thead>
-                    <tbody class="tobodd scroller">
-                        <tr class="col" v-for="nation in this.Nations">
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{ nation.name }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            <td> <RouterLink class="container  row "  style="text-decoration: none; color: inherit;" :to="'/admin/interview/'"> {{  }} </RouterLink> </td>
-                            </tr>
-                    </tbody>
-                </table>
-            </section>
-
 
         </section>
     </div>
@@ -359,27 +281,25 @@ export default {
 </template>
 
 <style scoped>
-
-
-.vert-neon { 
-    color : var(--vert-neon);
+.vert-neon {
+    color: var(--vert-neon);
     justify-self: center;
 }
 
 
 .scroller2 {
 
-  height: 63vh;
-  overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
-  scrollbar-width: thin;
+    height: 63vh;
+    overflow-y: scroll;
+    scrollbar-color: var(---blanc) #A6A6A6;
+    scrollbar-width: thin;
 }
 
 
-.colovert{
-  border-color: var(--vert-pale);
-  background-color:var(--vert-pale);
-  color: var(--blanc);
+.colovert {
+    border-color: var(--vert-pale);
+    background-color: var(--vert-pale);
+    color: var(--blanc);
 }
 
 .local-flex {
@@ -388,17 +308,18 @@ export default {
     justify-content: space-evenly;
     flex: 1 1 200px;
 }
+
 .ligne {
-    border-radius: 20px;    
+    border-radius: 20px;
     margin: 1em;
     background-color: var(--gris-moyen);
 }
-.logo{
+
+.logo {
     max-width: 100px;
 }
 
-.textfield{
-  background-color: var(--gris-ultraclair);
+.textfield {
+    background-color: var(--gris-ultraclair);
 }
-
 </style>
