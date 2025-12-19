@@ -57,7 +57,7 @@ class Interview(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    titre = RegexProperty(unique_index=True, required=True, expression=r".+")
+    titre = RegexProperty(index=True, expression=r".+")
     date = DateProperty(index=True)
     description = StringProperty()
 
@@ -71,7 +71,7 @@ class Extrait(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    titre = RegexProperty(unique_index=True, required=True, expression=r".+")
+    titre = RegexProperty(index=True, expression=r".+")
     description = StringProperty()
     youtube_url = StringProperty()
     vimeo_url = StringProperty()
