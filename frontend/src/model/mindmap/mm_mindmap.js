@@ -58,7 +58,7 @@ export default class mm_Mindmap {
         // vars
         this.fullscreen = false;
         this.togglelegend = true;
-        this.scale = 1;
+        this.scale = 0.5;
         this.offx = 0;
         this.offy = 0;
         this.lastMouseX = 0;
@@ -128,7 +128,7 @@ export default class mm_Mindmap {
 
     zoomin() {
         this.scale += 0.2;
-        this.scale = Math.min(5, this.scale);
+        this.scale = Math.min(2, this.scale);
     }
 
     zoomout() {
@@ -137,7 +137,7 @@ export default class mm_Mindmap {
     }
 
     zoomreset() {
-        this.scale = 1;
+        this.scale = 0.8;
     }
 
     handleWheel(event) {

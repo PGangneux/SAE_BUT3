@@ -13,7 +13,7 @@ export default class mmch_Interview extends mmch_CheminT {
 
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
-        yield mmch_Extrait;
+        
         yield mmch_Tag;
         // TODO : put recomendation algorithm here
         const recommend = await Extrait.list(finalArgs);
@@ -24,7 +24,7 @@ export default class mmch_Interview extends mmch_CheminT {
 
     async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
-        yield mmch_Extrait;
+        
         yield mmch_Tag;
         // TODO : put recomendation algorithm here
         const recommend = await Extrait.list(finalArgs);
@@ -90,9 +90,9 @@ export default class mmch_Interview extends mmch_CheminT {
         return this.#previewurl;
     }
 
-    async mmch_hasMiniature() {
+    mmch_hasMiniature() {
         if (!this.mmch_obj) return null;
-        return await this.#get_url() != null;
+        return true;
     }
 
     async mmch_getMiniature() {

@@ -1,3 +1,4 @@
+import Extrait from "../../extrait.js";
 import Theme from "../../theme.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
@@ -10,7 +11,6 @@ export default class mmch_Theme extends mmch_CheminT {
 
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
-        yield mmch_Question;
         // TODO : put recomendation algorithm here
         const recommend = await Extrait.list(finalArgs);
         for (const item of recommend) {
@@ -20,7 +20,6 @@ export default class mmch_Theme extends mmch_CheminT {
 
     async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_search_args, ...args };
-        yield mmch_Question;
         // TODO : put recomendation algorithm here
         const recommend = await Extrait.list(finalArgs);
         for (const item of recommend) {

@@ -111,10 +111,20 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
     // 0. safe Guards
     // Video / preview-only nodes never expand
     /// console.warn(node.depth, node,mminfo.chemin);
+    /// console.log(node.ispreview,node.mmch_obj,node.mmch_hasMiniature());
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
+    // uncomment to slow down drawing for COOL VISUALS
+    /// await new Promise(r => setTimeout(r, 1000));
     node.loading = true;
     try {
+        
         if (node.ispreview) {
+            if (node.depth > mminfo.chemin.length + 2) {
+                // safeguard to avoid expanding too deep previews
+                console.warn(node.depth,"safeguard to avoid expanding too deep previews",node);
+                node.loading = false;
+                return;
+            }
             if (node.mmch_obj) {
                 // ─────────────────────────────
                 // 3a. expand PREVIEW NODE with CONTENT
