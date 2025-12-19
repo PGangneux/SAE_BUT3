@@ -5,7 +5,7 @@ import mmch_Extrait from "./mmch_extrait.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
-    /** @type {Array[String]} */
+    /** @type {Array<[String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
@@ -42,8 +42,10 @@ export default class mmch_Artiste extends mmch_CheminT {
         if (!this.mmch_obj) throw new Error("mmch description artiste on empty obj");
         if (this.#description) return this.#description;
         const description = [];
+        const artiste = this.mmch_obj;
+
         try {
-            const extraits = await Artiste.extraits({ limit: 3 });
+            const extraits = await artiste.extraits({ limit: 3 });
             if (extraits.length > 0) {
                 description.push(`${extraits.length} extrait(s) disponible(s)`);
             }

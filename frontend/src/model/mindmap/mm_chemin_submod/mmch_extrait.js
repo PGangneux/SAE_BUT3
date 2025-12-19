@@ -9,7 +9,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     /** @type {String} */
     #previewurl = null;
-    /** @type {Array[String]} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
