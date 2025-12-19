@@ -100,7 +100,7 @@ class URLsAPITests(Neo4jTestCase):
         )
 
     def test_extrait_urls(self):
-        self.extrait: Extrait = Extrait(duree=120).save()
+        self.extrait: Extrait = Extrait(titre="Extrait test", duree=120).save()
 
         # Création d'artiste et question
         self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()

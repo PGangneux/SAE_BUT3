@@ -31,11 +31,10 @@ export default class Theme extends Model {
         return this;
     }
 
-    toJSON() {
-        return {
-            uuid: this.uuid,
-            name: this.#name,
-            description: this.#description
-        };
+    toJSON(json = {}) {
+        json = super.toJSON(json)
+        if (this.name) json['name'] = this.name;
+        if (this.description) json['description'] = this.description;
+        return json;
     }
 }
