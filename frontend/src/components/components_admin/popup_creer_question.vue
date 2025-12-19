@@ -12,12 +12,14 @@ export default {
         popupCreerQuestion: {
             type:Boolean,
             required:true
-            }
+            },
+            laselectedQuestion:"",
+            listeQuestion:[],   //liste des Questions totals
 
     },data(){
         return {
-            typefichier:null,
-            listeQuestion:[],   //liste des Questions totals
+            
+            
             listetheme:[],   //liste des Questions totals
         }
     },
@@ -31,25 +33,29 @@ export default {
             this.listetheme =  markRaw(await Theme.list());
         },
 
-        async recupeQuestion(){
-            //reccupere la liste des Questions
-            this.listeQuestion =  markRaw(await Question.list());
-        },
-
-
 
         creerNouvelleQuestion(){
-            const newQuestion = new Question({});
+            if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
+                console.log(this.laselectedQuestion);
 
-            if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+                if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+                const newQuestion = new Question({});
                 newQuestion.name = this.laselectedQuestion;
                 newQuestion.create()
                 this.listeQuestion.add(newQuestion);
 
-            }else{
+                }else{
                 console.log('question existe deja');
+                }
+            }else{
+                changement_etat_popup ();
+                alert('pas de champs null pour Quesion');
             }
         
+        },
+
+        creerNouvelleTheme(){
+
         },
 
         creerQuestion(e) {
@@ -73,7 +79,7 @@ export default {
     },
 
     async mounted() {
-       
+        this.recupetheme();
     }
 };
 
@@ -95,7 +101,7 @@ export default {
             <div   style="--bs-gutter-x: 0em;">
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                    <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
+                    <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  :value="laselectedQuestion" @input="FoncSelectedQuestion"/>
 
                     <datalist id="Questiondata">
                     <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -111,13 +117,6 @@ export default {
                     </datalist>
 
                     <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
-                </div>
-
-
-                <div class=" input-group mb-3" > 
-                    <span  class="input-group-text colovert" id="basic-addon3" > description :</span>
-                    <input  id="question" name="description" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);" />
-
                 </div>
 
                 <button @click="" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"

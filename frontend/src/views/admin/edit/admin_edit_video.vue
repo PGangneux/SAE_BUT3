@@ -112,31 +112,39 @@ export default {
     },
 
     creerNouveauArtiste(){
-      
 
-      if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
-        const newArtiste = new Artiste({});
-        newArtiste.name = this.laselectedArtiste;
-        newArtiste.create()
-        this.listeArtiste.add(newArtiste);
-
+    if( this.laselectedArtiste != "" || this.laselectedArtiste == null ){
+          if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
+            const newArtiste = new Artiste({});
+            newArtiste.name = this.laselectedArtiste;
+            newArtiste.create()
+            this.listeArtiste.push(newArtiste);
+          }else{
+            alert('l\'artiste existe deja')
+            console.log('artiste existe deja');
+          }
       }else{
-        alert('l\'artiste existe deja')
-        console.log('artiste existe deja');
+        alert('pas de champs null pour artiste');
       }
       
     },
 
     creerNouvelleQuestion(){
-      const newQuestion = new Question({});
 
-      if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
-        newQuestion.name = this.laselectedQuestion;
-        newQuestion.create()
-        this.listeQuestion.add(newQuestion);
+      if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
+        console.log(this.laselectedQuestion);
 
+        if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+          const newQuestion = new Question({});
+          newQuestion.name = this.laselectedQuestion;
+          newQuestion.create()
+          this.listeQuestion.add(newQuestion);
+
+        }else{
+          console.log('question existe deja');
+        }
       }else{
-        console.log('question existe deja');
+        alert('pas de champs null pour Quesion');
       }
       
     },
