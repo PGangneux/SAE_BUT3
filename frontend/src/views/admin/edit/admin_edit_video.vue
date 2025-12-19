@@ -3,8 +3,10 @@ import { markRaw } from 'vue';
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
+import popup_creer_question from "../../../components/components_admin/popup_creer_question.vue";
+import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 import Extrait from "../../../model/extrait";
-import Interview from '../../../model/interview.js';
+
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 import supprimer from "../supprimer.vue";
@@ -21,6 +23,8 @@ export default {
   components: {
     comp_baradmin,
     popup_interview,
+    popup_creer_question,
+    popup_valider,
     supprimer,
     tags,
 
@@ -34,12 +38,14 @@ export default {
             interviews:[],
             listeArtiste:[],    //liste des Artistes totals
             listeQuestion:[],   //liste des Questions totals
+            listetheme:[],   //liste des Questions totals
             popupDelete: false,
             searchValueTag:"",
             create:false,
             popup: false,
             popupSelectInterview: false, //Props pour popupSelectInterview
             popupEnregistrer:false,
+            popupCreerQuestion:false,
             
             urlVimeoReconstruit:"",
             urlyoutubeReconstruit:"",
@@ -67,8 +73,42 @@ export default {
         handleTagsConnected(this, tag)
     },
 
+
+
+
+    async modificationDonnees(){
+      if (this.create) {
+          await this.enregistrer();
+      } else {
+        await this.Update();
+      }
+    },
+
+    async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
+      this.current_extrait.duree = 0;
+
+      this.popupEnregistrer = true;
+      await this.current_extrait.create();
+      
+      //this.new_extrait = new markRaw(new Extrait({}));
+
+      await this.save_tags();
+  
+      console.log("creer");
+      
+      //new_extrait.create
+    },
+
+
+    async Update(){
+      await this.current_extrait.update();
+      await this.save_tags();
+    },
+
+
+
     async save_tags() {
-        console.log("save tags")
         try {
             // Connecter les tags existants
             for (const tag of this.tagsConnected) {
@@ -97,57 +137,95 @@ export default {
         }
     },
 
-    creerNouveauArtiste(){
-      const newArtiste = new Artiste({});
 
-      if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
-        newArtiste.name = this.laselectedArtiste;
-        newArtiste.create()
-        this.listeArtiste.add(newArtiste);
 
+
+
+
+
+
+
+
+
+    
+    async creerNouveauArtiste(){
+
+    if( this.laselectedArtiste != "" || this.laselectedArtiste == null ){
+          if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
+            const newArtiste = new Artiste({});
+            newArtiste.name = this.laselectedArtiste;
+            await newArtiste.create()
+            this.listeArtiste.push(newArtiste);
+            this.current_extrait.artiste = await newArtiste.uuid;
+            this.current_extrait.artiste_uuid = await newArtiste.uuid;
+            
+            alert(this.current_extrait.artiste)
+          }else{
+            alert('l\'artiste existe deja')
+          }
       }else{
-        console.log('artiste existe deja');
+        alert('pas de champs null pour artiste');
+      }
+      
+    },
+
+    creerNouvelleQuestion(){
+
+      if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
+        if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+          this.popupCreerQuestion = true;
+          /*
+          const newQuestion = new Question({});
+          newQuestion.name = this.laselectedQuestion;
+          newQuestion.create()
+          this.listeQuestion.push(newQuestion);
+          */
+
+        }else{
+          alert('question existe deja');
+        }
+      }else{
+        alert('pas de champs null pour Quesion');
       }
       
     },
 
 
-    async enregistrer(){
-      //fonction pour enregistrer un extraits dans L'api
 
-      console.log(this.current_extrait);
-      this.current_extrait.duree = 0;
+    
 
-      this.popupEnregistrer = true;
-      
-      await this.current_extrait.create();
-      
-      this.new_extrait = new markRaw(new Extrait({}));
 
-      await this.save_tags()
-  
-      console.log("creer");
-      
-      //new_extrait.create
-    },
+
 
     popupchange(){
-      this.popup = !this.popup
+      this.popup = !this.popup;
     },
 
-    modificationDonnees(){
-      if (this.create) {
-          this.enregistrer();
-      } else {
-        this.Update();
-      }
+    popupchangequestion(){
+      this.popupCreerQuestion = !this.popupCreerQuestion;
     },
 
 
-    Update(){
-      console.log(this.current_extrait);
-      this.current_extrait.update();
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      
     },
+
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      
+    },
+
+
+
+
+
+
+
+
+    
 
 
 
@@ -197,17 +275,20 @@ export default {
     },
 
 
-    popupchangeEnregistrer(){
-      //permet de changer l'etat de la popup Enregistrer
-      this.popupEnregistrer = !this.popupEnregistrer
-      
-    },
 
-    popupchangeInterview(){
-      //permet de changer l'etat de la popup Interview
-      this.popupSelectInterview = !this.popupSelectInterview
-      
-    },
+   
+
+
+
+
+
+
+
+
+
+
+
+
 
     async validateYouTubeVideo(url) {
       // Extraire l'ID YouTube
@@ -302,12 +383,9 @@ export default {
 
     
         if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
-          
-          console.log(this.validateYouTubeVideo(this.urlyoutubeReconstruit));
           this.thumbnail = await this.validateYouTubeVideo(this.urlyoutubeReconstruit);
             
         }else{
-          console.log(this.validateVimeoVideo(this.urlVimeoReconstruit));
           this.thumbnail = await this.validateVimeoVideo(this.urlVimeoReconstruit);
         }
   },
@@ -347,6 +425,17 @@ export default {
     }
 
   },
+
+
+
+
+
+
+
+
+
+
+
 
  async mounted() {
     await this.recupeArtiste();
@@ -400,6 +489,44 @@ export default {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 <template>
@@ -412,9 +539,9 @@ export default {
 
       <div class="row"  style="--bs-gutter-x: 0em;">
         
-        <RouterLink  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <div  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;">
           <img :src="thumbnail" class="migniature" alt="migniature">
-        </RouterLink>
+        </div>
 
         <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           
@@ -430,13 +557,14 @@ export default {
                 <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
 
                 <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  v-model="laselectedQuestion" @input="FoncSelectedQuestion"/>
-                
+
                 <datalist id="Questiondata">
                 <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
                 </datalist>
 
 
-                <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+
+                <button class="bt" type="button" @click="creerNouvelleQuestion" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" @click="creerNouvelleQuestion" alt="add" class="col "> </button>
             </div>
           </div>
 
@@ -536,6 +664,8 @@ export default {
     />
     
    
+   <div v-if="popupCreerQuestion === true">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" /> </div>
+
 
     <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 

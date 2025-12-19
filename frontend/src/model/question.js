@@ -19,10 +19,10 @@ export default class Question extends Model {
     static get endpoint() { return "questions"; }
 
     get texte() { return this.#texte; }
-    set texte(value) { this.#texte = this.validateString(value, "texte"); }
+    set texte(value) { this.#texte = Question.validateString(value, "texte"); }
 
     get theme() { return this.fetchDetail(this.#theme, Theme); }
-    set theme(value) { this.#theme_uuid = this.validateString(value, "theme_uuid"); }
+    set theme(value) { this.#theme_uuid = Question.validateString(value, "theme_uuid"); }
 
     async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 
