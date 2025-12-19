@@ -81,7 +81,7 @@ export default {
       }
 
       if (this.interview != null){ 
-        this.liste_extraits = markRaw(await this.interview.extraits());
+        this.liste_extraits = markRaw(await this.interview.extraits({'order' : 'APPARTIENT_A|position'}));
         console.log("liste des extraits", this.liste_extraits)
         if (!this.extrait){
           this.extrait = this.liste_extraits[0];
