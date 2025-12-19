@@ -150,7 +150,7 @@ export default {
     
     async creerNouveauArtiste(){
 
-    if( this.laselectedArtiste != "" || this.laselectedArtiste == null ){
+    if( this.laselectedArtiste != "" && this.laselectedArtiste != null ){
           if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
             const newArtiste = new Artiste({});
             newArtiste.name = this.laselectedArtiste;
@@ -171,8 +171,8 @@ export default {
 
     creerNouvelleQuestion(){
 
-      if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
-        if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+      if( this.laselectedQuestion != "" &&  this.laselectedQuestion != null){     
+        if (!this.listeQuestion.find(a => a.texte === this.laselectedQuestion)){
           this.popupCreerQuestion = true;
           /*
           const newQuestion = new Question({});
