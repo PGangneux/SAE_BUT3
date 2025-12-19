@@ -1,87 +1,11 @@
 import { markRaw } from "vue";
-import router from "../../router.js";
-import Model from "../model.js";
-import mm_Mindmap from "./mm_mindmap.js";
-import mm_Linkage from "./mm_linkage.js";
-import mmch_CheminT from "./mm_chemin_submod/mmch_chemin.js";
-import mmch_Root from "./mm_chemin_submod/mmch_root.js";
-import mmch_Extrait from "./mm_chemin_submod/mmch_extrait.js";
-import mmch_Interview from "./mm_chemin_submod/mmch_interview.js";
+import mm_Mindmap from "../mm_mindmap.js";
+import mm_Linkage from "../mm_linkage.js";
+import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
+import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 
 /**
-    check video
- * @param {mm_Mindmap} mminfo mm_mindmap  
- * @return {boolean} if there is a goto video or not
-*/
-export function mm_checkvideo(mminfo) {
-    if (mminfo.chemin.length == 0) return false;
-    let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if (!!last) return false;
-    if (last instanceof  mmch_Extrait && last.mmch_obj) {
-        mminfo.extrait_current.set(last.mmch_obj);
-        router.push({
-            path: "/lecteur_video/"
-        });
-        return true;
-    } else if (last instanceof mmch_Interview && last.mmch_obj) {
-        mminfo.interview_current.set(last.mmch_obj);
-        router.push({
-            path: "/lecteur_video/"
-        });
-        return true;
-    }
-    return false;
-}
-
-/**
-    filter chemin to maintain proper depth hierarchy
- * @param {mm_Mindmap} mminfo mm_mindmap  
- * @return {boolean,boolean} change goto video , change in path
-*/
-export function mm_chemin_filter(mminfo) {
-    // Validate depth and handle depth mismatches
-    if (mm_checkvideo(mminfo)) return true, false;
-    let original_lenght = mminfo.chemin.length;
-    if (mminfo.chemin.length > 0) {
-        let lastElement = mminfo.chemin[mminfo.chemin.length - 1];
-        let minDepth = lastElement.depth;
-        mminfo.chemin = mminfo.chemin.filter((element, index) => {
-            // Always keep the last element
-            if (index === mminfo.chemin.length - 1) return true;
-            // Keep if depth is smaller
-            if (element.depth < minDepth) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-    }
-    // Filter out mm_Root from chemin if present
-    let didchange = original_lenght != mminfo.chemin.length;
-    mminfo.chemin = mminfo.chemin.filter(item => !(item instanceof mmch_Root));
-    return false, didchange;
-}
-
-/**
- * clear the preview nodes and linkages
- * @param {mm_Mindmap} mminfo mm_mindmap  
-*/
-export function mm_clean_preview(mminfo){
-    mminfo.previewlinkages = [];
-    if (mminfo.chemin.length < 2) return;
-    for (let pparent of mminfo.chemin.at(-2).childrens){
-        for (let pnode of pparent.childrens){
-            if (pnode.ispreview){
-                let pindex = pparent.childrens.indexOf(pnode);
-                if (pindex == -1) console.warn("index of preview node not found in parent childrens");
-                delete pparent.childrens[pindex];
-            }
-        }
-    }
-}   
-
-/**
-    utils to create a child node
+ *  utils to create a child node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT} node the parent node  
  * @param {mmch_CheminT} category the class of node  

@@ -8,7 +8,7 @@ export default class mmch_Interview extends mmch_CheminT {
     static mmch_dbjsclass = Interview;
     /** @type {String} */
     #previewurl = null;
-    /** @type {Array[String]} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
