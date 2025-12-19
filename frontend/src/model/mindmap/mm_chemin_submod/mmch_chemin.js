@@ -99,4 +99,37 @@ export default class mmch_CheminT extends mm_Node {
     async mmch_getMiniature() {
         throw new Error("mmch_getMiniature must be defined in child");
     }
+
+    // Get style for rendering (using x/y for smooth animation)
+    getStyle() {
+        // console.table(this.toJSON());
+
+        if (this.x == NaN || this.y == NaN) {
+            console.warn("Node has NaN position", this);
+            this.x = this.targetX;
+            this.y = this.targetY;
+        }
+
+        const isVideoContent = this.mmch_hasMiniature(); // this.isVideoContent();
+        const nodeDimensions = isVideoContent ?
+            { width: 300, height: 150 } : // Squircle dimensions
+            { width: 100, height: 100 };  // Round dimensions
+
+        const scaledWidth = nodeDimensions.width * this.mminfo.scale;
+        const scaledHeight = nodeDimensions.height * this.mminfo.scale;
+        const sizetext = 20 * this.mminfo.scale;
+
+        // Calculate position - adjust for node center using x/y (real positions)
+        const scaledX = (this.x * this.mminfo.scale) - (scaledWidth / 2);
+        const scaledY = (this.y * this.mminfo.scale) - (scaledHeight / 2);
+
+        return {
+            "left": (scaledX + this.mminfo.offx) + "px",
+            "top": (scaledY + this.mminfo.offy) + "px",
+            "width": scaledWidth + "px",
+            "height": scaledHeight + "px",
+            "font-size": sizetext + "px",
+            "line-height": (scaledHeight * 0.8) + "px",
+        };
+    }
 }
