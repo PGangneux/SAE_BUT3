@@ -32,7 +32,7 @@ export async function mm_reset_soft(mminfo) {
         mminfo.previewnodes = [];
         mminfo.previewlinkages = [];
         mminfo.linkages = []; // Root has no linkages anyway
-        
+
         // Safeguard: Check if we have a valid root node
         if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
             mm_reset_hard(mminfo);
@@ -44,7 +44,7 @@ export async function mm_reset_soft(mminfo) {
         for await (const item of rootNode.constructor.mmch_listcat()) {
             list_cat.push(item);
         }
-        
+
         let search_cat = [];
         let sameCount = 0; // How many nodes are the same between existing and search
         let nodesToCreate = 0; // How many new nodes to create
@@ -54,15 +54,15 @@ export async function mm_reset_soft(mminfo) {
             for await (const item of rootNode.constructor.mmch_searchcat()) {
                 search_cat.push(item);
             }
-            
+
             // Compare each position to see how many nodes are the same
             for (let i = 0; i < Math.min(search_cat.length, mminfo.nodes.length - 1); i++) {
                 const existingChild = mminfo.nodes[i + 1]; // +1 to skip root
                 const searchResult = search_cat[i];
-                
+
                 if (searchResult && existingChild) {
                     // Compare
-                    if (mm_find_compare(searchResult,existingChild)) {
+                    if (mm_find_compare(searchResult, existingChild)) {
                         sameCount = i + 1; // Update count of same nodes
                     } else {
                         break; // Stop at first difference
@@ -71,7 +71,7 @@ export async function mm_reset_soft(mminfo) {
                     break; // Stop if either is missing
                 }
             }
-            
+
             // Calculate how many nodes to create
             nodesToCreate = search_cat.length - sameCount;
         }
@@ -110,18 +110,18 @@ export async function mm_reset_soft(mminfo) {
 export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false) {
     // 0. safe Guards
     // Video / preview-only nodes never expand
-    /// console.warn(node.depth, node,mminfo.chemin);
+    /// console.warn(node.depth, "Link",createLink, "isPreview", isPreview,"isPreview Node" , node.ispreview, "node obj", !!node.mmch_obj, node, mminfo.chemin);
     /// console.log(node.ispreview,node.mmch_obj,node.mmch_hasMiniature());
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
     // uncomment to slow down drawing for COOL VISUALS
-    /// await new Promise(r => setTimeout(r, 1000));
+    await new Promise(r => setTimeout(r, 1000));
     node.loading = true;
     try {
-        
+
         if (node.ispreview) {
-            if (node.depth > mminfo.chemin.length + 2) {
+            if (node.depth > mminfo.chemin.length + 4) {
                 // safeguard to avoid expanding too deep previews
-                console.warn(node.depth,"safeguard to avoid expanding too deep previews",node);
+                console.warn(node.depth, "safeguard to avoid expanding too deep previews", node);
                 node.loading = false;
                 return;
             }
@@ -137,17 +137,25 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 // 3b. expand PREVIEW NODE without content
                 // ─────────────────────────────
                 /// console.log(node.depth,"3b expand PREVIEW NODE without content",node);
-                
+
                 // Handle async* generator
-                for await (const catnode of node.mmch_previewinst(mminfo)) {
+                for await (const catnode of node.mmch_previewinst(mminfo)) {                    
                     mm_createChildNode(mminfo, node, catnode, true, true);
                 }
                 /// TMP
                 node.loading = false;
                 for (const child of node.childrens) {
-                    await mm_draw_onecat(mminfo, child, true, true);
+                    // if that node is parent then only draw content preview
+                    if (child.mmch_obj) {
+                        await mm_draw_onecat(mminfo, child, true, true);
+                    }
                 }
             }
+        } else if (node.depth > mminfo.chemin.length + 2) {
+            // safeguard to avoid expanding too deep previews
+            console.warn(node.depth, "safeguard to avoid expanding too deep how did we get here", node);
+            node.loading = false;
+            return;
         }
         else if (node.mmch_obj) {
             // ─────────────────────────────
@@ -156,12 +164,12 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             /// console.log(node.depth,"1b CONTENT NODE → CATEGORIES",node);
             // Handle async* generator for instance methods
             for await (const instnode of node.mmch_listinst()) {
-                mm_createChildNode(mminfo, node, instnode);
+                mm_createChildNode(mminfo, node, instnode,isPreview);
             }
             /// TMP
             node.loading = false;
             for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, true, isPreview);
+                await mm_draw_onecat(mminfo, child, true, true);
             }
         } else {
             // ─────────────────────────────
@@ -174,13 +182,12 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
 
             // Handle async* generator for static methods
             for await (const catnode of getnodefunc()) {
-                /// console.log(catnode);
-                mm_createChildNode(mminfo, node, catnode,createLink);
+                mm_createChildNode(mminfo, node, catnode, createLink,isPreview);
             }
             /// TMP
             node.loading = false;
             for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, true);
+                await mm_draw_onecat(mminfo, child, true, true);
             }
         }
         if (node.depth > mminfo.chemin.length) {

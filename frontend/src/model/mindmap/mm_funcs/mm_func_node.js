@@ -33,9 +33,9 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
     const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
     // Add to parent's children
     node.childrens.push(markRaw(tmp_child));
-    // add to mminfo nodes or previewnodes
+    // add to mminfo nodes or previewnodes    
     if (isPreview) {
-        node.ispreview = true;
+        tmp_child.ispreview = true;
         mminfo.previewnodes.push(markRaw(tmp_child));
     } else {
         mminfo.nodes.push(markRaw(tmp_child));
