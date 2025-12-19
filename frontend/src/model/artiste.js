@@ -14,7 +14,7 @@ export default class Artiste extends Model {
     static get endpoint() { return "artistes"; }
 
     get name() { return this.#name; }
-    set name(value) { this.#name = this.validateString(value, "name"); }
+    set name(value) { this.#name = this.constructor.validateString(value, "name"); }
 
     async extraits(args) { return await this.fetchList(this.#extraits, Extrait, args); }
 

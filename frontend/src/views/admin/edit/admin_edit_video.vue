@@ -111,14 +111,21 @@ export default {
         }
     },
 
-    creerNouveauArtiste(){
+    async creerNouveauArtiste(){
 
     if( this.laselectedArtiste != "" || this.laselectedArtiste == null ){
           if (!this.listeArtiste.find(a => a.name === this.laselectedArtiste)){
             const newArtiste = new Artiste({});
             newArtiste.name = this.laselectedArtiste;
-            newArtiste.create()
+            await newArtiste.create()
+
             this.listeArtiste.push(newArtiste);
+            this.current_extrait.artiste = await newArtiste.uuid;
+            this.current_extrait.artiste_uuid = await newArtiste.uuid;
+
+            console.log(this.current_extrait.artiste);
+            
+            alert(this.current_extrait.artiste)
           }else{
             alert('l\'artiste existe deja')
             console.log('artiste existe deja');
@@ -157,14 +164,11 @@ export default {
       this.current_extrait.duree = 0;
 
       this.popupEnregistrer = true;
-      console.log('deb')
       await this.current_extrait.create();
-      console.log('ga')
       
       //this.new_extrait = new markRaw(new Extrait({}));
 
       await this.save_tags();
-      console.log('fa')
   
       console.log("creer");
       
@@ -190,7 +194,7 @@ export default {
 
     async Update(){
       console.log(this.current_extrait);
-      this.current_extrait.update();
+      await this.current_extrait.update();
       await this.save_tags();
     },
 

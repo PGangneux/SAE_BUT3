@@ -43,6 +43,7 @@ export default {
                 newQuestion.name = this.laselectedQuestion;
                 newQuestion.create()
                 this.listeQuestion.add(newQuestion);
+                console.log('creer artiste');
 
                 }else{
                 console.log('question existe deja');
