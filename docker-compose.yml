@@ -3,10 +3,11 @@ services:
         image: neo4j:community
         ports:
             - "7687:7687"
+            - "7474:7474"
         volumes:
             - neo4j_data:/data
-        env_file:
-            - .env
+        environment:
+            NEO4J_AUTH: neo4j/neo4jpw4neo4j
 
     backend:
         build: ./backend/
@@ -25,7 +26,5 @@ services:
             - "5173:5173"
         depends_on:
             - backend
-        env_file:
-            - .env
 volumes:
     neo4j_data:
