@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from neomodel.exceptions import DoesNotExist
 from ..serializers import BaseSerializer
-from ..models import Interview
+from ..models import Interview, Occasion
+from ..errors import NotFound
 
 
 class InterviewSerializer(BaseSerializer):
@@ -10,18 +12,35 @@ class InterviewSerializer(BaseSerializer):
 
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date = serializers.DateField(required=False, allow_null=True)
-    occasion = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     description = serializers.CharField(
         required=False, allow_blank=True, allow_null=True
     )
-    lieu = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+
+    # Input
+    input_fields = {"occasion_uuid": {"relationship": "occasion", "node": Occasion}}
+    occasion_uuid = serializers.CharField(
+        write_only=True,
+        required=False,
+    )
 
     # Outputs
+    occasion = serializers.SerializerMethodField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(Interview, *args, **kwargs)
+
+    def get_occasion(self, interview):
+        """
+        Renvoie un lien propre vers l'occasion
+        """
+        occasion = interview.occasion.single()
+        return (
+            self.get_url("occasion-detail", kwargs={"uuid": occasion.uuid})
+            if occasion
+            else None
+        )
 
     def get_extraits(self, interview):
         """

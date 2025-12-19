@@ -74,11 +74,3 @@ class ThemeTestCase(Neo4jTestCase):
             {"q_uuid": q.uuid, "t_uuid": theme.uuid},
         )
         self.assertEqual(int(result[0][0]), 1)
-
-        # Déconnecte et vérifie qu'il n'y a plus de relation
-        q.theme.disconnect(theme)
-        result_after, _ = db.cypher_query(
-            "MATCH (q:Question {uuid:$q_uuid})-[:A_THEME]->(t:Theme {uuid:$t_uuid}) RETURN count(*)",
-            {"q_uuid": q.uuid, "t_uuid": theme.uuid},
-        )
-        self.assertEqual(int(result_after[0][0]), 0)

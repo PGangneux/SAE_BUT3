@@ -10,10 +10,7 @@ from .extrait import ExtraitSerializer
 from .interview import InterviewSerializer
 from .artiste import ArtisteSerializer
 from .utilisateur import UtilisateurSerializer
-from .style_musical import StyleMusicalSerializer
-from .nation import NationSerializer
 from .tag import TagSerializer
-from .style import StyleRelationShipSerializer
 from .recherches_artistes import RecherchesArtistesSerializer
 from .regarder_interviews import RegarderInterviewsSerializer
 from .regarder_extraits import RegarderExtraitsSerializer
@@ -21,6 +18,9 @@ from .recherches_questions import RecherchesQuestionsSerializer
 from .interviews import InterviewsSerializer, PositionInputSerializer
 from .tags_extrait import TagsExtraitRelationShipSerializer
 from .tags_interview import TagsInterviewRelationShipSerializer
+from .audio import AudioSerializer
+from .audios import AudiosSerializer
+from .occasion import OccasionSerializer
 
 __all__ = (
     "BaseSerializer",
@@ -33,10 +33,7 @@ __all__ = (
     "InterviewSerializer",
     "ArtisteSerializer",
     "UtilisateurSerializer",
-    "StyleMusicalSerializer",
-    "NationSerializer",
     "TagSerializer",
-    "StyleRelationShipSerializer",
     "RecherchesArtistesSerializer",
     "RegarderInterviewsSerializer",
     "RegarderExtraitsSerializer",
@@ -45,4 +42,7 @@ __all__ = (
     "PositionInputSerializer",
     "TagsExtraitRelationShipSerializer",
     "TagsInterviewRelationShipSerializer",
+    "AudioSerializer",
+    "AudiosSerializer",
+    "OccasionSerializer",
 )

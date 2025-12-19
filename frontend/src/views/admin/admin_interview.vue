@@ -242,7 +242,6 @@ export default {
                 window.location.href = `/admin/interview/${this.current_interview.uuid}`;
 
             } catch (error) {
-                console.log(error.response)
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
                 this.popupError = true;

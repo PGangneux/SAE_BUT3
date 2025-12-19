@@ -30,7 +30,7 @@ export default class mmch_Root extends mmch_CheminT {
         }
     }
 
-    static async* mmch_searchcat(args = {}){
+    static async* mmch_searchcat(args = {}) {
         for (const category of mm_CategorysDefault) {
             yield category;
         }

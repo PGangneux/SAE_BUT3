@@ -33,9 +33,7 @@ class RegarderInterviewsSerializerTests(Neo4jTestCase):
         self.assertIsInstance(data["date_heure"], str)
         self.assertEqual(data["titre"], self.interview.titre)
         self.assertEqual(data["date"], self.interview.date)
-        self.assertEqual(data["occasion"], self.interview.occasion)
         self.assertEqual(data["description"], self.interview.description)
-        self.assertEqual(data["lieu"], self.interview.lieu)
         self.assertIn(str(self.interview.uuid), data["extraits"])
         self.assertIn(str(self.interview.uuid), data["tags"])
 
