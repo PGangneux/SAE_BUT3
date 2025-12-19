@@ -60,8 +60,8 @@ export async function mm_reset_soft(mminfo) {
                 const searchResult = search_cat[i];
                 
                 if (searchResult && existingChild) {
-                    // Compare constructors
-                    if (searchResult.cls === existingChild.constructor) {
+                    // Compare
+                    if (mm_find_compare(searchResult,existingChild)) {
                         sameCount = i + 1; // Update count of same nodes
                     } else {
                         break; // Stop at first difference

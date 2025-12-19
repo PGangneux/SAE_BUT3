@@ -118,15 +118,22 @@ export function mm_convert_preview_to_regular(mminfo, targetNode) {
 /**
  * Compare two nodes for equality
  * Compares by: 1) reference, 2) class type, 3) object content (UUID), 4) position for non-content nodes
- * @param {mmch_CheminT} one - First node to compare
- * @param {mmch_CheminT} other - Second node to compare
+ * @param {mmch_CheminT} one - First node to compare (can be instance or class constructor)
+ * @param {mmch_CheminT} other - Second node to compare (can be instance or class constructor)
  * @returns {boolean} - True if nodes are considered equal
  */
 export function mm_find_compare(one, other) {
     if (!one || !other) return false;
     if (one === other) return true;
-    if (one.constructor !== other.constructor) return false;
     
+    // Get constructors from instances if they exist, otherwise use the value itself
+    const oneConstructor = one.prototype ? one : (one.constructor ? one.constructor : one);
+    const otherConstructor = other.prototype ? other : (other.constructor ? other.constructor : other);
+    
+    // Compare constructors
+    if (oneConstructor !== otherConstructor) return false;
+    
+    // If both are instances with mmch_obj, compare by UUID
     if (one.mmch_obj && other.mmch_obj) {
         if (one.mmch_obj.uuid && other.mmch_obj.uuid) {
             return one.mmch_obj.uuid === other.mmch_obj.uuid;
@@ -134,11 +141,14 @@ export function mm_find_compare(one, other) {
         return one.mmch_obj === other.mmch_obj;
     }
     
+    // If both don't have mmch_obj (either both are class references or both are instances without mmch_obj)
     if (!one.mmch_obj && !other.mmch_obj) {
-        return one.x === other.x && one.y === other.y && one.depth === other.depth;
+        return true;
     }
     
-    return false;
+    // Special case: one is class reference, other is instance (or vice versa)
+    // If we reached here, constructors are equal, so they're the same type
+    return true;
 }
 
 /**
