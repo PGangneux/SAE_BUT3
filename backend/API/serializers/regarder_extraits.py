@@ -19,6 +19,7 @@ class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
     artiste = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
+    audios = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
@@ -51,6 +52,14 @@ class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
         Renvoie un lien propre vers les interviews :
         """
         return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
+
+    def get_audios(self, extrait: Extrait):
+        """Renvoie un lien vers les audios
+
+        Args:
+            extrait (Extrait): un extrait
+        """
+        return self.get_url("audio-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """

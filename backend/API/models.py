@@ -40,8 +40,6 @@ class Artiste(StructuredNode):
     uuid = UniqueIdProperty()
     name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
-    nationalite = RelationshipTo("Nation", "NATIONALITE", ZeroOrOne)
-
 
 class Occasion(StructuredNode):
     """
@@ -85,7 +83,17 @@ class Extrait(StructuredNode):
         "Interview", "APPARTIENT_A", ZeroOrMore, PositionExtraitRel
     )
     question = RelationshipTo("Question", "POSE", ZeroOrOne)
+    audios = RelationshipTo("Audio", "AUDIOS", ZeroOrMore)
     tags_extrait = RelationshipTo("Tag", "TAGS_EXTRAIT", ZeroOrMore)
+
+
+class Audio(StructuredNode):
+    """
+    Noeud Audio
+    """
+
+    uuid = UniqueIdProperty()
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
 
 class Question(StructuredNode):
@@ -135,15 +143,6 @@ class Utilisateur(StructuredNode):
     recherches_questions = RelationshipTo(
         "Question", "RECHERCHES_QUESTIONS", ZeroOrMore, DateHeureRel
     )
-
-
-class Nation(StructuredNode):
-    """
-    Noeud Nation
-    """
-
-    uuid = UniqueIdProperty()
-    name = RegexProperty(unique_index=True, expression=r".+")
 
 
 class Tag(StructuredNode):

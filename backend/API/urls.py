@@ -20,6 +20,7 @@ router_question.register(r"extraits", QuestionExtraitViewSet, basename="extrait"
 router.register(r"extraits", ExtraitViewSet, basename="extrait")
 router_extrait = NestedDefaultRouter(router, r"extraits", lookup="extrait")
 router_extrait.register(r"interviews", InterviewsViewSet, basename="interview")
+router_extrait.register(r"audios", AudiosViewSet, basename="audio")
 router_extrait.register(r"tags", TagsExtraitRelationShipViewSet, basename="tag")
 
 
@@ -37,9 +38,9 @@ router.register(r"occasions", OccasionViewSet, basename="occasion")
 router_occasion = NestedDefaultRouter(router, r"occasions", lookup="occasion")
 router_occasion.register(r"interviews", OccationInterviewViewSet, basename="interview")
 
-router.register(r"nations", NationViewSet, basename="nation")
-router_nation = NestedDefaultRouter(router, r"nations", lookup="nation")
-router_nation.register(r"artistes", NationArtisteViewSet, basename="artiste")
+router.register(r"audios", AudioViewSet, basename="audio")
+router_audio = NestedDefaultRouter(router, r"audios", lookup="audio")
+router_audio.register(r"extraits", AudioExtraitViewSet, basename="extrait")
 
 
 router.register(r"tags", TagViewSet, basename="tag")
@@ -66,7 +67,7 @@ urlpatterns = [
     path("", include(router_extrait.urls)),
     path("", include(router_interview.urls)),
     path("", include(router_artiste.urls)),
-    path("", include(router_nation.urls)),
+    path("", include(router_audio.urls)),
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
     path("", include(router_occasion.urls)),

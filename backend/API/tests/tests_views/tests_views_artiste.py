@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from ...models import Artiste, Nation
+from ...models import Artiste
 from ...tests import Neo4jTestCase
 
 
@@ -125,37 +125,3 @@ class ArtisteViewSetAPITests(Neo4jTestCase):
         url = reverse("artiste-list")
         response = self.client.get(url + "?skip=test")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-class NationArtisteViewSetAPITests(Neo4jTestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.artiste = Artiste(name=f"Artiste_{uuid4()}", info="info").save()
-        self.nation = Nation(name=f"Nation_{uuid4()}").save()
-        self.artiste.nationalite.connect(self.nation)
-
-    def test_list_artistes_by_nation(self):
-        url = reverse("artiste-list", kwargs={"nation_uuid": self.nation.uuid})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(any(a["uuid"] == self.artiste.uuid for a in response.json()))
-
-    def test_retrieve_artiste_by_nation(self):
-        url = reverse(
-            "artiste-detail",
-            kwargs={"nation_uuid": self.nation.uuid, "uuid": self.artiste.uuid},
-        )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["uuid"], self.artiste.uuid)
-
-    def test_retrieve_nonexistent_artiste_by_nation(self):
-        url = reverse(
-            "artiste-detail",
-            kwargs={
-                "nation_uuid": self.nation.uuid,
-                "uuid": "00000000-0000-0000-0000-000000000000",
-            },
-        )
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
