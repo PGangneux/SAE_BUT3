@@ -20,16 +20,14 @@ class ThemeTestCase(Neo4jTestCase):
         with self.assertRaises(UniqueProperty):
             Theme(name="Cinéma").save()
 
-    def test_update_name_and_description(self):
+    def test_update_name(self):
         """Mise à jour du nom et de la description"""
-        t = Theme(name="OldName", description="Old").save()
+        t = Theme(name="OldName").save()
         t.name = "NewName"
-        t.description = "Nouvelle description"
         t.save()
 
         reloaded = Theme.nodes.get(uuid=t.uuid)
         self.assertEqual(reloaded.name, "NewName")
-        self.assertEqual(reloaded.description, "Nouvelle description")
 
         # tenter de renommer sur un nom existant doit lever UniqueProperty
         Theme(name="ExistName").save()

@@ -9,9 +9,6 @@ class ThemeSerializer(BaseSerializer):
     """
 
     name = serializers.CharField(required=True)
-    description = serializers.CharField(
-        required=False, allow_blank=True, allow_null=True
-    )
 
     # Outputs
     questions = serializers.SerializerMethodField(read_only=True)
