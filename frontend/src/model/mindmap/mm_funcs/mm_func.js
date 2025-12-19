@@ -127,11 +127,11 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 
                 // Handle async* generator
                 for await (const catnode of node.mmch_previewinst(mminfo)) {
-                    mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
+                    mm_createChildNode(mminfo, node, catnode, true, true);
                 }
                 node.loading = false;
                 for (const child of node.childrens) {
-                    await mm_draw_onecat(mminfo, child, createLink, isPreview);
+                    await mm_draw_onecat(mminfo, child, true, true);
                 }
             }
         }
@@ -142,11 +142,11 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             console.log("1b CONTENT NODE → CATEGORIES",node);
             // Handle async* generator for instance methods
             for await (const instnode of node.mmch_listinst()) {
-                mm_createChildNode(mminfo, node, instnode, createLink, isPreview);
+                mm_createChildNode(mminfo, node, instnode);
             }
             node.loading = false;
             for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, createLink, isPreview);
+                await mm_draw_onecat(mminfo, child, true, isPreview);
             }
         } else {
             // ─────────────────────────────
@@ -159,21 +159,23 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
 
             // Handle async* generator for static methods
             for await (const catnode of getnodefunc()) {
-                mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
+                mm_createChildNode(mminfo, node, catnode,createLink);
             }
             node.loading = false;
             for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, createLink, isPreview);
+                await mm_draw_onecat(mminfo, child, true);
             }
         }
         if (node.depth > mminfo.chemin.length) {
             // ─────────────────────────────
             // 2. DRAW previews of subcategories
             // ─────────────────────────────
-            // You might need to handle async generators here too
-            // depending on what Promise.all() was doing
-            // Promise.all();
-            console.log("2 DRAW previews of subcategories",node);
+            /// console.log("2 DRAW previews of subcategories",node);
+            /// await Promise.all(
+            ///     node.childrens.map(async (child) => {
+            ///         await mm_draw_onecat(mminfo, child, false, true);
+            ///     })
+            /// );
         }
     } catch (err) {
         console.error("mm_draw_onecat error:", err);
