@@ -115,7 +115,6 @@ class Theme(StructuredNode):
 
     uuid = UniqueIdProperty()
     name = RegexProperty(unique_index=True, required=True, expression=r".+")
-    description = StringProperty()
 
 
 class Utilisateur(StructuredNode):

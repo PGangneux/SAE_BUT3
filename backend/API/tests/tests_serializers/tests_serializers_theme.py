@@ -20,13 +20,12 @@ class ThemeSerializerTests(Neo4jTestCase):
 
     # --- Création ---
     def test_create_success(self):
-        payload = {"name": "ThèmeNouveau", "description": "DescNouveau"}
+        payload = {"name": "ThèmeNouveau"}
         serializer = ThemeSerializer(data=payload, context={"request": self.request})
         self.assertTrue(serializer.is_valid(), serializer.errors)
         theme = serializer.save()
         reloaded = Theme.nodes.get(uuid=theme.uuid)
         self.assertEqual(reloaded.name, "ThèmeNouveau")
-        self.assertEqual(reloaded.description, "DescNouveau")
 
     def test_create_raises_uniqueproperty(self):
         Theme(name="ThèmeUnique").save()
@@ -38,15 +37,14 @@ class ThemeSerializerTests(Neo4jTestCase):
 
     # --- Mise à jour ---
     def test_update_success(self):
-        theme = Theme(name="ThèmeOld", description="OldDesc").save()
-        payload = {"name": "ThèmeUpdated", "description": "DescUpdated"}
+        theme = Theme(name="ThèmeOld").save()
+        payload = {"name": "ThèmeUpdated"}
         serializer = ThemeSerializer(
             instance=theme, data=payload, context={"request": self.request}
         )
         self.assertTrue(serializer.is_valid(), serializer.errors)
         updated = serializer.save()
         self.assertEqual(updated.name, "ThèmeUpdated")
-        self.assertEqual(updated.description, "DescUpdated")
 
     def test_update_raises_uniqueproperty(self):
         Theme(name="ThèmeExist").save()
