@@ -34,7 +34,6 @@ class RecherchesArtistesSerializerTests(Neo4jTestCase):
         # date_heure is iso string
         self.assertIsInstance(data["date_heure"], str)
         self.assertEqual(data["name"], self.artiste.name)
-        self.assertEqual(data["info"], self.artiste.info)
         self.assertIn(str(self.artiste.uuid), data["extraits"])
 
     def test_get_date_heure_raises_contexterror_without_utilisateur(self):

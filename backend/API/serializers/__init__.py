@@ -20,6 +20,7 @@ from .tags_extrait import TagsExtraitRelationShipSerializer
 from .tags_interview import TagsInterviewRelationShipSerializer
 from .audio import AudioSerializer
 from .audios import AudiosSerializer
+from .occasion import OccasionSerializer
 
 __all__ = (
     "BaseSerializer",
@@ -43,4 +44,5 @@ __all__ = (
     "TagsInterviewRelationShipSerializer",
     "AudioSerializer",
     "AudiosSerializer",
+    "OccasionSerializer",
 )

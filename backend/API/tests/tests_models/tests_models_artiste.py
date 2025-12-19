@@ -23,10 +23,10 @@ class ArtisteTestCase(Neo4jTestCase):
     def test_update_info(self):
         """Mise à jour des propriétés"""
         artiste = Artiste(name="M").save()
-        artiste.info = "Auteur-compositeur-interprète français"
+        artiste.name = "R"
         artiste.save()
         updated = Artiste.nodes.get(uuid=artiste.uuid)
-        self.assertEqual(updated.info, "Auteur-compositeur-interprète français")
+        self.assertEqual(updated.name, "R")
 
     def test_delete_artiste(self):
         """Suppression d'un artiste"""

@@ -10,7 +10,6 @@ class RecherchesArtistesSerializer(RelationShipUtilisateurSerializer):
 
     # Outputs
     name = serializers.CharField(read_only=True)
-    info = serializers.CharField(read_only=True)
     extraits = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):

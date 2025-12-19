@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
 from neomodel import StructuredNode
-from neomodel.exceptions import UniqueProperty, DeflateError
+from neomodel.exceptions import UniqueProperty, DeflateError, RequiredProperty
 from ...errors import ValidatorUnique, ValidatorRequired
 
 
@@ -64,8 +64,7 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
-        except DeflateError as error:
-            print()
+        except (DeflateError, RequiredProperty) as error:
             raise ValidatorRequired(error.property_name)
         return instance
 
@@ -95,7 +94,6 @@ class BaseSerializer(serializers.Serializer):
                     re.IGNORECASE,
                 ).group("prop")
             )
-        except DeflateError as error:
-            print()
+        except (DeflateError, RequiredProperty) as error:
             raise ValidatorRequired(error.property_name)
         return instance
