@@ -268,7 +268,6 @@ export async function importToDatabase(parsedData) {
 
         // Lier l'occasion à l'interview si elle existe
         const occasion = occasionsMap.get(interviewData.evenement);
-        console.log("liaason occasion inter", occasion)
         if (occasion) {
           interview.occasion = occasion.uuid;
         }
@@ -325,7 +324,6 @@ export async function importToDatabase(parsedData) {
           if (question) {
             extrait.question = question.uuid;
           }
-          console.log(extrait)
           await extrait.create();
           results.created.extraits.push(extrait);
 

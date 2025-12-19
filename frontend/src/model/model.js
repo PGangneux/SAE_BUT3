@@ -196,7 +196,6 @@ export default class Model {
                 `Cannot create ${this.constructor.name} that already has a UUID`
             );
         }
-        console.log(this.toJSON())
         return await ClientAPI.post(
             await ClientAPI.endpoints(this.constructor.endpoint),
             JSON.stringify(this.toJSON())
@@ -229,7 +228,6 @@ export default class Model {
                     return this.fromJSON(json);
                 });
         } catch (error) {
-            console.log("eerrurur", error)
             console.error(error.toString());
             return null;
         }
