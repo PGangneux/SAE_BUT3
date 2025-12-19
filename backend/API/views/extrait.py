@@ -3,7 +3,7 @@ from neomodel.sync_.match import NodeSet
 from neomodel import StructuredNode
 from neo4j.exceptions import ServiceUnavailable
 from ..views import BaseModelViewSet, SubBaseModelViewSet
-from ..models import Artiste, Extrait, Interview, Question, Tag
+from ..models import Artiste, Audio, Extrait, Interview, Question, Tag
 from ..serializers import ExtraitSerializer
 from ..errors import ConnexionDB, NotFound
 
@@ -73,6 +73,17 @@ class InterviewExtraitViewSet(SubBaseModelViewSet):
         context_model_name: str = self.router_model_class.__name__
         context[context_model_name.lower()] = self.get_context_model()
         return context
+
+
+class AudioExtraitViewSet(SubBaseModelViewSet):
+    """
+    Renvoie les extraits en fonction d'un audio
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(
+            ExtraitSerializer, Extrait, "audio_uuid", Audio, "AUDIOS", "titre", **kwargs
+        )
 
 
 class TagExtraitViewSet(SubBaseModelViewSet):

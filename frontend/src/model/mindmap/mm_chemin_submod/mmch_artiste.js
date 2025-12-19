@@ -2,7 +2,6 @@ import Extrait from "../../extrait.js";
 import Artiste from "../../artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
-import mmch_Nation from "./mmch_nation.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
@@ -12,7 +11,6 @@ export default class mmch_Artiste extends mmch_CheminT {
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
         yield mmch_Extrait;
-        yield mmch_Nation;
 
         // TODO : put recomendation algorithm here
         const recommend = await this.mmch_obj.extraits();
@@ -23,7 +21,6 @@ export default class mmch_Artiste extends mmch_CheminT {
     async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
         yield mmch_Extrait;
-        yield mmch_Nation;
 
         // TODO : put recomendation algorithm here
         const recommend = await this.mmch_dbjsclass.search(finalArgs);
@@ -47,12 +44,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         const description = [];
 
         try {
-            const nation = await artiste.nation();
-            if (nation && nation.name) description.push(`Pays: ${nation.name}`);
-        } catch (error) { console.warn(error); }
-
-        try {
-            const styles = await artiste.styles({ limit: 3 });
+            const styles = await Artiste.styles({ limit: 3 });
             if (styles.length > 0) {
                 const styleNames = styles.map(s => s.name).join(', ');
                 description.push(`Styles: ${styleNames}`);
@@ -60,7 +52,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         } catch (error) { console.warn(error); }
 
         try {
-            const extraits = await artiste.extraits({ limit: 3 });
+            const extraits = await Artiste.extraits({ limit: 3 });
             if (extraits.length > 0) {
                 description.push(`${extraits.length} extrait(s) disponible(s)`);
             }

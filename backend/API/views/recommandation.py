@@ -55,7 +55,7 @@ class Recommandation(APIView):
              - weights : dict (Thème, Question, Artiste)
                 key: Nom de la classe du node
                 value: weight de la classe (number)
-             - filters : dict (Thème, Question, Artiste, Nation, Tag)
+             - filters : dict (Thème, Question, Artiste, Tag, Audio)
                 key: Nom de la classe du filtre
                 value: uuid de l'instance
 
@@ -132,17 +132,17 @@ class Recommandation(APIView):
         filter_configs = {
             "Thème": ("Theme", "*..3"),
             "Artiste": ("Artiste", "*..2"),
-            "Nation": ("Nation", "*..3"),
             "Question": ("Question", "*..2"),
             "Tag": ("Tag", "*..3"),
+            "Audio": ("Audio", "*..2"),
         }
         # Pour des causes de retro compatibilités
         # filter_configs = {
         #     "Thème": ("Theme", "*2..3"),
         #     "Artiste": ("Artiste", "*..2"),
-        #     "Nation": ("Nation", "*2..3"),
         #     "Question": ("Question", "*..2"),
         #     "Tag": ("Tag", "*0..3"),
+        #     "Audio": ("Audio", "*..2"),
         # }
 
         excluded_relations = [
@@ -175,10 +175,16 @@ class Recommandation(APIView):
                 parts["where"].append(filter_clause)
 
         # === OPTIONAL MATCH pour le scoring ===
+        # Pour des questions de retro compatibilité avec les anciennes versions de neo4j
+        # score_configs = {
+        #     "Thème": ("Theme", "*..3", "c_t", "v_t"),
+        #     "Artiste": ("Artiste", "*0..2", "c_a", "v_a"),
+        #     "Question": ("Question", "*0..2", "c_q", "v_q"),
+        # }
         score_configs = {
-            "Thème": ("Theme", "*0..3", "c_t", "v_t"),
-            "Artiste": ("Artiste", "*0..2", "c_a", "v_a"),
-            "Question": ("Question", "*0..2", "c_q", "v_q"),
+            "Thème": ("Theme", "*..3", "c_t", "v_t"),
+            "Artiste": ("Artiste", "*..2", "c_a", "v_a"),
+            "Question": ("Question", "*..2", "c_q", "v_q"),
         }
 
         collections = []

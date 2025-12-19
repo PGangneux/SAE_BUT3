@@ -2,13 +2,11 @@ import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Artiste from "./mmch_artiste.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
-import mmch_Nation from "./mmch_nation.js";
 import mmch_Question from "./mmch_question.js";
 import mmch_Theme from "./mmch_theme.js";
 
 const mm_CategorysDefault = [
     mmch_Artiste,
-    mmch_Nation,
     mmch_Theme,
 ];
 
@@ -30,7 +28,7 @@ export default class mmch_Root extends mmch_CheminT {
         }
     }
 
-    static async* mmch_searchcat(args = {}){
+    static async* mmch_searchcat(args = {}) {
         for (const category of mm_CategorysDefault) {
             yield category;
         }

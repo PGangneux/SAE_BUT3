@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from neomodel import db
+from neomodel.exceptions import DoesNotExist
+from neomodel import db, RelationshipManager, NodeSet
 from ..serializers import BaseSerializer
 from ..models import Artiste, Extrait, Question
 
@@ -33,6 +34,7 @@ class ExtraitSerializer(BaseSerializer):
     artiste = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
+    audios = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
     position = serializers.SerializerMethodField(read_only=True)
 
@@ -69,6 +71,14 @@ class ExtraitSerializer(BaseSerializer):
         Renvoie un lien propre vers les interviews :
         """
         return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
+
+    def get_audios(self, extrait: Extrait):
+        """Renvoie un lien vers les audios
+
+        Args:
+            extrait (Extrait): un extrait
+        """
+        return self.get_url("audio-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """
