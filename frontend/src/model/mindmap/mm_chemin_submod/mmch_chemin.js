@@ -92,7 +92,7 @@ export default class mmch_CheminT extends mm_Node {
         return ["no description"];
     }
 
-    async mmch_hasMiniature() {
+    mmch_hasMiniature() {
         return false;
     }
 
