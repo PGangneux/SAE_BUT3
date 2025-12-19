@@ -1,6 +1,7 @@
 import Model from "./model.js";
 import Extrait from "./extrait.js";
 import Tag from "./tag.js";
+import Occasion from "./occasion.js";
 
 export default class Interview extends Model {
     #titre;
@@ -51,7 +52,7 @@ export default class Interview extends Model {
     }
 
     get occasion() {
-        return this.#occasion;
+        return this.fetchDetail(this.#occasion, Occasion);
     }
     set occasion(value) {
         this.#occasion_uuid = Model.validateString(value, "occasion");
@@ -138,6 +139,7 @@ export default class Interview extends Model {
     async connect_tag(tag) {
         await this.connect(this.#tags, { uuid: tag.uuid });
     }
+
 
     /**
      * Déconnecte une interview d'un tag

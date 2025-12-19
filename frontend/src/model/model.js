@@ -196,7 +196,6 @@ export default class Model {
                 `Cannot create ${this.constructor.name} that already has a UUID`
             );
         }
-
         return await ClientAPI.post(
             await ClientAPI.endpoints(this.constructor.endpoint),
             JSON.stringify(this.toJSON())

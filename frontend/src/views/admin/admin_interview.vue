@@ -10,6 +10,7 @@ import edit_error from './gestion/edit_error.vue';
 import Interview from '../../model/interview.js';
 import Extrait from "../../model/extrait.js";
 import Tag from "../../model/tag.js";
+import Occasion from "../../model/occasion.js"
 
 import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from './fn_save_tags.js';
 
@@ -32,10 +33,12 @@ export default {
             tagsConnected: [],
             tagsToDisconnect: [],
             tagsToCreate: [],
+            liste_occasion_bd: [],
             taillelist1: 0,
             taillelist2: 0,
             titre: '',
-            occasion: '',
+            occasion: null,
+            name_occasion: '',
             description: '',
             popupDelete: false,
             popupSuccess: false,
@@ -45,7 +48,7 @@ export default {
             searchPlaylist: "",
             chargement: false,
             createMode: false,  
-            message_error: ''
+            message_error: '',
         };
     },
     computed: {
@@ -123,6 +126,8 @@ export default {
         onDrop(evt, targetList) {
             evt.preventDefault();
 
+  
+
             const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
             const sourceList = evt.dataTransfer.getData('sourceList'); // 'available' ou 'playlist'
 
@@ -170,6 +175,14 @@ export default {
             // Mettre à jour les compteurs
             this.taillelist1 = this.Extraitlist.length;
             this.taillelist2 = this.current_list_extraits.length;
+
+            // misa à jour des filtres de recherche
+            const tmp_searchAvaible =  this.searchAvailable;
+            const tmp_searchPlaylist = this.searchPlaylist;
+            this.searchAvailable = '';
+            this.searchPlaylist = '';
+            this.searchAvailable = tmp_searchAvaible;
+            this.searchPlaylist = tmp_searchPlaylist;
         },
 
         handleTagsCreated(tags) {
@@ -220,17 +233,28 @@ export default {
                 // //     throw new Error("Le titre est obligatoire")
                 //     this.current_interview.titre = null;
                 // }
-                this.current_interview.description = this.description;
+                this.current_interview.description = this.description || '';
+
+                // Find the tag in the available list
+                const occas = this.liste_occasion_bd.find(o => o.name === this.name_occasion);
+                if (occas){
+                    this.occasion = occas.uuid
+                }
+                else{
+                    console.log("create occas")
+                    const occas_object = new Occasion({'name':this.name_occasion})
+                    await occas_object.create()
+                    this.occasion = occas_object.uuid
+                }
+
                 this.current_interview.occasion = this.occasion;
 
                 let isCreate = this.create;
-
                 if (isCreate) {
                     await this.current_interview.create();
                 } else {
                     await this.current_interview.update();
                 }
-
                 await this.current_interview.setExtraits(this.current_list_extraits);
                 await this.save_tags();
 
@@ -252,15 +276,13 @@ export default {
             } finally {
                 this.chargement = false;
             }
-        }
+        },
 
     },
 
     async mounted() {
         // Popup succès après reload brutal
-        console.log("ssesion sotirae", sessionStorage.getItem('popupSuccess'))
         if (sessionStorage.getItem('popupSuccess') === 'true') {
-            console.log("tetettetette")
             this.popupSuccess = true;
 
                 // Déterminer si c'était en mode création ou modification
@@ -282,6 +304,17 @@ export default {
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
             this.current_interview = markRaw(await Interview.detail(InterviewId));
+            
+            // pré-remplissage du formulaire
+            this.titre = this.current_interview.titre;
+            this.description = this.current_interview.description;
+            this.occasion = markRaw(await this.current_interview.occasion)
+            this.name_occasion = this.occasion.name
+            console.log("occasion", this.occasion)
+            
+            
+            this.liste_occasion_bd = markRaw(await Occasion.list()) 
+            
             this.current_list_extraits = markRaw(await this.current_interview.extraits({ 'order': 'APPARTIENT_A|position' }));
 
             this.Extraitlist = markRaw(
@@ -292,10 +325,8 @@ export default {
 
             this.taillelist2 = this.current_list_extraits.length;
 
-            // pré-remplissage du formulaire
-            this.titre = this.current_interview.titre;
-            this.description = this.current_interview.description;
-            this.occasion = this.current_interview.occasion;
+
+           
         } else {
             this.create = true;
             this.current_interview = markRaw(new Interview({}));
@@ -316,7 +347,15 @@ export default {
         <h1 v-else class="text-center"> Modification d'une Playlist </h1>
         <input v-model="titre" class="form-control" placeholder="Titre (Obligatoire)" />
         <textarea type="aera" v-model="description" placeholder="Description" class="form-control"></textarea>
-        <input v-model="occasion" class="form-control" placeholder="Occasion" />
+        <input v-model="name_occasion" class="form-control" placeholder="Occasion" list="occasionData"/>
+        <datalist id="occasionData">
+            <option 
+                v-for="occasion in liste_occasion_bd" 
+                :key="occasion.uuid" 
+                :value="occasion.name"
+            />
+        </datalist>
+
 
         <div class="row row_gap">
             <div class="col-md-4 aggrandir div_extrait_dispo">
@@ -395,7 +434,7 @@ export default {
     </div>
     
     <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
-    <!-- ✅ BON - s'affiche SEULEMENT quand popupSuccess est true -->
+    <!-- BON - s'affiche SEULEMENT quand popupSuccess est true -->
     <edit_success 
         v-if="popupSuccess && createMode"
         message="Playlist créée !"

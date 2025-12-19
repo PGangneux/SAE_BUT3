@@ -10,7 +10,7 @@ import Interview from '../../../model/interview.js';
 import Model from "../../../model/model.js";
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-
+import {parseAndImport} from "../../../model/parse_csv.js"
 
 export default {
     name: "page_admin_interview",
@@ -88,6 +88,29 @@ export default {
         },
 
 
+        importCSV() {
+            this.$refs.csvInput.click();
+        },
+
+        async handleFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Lire le contenu du fichier
+            const text = await file.text();
+
+            let test = await parseAndImport(text)
+            console.log(test)
+
+            // const reader = new FileReader();
+            // reader.onload = (e) => {
+            //     const csv = e.target.result;
+            //     console.log(csv); // contenu du CSV
+            // };
+            // reader.readAsText(file);
+        }
+
+
     },
 };
 </script>
@@ -112,6 +135,16 @@ export default {
                     </datalist>
                 </div>
             </div>
+
+
+            <button @click="importCSV">Importer un CSV</button>
+            <input
+                type="file"
+                ref="csvInput"
+                accept=".csv"
+                style="display: none"
+                @change="handleFile"
+            />
 
             <RouterLink to="/admin/interview/creer/" class="btn btn-outline-light btn-add">
                 Ajouter une Playlist

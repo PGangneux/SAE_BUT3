@@ -21,6 +21,7 @@
     "jsdom": "^20.0.3",
     "jsdom-global": "^3.0.2",
     "vite": "6.2.0",
-    "vitest": "^4.0.10"
+    "vitest": "^4.0.10",
+    "papaparse": "^5.5.3"
   }
 }
