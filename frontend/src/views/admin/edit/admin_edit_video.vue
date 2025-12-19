@@ -4,6 +4,7 @@ import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
 
 import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
 import popup_creer_question from "../../../components/components_admin/popup_creer_question.vue";
+import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 import Extrait from "../../../model/extrait";
 
 import Question from "../../../model/question";
@@ -23,6 +24,7 @@ export default {
     comp_baradmin,
     popup_interview,
     popup_creer_question,
+    popup_valider,
     supprimer,
     tags,
 
