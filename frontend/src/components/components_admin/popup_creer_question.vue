@@ -13,8 +13,14 @@ export default {
             type:Boolean,
             required:true
             },
-            laselectedQuestion:"",
-            listeQuestion:[],   //liste des Questions totals
+            laselectedQuestion:{
+                type:String,
+                required:true,
+                },
+            listeQuestion:{
+                type:Array,
+                required:true,
+            },   //liste des Questions totals
 
     },data(){
         return {

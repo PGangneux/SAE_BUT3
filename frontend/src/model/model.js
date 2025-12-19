@@ -217,7 +217,6 @@ export default class Model {
             throw new Error(`Cannot update ${this.constructor.name} without a UUID`);
         }
         try {
-            console.log('json1', this.toJSON())
             return await ClientAPI.put(
                 ClientAPI.url_uuid(
                     await ClientAPI.endpoints(this.constructor.endpoint),
@@ -227,7 +226,6 @@ export default class Model {
             )
                 // Charger les nouvelles données dans l'instance
                 .then((json) => {
-                    console.log('json', json)
                     return this.fromJSON(json);
                 });
         } catch (error) {

@@ -62,21 +62,15 @@ export default {
   methods: {
 
     handleTagsCreated(tags) {
-      console.log("htct1");
         handleTagsCreated(this, tags)
-        console.log("htct2", this.tagsToCreate);
     },
 
     handleTagsDisconnected(tags) {
-      console.log("htd1");
         handleTagsDisconnected(this, tags)
-        console.log("htd2",this.tagsToDisconnect);
     },
 
     handleTagsConnected(tag) {
-      console.log("htc1");
         handleTagsConnected(this, tag)
-        console.log("htc2",this.tagsConnected);
     },
 
 
@@ -92,8 +86,6 @@ export default {
 
     async enregistrer(){
       //fonction pour enregistrer un extraits dans L'api
-
-      console.log(this.current_extrait);
       this.current_extrait.duree = 0;
 
       this.popupEnregistrer = true;
@@ -110,20 +102,13 @@ export default {
 
 
     async Update(){
-      console.log(this.current_extrait);
       await this.current_extrait.update();
-      console.log( "ha");
-      console.log( this.current_extrait);
-      console.log( "ha");
       await this.save_tags();
-
-      console.log( this.current_extrait);
     },
 
 
 
     async save_tags() {
-        console.log("save tags",this.current_extrait);
         try {
             // Connecter les tags existants
             for (const tag of this.tagsConnected) {
@@ -152,6 +137,17 @@ export default {
         }
     },
 
+
+
+
+
+
+
+
+
+
+
+    
     async creerNouveauArtiste(){
 
     if( this.laselectedArtiste != "" || this.laselectedArtiste == null ){
@@ -159,19 +155,13 @@ export default {
             const newArtiste = new Artiste({});
             newArtiste.name = this.laselectedArtiste;
             await newArtiste.create()
-
-            console.log(newArtiste);
-
             this.listeArtiste.push(newArtiste);
             this.current_extrait.artiste = await newArtiste.uuid;
             this.current_extrait.artiste_uuid = await newArtiste.uuid;
-
-            console.log(newArtiste.uuid,"\n",newArtiste.name);
             
             alert(this.current_extrait.artiste)
           }else{
             alert('l\'artiste existe deja')
-            console.log('artiste existe deja');
           }
       }else{
         alert('pas de champs null pour artiste');
@@ -182,16 +172,17 @@ export default {
     creerNouvelleQuestion(){
 
       if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
-        console.log(this.laselectedQuestion);
-
         if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+          this.popupCreerQuestion = true;
+          /*
           const newQuestion = new Question({});
           newQuestion.name = this.laselectedQuestion;
           newQuestion.create()
-          this.listeQuestion.add(newQuestion);
+          this.listeQuestion.push(newQuestion);
+          */
 
         }else{
-          console.log('question existe deja');
+          alert('question existe deja');
         }
       }else{
         alert('pas de champs null pour Quesion');
@@ -202,6 +193,8 @@ export default {
 
 
     
+
+
 
 
     popupchange(){
@@ -225,6 +218,14 @@ export default {
       
     },
 
+
+
+
+
+
+
+
+    
 
 
 
@@ -276,6 +277,16 @@ export default {
 
 
    
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -372,12 +383,9 @@ export default {
 
     
         if ( this.current_extrait.url_miniature_yt != null && this.current_extrait.url_miniature_yt.includes(this.current_extrait.youtube_url) && !this.current_extrait.youtube_url=="" ) {
-          
-          console.log(this.validateYouTubeVideo(this.urlyoutubeReconstruit));
           this.thumbnail = await this.validateYouTubeVideo(this.urlyoutubeReconstruit);
             
         }else{
-          console.log(this.validateVimeoVideo(this.urlVimeoReconstruit));
           this.thumbnail = await this.validateVimeoVideo(this.urlVimeoReconstruit);
         }
   },
@@ -417,6 +425,17 @@ export default {
     }
 
   },
+
+
+
+
+
+
+
+
+
+
+
 
  async mounted() {
     await this.recupeArtiste();
@@ -470,6 +489,44 @@ export default {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 <template>
@@ -507,7 +564,7 @@ export default {
 
 
 
-                <button class="bt" type="button" @click="popupCreerQuestion = true" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" @click="popupCreerQuestion = true" alt="add" class="col "> </button>
+                <button class="bt" type="button" @click="creerNouvelleQuestion" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" @click="creerNouvelleQuestion" alt="add" class="col "> </button>
             </div>
           </div>
 
