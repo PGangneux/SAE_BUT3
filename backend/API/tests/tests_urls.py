@@ -65,6 +65,11 @@ class URLsAPITests(Neo4jTestCase):
 
     def test_question_urls(self):
         self.question: Question = Question(texte="Test").save()
+
+        # Création theme
+        self.theme = Theme(name=f"Theme test {uuid4()}").save()
+        self.question.theme.connect(self.theme)
+
         self.assertEqual(
             self.client.get(reverse("question-list")).status_code, status.HTTP_200_OK
         )
@@ -95,6 +100,14 @@ class URLsAPITests(Neo4jTestCase):
 
     def test_extrait_urls(self):
         self.extrait: Extrait = Extrait(titre="Extrait test", duree=120).save()
+
+        # Création d'artiste et question
+        self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()
+        self.question = Question(texte=f"Question test {uuid4()}").save()
+
+        self.extrait.interviewer.connect(self.artiste)
+        self.extrait.question.connect(self.question)
+
         self.assertEqual(
             self.client.get(reverse("extrait-list")).status_code, status.HTTP_200_OK
         )

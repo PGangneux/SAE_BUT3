@@ -17,6 +17,7 @@ class InterviewSerializer(BaseSerializer):
     )
 
     # Input
+    input_fields = {"occasion_uuid": {"relationship": "occasion", "node": Occasion}}
     occasion_uuid = serializers.CharField(
         write_only=True,
         required=False,
@@ -52,31 +53,3 @@ class InterviewSerializer(BaseSerializer):
         Renvoie un lien propre vers les tags :
         """
         return self.get_url("tag-list", kwargs={"interview_uuid": interview.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'une interview
-        """
-        occasion_uuid = validated_data.pop("occasion_uuid", None)
-        interview = super().create(validated_data)
-        if occasion_uuid is not None:
-            try:
-                interview.occasion.connect(Occasion.nodes.get(uuid=occasion_uuid))
-            except DoesNotExist:
-                raise NotFound(Occasion)
-        return interview
-
-    def update(self, interview, validated_data):
-        """
-        Modification d'un artiste
-        """
-        occasion_uuid = validated_data.pop("occasion_uuid", None)
-        interview = super().update(interview, validated_data)
-        if occasion_uuid is not None:
-            try:
-                if interview.occasion:
-                    interview.occasion.disconnect(interview.occasion.single())
-                interview.occasion.connect(Occasion.nodes.get(uuid=occasion_uuid))
-            except DoesNotExist:
-                raise NotFound(Occasion)
-        return interview.save()

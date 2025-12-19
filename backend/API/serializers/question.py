@@ -13,6 +13,7 @@ class QuestionSerializer(BaseSerializer):
     texte = serializers.CharField(required=True)
 
     # Inputs
+    input_fields = {"theme_uuid": {"relationship": "theme", "node": Theme}}
     theme_uuid = serializers.CharField(write_only=True, required=False)
 
     # Outputs
@@ -36,33 +37,3 @@ class QuestionSerializer(BaseSerializer):
         Renvoie un lien propre vers les extraits :
         """
         return self.get_url("extrait-list", kwargs={"question_uuid": question.uuid})
-
-    def create(self, validated_data):
-        """
-        Création d'une question
-        """
-        theme_uuid = validated_data.pop("theme_uuid", None)
-        question = super().create(validated_data)
-        if theme_uuid:
-            try:
-                theme = Theme.nodes.get(uuid=theme_uuid)
-                question.theme.connect(theme)
-            except DoesNotExist:
-                raise NotFound(Theme)
-        return question
-
-    def update(self, question, validated_data):
-        """
-        Modification d'une question
-        """
-        theme_uuid = validated_data.pop("theme_uuid", None)
-        question = super().update(question, validated_data)
-        try:
-            theme = question.theme.single()
-            if theme:
-                question.theme.disconnect(theme)
-            if theme_uuid:
-                question.theme.connect(Theme.nodes.get(uuid=theme_uuid))
-        except DoesNotExist:
-            raise NotFound(Theme)
-        return question

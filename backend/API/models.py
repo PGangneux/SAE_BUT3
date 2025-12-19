@@ -12,6 +12,7 @@ from neomodel import (
     ZeroOrOne,
     RegexProperty,
     EmailProperty,
+    ZeroOrOne,
 )
 from datetime import date
 

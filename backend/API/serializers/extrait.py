@@ -2,7 +2,6 @@ from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
 from neomodel import db, RelationshipManager, NodeSet
 from ..serializers import BaseSerializer
-from ..errors import NotFound
 from ..models import Artiste, Extrait, Question
 
 
@@ -24,6 +23,10 @@ class ExtraitSerializer(BaseSerializer):
     duree = serializers.IntegerField(required=True)
 
     # Input:
+    input_fields = {
+        "artiste_uuid": {"relationship": "interviewer", "node": Artiste},
+        "question_uuid": {"relationship": "question", "node": Question},
+    }
     artiste_uuid = serializers.CharField(write_only=True, required=False)
     question_uuid = serializers.CharField(write_only=True, required=False)
 
@@ -91,60 +94,3 @@ class ExtraitSerializer(BaseSerializer):
                 {"extrait_uuid": extrait.uuid, "interview_uuid": interview.uuid},
             )[0][0][0]
         )
-
-    def create(self, validated_data):
-        """
-        Création d'un extrait
-        """
-        artiste_uuid = validated_data.pop("artiste_uuid", None)
-        question_uuid = validated_data.pop("question_uuid", None)
-
-        extrait = super().create(validated_data)
-
-        if artiste_uuid:
-            try:
-                artiste = Artiste.nodes.get(uuid=artiste_uuid)
-                extrait.interviewer.connect(artiste)
-            except DoesNotExist:
-                raise NotFound(Artiste)
-
-        if question_uuid is not None:
-            try:
-                question_node = Question.nodes.get(uuid=question_uuid)
-            except DoesNotExist:
-                raise NotFound(Question)
-            extrait.question.connect(question_node)
-
-        return extrait
-
-    def update(self, extrait, validated_data):
-        """
-        Modification d'un extrait
-        """
-        artiste_uuid = validated_data.pop("artiste_uuid", None)
-        question_uuid = validated_data.pop("question_uuid", None)
-
-        extrait: Extrait = super().update(extrait, validated_data)
-
-        # update question relation if provided
-        if question_uuid is not None:
-            try:
-                question = Question.nodes.get(uuid=question_uuid)
-            except DoesNotExist:
-                raise NotFound(Question)
-            try:
-                extrait.question.disconnect(extrait.question.single())
-            except Exception:
-                pass
-            extrait.question.connect(question)
-
-        if artiste_uuid is not None:
-            try:
-                if extrait.interviewer:
-                    extrait.interviewer.disconnect(extrait.interviewer.single())
-                if artiste_uuid:
-                    extrait.interviewer.connect(Artiste.nodes.get(uuid=artiste_uuid))
-            except DoesNotExist:
-                raise NotFound(Artiste)
-
-        return extrait

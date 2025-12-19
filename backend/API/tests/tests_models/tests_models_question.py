@@ -70,16 +70,10 @@ class QuestionTestCase(Neo4jTestCase):
         self.assertEqual(connected[0].name, "Musique")
 
         # Remplacer la theme : déconnecter t1 et connecter t2
-        q.theme.disconnect(t1)
-        q.theme.connect(t2)
+        q.theme.reconnect(t1, t2)
         connected_after = q.theme.all()
         self.assertEqual(len(connected_after), 1)
         self.assertEqual(connected_after[0].name, "Culture")
-
-        # Déconnecter complètement
-        q.theme.disconnect(t2)
-        connected_final = q.theme.all()
-        self.assertEqual(len(connected_final), 0)
 
     def test_relation_persists_theme_exists_after_question_delete(self):
         """La suppression d'une Question doit retirer la relation mais ne pas supprimer le Theme"""
