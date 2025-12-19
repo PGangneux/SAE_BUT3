@@ -1,6 +1,6 @@
 import { videoStore } from "../../videoStore.js";
 import mm_Mindmap from "../mm_mindmap.js";
-import { mm_chemin_filter, mm_clean_preview } from "./mm_func_chemin.js"
+import { mm_chemin_filter } from "./mm_func_chemin.js"
 import { mm_reset_soft , mm_draw_onecat } from "./mm_func.js";
 
 /**
@@ -25,7 +25,6 @@ export async function mm_draw_update(mminfo) {
     let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return;
     if (changepath) return mm_draw_root(mminfo);
-    mm_clean_preview(mminfo);
     await mm_draw_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
 }
 
