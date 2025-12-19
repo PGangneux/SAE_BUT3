@@ -95,7 +95,7 @@ class URLsAPITests(Neo4jTestCase):
         )
 
     def test_extrait_urls(self):
-        self.extrait: Extrait = Extrait(duree=120).save()
+        self.extrait: Extrait = Extrait(titre="Extrait test", duree=120).save()
         self.assertEqual(
             self.client.get(reverse("extrait-list")).status_code, status.HTTP_200_OK
         )

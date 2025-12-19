@@ -1,5 +1,5 @@
 from ..views import BaseModelViewSet, SubBaseModelViewSet
-from ..models import Interview, Tag
+from ..models import Interview, Occasion, Tag
 from ..serializers import InterviewSerializer
 
 
@@ -24,6 +24,23 @@ class TagInterviewViewSet(SubBaseModelViewSet):
             "tag_uuid",
             Tag,
             "TAGS_INTERVIEW",
+            "titre",
+            **kwargs
+        )
+
+
+class OccationInterviewViewSet(SubBaseModelViewSet):
+    """
+    Renvoie les interivews en fonction de l'occasion
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(
+            InterviewSerializer,
+            Interview,
+            "occasion_uuid",
+            Occasion,
+            "OCCASION",
             "titre",
             **kwargs
         )

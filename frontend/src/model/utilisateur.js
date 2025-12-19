@@ -62,7 +62,7 @@ export default class Utilisateur extends Model {
      * @param {Artiste} artiste 
      */
     connect_artiste(artiste) {
-        this.connect(this.#recherches_artistes, {'uuid': artiste.uuid});
+        this.connect(this.#recherches_artistes, { 'uuid': artiste.uuid });
     }
 
     /**
@@ -78,7 +78,7 @@ export default class Utilisateur extends Model {
      * @param {Interview} interview 
      */
     connect_interview(interview) {
-        this.connect(this.#regarder_interviews, {'uuid': interview.uuid});
+        this.connect(this.#regarder_interviews, { 'uuid': interview.uuid });
     }
 
     /**
@@ -94,7 +94,7 @@ export default class Utilisateur extends Model {
      * @param {Extrait} extrait 
      */
     connect_extrait(extrait) {
-        this.connect(this.#regarder_extraits, {'uuid': extrait.uuid});
+        this.connect(this.#regarder_extraits, { 'uuid': extrait.uuid });
     }
 
     /**
@@ -110,7 +110,7 @@ export default class Utilisateur extends Model {
      * @param {Question} question 
      */
     connect_artiste(question) {
-        this.connect(this.#recherches_questions, {'uuid': question.uuid});
+        this.connect(this.#recherches_questions, { 'uuid': question.uuid });
     }
 
     /**
@@ -135,15 +135,15 @@ export default class Utilisateur extends Model {
         return this;
     }
 
-    toJSON() {
-        return {
-            uuid: this.uuid,
-            pseudo: this.#pseudo,
-            prenom: this.#prenom,
-            nom: this.#nom,
-            email: this.#email,
-            password: this.#password,
-            is_admin: this.#is_admin
-        };
+    toJSON(json = {}) {
+        json = super.toJSON(json)
+        if (this.name) json['name'] = this.name;
+        if (this.pseudo) json['pseudo'] = this.pseudo;
+        if (this.prenom) json['prenom'] = this.prenom;
+        if (this.nom) json['nom'] = this.nom;
+        if (this.email) json['email'] = this.email;
+        if (this.password) json['password'] = this.password;
+        if (this.is_admin) json['is_admin'] = this.is_admin;
+        return json;
     }
 }

@@ -38,10 +38,18 @@ class Artiste(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    name = StringProperty(required=True, unique_index=True)
-    info = StringProperty()
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
     nationalite = RelationshipTo("Nation", "NATIONALITE", ZeroOrOne)
+
+
+class Occasion(StructuredNode):
+    """
+    Noeud Occasion
+    Pour quel occasion la playlist existe
+    """
+    uuid = UniqueIdProperty()
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
 
 class Interview(StructuredNode):
@@ -50,11 +58,11 @@ class Interview(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    titre = RegexProperty(unique_index=True, expression=r".+")
+    titre = RegexProperty(unique_index=True, required=True, expression=r".+")
     date = DateProperty(index=True)
-    occasion = StringProperty()
     description = StringProperty()
 
+    occasion = RelationshipTo("Occasion", "OCCASION", ZeroOrOne)
     tags_interview = RelationshipTo("Tag", "TAGS_INTERVIEW", ZeroOrMore)
 
 
@@ -64,7 +72,7 @@ class Extrait(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    titre = RegexProperty(unique_index=True, expression=r".+")
+    titre = RegexProperty(unique_index=True, required=True, expression=r".+")
     description = StringProperty()
     youtube_url = StringProperty()
     vimeo_url = StringProperty()
@@ -86,7 +94,7 @@ class Question(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    texte = StringProperty(unique_index=True, required=True)
+    texte = RegexProperty(unique_index=True, required=True, expression=r".+")
 
     theme = RelationshipTo("Theme", "A_THEME", ZeroOrOne)
 
@@ -97,7 +105,7 @@ class Theme(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    name = StringProperty(required=True, unique_index=True)
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")
     description = StringProperty()
 
 
@@ -144,4 +152,4 @@ class Tag(StructuredNode):
     """
 
     uuid = UniqueIdProperty()
-    name = RegexProperty(unique_index=True, expression=r".+")
+    name = RegexProperty(unique_index=True, required=True, expression=r".+")

@@ -30,7 +30,6 @@ class InterviewSerializerTests(Neo4jTestCase):
         payload = {
             "titre": "New Interview",
             "date": date(2024, 3, 15),
-            "occasion": "Festival",
             "description": "Description test",
         }
         serializer = InterviewSerializer(
@@ -43,7 +42,6 @@ class InterviewSerializerTests(Neo4jTestCase):
         reloaded = Interview.nodes.get(uuid=interview.uuid)
         self.assertEqual(reloaded.titre, "New Interview")
         self.assertEqual(reloaded.date, date(2024, 3, 15))
-        self.assertEqual(reloaded.occasion, "Festival")
         self.assertEqual(reloaded.description, "Description test")
 
     # --- Mise à jour ---
@@ -71,5 +69,4 @@ class InterviewSerializerTests(Neo4jTestCase):
         ex = Interview.nodes.get(uuid=updated.uuid)
         self.assertEqual(ex.titre, "Updated Title")
         self.assertEqual(ex.date, date(2024, 4, 1))
-        self.assertEqual(ex.occasion, "Updated Occasion")
         self.assertEqual(ex.description, "Updated Desc")

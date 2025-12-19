@@ -83,7 +83,7 @@ class ArtisteSerializerTests(Neo4jTestCase):
         n2 = Nation(name="Espagne").save()
         artiste.nationalite.connect(n1)
 
-        payload = {"name": "UpdateMe", "info": "New info", "nation_uuid": n2.uuid}
+        payload = {"name": "UpdateMe", "nation_uuid": n2.uuid}
         serializer = ArtisteSerializer(
             instance=artiste, data=payload, context={"request": self.request}
         )
@@ -92,7 +92,6 @@ class ArtisteSerializerTests(Neo4jTestCase):
 
         linked_nations = [n.name for n in updated.nationalite.all()]
         self.assertEqual(linked_nations, ["Espagne"])
-        self.assertEqual(updated.info, "New info")
 
     def test_update_raises_unique_on_conflict(self):
         """Tentative de renommage en un nom déjà existant -> ValidatorUnique"""
