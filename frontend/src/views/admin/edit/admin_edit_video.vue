@@ -74,14 +74,53 @@ export default {
     },
 
     handleTagsConnected(tag) {
-
-      
-            
-           
       console.log("htc1");
         handleTagsConnected(this, tag)
         console.log("htc2",this.tagsConnected);
     },
+
+
+
+
+    async modificationDonnees(){
+      if (this.create) {
+          await this.enregistrer();
+      } else {
+        await this.Update();
+      }
+    },
+
+    async enregistrer(){
+      //fonction pour enregistrer un extraits dans L'api
+
+      console.log(this.current_extrait);
+      this.current_extrait.duree = 0;
+
+      this.popupEnregistrer = true;
+      await this.current_extrait.create();
+      
+      //this.new_extrait = new markRaw(new Extrait({}));
+
+      await this.save_tags();
+  
+      console.log("creer");
+      
+      //new_extrait.create
+    },
+
+
+    async Update(){
+      console.log(this.current_extrait);
+      await this.current_extrait.update();
+      console.log( "ha");
+      console.log( this.current_extrait);
+      console.log( "ha");
+      await this.save_tags();
+
+      console.log( this.current_extrait);
+    },
+
+
 
     async save_tags() {
         console.log("save tags",this.current_extrait);
@@ -121,11 +160,13 @@ export default {
             newArtiste.name = this.laselectedArtiste;
             await newArtiste.create()
 
+            console.log(newArtiste);
+
             this.listeArtiste.push(newArtiste);
             this.current_extrait.artiste = await newArtiste.uuid;
             this.current_extrait.artiste_uuid = await newArtiste.uuid;
 
-            console.log(this.current_extrait.artiste);
+            console.log(newArtiste.uuid,"\n",newArtiste.name);
             
             alert(this.current_extrait.artiste)
           }else{
@@ -159,23 +200,9 @@ export default {
     },
 
 
-    async enregistrer(){
-      //fonction pour enregistrer un extraits dans L'api
 
-      console.log(this.current_extrait);
-      this.current_extrait.duree = 0;
+    
 
-      this.popupEnregistrer = true;
-      await this.current_extrait.create();
-      
-      //this.new_extrait = new markRaw(new Extrait({}));
-
-      await this.save_tags();
-  
-      console.log("creer");
-      
-      //new_extrait.create
-    },
 
     popupchange(){
       this.popup = !this.popup;
@@ -185,20 +212,19 @@ export default {
       this.popupCreerQuestion = !this.popupCreerQuestion;
     },
 
-   async modificationDonnees(){
-      if (this.create) {
-          await this.enregistrer();
-      } else {
-        await this.Update();
-      }
+
+    popupchangeEnregistrer(){
+      //permet de changer l'etat de la popup Enregistrer
+      this.popupEnregistrer = !this.popupEnregistrer
+      
     },
 
-
-    async Update(){
-      console.log(this.current_extrait);
-      await this.current_extrait.update();
-      await this.save_tags();
+    popupchangeInterview(){
+      //permet de changer l'etat de la popup Interview
+      this.popupSelectInterview = !this.popupSelectInterview
+      
     },
+
 
 
 
@@ -251,17 +277,7 @@ export default {
 
    
 
-    popupchangeEnregistrer(){
-      //permet de changer l'etat de la popup Enregistrer
-      this.popupEnregistrer = !this.popupEnregistrer
-      
-    },
 
-    popupchangeInterview(){
-      //permet de changer l'etat de la popup Interview
-      this.popupSelectInterview = !this.popupSelectInterview
-      
-    },
 
     async validateYouTubeVideo(url) {
       // Extraire l'ID YouTube
