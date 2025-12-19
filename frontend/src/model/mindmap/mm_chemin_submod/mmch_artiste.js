@@ -19,7 +19,7 @@ export default class mmch_Artiste extends mmch_CheminT {
     }
     async* mmch_searchinst(args = {}) {
         const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
-        
+        yield mmch_Extrait;
 
         // TODO : put recomendation algorithm here
         const recommend = await this.mmch_dbjsclass.search(finalArgs);
