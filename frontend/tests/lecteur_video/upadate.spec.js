@@ -27,7 +27,7 @@ describe("page_lecteur_video - update()", () => {
     // Mock du Model global utilisé par Artiste, etc.
     vi.mock("../../src/model/model.js", () => {
       return {
-        default: class Model {}
+        default: class Model { }
       };
     });
   });

@@ -10,13 +10,13 @@ export default class mmch_CheminT extends mm_Node {
 
     static mmch_default_previewcat_args = { size : 1 };
     static mmch_default_previewinst_args = { size : 1 };
-    mmch_obj = null;
+    mmch_obj;
 
-    constructor(mminfo, x, y, depth, content = null) {
-        super(mminfo, x, y, depth + 1);
+    constructor(mminfo, x, y, depth, content) {
         if (new.target === mmch_CheminT) {
             throw new Error("Cannot instantiate abstract class mmch_CheminT");
         }
+        super(mminfo, x, y, depth + 1);
         this.mmch_obj = content;
     }
 

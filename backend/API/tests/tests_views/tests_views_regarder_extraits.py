@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from ...models import Extrait, Utilisateur
+from ...models import Artiste, Extrait, Question, Utilisateur
 from ...tests import Neo4jTestCase
 
 
@@ -34,6 +34,16 @@ class RegarderExtraitsViewSetAPITests(Neo4jTestCase):
             vimeo_url=f"url_{uuid4()}",
             duree=180,
         ).save()
+
+        # Création d'artiste et question
+        self.artiste = Artiste(name="Artiste test").save()
+        self.question = Question(texte="Question test").save()
+
+        self.extrait1.interviewer.connect(self.artiste)
+        self.extrait2.interviewer.connect(self.artiste)
+
+        self.extrait1.question.connect(self.question)
+        self.extrait2.question.connect(self.question)
 
         # Connecter seulement extrait1 comme regardé
         self.utilisateur.regarder_extraits.connect(self.extrait1)

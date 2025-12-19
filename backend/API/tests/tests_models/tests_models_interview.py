@@ -27,12 +27,10 @@ class InterviewTestCase(Neo4jTestCase):
         """Mise à jour des champs d'une interview"""
         iv = Interview(titre="Old title", date=date(2023, 1, 1)).save()
         iv.titre = "New title"
-        iv.lieu = "Lyon"
         iv.save()
 
         reloaded = Interview.nodes.get(uuid=iv.uuid)
         self.assertEqual(reloaded.titre, "New title")
-        self.assertEqual(reloaded.lieu, "Lyon")
 
     def test_delete_interview(self):
         """Suppression d'une interview"""

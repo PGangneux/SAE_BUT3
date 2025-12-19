@@ -8,7 +8,6 @@ from ..models import (
     Extrait,
     Interview,
     Question,
-    StyleMusical,
     Tag,
     Theme,
     Utilisateur,
@@ -66,6 +65,11 @@ class URLsAPITests(Neo4jTestCase):
 
     def test_question_urls(self):
         self.question: Question = Question(texte="Test").save()
+
+        # Création theme
+        self.theme = Theme(name=f"Theme test {uuid4()}").save()
+        self.question.theme.connect(self.theme)
+
         self.assertEqual(
             self.client.get(reverse("question-list")).status_code, status.HTTP_200_OK
         )
@@ -95,7 +99,15 @@ class URLsAPITests(Neo4jTestCase):
         )
 
     def test_extrait_urls(self):
-        self.extrait: Extrait = Extrait(duree=120).save()
+        self.extrait: Extrait = Extrait(titre="Extrait test", duree=120).save()
+
+        # Création d'artiste et question
+        self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()
+        self.question = Question(texte=f"Question test {uuid4()}").save()
+
+        self.extrait.interviewer.connect(self.artiste)
+        self.extrait.question.connect(self.question)
+
         self.assertEqual(
             self.client.get(reverse("extrait-list")).status_code, status.HTTP_200_OK
         )
@@ -204,54 +216,6 @@ class URLsAPITests(Neo4jTestCase):
         self.assertEqual(
             self.client.get(
                 reverse("extrait-list", kwargs={"artiste_uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-list", kwargs={"artiste_uuid": self.artiste.uuid})
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-list", kwargs={"artiste_uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-
-    def test_styles_musical_urls(self):
-        self.style_musical: StyleMusical = StyleMusical(name="Test").save()
-        self.assertEqual(
-            self.client.get(reverse("style-musical-list")).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse(
-                    "style-musical-detail", kwargs={"uuid": self.style_musical.uuid}
-                )
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("style-musical-detail", kwargs={"uuid": self.uuid})
-            ).status_code,
-            status.HTTP_404_NOT_FOUND,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse(
-                    "artiste-list",
-                    kwargs={"stylemusical_uuid": self.style_musical.uuid},
-                )
-            ).status_code,
-            status.HTTP_200_OK,
-        )
-        self.assertEqual(
-            self.client.get(
-                reverse("artiste-list", kwargs={"stylemusical_uuid": self.uuid})
             ).status_code,
             status.HTTP_404_NOT_FOUND,
         )

@@ -1,6 +1,6 @@
 <script>
 import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import mmch_Root  from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
+import mmch_Root from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
 
 export default {
     name: "mindmap_node",
@@ -13,12 +13,14 @@ export default {
     data() {
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            thumbnailLoading: false,
             isAppearing: true,
-            thumbnailUrl: null,
+            isDisappearing: false,
             nodeTitle: 'Inconnue',
+            nodeSubtitle: "Inconnue",
             nodeDescription: [],
             hasMiniature: false,
+            thumbnailLoading: false,
+            thumbnailUrl: null,
         };
     },
     methods: {
@@ -30,11 +32,13 @@ export default {
                     this.nodeTitle = '';
                 }
                 return;
+            } else {
+                this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
             }
             this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
-            // Check if has miniature
             // Load description
             this.nodeDescription = await this.node_instance.mmch_getDescription();
+            // Check if has miniature
             this.thumbnailLoading = true;
             this.hasMiniature = await this.node_instance.mmch_hasMiniature();
             // Load miniature if available
@@ -49,8 +53,9 @@ export default {
             const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
             const appearingClass = this.isAppearing ? 'mm_node_appearing' : '';
+            const disappearingClass = this.isDisappearing ? 'mm_node_disappearing' : '';
 
-            return `${baseClass} ${shapeClass} ${appearingClass}`;
+            return `${baseClass} ${shapeClass} ${appearingClass} ${disappearingClass}`;
         },
     },
     async mounted() {
@@ -59,6 +64,15 @@ export default {
         }, 50);
         // Load all async data
         await this.loadNodeData();
+    },
+    beforeUnmount() {
+        this.isDisappearing = true;
+        // Wait for animation to complete before actually unmounting
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, 1000);
+        });
     },
 }
 </script>
@@ -134,125 +148,3 @@ export default {
         </template>
     </div>
 </template>
-
-<style scoped>
-.mm_node {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    justify-content: space-between;
-    text-align: center;
-    color: white;
-    cursor: pointer;
-    z-index: 5;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s ease, opacity 0.5s ease;
-    transform: scale(0);
-    opacity: 0;
-    overflow: hidden;
-}
-
-.mm_node:not(.mm_node_appearing) {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.mm_node:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 25px var(--vert-neon);
-}
-
-.mm_nodeSquircle {
-    border-radius: 10%;
-}
-
-.mm_nodeRound {
-    aspect-ratio: 1;
-    border-radius: 50%;
-}
-
-/* Node content layout title subtitle description */
-.mm_node_content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.mm_node_title {
-    font-size: 0.9em;
-    margin: 0 0 4px 0;
-    line-height: 1.1;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.mm_node_subtitle {
-    font-size: 0.7em;
-    margin: 0 0 8px 0;
-    line-height: 1;
-    opacity: 0.9;
-    font-weight: normal;
-}
-
-.mm_node_description {
-    flex: 1;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    padding: 6px;
-    margin-top: 4px;
-}
-
-.mm_node_description p {
-    font-size: 0.6em;
-    margin: 2px 0;
-    line-height: 1.2;
-    opacity: 0.8;
-}
-
-/* Preview/thumbnail section */
-.mm_node_preview {
-    width: auto;
-    min-width: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
-    box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.mm_node_thumbnail {
-    height: 100%;
-    max-height: 250px;
-    width: auto;
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.mm_node_loading-spinner {
-    height: 100%;
-    max-height: 250px;
-    width: auto;
-    aspect-ratio: 1;
-}
-
-.mm_node_no-thumbnail {
-    height: 100%;
-    max-height: 250px;
-    width: auto;
-    aspect-ratio: 1;
-    opacity: 0.7;
-    padding: 20%;
-    box-sizing: border-box;
-}
-</style>

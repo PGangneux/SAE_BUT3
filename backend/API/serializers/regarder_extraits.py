@@ -13,11 +13,13 @@ class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
     description = serializers.CharField(read_only=True)
     youtube_url = serializers.CharField(read_only=True)
     vimeo_url = serializers.CharField(read_only=True)
+    lieu = serializers.CharField(read_only=True)
     uploaded_at = serializers.DateField(read_only=True)
     duree = serializers.IntegerField(read_only=True)
     artiste = serializers.SerializerMethodField(read_only=True)
     question = serializers.SerializerMethodField(read_only=True)
     interviews = serializers.SerializerMethodField(read_only=True)
+    audios = serializers.SerializerMethodField(read_only=True)
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
@@ -50,6 +52,14 @@ class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
         Renvoie un lien propre vers les interviews :
         """
         return self.get_url("interview-list", kwargs={"extrait_uuid": extrait.uuid})
+
+    def get_audios(self, extrait: Extrait):
+        """Renvoie un lien vers les audios
+
+        Args:
+            extrait (Extrait): un extrait
+        """
+        return self.get_url("audio-list", kwargs={"extrait_uuid": extrait.uuid})
 
     def get_tags(self, extrait):
         """

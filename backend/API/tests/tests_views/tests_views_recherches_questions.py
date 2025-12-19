@@ -2,7 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from ...models import Question, Utilisateur
+from ...models import Question, Theme, Utilisateur
 from ...tests import Neo4jTestCase
 
 
@@ -22,6 +22,11 @@ class RecherchesQuestionsViewSetAPITests(Neo4jTestCase):
         # Création de deux questions
         self.question1 = Question(texte=f"Question_{uuid4()}").save()
         self.question2 = Question(texte=f"Question_{uuid4()}").save()
+
+        # Création theme
+        self.theme = Theme(name=f"Theme test {uuid4()}").save()
+        self.question1.theme.connect(self.theme)
+        self.question2.theme.connect(self.theme)
 
         # Connecter seulement question1 comme recherchée par l'utilisateur
         self.utilisateur.recherches_questions.connect(self.question1)
