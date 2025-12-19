@@ -243,10 +243,16 @@ export default {
                     this.occasion = occas.uuid
                 }
                 else{
-                    console.log("create occas")
-                    const occas_object = new Occasion({'name':this.name_occasion})
-                    await occas_object.create()
-                    this.occasion = occas_object.uuid
+                    if (this.name_occasion){
+                        console.log("create occas")
+                        const occas_object = new Occasion({'name':this.name_occasion})
+                        await occas_object.create()
+                        this.occasion = occas_object.uuid
+                    }
+                    else{
+                        throw new Error("Occasion ne doit pas être vide")
+                    }
+
                 }
 
                 this.current_interview.occasion = this.occasion;

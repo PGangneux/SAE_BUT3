@@ -63,7 +63,7 @@ export default class FetchError extends Error {
                 return `La propriété ${this.detail['Required Property']} est requise`
             }
             else{
-                return "Erreur 55";
+                return this.detail;
             }
         } else if (this.isServer) {
             // Lorsque la connexion à l'API se réalise mais pas celle à la bd (non implémenté dans l'API)
