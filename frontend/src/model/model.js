@@ -215,22 +215,19 @@ export default class Model {
         if (!this.#uuid) {
             throw new Error(`Cannot update ${this.constructor.name} without a UUID`);
         }
-        try {
-            return await ClientAPI.put(
-                ClientAPI.url_uuid(
-                    await ClientAPI.endpoints(this.constructor.endpoint),
-                    this.#uuid
-                ),
-                JSON.stringify(this.toJSON())
-            )
-                // Charger les nouvelles données dans l'instance
-                .then((json) => {
-                    return this.fromJSON(json);
-                });
-        } catch (error) {
-            console.error(error.toString());
-            return null;
-        }
+
+        return await ClientAPI.put(
+            ClientAPI.url_uuid(
+                await ClientAPI.endpoints(this.constructor.endpoint),
+                this.#uuid
+            ),
+            JSON.stringify(this.toJSON())
+        )
+            // Charger les nouvelles données dans l'instance
+            .then((json) => {
+                return this.fromJSON(json);
+            });
+
     }
 
     /**

@@ -228,7 +228,9 @@ export default {
         async save() {
             this.chargement = true;
             try {
+                console.log("titre", this.titre)
                 this.current_interview.titre = this.titre;
+                console.log(this.current_interview)
                 // if(this.titre === ''){
                 // //     throw new Error("Le titre est obligatoire")
                 //     this.current_interview.titre = null;
@@ -269,9 +271,9 @@ export default {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
                 this.popupError = true;
-                // setTimeout(()=>{
-                //     this.popupError = false;
-                // },7)
+                setTimeout(()=>{
+                    this.popupError = false;
+                },5000)
                 this.chargement = false;
             } finally {
                 this.chargement = false;

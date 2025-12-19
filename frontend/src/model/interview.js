@@ -162,7 +162,7 @@ export default class Interview extends Model {
 
     toJSON(json = {}) {
         json = super.toJSON(json)
-        if (this.titre) json['titre'] = this.titre;
+        if (this.titre != null | this.titre != undefined) json['titre'] = this.titre;
         if (this.date) json['date'] = this.date;
         if (this.#occasion_uuid) json['occasion_uuid'] = this.#occasion_uuid;
         if (this.description) json['description'] = this.description;
