@@ -564,7 +564,7 @@ export default {
 
 
 
-                <button class="bt" type="button" @click="creerNouvelleQuestion" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" @click="creerNouvelleQuestion" alt="add" class="col "> </button>
+                <button class="bt" type="button" @click="creerNouvelleQuestion" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
             </div>
           </div>
 
