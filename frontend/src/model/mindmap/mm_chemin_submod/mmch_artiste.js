@@ -45,7 +45,7 @@ export default class mmch_Artiste extends mmch_CheminT {
         const artiste = this.mmch_obj;
 
         try {
-            const extraits = await Artiste.extraits({ limit: 3 });
+            const extraits = await artiste.extraits({ limit: 3 });
             if (extraits.length > 0) {
                 description.push(`${extraits.length} extrait(s) disponible(s)`);
             }

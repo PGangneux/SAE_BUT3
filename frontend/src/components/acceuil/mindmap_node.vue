@@ -87,7 +87,7 @@ export default {
             nodeTitle {{ nodeTitle }}
             nodeDescription {{ nodeDescription }}
             hasMiniature {{ hasMiniature }}
-            node_instance {{ this.node_instance }}
+            node_instance {{ }}
         </div>
 
         <!-- Case 1: No content -->
