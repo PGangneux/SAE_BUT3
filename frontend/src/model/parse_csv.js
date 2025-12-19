@@ -5,6 +5,7 @@ import Artiste from './artiste.js';
 import Question from './question.js';
 import Tag from './tag.js';
 import Theme from './theme.js';
+import Occasion from './occasion.js';
 
 export function get_YT_videoId(url) {
   try {
@@ -64,7 +65,7 @@ export async function parse(file) {
         youtube: get_YT_videoId(row.Youtube?.trim()) || null,
         vimeo:  null,
         evenement: row.Evénement?.trim() || row['Événement']?.trim() || '',
-        duree: parseInt(row.Duree) || 0
+        duree: 48
       }));
 
     // Grouper les extraits par interview (artiste + événement)
@@ -137,7 +138,8 @@ export async function importToDatabase(parsedData) {
       artistes: [],
       questions: [],
       tags: [],
-      themes: []
+      themes: [],
+      occasions: []
     },
     errors: []
   };
@@ -168,12 +170,12 @@ export async function importToDatabase(parsedData) {
     const themesMap = new Map();
     for (const themeText of new Set(parsedData.extraits.map(e => e.theme).filter(Boolean))) {
       try {
-        const themes = await theme.search(themeText);
-        let theme = themes.find(q => q.texte?.toLowerCase() === themeText.toLowerCase());
+        const themes = await Theme.search(themeText);
+        let theme = themes.find(t => t.texte?.toLowerCase() === themeText.toLowerCase());
         
         if (!theme) {
           theme = new Theme({ 'name': themeText });
-          await Theme.create();
+          await theme.create();
           results.created.themes.push(theme);
         }
         
@@ -222,32 +224,59 @@ export async function importToDatabase(parsedData) {
       }
     }
 
-    // 4. Créer les interviews
-    const interviewsCreated = new Map();
+    // 4. Créer les Occasion/Evenement
+    const occasionsMap = new Map();
+    const allOccasions = new Set(parsedData.extraits.map(e => e.evenement).filter(Boolean));
+    for (const occasionName of allOccasions) {
+      try {
+        const occasions = await Occasion.search(occasionName);
+        let occasion = occasions.find(o => o.name?.toLowerCase() === occasionName.toLowerCase());
+        
+        if (!occasion) {
+          occasion = new Occasion({ 'name': occasionName });
+          await occasion.create();
+          results.created.occasions.push(occasion);
+        }
+        
+        occasionsMap.set(occasionName, occasion);
+      } catch (error) {
+        results.errors.push(`Erreur occasion ${occasionName}: ${error.message}`);
+      }
+    }
 
-    
+    // 5. Créer les interviews
+    const interviewsCreated = new Map();
     
     for (const interviewData of parsedData.interviews) {
       try {
         // Vérifie si la date est présente et valide
         let formattedDate = null;
         if (interviewData.date && interviewData.date.trim() !== "") {
-            const d = new Date(interviewData.date);
-            if (!isNaN(d)) {
-                formattedDate = d.toISOString().slice(0, 10); // format YYYY-MM-DD
-            }
+          const d = new Date(interviewData.date);
+          if (!isNaN(d)) {
+            formattedDate = d.toISOString().slice(0, 10); // format YYYY-MM-DD
+          }
         }
-
 
         const interview = new Interview({
           titre: `${interviewData.artiste} - ${interviewData.evenement}`,
           date: formattedDate,
           occasion: interviewData.evenement,
           description: '',
-          lieu: interviewData.ville
+          lieu: interviewData.ville, 
         });
+
+        // Lier l'occasion à l'interview si elle existe
+        const occasion = occasionsMap.get(interviewData.evenement);
+        console.log("liaason occasion inter", occasion)
+        if (occasion) {
+          interview.occasion = occasion.uuid;
+        }
         
         await interview.create();
+        
+
+        
         results.created.interviews.push(interview);
         interviewsCreated.set(interviewData.id, interview);
       } catch (error) {
@@ -255,8 +284,8 @@ export async function importToDatabase(parsedData) {
       }
     }
 
-    // 5. Créer les extraits et les lier
-    let i = 0  
+    // 6. Créer les extraits et les lier
+    let i = 0;
     for (const interviewData of parsedData.interviews) {
       const interview = interviewsCreated.get(interviewData.id);
       if (!interview) continue;
@@ -264,52 +293,53 @@ export async function importToDatabase(parsedData) {
       const extraitsToConnect = [];
       for (const extraitData of interviewData.extraits) {
         try {
-            i++;
-                  // Vérifie si la date est présente et valide
-            let formattedDate = null;
-            if (extraitData.date && extraitData.date.trim() !== "") {
-                const d = new Date(extraitData.date);
-                if (!isNaN(d)) {
-                    formattedDate = d.toISOString().slice(0, 10); // format YYYY-MM-DD
-                }
-            }  
-            const artiste = artistesMap.get(extraitData.artiste);
-            const questionKey = `${extraitData.question}|${extraitData.theme}`;
-            const question = questionsMap.get(questionKey);
-
-            if (!artiste) {
-                results.errors.push(`Artiste introuvable: ${extraitData.artiste}`);
-                continue;
+          i++;
+          // Vérifie si la date est présente et valide
+          let formattedDate = null;
+          if (extraitData.date && extraitData.date.trim() !== "") {
+            const d = new Date(extraitData.date);
+            if (!isNaN(d)) {
+              formattedDate = d.toISOString().slice(0, 10); // format YYYY-MM-DD
             }
+          }
+          
+          const artiste = artistesMap.get(extraitData.artiste);
+          const question = questionsMap.get(extraitData.question);
 
-            const extrait = new Extrait({
-                titre: extraitData.theme || extraitData.question || `Èxtrait_${i}`,
-                description: extraitData.question || '',
-                youtube_url: extraitData.youtube,
-                vimeo_url: extraitData.vimeo,
-                uploaded_at: formattedDate,
-                duree: 48
-            });
+          if (!artiste) {
+            results.errors.push(`Artiste introuvable: ${extraitData.artiste}`);
+            continue;
+          }
 
-            // Lier l'artiste et la question
-            extrait.artiste = artiste.uuid;
-            if (question) {
-                extrait.question = question.uuid;
+          const extrait = new Extrait({
+            titre: extraitData.theme || extraitData.question || `Extrait_${i}`,
+            description: extraitData.question || '',
+            youtube_url: extraitData.youtube,
+            vimeo_url: extraitData.vimeo,
+            uploaded_at: formattedDate,
+            duree: 48
+          });
+
+          // Lier l'artiste et la question
+          extrait.artiste = artiste.uuid;
+          if (question) {
+            extrait.question = question.uuid;
+          }
+          console.log(extrait)
+          await extrait.create();
+          results.created.extraits.push(extrait);
+
+          // Lier les tags
+          for (const tagName of extraitData.tags) {
+            const tag = tagsMap.get(tagName);
+            if (tag) {
+              await extrait.connect_tag(tag);
             }
-            await extrait.create();
-            results.created.extraits.push(extrait);
+          }
 
-            // Lier les tags
-            for (const tagName of extraitData.tags) {
-                const tag = tagsMap.get(tagName);
-                if (tag) {
-                await extrait.connect_tag(tag);
-                }
-            }
-
-            extraitsToConnect.push(extrait);
+          extraitsToConnect.push(extrait);
         } catch (error) {
-            results.errors.push(`Erreur extrait: ${error.message}`);
+          results.errors.push(`Erreur extrait: ${error.message}`);
         }
       }
 

@@ -2,11 +2,7 @@ from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-<<<<<<< HEAD
-from ...models import Artiste, StyleMusical
-=======
 from ...models import Artiste
->>>>>>> develop
 from ...tests import Neo4jTestCase
 
 

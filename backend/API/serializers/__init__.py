@@ -10,10 +10,6 @@ from .extrait import ExtraitSerializer
 from .interview import InterviewSerializer
 from .artiste import ArtisteSerializer
 from .utilisateur import UtilisateurSerializer
-<<<<<<< HEAD
-from .style_musical import StyleMusicalSerializer
-=======
->>>>>>> develop
 from .tag import TagSerializer
 from .recherches_artistes import RecherchesArtistesSerializer
 from .regarder_interviews import RegarderInterviewsSerializer

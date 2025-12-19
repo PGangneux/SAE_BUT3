@@ -221,15 +221,15 @@ export default class Extrait extends Model {
 
     toJSON(json = {}) {
         json = super.toJSON(json)
-        if (this.name) json['titre'] = this.titre;
-        if (this.name) json['description'] = this.description;
-        if (this.name) json['youtube_url'] = this.youtube_url;
-        if (this.name) json['vimeo_url'] = this.vimeo_url;
-        if (this.name) json['lieu'] = this.lieu;
-        if (this.name) json['uploaded_at'] = this.uploaded_at;
-        if (this.name) json['artiste_uuid'] = this.#artiste_uuid;
-        if (this.name) json['question_uuid'] = this.#question_uuid;
-        if (this.name) json['duree'] = this.duree;
+        if (this.titre) json['titre'] = this.titre;
+        if (this.description) json['description'] = this.description;
+        if (this.youtube_url) json['youtube_url'] = this.youtube_url;
+        if (this.vimeo_url) json['vimeo_url'] = this.vimeo_url;
+        if (this.lieu) json['lieu'] = this.lieu;
+        if (this.uploaded_at) json['uploaded_at'] = this.uploaded_at;
+        if (this.#artiste_uuid) json['artiste_uuid'] = this.#artiste_uuid;
+        if (this.#question_uuid) json['question_uuid'] = this.#question_uuid;
+        if (this.duree) json['duree'] = this.duree;
         return json;
     }
 }

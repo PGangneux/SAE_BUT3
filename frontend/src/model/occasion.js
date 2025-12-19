@@ -5,10 +5,10 @@ export default class Occasion extends Model {
     #name;
     #interviews;
 
-    constructor({ uuid, name, artistes }) {
+    constructor({ uuid, name, interviews }) {
         super(uuid);
         this.#name = name;
-        this.#interviews = artistes;
+        this.#interviews = interviews;
     }
 
     static get endpoint() { return "occasions"; }
