@@ -123,6 +123,8 @@ export default {
         onDrop(evt, targetList) {
             evt.preventDefault();
 
+  
+
             const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
             const sourceList = evt.dataTransfer.getData('sourceList'); // 'available' ou 'playlist'
 
@@ -170,6 +172,14 @@ export default {
             // Mettre à jour les compteurs
             this.taillelist1 = this.Extraitlist.length;
             this.taillelist2 = this.current_list_extraits.length;
+
+            // misa à jour des filtres de recherche
+            const tmp_searchAvaible =  this.searchAvailable;
+            const tmp_searchPlaylist = this.searchPlaylist;
+            this.searchAvailable = '';
+            this.searchPlaylist = '';
+            this.searchAvailable = tmp_searchAvaible;
+            this.searchPlaylist = tmp_searchPlaylist;
         },
 
         handleTagsCreated(tags) {
