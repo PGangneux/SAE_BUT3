@@ -85,25 +85,32 @@ export default {
     },
 
     async enregistrer(){
-      //fonction pour enregistrer un extraits dans L'api
-      this.current_extrait.duree = 0;
 
-      this.popupEnregistrer = true;
-      await this.current_extrait.create();
+      try{
+        //fonction pour enregistrer un extraits dans L'api
+        this.current_extrait.duree = 0;
+        this.popupEnregistrer = true;
+        await this.current_extrait.create();
+        //this.new_extrait = new markRaw(new Extrait({}));
+        await this.save_tags();
+        console.log("creer");
+        alert("creer");
+      }catch{
+        alert('probleme lors de la creation');
+      }
       
-      //this.new_extrait = new markRaw(new Extrait({}));
-
-      await this.save_tags();
-  
-      console.log("creer");
-      
-      //new_extrait.create
     },
 
 
     async Update(){
-      await this.current_extrait.update();
-      await this.save_tags();
+      try{
+        await this.current_extrait.update();
+        await this.save_tags();
+        alert('element enregistrer');
+      }catch{
+        alert('probleme lors de l\'enregistrement');
+      }
+
     },
 
 
@@ -159,7 +166,7 @@ export default {
             this.current_extrait.artiste = await newArtiste.uuid;
             this.current_extrait.artiste_uuid = await newArtiste.uuid;
             
-            alert(this.current_extrait.artiste)
+            alert('l\'artiste ' + newArtiste.name + ' est creer');
           }else{
             alert('l\'artiste existe deja')
           }
