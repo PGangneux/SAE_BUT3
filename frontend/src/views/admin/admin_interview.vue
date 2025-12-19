@@ -299,7 +299,7 @@ export default {
         }
 
 
-        const allExtraits = markRaw(await Extrait.list());
+        
 
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
@@ -316,14 +316,15 @@ export default {
             this.liste_occasion_bd = markRaw(await Occasion.list()) 
             
             this.current_list_extraits = markRaw(await this.current_interview.extraits({ 'order': 'APPARTIENT_A|position' }));
+            this.taillelist2 = this.current_list_extraits.length;
 
+            const allExtraits = markRaw(await Extrait.list());
             this.Extraitlist = markRaw(
                 allExtraits.filter(e =>
                     !this.current_list_extraits.some(c => c.uuid === e.uuid)
                 )
             );
 
-            this.taillelist2 = this.current_list_extraits.length;
 
 
            
