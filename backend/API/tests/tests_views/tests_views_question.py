@@ -13,6 +13,11 @@ class QuestionViewSetAPITests(Neo4jTestCase):
         self.question1 = Question(texte=f"Question unique {uuid4()}").save()
         self.question2 = Question(texte=f"Question autre {uuid4()}").save()
 
+        # Création theme
+        self.theme = Theme(name=f"Theme test {uuid4()}").save()
+        self.question1.theme.connect(self.theme)
+        self.question2.theme.connect(self.theme)
+
     def test_list_questions(self):
         url = reverse("question-list")
         response = self.client.get(url)

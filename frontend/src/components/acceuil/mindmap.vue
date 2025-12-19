@@ -73,7 +73,7 @@ export default {
                 </transition>
             </div>
         </div>
-        <div v-for="link in mm_instance.linkages" :key="link.id" :style="link.getStyle(mm_instance.scale, mm_instance.offx, mm_instance.offy)" class="mm_linkage">
+        <div v-for="link in mm_instance.linkages" :key="link.id" :style="link.getStyle(mm_instance)" class="mm_linkage">
         </div>
         <mindmap_node v-for="node in mm_instance.nodes" :node_instance="node"
             @click="mm_instance.handleClick(node);" @touchend="mm_instance.handleClick(node);" />

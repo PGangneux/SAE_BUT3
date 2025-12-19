@@ -7,13 +7,12 @@ from .extrait import (
     ArtisteExtraitViewSet,
     QuestionExtraitViewSet,
     InterviewExtraitViewSet,
+    AudioExtraitViewSet,
 )
-from .interview import InterviewViewSet, TagInterviewViewSet
-from .artiste import ArtisteViewSet, StyleMusicalArtisteViewSet
+from .interview import InterviewViewSet, TagInterviewViewSet, OccationInterviewViewSet
+from .artiste import ArtisteViewSet
 from .utilisateur import UtilisateurViewSet
-from .style_musical import StyleMusicalViewSet
 from .tag import TagViewSet
-from .style import ArtisteStyleRelationShipViewSet
 from .recherches_artistes import RecherchesArtistesViewSet
 from .regarder_interviews import RegarderInterviewsViewSet
 from .regarder_extraits import RegarderExtraitsViewSet
@@ -21,6 +20,9 @@ from .recherches_questions import RecherchesQuestionsViewSet
 from .interviews import InterviewsViewSet
 from .tags_extrait import TagsExtraitRelationShipViewSet
 from .tags_interview import TagsInterviewRelationShipViewSet
+from .audio import AudioViewSet
+from .audios import AudiosViewSet
+from .occasion import OccasionViewSet
 from .login import LoginView
 from .recommandation import Recommandation
 
@@ -40,11 +42,8 @@ __all__ = (
     "InterviewViewSet",
     "TagInterviewViewSet",
     "ArtisteViewSet",
-    "StyleMusicalArtisteViewSet",
     "UtilisateurViewSet",
-    "StyleMusicalViewSet",
     "TagViewSet",
-    "ArtisteStyleRelationShipViewSet",
     "RecherchesArtistesViewSet",
     "RegarderInterviewsViewSet",
     "RegarderExtraitsViewSet",
@@ -52,6 +51,11 @@ __all__ = (
     "InterviewsViewSet",
     "TagsExtraitRelationShipViewSet",
     "TagsInterviewRelationShipViewSet",
+    "AudioViewSet",
+    "AudiosViewSet",
+    "AudioExtraitViewSet",
+    "OccationInterviewViewSet",
+    "OccasionViewSet",
     "LoginView",
     "Recommandation",
 )

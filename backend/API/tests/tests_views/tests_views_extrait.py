@@ -27,6 +27,16 @@ class ExtraitViewSetAPITests(Neo4jTestCase):
             duree=90,
         ).save()
 
+        # Création d'artiste et question
+        self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()
+        self.question = Question(texte=f"Question test {uuid4()}").save()
+
+        self.extrait1.interviewer.connect(self.artiste)
+        self.extrait2.interviewer.connect(self.artiste)
+
+        self.extrait1.question.connect(self.question)
+        self.extrait2.question.connect(self.question)
+
     def test_list_extraits(self):
         url = reverse("extrait-list")
         response = self.client.get(url)
@@ -62,7 +72,7 @@ class QuestionExtraitViewSetAPITests(Neo4jTestCase):
         self.question = Question(texte=f"Question {uuid4()}").save()
 
         self.extrait1 = Extrait(
-            titre="Réponse à la question",
+            titre=f"Réponse à la question {uuid4()}",
             description="Desc 1",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
@@ -70,14 +80,20 @@ class QuestionExtraitViewSetAPITests(Neo4jTestCase):
         ).save()
         # <-- ici : titre sans le mot "Réponse" pour rendre la recherche univoque
         self.extrait2 = Extrait(
-            titre="Autre sujet intéressant",
+            titre=f"Autre sujet intéressant {uuid4()}",
             description="Desc 2",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
             duree=200,
         ).save()
 
-        # connexion des extraits à la question
+        # Création d'artiste et question
+        self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()
+        self.question = Question(texte=f"Question test {uuid4()}").save()
+
+        self.extrait1.interviewer.connect(self.artiste)
+        self.extrait2.interviewer.connect(self.artiste)
+
         self.extrait1.question.connect(self.question)
         self.extrait2.question.connect(self.question)
 
@@ -148,6 +164,16 @@ class InterviewExtraitViewSetAPITests(Neo4jTestCase):
             vimeo_url=f"https://vimeo.com/{uuid4()}",
             duree=95,
         ).save()
+
+        # Création d'artiste et question
+        self.artiste = Artiste(name="Artiste test").save()
+        self.question = Question(texte="Question test").save()
+
+        self.extrait_pos1.interviewer.connect(self.artiste)
+        self.extrait_pos2.interviewer.connect(self.artiste)
+
+        self.extrait_pos1.question.connect(self.question)
+        self.extrait_pos2.question.connect(self.question)
 
         # Connexions avec la relation APPARTIENT_A et position
         # On met extrait_pos2 en position 2 et extrait_pos1 en position 1
@@ -224,6 +250,16 @@ class TagExtraitViewSetAPITests(Neo4jTestCase):
             duree=70,
         ).save()
 
+        # Création d'artiste et question
+        self.artiste = Artiste(name="Artiste test").save()
+        self.question = Question(texte="Question test").save()
+
+        self.extrait_tagged.interviewer.connect(self.artiste)
+        self.extrait_untagged.interviewer.connect(self.artiste)
+
+        self.extrait_tagged.question.connect(self.question)
+        self.extrait_untagged.question.connect(self.question)
+
         # Connexion du tag uniquement sur extrait_tagged
         self.extrait_tagged.tags_extrait.connect(self.tag)
 
@@ -265,30 +301,19 @@ class ArtisteExtraitViewSetAPITests(Neo4jTestCase):
 
         # Création de deux extraits, seul l'un d'eux aura la relation PARTICIPER vers l'artiste
         self.extrait_with_artist = Extrait(
-            titre="Extrait avec artiste",
+            titre=f"Extrait avec artiste {uuid4()}",
             description="Desc artiste",
             youtube_url=f"https://youtu.be/{uuid4()}",
             vimeo_url=f"https://vimeo.com/{uuid4()}",
             duree=140,
         ).save()
-        self.extrait_without_artist = Extrait(
-            titre="Extrait sans artiste",
-            description="Desc sans artiste",
-            youtube_url=f"https://youtu.be/{uuid4()}",
-            vimeo_url=f"https://vimeo.com/{uuid4()}",
-            duree=130,
-        ).save()
 
-        # Connexion de l'artiste comme interviewer/participant sur extrait_with_artist
+        # Création d'artiste et question
+        self.artiste = Artiste(name=f"Artiste test {uuid4()}").save()
+        self.question = Question(texte=f"Question test {uuid4()}").save()
+
         self.extrait_with_artist.interviewer.connect(self.artiste)
-
-    def test_list_extraits_by_artiste(self):
-        url = reverse("extrait-list", kwargs={"artiste_uuid": self.artiste.uuid})
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        uuids = [e["uuid"] for e in response.json()]
-        self.assertIn(self.extrait_with_artist.uuid, uuids)
-        self.assertNotIn(self.extrait_without_artist.uuid, uuids)
+        self.extrait_with_artist.question.connect(self.question)
 
     def test_retrieve_extrait_by_artiste(self):
         url = reverse(

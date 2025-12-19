@@ -45,8 +45,8 @@ export default class mm_Linkage {
         return {
             "height": (this.thickness * mminfo.scale) + "px",
             "width": length + "px",
-            "left": (scaledStartX + mminfo.baseOffsetX) + "px", // 50 * scale to center
-            "top": (scaledStartY + mminfo.baseOffsetY) + "px", // 50 * scale to center
+            "left": (scaledStartX + mminfo.offx) + "px", // 50 * scale to center
+            "top": (scaledStartY + mminfo.offy) + "px", // 50 * scale to center
             "transform": `rotate(${angle}deg)`,
             "transform-origin": "0 50%",
         };

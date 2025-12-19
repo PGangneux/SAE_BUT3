@@ -1,7 +1,7 @@
 import Model from "./model.js";
 import Extrait from "./extrait.js";
 
-export default class Artiste extends Model {
+export default class Audio extends Model {
     #name;
     #extraits;
 
@@ -11,7 +11,7 @@ export default class Artiste extends Model {
         this.#extraits = extraits;
     }
 
-    static get endpoint() { return "artistes"; }
+    static get endpoint() { return "audios"; }
 
     get name() { return this.#name; }
     set name(value) { this.#name = this.validateString(value, "name"); }
@@ -26,8 +26,8 @@ export default class Artiste extends Model {
     }
 
     toJSON(json = {}) {
-        json = super.toJSON(json)
-        if (this.name) json['name'] = this.name;
+        json = super.toJSON(json);
+        if (this.name) json['name'] = this.#name;
         return json;
     }
 }

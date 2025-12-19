@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.test import RequestFactory
 
 from ...serializers import QuestionSerializer
@@ -24,14 +25,6 @@ class QuestionSerializerTests(Neo4jTestCase):
         self.assertIn(str(question.uuid), data["extraits"])
 
     # --- Création ---
-    def test_create_success_without_theme(self):
-        payload = {"texte": "Nouvelle Question"}
-        serializer = QuestionSerializer(data=payload, context={"request": self.request})
-        self.assertTrue(serializer.is_valid(), serializer.errors)
-        question = serializer.save()
-        self.assertEqual(question.texte, "Nouvelle Question")
-        self.assertEqual(list(question.theme.all()), [])
-
     def test_create_success_with_theme(self):
         theme = Theme(name="Thème2").save()
         payload = {"texte": "Question avec thème", "theme_uuid": theme.uuid}
@@ -43,7 +36,7 @@ class QuestionSerializerTests(Neo4jTestCase):
 
     def test_create_raises_uniqueproperty(self):
         Question(texte="DupQ").save()
-        payload = {"texte": "DupQ"}  # doublon
+        payload = {"texte": "DupQ", "theme_uuid": Theme(name="Theme test").save().uuid}  # doublon
         serializer = QuestionSerializer(data=payload, context={"request": self.request})
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(ValidatorUnique):
@@ -78,6 +71,11 @@ class QuestionSerializerTests(Neo4jTestCase):
 
     def test_update_with_nonexistent_theme_raises_notfound(self):
         question = Question(texte="QNoTheme").save()
+
+        # Création theme
+        self.theme = Theme(name="Theme test").save()
+        question.theme.connect(self.theme)
+
         payload = {"theme_uuid": "00000000-0000-0000-0000-000000000000"}
         serializer = QuestionSerializer(
             instance=question,
@@ -94,7 +92,10 @@ class QuestionSerializerTests(Neo4jTestCase):
         question = Question(texte="Q2").save()
         payload = {"texte": "Q1"}  # conflit unique
         serializer = QuestionSerializer(
-            instance=question, data=payload, context={"request": self.request}
+            instance=question,
+            data=payload,
+            context={"request": self.request},
+            partial=True,
         )
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(ValidatorUnique):

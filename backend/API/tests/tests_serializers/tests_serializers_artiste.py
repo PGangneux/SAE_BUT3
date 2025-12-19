@@ -14,15 +14,12 @@ class ArtisteSerializerTests(Neo4jTestCase):
         self.factory = RequestFactory()
         self.request = self.factory.get("/api/")
 
-
-    def test_get_styles_and_extraits_urls(self):
-        """Vérifie que get_styles et get_extraits renvoient des URLs valides"""
+    def test_get_extraits_urls(self):
+        """Vérifie que get_extraits renvoient des URLs valides"""
         artiste = Artiste(name="ArtistLinks").save()
         serializer = ArtisteSerializer(artiste, context={"request": self.request})
         data = serializer.data
-        self.assertIn(str(artiste.uuid), data["styles"])
         self.assertIn(str(artiste.uuid), data["extraits"])
-
 
     def test_create_raises_uniqueproperty(self):
         """Création en doublon -> ValidatorUnique"""
@@ -33,8 +30,6 @@ class ArtisteSerializerTests(Neo4jTestCase):
         self.assertTrue(serializer.is_valid(), serializer.errors)
         with self.assertRaises(ValidatorUnique):
             serializer.save()
-
-
 
     def test_update_raises_unique_on_conflict(self):
         """Tentative de renommage en un nom déjà existant -> ValidatorUnique"""
