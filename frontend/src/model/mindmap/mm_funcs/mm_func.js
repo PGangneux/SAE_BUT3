@@ -114,7 +114,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
     /// console.log(node.ispreview,node.mmch_obj,node.mmch_hasMiniature());
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
     // uncomment to slow down drawing for COOL VISUALS
-    await new Promise(r => setTimeout(r, 1000));
+    /// await new Promise(r => setTimeout(r, 1000));
     node.loading = true;
     try {
 
