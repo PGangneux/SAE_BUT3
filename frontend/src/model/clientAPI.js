@@ -5,7 +5,7 @@ import FetchError from "./errors/fetch_error";
  * Classe client faisant le lien avec l'api
  */
 export default class ClientAPI {
-  static BASE_URL = "http://localhost:8000/";
+  static BASE_URL = "http://51.91.157.142:8000/";
   static #endpoints = null;
   static #current_user;
   static #listeners = new Set();
@@ -85,7 +85,7 @@ export default class ClientAPI {
    * @returns {Promise<Record<string, string>>}
    */
   static get_headers(withAuth = false) {
-    let headers = {};
+    let headers = {mode: 'cors'};
     headers["Content-Type"] = "application/json";
     if (withAuth) {
       const token = this.get_token();

@@ -15,6 +15,11 @@ from neomodel import config
 from dotenv import load_dotenv
 import os
 from datetime import timedelta
+from corsheaders.defaults import default_headers
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "mode",  # allow the 'mode' header your frontend is sending
+]
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,12 +35,13 @@ SECRET_KEY = "django-insecure-l4u@!%q!92pin=b=4u)lr2@u+bt*rqhz43s4nz1%%#+dc@2!ln
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -44,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "django_extensions",
-    "corsheaders",
     "API",
 ]
 
@@ -158,5 +163,6 @@ config.DATABASE_URL = f"bolt://{NEO4J_USER}:{NEO4J_PASSWORD}@{NEO4J_HOST}:{NEO4J
 TEST_RUNNER = "backend.runner.CustomTestRunner"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://51.91.157.142",
+    "http://51.91.157.142:5173",
 ]
