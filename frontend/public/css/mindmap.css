@@ -1,13 +1,12 @@
 /* the Balls colors */
-.mmLegendColorMapmm_Root        {background-color : #fff ;}
-.mmLegendColorMapArtiste        {background-color : #A0522D ;}
-.mmLegendColorMapExtrait        {background-color : #941C1C ;}
-.mmLegendColorMapInterview      {background-color : #9747FF ;}
-.mmLegendColorMapNation         {background-color : #c24e00ff ;}
-.mmLegendColorMapQuestion       {background-color : #FFCD06 ;}
-.mmLegendColorMapStyleMusical   {background-color : #010582 ;}
-.mmLegendColorMapTag            {background-color : #02b360ff ;}
-.mmLegendColorMapTheme          {background-color : #016969ff ;}
+.mmLegendColorMapmm_Root { background-color: #fff;}
+.mmLegendColorMapArtiste { background-color: #A0522D;}
+.mmLegendColorMapExtrait { background-color: #941C1C;}
+.mmLegendColorMapInterview { background-color: #9747FF;}
+.mmLegendColorMapQuestion { background-color: #FFCD06;}
+.mmLegendColorMapAudio { background-color: #010582;}
+.mmLegendColorMapTag { background-color: #02b360ff;}
+.mmLegendColorMapTheme { background-color: #016969ff;}
 
 /*
 * MINDMAP CSS
@@ -55,6 +54,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .mm_fullscreenbtn img {
     width: 20px;
 }
@@ -124,6 +124,7 @@
     border-radius: 50%;
     transition: all 0.3s ease;
 }
+
 .mm_legend_outer button:hover {
     background-color: var(--vert-pale);
     transform: translateY(-2px);
@@ -161,7 +162,7 @@
 .mm_legend_anim-enter-to {
     opacity: 1;
     max-width: 450px;
-    max-height: 150px; /* Adjust based on your content */
+    max-height: 150px;
     padding: 10px;
     margin-right: 10px;
     transform: translateX(0);
@@ -191,7 +192,7 @@
     margin-bottom: 12px;
     padding: 0 6px;
     /* Prevent content from squeezing during animation */
-    min-width: 100px; 
+    min-width: 100px;
     max-height: 500px;
 }
 
@@ -273,6 +274,34 @@
 * MINDMAP NODE CSS
 */
 
+/* Vue transition handles enter/leave */
+.mm_node_outer-enter-active {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.mm_node_outer-leave-active {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mm_node_outer-enter-from {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.mm_node_outer-enter-to {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mm_node_outer-leave-from {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.mm_node_outer-leave-to {
+    opacity: 0;
+    transform: scale(0);
+}
 
 .mm_node {
     position: absolute;
@@ -286,21 +315,7 @@
     z-index: 5;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: transform 0.5s ease, opacity 0.5s ease;
-    transform: scale(0);
-    opacity: 0;
     overflow: hidden;
-}
-
-.mm_node:not(.mm_node_appearing):not(.mm_node_disappearing) {
-    transform: scale(1);
-    opacity: 1;
-}
-
-.mm_node_disappearing {
-    transform: scale(0) !important;
-    opacity: 0 !important;
-    transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
 .mm_node:hover {

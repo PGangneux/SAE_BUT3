@@ -15,7 +15,7 @@ export default class mm_Node {
     targetY;
     /** @type {number} */
     depth;
-    /** @type {Array[mm_Node]} */
+    /** @type {Array<[mm_Node>} */
     childrens;
     /** @type {boolean} */
     ispreview;

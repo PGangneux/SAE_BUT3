@@ -5,7 +5,7 @@ import mmch_Question from "./mmch_question.js";
 
 export default class mmch_Theme extends mmch_CheminT {
     static mmch_dbjsclass = Theme;
-    /** @type {Array[String]} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
@@ -42,8 +42,7 @@ export default class mmch_Theme extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const theme = this.mmch_obj;
-        if (theme.description) description.push(theme.description.substring(0, 100) + "...");
-
+        
         this.#description = description.length > 0 ? description : ["no description theme"];
         return this.#description;
     }
