@@ -72,7 +72,7 @@ class BaseSerializer(serializers.Serializer):
             raise ValidatorRequired(error.property_name)
 
         for field in self.input_fields:
-            uuid: str = validated_data.pop(field)
+            uuid: str = validated_data.pop(field, None)
             if uuid:
                 node_class: StructuredNode = self.input_fields[field]["node"]
                 nodeset: NodeSet = node_class.nodes
@@ -119,9 +119,12 @@ class BaseSerializer(serializers.Serializer):
                 nodeset: NodeSet = node_class.nodes
                 relationship: RelationshipManager = instance.__dict__.get(self.input_fields[field]["relationship"])
                 try:
-                    relationship.reconnect(
-                        relationship.single(), nodeset.get(uuid=uuid)
-                    )
+                    if relationship.single():
+                        relationship.reconnect(
+                            relationship.single(), nodeset.get(uuid=uuid)
+                        )
+                    else:
+                        relationship.connect(nodeset.get(uuid=uuid))
                 except DoesNotExist:
                     raise NotFound(node_class)
         return instance

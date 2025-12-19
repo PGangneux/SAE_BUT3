@@ -12,7 +12,7 @@ from neomodel import (
     ZeroOrOne,
     RegexProperty,
     EmailProperty,
-    One,
+    ZeroOrOne,
 )
 from datetime import date
 
@@ -73,11 +73,11 @@ class Extrait(StructuredNode):
     uploaded_at = DateProperty(default=date.today())
     duree = IntegerProperty(required=True)  # Nombre de seconde
 
-    interviewer = RelationshipTo("Artiste", "PARTICIPER", One)
+    interviewer = RelationshipTo("Artiste", "PARTICIPER", ZeroOrOne)
     interviews = RelationshipTo(
         "Interview", "APPARTIENT_A", ZeroOrMore, PositionExtraitRel
     )
-    question = RelationshipTo("Question", "POSE", One)
+    question = RelationshipTo("Question", "POSE", ZeroOrOne)
     tags_extrait = RelationshipTo("Tag", "TAGS_EXTRAIT", ZeroOrMore)
 
 
@@ -89,7 +89,7 @@ class Question(StructuredNode):
     uuid = UniqueIdProperty()
     texte = StringProperty(unique_index=True, required=True)
 
-    theme = RelationshipTo("Theme", "A_THEME", One)
+    theme = RelationshipTo("Theme", "A_THEME", ZeroOrOne)
 
 
 class Theme(StructuredNode):

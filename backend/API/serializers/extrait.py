@@ -26,8 +26,8 @@ class ExtraitSerializer(BaseSerializer):
         "artiste_uuid": {"relationship": "interviewer", "node": Artiste},
         "question_uuid": {"relationship": "question", "node": Question},
     }
-    artiste_uuid = serializers.CharField(write_only=True, required=True)
-    question_uuid = serializers.CharField(write_only=True, required=True)
+    artiste_uuid = serializers.CharField(write_only=True, required=False)
+    question_uuid = serializers.CharField(write_only=True, required=False)
 
     # Output:
     artiste = serializers.SerializerMethodField(read_only=True)
