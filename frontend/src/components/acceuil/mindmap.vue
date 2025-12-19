@@ -75,13 +75,7 @@ export default {
         </div>
         <div v-for="link in mm_instance.linkages" :key="link.id" :style="link.getStyle(mm_instance)" class="mm_linkage">
         </div>
-        <transition-group 
-            name="mm_node_outer" 
-            tag="div" 
-            class="nodes-wrapper"
-            @before-leave="onBeforeLeave"
-            @leave="onLeave"
-        >
+        <transition-group name="mm_node_outer" tag="div">
             <mindmap_node
                 v-for="node in mm_instance.nodes"
                 :key="node.mmch_key"
