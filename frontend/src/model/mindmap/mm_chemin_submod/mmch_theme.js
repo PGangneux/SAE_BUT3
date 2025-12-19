@@ -42,7 +42,9 @@ export default class mmch_Theme extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const theme = this.mmch_obj;
-        
+
+        if (theme.name) description.push(`theme : ${theme.name}`);
+
         this.#description = description.length > 0 ? description : ["no description theme"];
         return this.#description;
     }

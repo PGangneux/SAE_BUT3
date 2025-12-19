@@ -3,6 +3,7 @@ export const mm_LegendClassMap = {
     "Extrait": "Extrait",
     "Interview": "Interview",
     "Audio": "Audio",
+    "Occasion": "Occasion",
     "Question": "Question",
     "Tag": "Tag",
     "Theme": "Thème",

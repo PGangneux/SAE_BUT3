@@ -12,9 +12,11 @@ import mmch_Interview from "../mm_chemin_submod/mmch_interview.js";
 */
 export function mm_checkvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;
+    
     let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if (!!last) return false;
-    if (last instanceof  mmch_Extrait && last.mmch_obj) {
+    if (!last) return false;
+    
+    if (last instanceof mmch_Extrait && last.mmch_obj) {
         mminfo.extrait_current.set(last.mmch_obj);
         router.push({
             path: "/lecteur_video/"
@@ -36,9 +38,11 @@ export function mm_checkvideo(mminfo) {
  * @return {boolean,boolean} change goto video , change in path
 */
 export function mm_chemin_filter(mminfo) {
-    // Validate depth and handle depth mismatches
-    if (mm_checkvideo(mminfo)) return true, false;
     let original_lenght = mminfo.chemin.length;
+    let change_goto_video = false;
+    let change_in_path = false;
+    
+    // Step 1: Validate depth and handle depth mismatches
     if (mminfo.chemin.length > 0) {
         let lastElement = mminfo.chemin[mminfo.chemin.length - 1];
         let minDepth = lastElement.depth;
@@ -53,25 +57,64 @@ export function mm_chemin_filter(mminfo) {
             }
         });
     }
-    // Filter out mm_Root from chemin if present
-    let didchange = original_lenght != mminfo.chemin.length;
+    
+    // Step 2: Clean preview nodes (after depth filtering, so we have the correct parent)
+    if (mminfo.chemin.length >= 2) {
+        mm_clean_preview(mminfo);
+    }
+    
+    // Step 3: Check if we need to go to video
+    change_goto_video = mm_checkvideo(mminfo);
+    if (change_goto_video) {
+        // Video check handles navigation, just return
+        return true, false;
+    }
+    
+    // Step 4: Filter out mm_Root from chemin if present
     mminfo.chemin = mminfo.chemin.filter(item => !(item instanceof mmch_Root));
-    return false, didchange;
+    
+    // Step 5: Determine if path changed
+    change_in_path = original_lenght != mminfo.chemin.length;
+    
+    return false, change_in_path;
 }
 
 /**
  * clear the preview nodes and linkages
  * @param {mm_Mindmap} mminfo mm_mindmap  
 */
-export function mm_clean_preview(mminfo){
-    mminfo.previewlinkages = [];
+export function mm_clean_preview(mminfo){    
+    // If chemin has less than 2 elements, there's no parent node to clean from
     if (mminfo.chemin.length < 2) return;
-    for (let pparent of mminfo.chemin.at(-2).childrens){
-        for (let pnode of pparent.childrens){
-            if (pnode.ispreview){
-                let pindex = pparent.childrens.indexOf(pnode);
-                if (pindex == -1) console.warn("index of preview node not found in parent childrens");
-                delete pparent.childrens[pindex];
+    // Get the parent node (second-to-last in chemin)
+    const parentNode = mminfo.chemin.at(-2);
+    // Use DFS stack to traverse all nodes in the subtree
+    const stack = [parentNode];
+    
+    while (stack.length > 0) {
+        const currentNode = stack.pop();
+        
+        // Check all children of current node
+        for (let i = currentNode.childrens.length - 1; i >= 0; i--) {
+            const child = currentNode.childrens[i];
+            
+            if (child.ispreview) {
+                // Remove this preview child from its parent's children array
+                currentNode.childrens.splice(i, 1);
+                
+                // Also remove from previewnodes array if it exists there
+                const previewIndex = mminfo.previewnodes.indexOf(child);
+                if (previewIndex !== -1) {
+                    mminfo.previewnodes.splice(previewIndex, 1);
+                }
+                
+                // Don't push children of preview nodes to stack since we're deleting the preview node
+                // The preview node's children will be garbage collected
+            } else {
+                // If not a preview, check if it has children to explore
+                if (child.childrens && child.childrens.length > 0) {
+                    stack.push(child);
+                }
             }
         }
     }

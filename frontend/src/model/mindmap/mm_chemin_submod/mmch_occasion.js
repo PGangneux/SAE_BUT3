@@ -1,11 +1,11 @@
 import Extrait from "../../extrait.js";
-import Tag from "../../tag.js";
+import Occasion from "../../occasion.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
 
-export default class mmch_Tag extends mmch_CheminT {
-    static mmch_dbjsclass = Tag;
+export default class mmch_Occasion extends mmch_CheminT {
+    static mmch_dbjsclass = Occasion;
     /** @type {Array<String>} */
     #description = null;
 
@@ -41,14 +41,14 @@ export default class mmch_Tag extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!this.mmch_obj) throw new Error("mmch description tag on empty obj");
+        if (!this.mmch_obj) throw new Error("mmch description occasion on empty obj");
         if (this.#description) return this.#description;
         const description = [];
-        const tag = this.mmch_obj;
+        const Occasion = this.mmch_obj;
 
-        if (tag.name) description.push(`tag : ${tag.name}`);
+        if (Occasion.name) description.push(`occasion : ${Occasion.name}`);
 
-        this.#description = description.length > 0 ? description : ["no description tag"];
+        this.#description = description.length > 0 ? description : ["no description Occasion"];
         return this.#description;
     }
 }
