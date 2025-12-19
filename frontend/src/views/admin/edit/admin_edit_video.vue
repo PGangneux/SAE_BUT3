@@ -464,9 +464,9 @@ export default {
 
       <div class="row"  style="--bs-gutter-x: 0em;">
         
-        <RouterLink  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;" :to="{path: '/lecteur_video/' + current_extrait.uuid }">
+        <div  class="col-md-4" style="text-decoration: none; color: inherit; padding: 1em;">
           <img :src="thumbnail" class="migniature" alt="migniature">
-        </RouterLink>
+        </div>
 
         <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
           
