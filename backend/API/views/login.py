@@ -22,6 +22,8 @@ class LoginView(APIView):
         identifiant = request.data.get("identifiant")
         password = request.data.get("password")
 
+        print(identifiant, password)
+
         if not identifiant or not password:
             return Response(
                 {"detail": "Veuillez fournir identifiant et mot de passe."},

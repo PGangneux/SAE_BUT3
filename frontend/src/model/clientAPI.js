@@ -89,6 +89,7 @@ export default class ClientAPI {
     headers["Content-Type"] = "application/json";
     if (withAuth) {
       const token = this.get_token();
+      console.log(token)
       if (token) headers["Authorization"] = `Bearer ${token}`;
     }
     return headers;
@@ -215,7 +216,7 @@ export default class ClientAPI {
    * @param {boolean} withAuth
    * @returns {Promise<Object>}
    */
-  static async get(url, args = null, withAuth = false) {
+  static async get(url, args = null, withAuth = true) {
     return await this.fetch("GET", url, args, null, withAuth);
   }
 

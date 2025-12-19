@@ -13,6 +13,7 @@ from rest_framework.exceptions import NotAuthenticated, ValidationError
 from neo4j.graph import Node
 from neo4j.exceptions import ServiceUnavailable
 from ..errors import ConnexionDB
+from ..auth import get_current_user
 
 
 class Recommandation(APIView):
@@ -306,19 +307,3 @@ class Recommandation(APIView):
 
         return Response(recommandations)
 
-
-def get_current_user(request):
-    authorization = request.headers.get("Authorization", None)
-    if authorization:
-        token = authorization.split()[1]
-        try:
-            access = AccessToken(token)
-        except ExpiredTokenError:
-            raise NotAuthenticated()
-        try:
-            user: Utilisateur = Utilisateur.nodes.get(uuid=access["user_id"])
-        except ServiceUnavailable:
-            raise ConnexionDB()
-        return user
-    else:
-        return None
