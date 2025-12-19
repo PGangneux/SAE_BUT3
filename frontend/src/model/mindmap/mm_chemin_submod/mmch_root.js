@@ -2,15 +2,13 @@ import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Artiste from "./mmch_artiste.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
-import mmch_Nation from "./mmch_nation.js";
+import mmch_Audio from "./mmch_audio.js";
 import mmch_Question from "./mmch_question.js";
-import mmch_StyleMusical from "./mmch_style_musical.js";
 import mmch_Theme from "./mmch_theme.js";
 
 const mm_CategorysDefault = [
     mmch_Artiste,
-    mmch_Nation,
-    mmch_StyleMusical,
+    mmch_Audio,
     mmch_Theme,
 ];
 

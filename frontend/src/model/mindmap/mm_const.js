@@ -2,9 +2,8 @@ export const mm_LegendClassMap = {
     "Artiste": "Artiste",
     "Extrait": "Extrait",
     "Interview": "Interview",
-    "Nation": "Pays",
+    "Audio": "Audio",
     "Question": "Question",
-    "StyleMusical": "Style Musical",
     "Tag": "Tag",
     "Theme": "Thème",
 }

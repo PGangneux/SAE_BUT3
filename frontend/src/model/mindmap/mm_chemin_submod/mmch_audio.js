@@ -1,11 +1,13 @@
 import Extrait from "../../extrait.js";
-import StyleMusical from "../../style_musical.js";
+import Audio from "../../Audio.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Artiste from "./mmch_artiste.js";
 
-export default class mmch_StyleMusical extends mmch_CheminT {
-    static mmch_dbjsclass = StyleMusical;
+export default class mmch_Audio extends mmch_CheminT {
+    static mmch_dbjsclass = Audio;
+    /** @type {Array<String>} */
+    #description = null;
 
     async* mmch_listinst(args = {}) {
         const finalArgs = { ...this.mmch_default_listinst_args, ...args };
@@ -37,7 +39,14 @@ export default class mmch_StyleMusical extends mmch_CheminT {
     }
 
     async mmch_getDescription() {
-        if (!this.mmch_obj) throw new Error("mmch mmch_getTitle style musical on empty obj");
-        return "";
+        if (!this.mmch_obj) throw new Error("mmch description Audio on empty obj");
+        if (this.#description) return this.#description;
+        const description = [];
+        const Audio = this.mmch_obj;
+
+        // TODO : put audio description
+
+        this.#description = description.length > 0 ? description : ["no description Audio"];
+        return this.#description;
     }
 }

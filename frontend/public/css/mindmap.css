@@ -1,13 +1,12 @@
 /* the Balls colors */
-.mmLegendColorMapmm_Root        {background-color : #fff ;}
-.mmLegendColorMapArtiste        {background-color : #A0522D ;}
-.mmLegendColorMapExtrait        {background-color : #941C1C ;}
-.mmLegendColorMapInterview      {background-color : #9747FF ;}
-.mmLegendColorMapNation         {background-color : #c24e00ff ;}
-.mmLegendColorMapQuestion       {background-color : #FFCD06 ;}
-.mmLegendColorMapStyleMusical   {background-color : #010582 ;}
-.mmLegendColorMapTag            {background-color : #02b360ff ;}
-.mmLegendColorMapTheme          {background-color : #016969ff ;}
+.mmLegendColorMapmm_Root { background-color: #fff;}
+.mmLegendColorMapArtiste { background-color: #A0522D;}
+.mmLegendColorMapExtrait { background-color: #941C1C;}
+.mmLegendColorMapInterview { background-color: #9747FF;}
+.mmLegendColorMapQuestion { background-color: #FFCD06;}
+.mmLegendColorMapAudio { background-color: #010582;}
+.mmLegendColorMapTag { background-color: #02b360ff;}
+.mmLegendColorMapTheme { background-color: #016969ff;}
 
 /*
 * MINDMAP CSS
@@ -55,6 +54,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
 }
+
 .mm_fullscreenbtn img {
     width: 20px;
 }
@@ -124,6 +124,7 @@
     border-radius: 50%;
     transition: all 0.3s ease;
 }
+
 .mm_legend_outer button:hover {
     background-color: var(--vert-pale);
     transform: translateY(-2px);
@@ -161,7 +162,7 @@
 .mm_legend_anim-enter-to {
     opacity: 1;
     max-width: 450px;
-    max-height: 150px; /* Adjust based on your content */
+    max-height: 150px;
     padding: 10px;
     margin-right: 10px;
     transform: translateX(0);

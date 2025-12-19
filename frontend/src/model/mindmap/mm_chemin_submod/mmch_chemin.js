@@ -11,6 +11,8 @@ export default class mmch_CheminT extends mm_Node {
     static mmch_default_previewcat_args = { size : 1 };
     static mmch_default_previewinst_args = { size : 1 };
     mmch_obj;
+    mmch_key;
+    static #mmch_counter = 0;
 
     constructor(mminfo, x, y, depth, content) {
         if (new.target === mmch_CheminT) {
@@ -18,6 +20,8 @@ export default class mmch_CheminT extends mm_Node {
         }
         super(mminfo, x, y, depth + 1);
         this.mmch_obj = content;
+        this.mmch_key = mmch_CheminT.#mmch_counter;
+        mmch_CheminT.#mmch_counter += 1;
     }
 
     static async* mmch_listcat(args = {}) {
