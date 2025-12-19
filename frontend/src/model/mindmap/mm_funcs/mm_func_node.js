@@ -129,7 +129,7 @@ export function set_children_pos(mminfo, root) {
 
     // New spreadFactor based on number of children AND children with content
     const spreadFactor = Math.max(1, (nb_child + childrenWithContent * 0.5) * 0.5);
-    const distance = 250 * mminfo.scale * depthFactor * spreadFactor;
+    const distance = 150 + 200 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);

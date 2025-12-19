@@ -24,6 +24,7 @@ function mm_reset_hard(mminfo) {
 /**
  * Soft reset of mindmap - clears previews and adjusts nodes based on search
  * @param {mm_Mindmap} mminfo mm_Mindmap  
+ * @returns {Promise<boolean>} whether there was an hard reset
  */
 export async function mm_reset_soft(mminfo) {
     try {
@@ -35,7 +36,7 @@ export async function mm_reset_soft(mminfo) {
         // Safeguard: Check if we have a valid root node
         if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
             mm_reset_hard(mminfo);
-            return;
+            return true;
         }
 
         const rootNode = mminfo.nodes[0];
@@ -77,7 +78,7 @@ export async function mm_reset_soft(mminfo) {
         // Handle nodes array
         if (search_cat.length > 0) {
             // Always slice to search count in search mode
-            mminfo.nodes = mminfo.nodes.slice(0, search_cat.length + 1);
+            mminfo.nodes.length = search_cat.length + 1;
             // If we have nodes to create, create them
             if (nodesToCreate > 0) {
                 // Create the nodes that are different/new
@@ -88,12 +89,14 @@ export async function mm_reset_soft(mminfo) {
             }
         } else {
             // List mode: slice to list count
-            mminfo.nodes = mminfo.nodes.slice(0, list_cat.length + 1);
+            mminfo.nodes.length = list_cat.length + 1;
         }
     } catch (error) {
         console.error("Error in mm_reset_soft:", error);
         mm_reset_hard(mminfo);
+        return true;
     }
+    return false;
 }
 
 
@@ -107,7 +110,7 @@ export async function mm_reset_soft(mminfo) {
 export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false) {
     // 0. safe Guards
     // Video / preview-only nodes never expand
-    console.log(node);
+    /// console.warn(node.depth, node,mminfo.chemin);
     if (node.mmch_obj && node.mmch_hasMiniature()) return;
     node.loading = true;
     try {
@@ -117,18 +120,19 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 // 3a. expand PREVIEW NODE with CONTENT
                 // ─────────────────────────────
                 // do nothing
-                console.log("3a expand PREVIEW NODE with CONTENT",node);
+                /// console.log(node.depth,"3a expand PREVIEW NODE with CONTENT",node);
                 ;
             } else {
                 // ─────────────────────────────
                 // 3b. expand PREVIEW NODE without content
                 // ─────────────────────────────
-                console.log("3b expand PREVIEW NODE without content",node);
+                /// console.log(node.depth,"3b expand PREVIEW NODE without content",node);
                 
                 // Handle async* generator
                 for await (const catnode of node.mmch_previewinst(mminfo)) {
                     mm_createChildNode(mminfo, node, catnode, true, true);
                 }
+                /// TMP
                 node.loading = false;
                 for (const child of node.childrens) {
                     await mm_draw_onecat(mminfo, child, true, true);
@@ -139,11 +143,12 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             // ─────────────────────────────
             // 1b. CONTENT NODE → CATEGORIES
             // ─────────────────────────────
-            console.log("1b CONTENT NODE → CATEGORIES",node);
+            /// console.log(node.depth,"1b CONTENT NODE → CATEGORIES",node);
             // Handle async* generator for instance methods
             for await (const instnode of node.mmch_listinst()) {
                 mm_createChildNode(mminfo, node, instnode);
             }
+            /// TMP
             node.loading = false;
             for (const child of node.childrens) {
                 await mm_draw_onecat(mminfo, child, true, isPreview);
@@ -152,15 +157,17 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             // ─────────────────────────────
             // 1a. CATEGORY NODE → CONTENT
             // ─────────────────────────────
-            console.log("1a CATEGORY NODE → CONTENT",node);
+            /// console.log(node.depth,"1a CATEGORY NODE → CONTENT",node);
             const getnodefunc = mminfo.searchval ?
                 () => node.constructor.mmch_searchcat() :
                 () => node.constructor.mmch_listcat();
 
             // Handle async* generator for static methods
             for await (const catnode of getnodefunc()) {
+                /// console.log(catnode);
                 mm_createChildNode(mminfo, node, catnode,createLink);
             }
+            /// TMP
             node.loading = false;
             for (const child of node.childrens) {
                 await mm_draw_onecat(mminfo, child, true);
@@ -170,7 +177,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             // ─────────────────────────────
             // 2. DRAW previews of subcategories
             // ─────────────────────────────
-            /// console.log("2 DRAW previews of subcategories",node);
+            /// console.log(node.depth,"2 DRAW previews of subcategories",node);
             /// await Promise.all(
             ///     node.childrens.map(async (child) => {
             ///         await mm_draw_onecat(mminfo, child, false, true);
