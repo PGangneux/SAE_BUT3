@@ -51,10 +51,10 @@ export default class mmch_Question extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const question = this.mmch_obj;
-        try {
-            const theme = await question.theme();
-            if (theme && theme.name) description.push(`Thème: ${theme.name}`);
-        } catch (error) { console.warn(error); }
+        /// try {
+        ///     const theme = await question.theme();
+        ///     if (theme && theme.name) description.push(`Thème: ${theme.name}`);
+        /// } catch (error) { console.warn(error); }
 
         this.#description = description.length > 0 ? description : ["no description question"];
         return this.#description;

@@ -53,18 +53,20 @@ export default class mmch_Extrait extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const extrait = this.mmch_obj;
-        try {
-            const question = await extrait.question();
-            if (question && question.texte) {
-                description.push(`Question: ${question.texte.substring(0, 50)}...`);
-            if (extrait.lieu) description.push(`Lieu: ${extrait.lieu}`);
-            }
-        } catch (error) { console.warn(error); }
-
-        try {
-            const artiste = await extrait.artiste();
-            if (artiste && artiste.name) description.push(`Artiste: ${artiste.name}`);
-        } catch (error) { console.warn(error); }
+        /// console.log(extrait);
+        
+        ///try {
+        ///    const question = await extrait.question();
+        ///    if (question && question.texte) {
+        ///        description.push(`Question: ${question.texte.substring(0, 50)}...`);
+        ///    if (extrait.lieu) description.push(`Lieu: ${extrait.lieu}`);
+        ///    }
+        ///} catch (error) { console.warn(error); }
+        ///
+        ///try {
+        ///    const artiste = await extrait.artiste();
+        ///    if (artiste && artiste.name) description.push(`Artiste: ${artiste.name}`);
+        ///} catch (error) { console.warn(error); }
 
 
         if (extrait.uploaded_at) {
@@ -103,9 +105,9 @@ export default class mmch_Extrait extends mmch_CheminT {
         return this.#previewurl;
     }
 
-    async mmch_hasMiniature() {
+    mmch_hasMiniature() {
         if (!this.mmch_obj) return null;
-        return await this.#get_url() != null;
+        return true;
     }
 
     async mmch_getMiniature() {

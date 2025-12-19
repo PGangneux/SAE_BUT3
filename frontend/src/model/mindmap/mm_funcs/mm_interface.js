@@ -8,9 +8,16 @@ import { mm_reset_soft , mm_draw_onecat } from "./mm_func.js";
  * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
 export async function mm_draw_root(mminfo) {
-    await mm_reset_soft(mminfo);
+    let reset_hard = await mm_reset_soft(mminfo);
     let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return;
+    /// console.log("mm_draw_root reset_hard:",reset_hard,"changepath:",changepath);
+    if (!reset_hard) {
+        for (const child of mminfo.nodes[0].childrens) {
+            child.childrens = [];
+            await mm_draw_onecat(mminfo, child);
+        }
+    }
     for (const cheminpath of mminfo.chemin) {
         await mm_draw_onecat(mminfo, cheminpath);
     }

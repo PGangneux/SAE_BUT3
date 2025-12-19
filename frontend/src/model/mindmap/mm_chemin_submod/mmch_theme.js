@@ -1,3 +1,4 @@
+import Extrait from "../../extrait.js";
 import Theme from "../../theme.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";

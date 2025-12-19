@@ -90,9 +90,9 @@ export default class mmch_Interview extends mmch_CheminT {
         return this.#previewurl;
     }
 
-    async mmch_hasMiniature() {
+    mmch_hasMiniature() {
         if (!this.mmch_obj) return null;
-        return await this.#get_url() != null;
+        return true;
     }
 
     async mmch_getMiniature() {

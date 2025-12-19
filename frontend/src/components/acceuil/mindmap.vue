@@ -75,9 +75,20 @@ export default {
         </div>
         <div v-for="link in mm_instance.linkages" :key="link.id" :style="link.getStyle(mm_instance)" class="mm_linkage">
         </div>
+        <div v-for="link in mm_instance.previewlinkages" :key="link.id" :style="link.getStyle(mm_instance)" class="mm_linkage">
+        </div>
         <transition-group name="mm_node_outer" tag="div">
             <mindmap_node
                 v-for="node in mm_instance.nodes"
+                :key="node.mmch_key"
+                :node_instance="node"
+                @click="mm_instance.handleClick(node)"
+                @touchend="mm_instance.handleClick(node)"
+            />
+        </transition-group>
+        <transition-group name="mm_node_outer" tag="div">
+            <mindmap_node
+                v-for="node in mm_instance.previewnodes"
                 :key="node.mmch_key"
                 :node_instance="node"
                 @click="mm_instance.handleClick(node)"

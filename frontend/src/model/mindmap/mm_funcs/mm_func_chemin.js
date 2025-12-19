@@ -60,6 +60,7 @@ export function mm_chemin_filter(mminfo) {
     
     // Step 2: Clean preview nodes (after depth filtering, so we have the correct parent)
     if (mminfo.chemin.length >= 2) {
+        mm_convert_preview_to_regular(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
         mm_clean_preview(mminfo);
     }
     
