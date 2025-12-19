@@ -13,8 +13,6 @@ export default {
     data() {
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            isAppearing: true,
-            isDisappearing: false,
             nodeTitle: 'Inconnue',
             nodeSubtitle: "Inconnue",
             nodeDescription: [],
@@ -52,27 +50,13 @@ export default {
         nodeClass() {
             const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
-            const appearingClass = this.isAppearing ? 'mm_node_appearing' : '';
-            const disappearingClass = this.isDisappearing ? 'mm_node_disappearing' : '';
 
-            return `${baseClass} ${shapeClass} ${appearingClass} ${disappearingClass}`;
+            return `${baseClass} ${shapeClass}`;
         },
     },
     async mounted() {
-        setTimeout(() => {
-            this.isAppearing = false;
-        }, 50);
         // Load all async data
         await this.loadNodeData();
-    },
-    beforeUnmount() {
-        this.isDisappearing = true;
-        // Wait for animation to complete before actually unmounting
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
-            }, 1000);
-        });
     },
 }
 </script>
@@ -82,7 +66,6 @@ export default {
         <div style="display: none;">
             typeof node_instance {{ typeof this.node_instance }}
             thumbnailLoading {{ thumbnailLoading }}
-            isAppearing {{ isAppearing }}
             thumbnailUrl {{ thumbnailUrl }}
             nodeTitle {{ nodeTitle }}
             nodeDescription {{ nodeDescription }}
