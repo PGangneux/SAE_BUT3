@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-11-03" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3316" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-11-24" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3320" locale="fr_FR">
     <description/>
-    <view zooming-state="default:7" id="gantt-chart">
+    <view zooming-state="default:5" id="gantt-chart">
         <field id="tpd3" name="Nom" width="200" order="0"/>
         <field id="tpd4" name="Date de début" width="75" order="1"/>
         <field id="tpd5" name="Date de fin" width="75" order="2"/>
@@ -79,7 +79,7 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" uid="d51d824ddf37410fb0e837b6f12fbbf6" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="54" complete="0" expand="true">
+        <task id="0" uid="d51d824ddf37410fb0e837b6f12fbbf6" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="54" complete="0" expand="false">
             <task id="53" uid="8eb1bfa7dc3c421e8ff8b807d0bba7b1" name="structure page lecteur vidéo" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
             <task id="54" uid="79e420f09faf48c09e55d4c3c4bcbb21" name="paramètres" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
             <task id="55" uid="993493195c1e4dda8d218a24f0930bf1" name="mode cinéma" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
@@ -103,7 +103,7 @@
             <task id="4" uid="05e342ea092d4574a0c6375b87c0bb23" name="choix du lecteur dans le header" color="#8cb6ce" meeting="false" start="2025-11-05" duration="2" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="5" uid="23065283c8624c1092d097918980756d" name="temps total extrait/interview dns aside" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false"/>
             <task id="6" uid="d7a3c5f9daef4e17abc15836a4e9ec02" name="algo de recomendation" color="#8cb6ce" meeting="false" start="2025-12-02" duration="7" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="7" uid="c7e0c6e353584816958ffb37b73a090b" name="précharchement video" color="#8cb6ce" meeting="false" start="2025-11-11" duration="14" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="7" uid="c7e0c6e353584816958ffb37b73a090b" name="précharchement video" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="8" uid="5b248fd0e3194f06b485edb7809281cd" name="improve drag pip" color="#8cb6ce" meeting="false" start="2025-12-16" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="9" uid="f193ac82cd7749a6bd398528ed3466a2" name="version phone" color="#8cb6ce" meeting="false" start="2026-01-06" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" priority="0" expand="true"/>
             <task id="10" uid="c3144d8de0574d90a80cf444e013a4c8" name="si pas yt -&gt; vimeo vise versa" color="#8cb6ce" meeting="false" start="2025-12-02" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
@@ -115,7 +115,7 @@
             <task id="13" uid="8cbf0e1e76e24c648e8cb1cf44579cad" name="page à propos" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             <task id="14" uid="16a78017558e41c6af7d267665a1508e" name="page condition général" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="2" uid="2272663060e840b2bdb1a4a4b4d2fa5c" name="Admin" meeting="false" start="2025-10-20" duration="28" complete="0" expand="true">
+        <task id="2" uid="2272663060e840b2bdb1a4a4b4d2fa5c" name="Admin" meeting="false" start="2025-10-20" duration="28" complete="0" expand="false">
             <task id="15" uid="1d1c245413b94284a75a86899bcf297d" name="gestions des extraits" meeting="false" start="2025-10-20" duration="28" complete="0" expand="true">
                 <task id="75" uid="91ec31f6873849bda2b18f0594dac773" name="afficher extraits" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
                 <task id="19" uid="3db3c7ec67114f7480b69efd1d943bb0" name="créations des extraits" meeting="false" start="2025-11-07" duration="14" complete="0" expand="true"/>
@@ -123,24 +123,24 @@
                 <task id="21" uid="7c104a22f35c4a1385ecce24290d0453" name="supp extraits" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
             </task>
             <task id="78" uid="cbb76dbb06dd4f8680c6ae541f83165a" name="details extrait" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="16" uid="6634db6d15f14fca8e2a4af254cf8624" name="gestions des utilsateurs" meeting="false" start="2025-10-20" duration="15" complete="0" expand="true">
+            <task id="16" uid="6634db6d15f14fca8e2a4af254cf8624" name="gestions des utilsateurs" meeting="false" start="2025-10-20" duration="15" complete="0" expand="false">
                 <task id="23" uid="e26e123f376d431c965b06f1b87ff338" name="supp user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
                 <task id="24" uid="3dd5fdfd780041d9bd303f557b5bd144" name="details user" meeting="false" start="2025-10-20" duration="3" complete="0" expand="true"/>
                 <task id="25" uid="b8c1e77e07a74289992cad38f8c7aedc" name="clear historique user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             </task>
             <task id="77" uid="88ac4be06d8a4ca1acd9c5dca35faf99" name="afficher user" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="17" uid="56cc47214fc54437af43aa0e5c07dc34" name="gestions des playlist" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true">
+            <task id="17" uid="56cc47214fc54437af43aa0e5c07dc34" name="gestions des playlist" meeting="false" start="2025-11-07" duration="7" complete="0" expand="false">
                 <task id="26" uid="123e4f6b83a940549d3d30e09ebc7583" name="creation playlists" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
                 <task id="27" uid="080407e43f614ac6acd5b28fac774cae" name="supp playlists" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
                 <task id="28" uid="2dde769ab695416da46809d9f9b3ed01" name="drag and drop" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
             </task>
             <task id="76" uid="3c62061da0b644d0a9e5550c82de36b1" name="afficher playlists" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="18" uid="3a05dc312ecd461b9e1f1d0a52d347cb" name="voir la date de dernière connexion d'un utlisateur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true">
+            <task id="18" uid="3a05dc312ecd461b9e1f1d0a52d347cb" name="voir la date de dernière connexion d'un utlisateur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
                 <task id="29" uid="abb88b22fad24e05968dcf489471405c" name="envoie email" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             </task>
         </task>
         <task id="30" uid="97ca6cef71f745ea9a7a2d8d4be66db1" name="header/footeur" meeting="false" start="2025-10-23" duration="2" complete="0" expand="true"/>
-        <task id="31" uid="ead22a30eda44d2fa3e9834ab981887f" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="19" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
+        <task id="31" uid="ead22a30eda44d2fa3e9834ab981887f" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="65" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
             <task id="35" uid="9f34d28a3b124cef8f05ebe7dc385aac" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
                 <depend id="34" type="2" difference="0" hardness="Strong"/>
@@ -159,7 +159,7 @@
             <task id="36" uid="2e40f54c49154424ae735a7a8a75246b" name="création des sérializers (ManyToMany)" meeting="false" start="2025-10-22" duration="2" complete="0" expand="false"/>
             <task id="62" uid="10424c864ad0468fa8da978e342a2242" name="recherches" meeting="false" start="2025-10-24" duration="1" complete="0" expand="true"/>
             <task id="40" uid="a41b5e37f8214ed0aebaae30351c8238" name="refaire préfetcher frontend" meeting="false" start="2025-10-31" duration="2" complete="0" expand="true"/>
-            <task id="65" uid="cea67990b6fb4db8b07c21d297869358" name="Tests" color="#000000" meeting="false" start="2025-11-04" duration="8" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true">
+            <task id="65" uid="cea67990b6fb4db8b07c21d297869358" name="Tests" color="#000000" meeting="false" start="2025-11-04" duration="8" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false">
                 <task id="41" uid="432256d9ca1e479696f4ce3849707071" name="Tests de l'API" color="#8cb6ce" meeting="false" start="2025-11-04" duration="3" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
                     <notes><![CDATA[Tests réalisés:
 
@@ -178,26 +178,41 @@ Connexion non demandé pour les views]]></notes>
             <task id="66" uid="331dbe9407d840e6ada323ac4c9cb21c" name="Gestions des erreurs dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
             <task id="63" uid="e2bb4186c4494bd7b9ed4146fcac5579" name="Restructuration des sérializers" color="#8cb6ce" meeting="false" start="2025-11-10" duration="1" complete="0" thirdDate="2025-11-10" thirdDate-constraint="0" expand="true"/>
             <task id="71" uid="90a7a0ac4f3f4980a2a71c5cdc241843" name="Restructuration des ModelViewSet" color="#8cb6ce" meeting="false" start="2025-11-10" duration="3" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true">
-                <depend id="74" type="2" difference="0" hardness="Strong"/>
+                <depend id="74" type="2" difference="0" hardness="Rubber"/>
             </task>
-            <task id="74" uid="96420a37c74c4385838e9ae45b97f1d4" name="Erreur connexion neo4j" color="#8cb6ce" meeting="false" start="2025-11-14" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true"/>
+            <task id="74" uid="96420a37c74c4385838e9ae45b97f1d4" name="Erreur connexion neo4j" color="#8cb6ce" meeting="false" start="2026-01-21" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true"/>
             <task id="72" uid="21a2f61c715a425f82d5133c15d7635a" name="Ajout de l'authentifcation et des permissions sur les views" meeting="false" start="2025-11-10" duration="2" complete="0" expand="true">
                 <depend id="73" type="2" difference="0" hardness="Strong"/>
             </task>
+            <task id="79" uid="62c1f82cce37464e83f5c904e2a5b72e" name="Algorithme de recommandation" meeting="false" start="2025-11-17" duration="20" complete="0" expand="true"/>
+            <task id="80" uid="d9c9dabfeec842f8aa2352fc5906141e" name="Changements modèle API" meeting="false" start="2025-12-15" duration="3" complete="0" expand="true">
+                <task id="81" uid="447b4cea71b742979ab1d39466527abd" name="Changements Base de données" meeting="false" start="2025-12-15" duration="1" complete="0" expand="true">
+                    <depend id="82" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="82" uid="c49616f0f0814e96aa250762c49e8d0a" name="Changements API" meeting="false" start="2025-12-16" duration="1" complete="0" expand="true">
+                    <depend id="83" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="83" uid="056e4455b3c24b0cabc2123d6b3ce1d5" name="Changements front end" meeting="false" start="2025-12-17" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="84" uid="939a022b6a7f4ce988ab4a228374985e" name="Corrections divers bugs" meeting="false" start="2025-12-18" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="69" uid="92e0ac75200d49899a0268886211e33b" name="Connexion Frontend" color="#ffff33" meeting="false" start="2025-11-03" duration="5" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
+        <task id="85" uid="8840937173a94420a8b83544d7454351" name="Mise en production test" meeting="false" start="2025-12-19" duration="1" complete="0" expand="true"/>
+        <task id="69" uid="92e0ac75200d49899a0268886211e33b" name="Connexion Frontend" color="#ffff33" meeting="false" start="2025-11-03" duration="5" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="false">
             <task id="67" uid="3cf380edba3f44518321dbd680ce42e8" name="Connexion d'un Utilisateur dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-03" duration="1" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true"/>
             <task id="68" uid="d804f41b09454667be7ee12055f33077" name="Modification du header lors de la connexion" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
             <task id="70" uid="076be27faed449e08f6f0d7ed0db536f" name="Page de connexion" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
+        <task id="86" uid="3c9d1de5abcf4f4e990acced1e92b909" name="Rapport et Soutenance" meeting="false" start="2025-12-29" duration="14" complete="0" expand="true"/>
     </tasks>
     <resources>
         <resource id="0" name="Pierre Gangneux" function="Default:1" contacts="" phone=""/>
-        <resource id="1" name="Baptiste Mignan" function="SoftwareDevelopment:2" contacts="" phone=""/>
-        <resource id="3" name="Clement Renaundin" function="Default:0" contacts="" phone=""/>
+        <resource id="1" name="Baptiste Mignan" function="1" contacts="" phone=""/>
+        <resource id="3" name="Clement Renaundin" function="1" contacts="" phone=""/>
+        <resource id="4" name="Arthur Pavard" function="1" contacts="" phone=""/>
     </resources>
     <allocations>
         <allocation task-id="0" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="86" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="69" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="31" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="20" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
@@ -205,6 +220,14 @@ Connexion non demandé pour les views]]></notes>
         <allocation task-id="27" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="28" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="21" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="80" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="79" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="81" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="82" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="83" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="84" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="85" resource-id="1" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="86" resource-id="1" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
         <allocation task-id="19" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="21" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="15" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
@@ -217,8 +240,13 @@ Connexion non demandé pour les views]]></notes>
         <allocation task-id="78" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="75" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
         <allocation task-id="20" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="86" resource-id="3" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="86" resource-id="4" function="1" responsible="false" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
     <roles roleset-name="Default"/>
+    <roles>
+        <role id="1" name="Développeur"/>
+    </roles>
 </project>
