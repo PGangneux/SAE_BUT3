@@ -1,18 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-11-24" view-index="0" gantt-divider-location="351" resource-divider-location="300" version="3.3.3320" locale="fr_FR">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-12-21" view-index="0" gantt-divider-location="346" resource-divider-location="300" version="2.8.11" locale="en_US">
     <description/>
     <view zooming-state="default:5" id="gantt-chart">
-        <field id="tpd3" name="Nom" width="200" order="0"/>
-        <field id="tpd4" name="Date de début" width="75" order="1"/>
-        <field id="tpd5" name="Date de fin" width="75" order="2"/>
-        <option id="filter.completedTasks" value="false"/>
-        <option id="filter.dueTodayTasks" value="false"/>
-        <option id="filter.overdueTasks" value="false"/>
-        <option id="filter.inProgressTodayTasks" value="false"/>
+        <field id="tpd3" name="Name" width="195" order="0"/>
+        <field id="tpd4" name="Begin date" width="74" order="1"/>
+        <field id="tpd5" name="End date" width="73" order="2"/>
         <option id="color.recent"><![CDATA[#ffff33 #3333ff #33ff33]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Nom" width="210" order="0"/>
-        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+        <field id="0" name="Name" width="210" order="0"/>
+        <field id="1" name="Default role" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars base-id="fr.polynesie-francaise">
@@ -79,88 +75,88 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" uid="d51d824ddf37410fb0e837b6f12fbbf6" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="54" complete="0" expand="false">
-            <task id="53" uid="8eb1bfa7dc3c421e8ff8b807d0bba7b1" name="structure page lecteur vidéo" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
-            <task id="54" uid="79e420f09faf48c09e55d4c3c4bcbb21" name="paramètres" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="55" uid="993493195c1e4dda8d218a24f0930bf1" name="mode cinéma" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="56" uid="147a18dd2f454fc98f9568006971a72a" name="pip" color="#8cb6ce" meeting="false" start="2025-10-21" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="57" uid="81dd30d8e2b64282b4cf07f0904e405e" name="description" color="#8cb6ce" meeting="false" start="2025-10-23" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="58" uid="7932c01b59d844c3aed4337cfadb76e4" name="liste video aside" color="#8cb6ce" meeting="false" start="2025-10-23" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="49" uid="82b0d3dcd95b49afb5d4b644b22bb87c" name="description sur les vidéos sur le coté" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
-            <task id="59" uid="3d6e4a6f40f14970a50f498281993dd6" name="corriger bug router link videoStore reinit" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="60" uid="42872abb96fa440d96fc398337a948e1" name="lancement automatique video" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="50" uid="f257644afe1f42da88e49cb717112160" name="playlist" meeting="false" start="2025-11-04" duration="1" complete="0" expand="false">
-                <task id="51" uid="d58d9e96c1d248cc8211b2a8eb8d3071" name="fonctionnement playlist" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
-                <task id="52" uid="dfac5cdf25064450be530fe93eb5ae22" name="timecode" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
+        <task id="0" name="Lecture vidéo" meeting="false" start="2025-10-20" duration="54" complete="0" expand="false">
+            <task id="53" name="structure page lecteur vidéo" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
+            <task id="54" name="paramètres" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="55" name="mode cinéma" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="56" name="pip" color="#8cb6ce" meeting="false" start="2025-10-21" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="57" name="description" color="#8cb6ce" meeting="false" start="2025-10-23" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="58" name="liste video aside" color="#8cb6ce" meeting="false" start="2025-10-23" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="49" name="description sur les vidéos sur le coté" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
+            <task id="59" name="corriger bug router link videoStore reinit" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="60" name="lancement automatique video" color="#8cb6ce" meeting="false" start="2025-10-24" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="50" name="playlist" meeting="false" start="2025-11-04" duration="1" complete="0" expand="false">
+                <task id="51" name="fonctionnement playlist" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
+                <task id="52" name="timecode" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="3" uid="2cc49f36b005456997637289f932d445" name="recherche" color="#8cb6ce" meeting="false" start="2025-11-04" duration="11" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false">
-                <task id="44" uid="f2824f978bbf470d9bcf14cb198871b2" name="par questions" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-                <task id="45" uid="26ba04eec5a14a6891fbe72547612774" name="extrait dans interview" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
-                <task id="43" uid="8367c71b5fca4e40b7bb6abc8150273b" name="par artiste" color="#8cb6ce" meeting="false" start="2025-11-04" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-                <task id="47" uid="97535f0653054de8aec5660e4815fbce" name="par thème" color="#8cb6ce" meeting="false" start="2025-11-18" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="3" name="recherche" color="#8cb6ce" meeting="false" start="2025-11-04" duration="11" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false">
+                <task id="44" name="par questions" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+                <task id="45" name="extrait dans interview" meeting="false" start="2025-11-04" duration="1" complete="0" expand="true"/>
+                <task id="43" name="par artiste" color="#8cb6ce" meeting="false" start="2025-11-04" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+                <task id="47" name="par thème" color="#8cb6ce" meeting="false" start="2025-11-18" duration="2" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="48" uid="8cf91b307d534f37854a185d45124e86" name="icon pip" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
-            <task id="4" uid="05e342ea092d4574a0c6375b87c0bb23" name="choix du lecteur dans le header" color="#8cb6ce" meeting="false" start="2025-11-05" duration="2" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="5" uid="23065283c8624c1092d097918980756d" name="temps total extrait/interview dns aside" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false"/>
-            <task id="6" uid="d7a3c5f9daef4e17abc15836a4e9ec02" name="algo de recomendation" color="#8cb6ce" meeting="false" start="2025-12-02" duration="7" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="7" uid="c7e0c6e353584816958ffb37b73a090b" name="précharchement video" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="8" uid="5b248fd0e3194f06b485edb7809281cd" name="improve drag pip" color="#8cb6ce" meeting="false" start="2025-12-16" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="9" uid="f193ac82cd7749a6bd398528ed3466a2" name="version phone" color="#8cb6ce" meeting="false" start="2026-01-06" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" priority="0" expand="true"/>
-            <task id="10" uid="c3144d8de0574d90a80cf444e013a4c8" name="si pas yt -&gt; vimeo vise versa" color="#8cb6ce" meeting="false" start="2025-12-02" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="48" name="icon pip" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false"/>
+            <task id="4" name="choix du lecteur dans le header" color="#8cb6ce" meeting="false" start="2025-11-05" duration="2" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="5" name="temps total extrait/interview dns aside" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="false"/>
+            <task id="6" name="algo de recomendation" color="#8cb6ce" meeting="false" start="2025-12-02" duration="7" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="7" name="précharchement video" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="8" name="improve drag pip" color="#8cb6ce" meeting="false" start="2025-12-16" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="9" name="version phone" color="#8cb6ce" meeting="false" start="2026-01-06" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" priority="0" expand="true"/>
+            <task id="10" name="si pas yt -&gt; vimeo vise versa" color="#8cb6ce" meeting="false" start="2025-12-02" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
         </task>
-        <task id="61" uid="9819eb64094645f09de7b8bf47211369" name="optimisation" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
-        <task id="1" uid="054c5eac8ffb40fdb181833e0a361c9c" name="Accueil" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
-            <task id="11" uid="2151f0ffa7234015b203efc43732ea30" name="Mindmap" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="12" uid="6e91cd2c08884e1e9b029ca2b819ecfd" name="video recommander" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="13" uid="8cbf0e1e76e24c648e8cb1cf44579cad" name="page à propos" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-            <task id="14" uid="16a78017558e41c6af7d267665a1508e" name="page condition général" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+        <task id="61" name="optimisation" color="#8cb6ce" meeting="false" start="2025-11-12" duration="14" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
+        <task id="1" name="Accueil" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
+            <task id="11" name="Mindmap" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+            <task id="12" name="video recommander" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+            <task id="13" name="page à propos" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+            <task id="14" name="page condition général" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="2" uid="2272663060e840b2bdb1a4a4b4d2fa5c" name="Admin" meeting="false" start="2025-10-20" duration="28" complete="0" expand="false">
-            <task id="15" uid="1d1c245413b94284a75a86899bcf297d" name="gestions des extraits" meeting="false" start="2025-10-20" duration="28" complete="0" expand="true">
-                <task id="75" uid="91ec31f6873849bda2b18f0594dac773" name="afficher extraits" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-                <task id="19" uid="3db3c7ec67114f7480b69efd1d943bb0" name="créations des extraits" meeting="false" start="2025-11-07" duration="14" complete="0" expand="true"/>
-                <task id="20" uid="51abdac10d9644658f0a4f0c225f7731" name="ajout des meta données" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-                <task id="21" uid="7c104a22f35c4a1385ecce24290d0453" name="supp extraits" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
+        <task id="2" name="Admin" meeting="false" start="2025-10-20" duration="28" complete="0" expand="false">
+            <task id="15" name="gestions des extraits" meeting="false" start="2025-10-20" duration="28" complete="0" expand="true">
+                <task id="75" name="afficher extraits" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
+                <task id="19" name="créations des extraits" meeting="false" start="2025-11-07" duration="14" complete="0" expand="true"/>
+                <task id="20" name="ajout des meta données" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+                <task id="21" name="supp extraits" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
             </task>
-            <task id="78" uid="cbb76dbb06dd4f8680c6ae541f83165a" name="details extrait" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="16" uid="6634db6d15f14fca8e2a4af254cf8624" name="gestions des utilsateurs" meeting="false" start="2025-10-20" duration="15" complete="0" expand="false">
-                <task id="23" uid="e26e123f376d431c965b06f1b87ff338" name="supp user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
-                <task id="24" uid="3dd5fdfd780041d9bd303f557b5bd144" name="details user" meeting="false" start="2025-10-20" duration="3" complete="0" expand="true"/>
-                <task id="25" uid="b8c1e77e07a74289992cad38f8c7aedc" name="clear historique user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+            <task id="78" name="details extrait" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
+            <task id="16" name="gestions des utilsateurs" meeting="false" start="2025-10-20" duration="15" complete="0" expand="false">
+                <task id="23" name="supp user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+                <task id="24" name="details user" meeting="false" start="2025-10-20" duration="3" complete="0" expand="true"/>
+                <task id="25" name="clear historique user" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="77" uid="88ac4be06d8a4ca1acd9c5dca35faf99" name="afficher user" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="17" uid="56cc47214fc54437af43aa0e5c07dc34" name="gestions des playlist" meeting="false" start="2025-11-07" duration="7" complete="0" expand="false">
-                <task id="26" uid="123e4f6b83a940549d3d30e09ebc7583" name="creation playlists" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
-                <task id="27" uid="080407e43f614ac6acd5b28fac774cae" name="supp playlists" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
-                <task id="28" uid="2dde769ab695416da46809d9f9b3ed01" name="drag and drop" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
+            <task id="77" name="afficher user" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
+            <task id="17" name="gestions des playlist" meeting="false" start="2025-11-07" duration="7" complete="0" expand="false">
+                <task id="26" name="creation playlists" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
+                <task id="27" name="supp playlists" meeting="false" start="2025-11-07" duration="2" complete="0" expand="true"/>
+                <task id="28" name="drag and drop" meeting="false" start="2025-11-07" duration="7" complete="0" expand="true"/>
             </task>
-            <task id="76" uid="3c62061da0b644d0a9e5550c82de36b1" name="afficher playlists" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
-            <task id="18" uid="3a05dc312ecd461b9e1f1d0a52d347cb" name="voir la date de dernière connexion d'un utlisateur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
-                <task id="29" uid="abb88b22fad24e05968dcf489471405c" name="envoie email" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+            <task id="76" name="afficher playlists" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
+            <task id="18" name="voir la date de dernière connexion d'un utlisateur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
+                <task id="29" name="envoie email" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             </task>
         </task>
-        <task id="30" uid="97ca6cef71f745ea9a7a2d8d4be66db1" name="header/footeur" meeting="false" start="2025-10-23" duration="2" complete="0" expand="true"/>
-        <task id="31" uid="ead22a30eda44d2fa3e9834ab981887f" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="65" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
-            <task id="35" uid="9f34d28a3b124cef8f05ebe7dc385aac" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
+        <task id="30" name="header/footeur" meeting="false" start="2025-10-23" duration="2" complete="0" expand="true"/>
+        <task id="31" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="65" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="false">
+            <task id="35" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
                 <depend id="34" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="32" uid="febc22aaa6484276bed2ff1e1e016d0b" name="création modèle de la bd" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
+            <task id="32" name="création modèle de la bd" color="#8cb6ce" meeting="false" start="2025-10-20" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true">
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
                 <depend id="34" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="33" uid="a99b8fa655c84ee2948102e7b7a9bcd5" name="insertion manuelle 1er extraits" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
-            <task id="34" uid="2d3db8d0ba034a299908bd790541c4c2" name="insertion admin" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
-            <task id="37" uid="9364b9434d364a6997e0f676fe109fdc" name="création serializer de base" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
+            <task id="33" name="insertion manuelle 1er extraits" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-22" thirdDate-constraint="0" expand="true"/>
+            <task id="34" name="insertion admin" color="#8cb6ce" meeting="false" start="2025-10-21" duration="1" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
+            <task id="37" name="création serializer de base" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
                 <depend id="38" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="38" uid="a033b24f932148a2a556a250d7464fb4" name="création view et urls API" color="#8cb6ce" meeting="false" start="2025-10-21" duration="2" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
-            <task id="39" uid="14c2b9ebb0ae44798080bc1b541decb7" name="choisir structure des urls de l'api" meeting="false" start="2025-10-21" duration="1" complete="0" expand="true"/>
-            <task id="36" uid="2e40f54c49154424ae735a7a8a75246b" name="création des sérializers (ManyToMany)" meeting="false" start="2025-10-22" duration="2" complete="0" expand="false"/>
-            <task id="62" uid="10424c864ad0468fa8da978e342a2242" name="recherches" meeting="false" start="2025-10-24" duration="1" complete="0" expand="true"/>
-            <task id="40" uid="a41b5e37f8214ed0aebaae30351c8238" name="refaire préfetcher frontend" meeting="false" start="2025-10-31" duration="2" complete="0" expand="true"/>
-            <task id="65" uid="cea67990b6fb4db8b07c21d297869358" name="Tests" color="#000000" meeting="false" start="2025-11-04" duration="8" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false">
-                <task id="41" uid="432256d9ca1e479696f4ce3849707071" name="Tests de l'API" color="#8cb6ce" meeting="false" start="2025-11-04" duration="3" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
+            <task id="38" name="création view et urls API" color="#8cb6ce" meeting="false" start="2025-10-21" duration="2" complete="0" thirdDate="2025-10-21" thirdDate-constraint="0" expand="true"/>
+            <task id="39" name="choisir structure des urls de l'api" meeting="false" start="2025-10-21" duration="1" complete="0" expand="true"/>
+            <task id="36" name="création des sérializers (ManyToMany)" meeting="false" start="2025-10-22" duration="2" complete="0" expand="false"/>
+            <task id="62" name="recherches" meeting="false" start="2025-10-24" duration="1" complete="0" expand="true"/>
+            <task id="40" name="refaire préfetcher frontend" meeting="false" start="2025-10-31" duration="2" complete="0" expand="true"/>
+            <task id="65" name="Tests" color="#000000" meeting="false" start="2025-11-04" duration="8" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="false">
+                <task id="41" name="Tests de l'API" color="#8cb6ce" meeting="false" start="2025-11-04" duration="3" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true">
                     <notes><![CDATA[Tests réalisés:
 
 - Models
@@ -171,38 +167,46 @@
 
 Connexion non demandé pour les views]]></notes>
                 </task>
-                <task id="42" uid="01ebdd6fc7894510b9ea3774c855579a" name="Gérer les erreurs des modèles dans les serializers" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-                <task id="64" uid="9207d7e3fb0649d99984c4ef6265981c" name="Gérer les erreurs des viewsets" color="#8cb6ce" meeting="false" start="2025-11-06" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-                <task id="73" uid="255543dbdf2b4e538d37f2a01ad7841d" name="Mettre à jour les tests pour tenir compte de l'authentification et des permissions" color="#8cb6ce" meeting="false" start="2025-11-13" duration="2" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true"/>
+                <task id="42" name="Gérer les erreurs des modèles dans les serializers" color="#8cb6ce" meeting="false" start="2025-11-05" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+                <task id="64" name="Gérer les erreurs des viewsets" color="#8cb6ce" meeting="false" start="2025-11-06" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+                <task id="73" name="Mettre à jour les tests pour tenir compte de l'authentification et des permissions" color="#8cb6ce" meeting="false" start="2025-11-13" duration="2" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true"/>
             </task>
-            <task id="66" uid="331dbe9407d840e6ada323ac4c9cb21c" name="Gestions des erreurs dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
-            <task id="63" uid="e2bb4186c4494bd7b9ed4146fcac5579" name="Restructuration des sérializers" color="#8cb6ce" meeting="false" start="2025-11-10" duration="1" complete="0" thirdDate="2025-11-10" thirdDate-constraint="0" expand="true"/>
-            <task id="71" uid="90a7a0ac4f3f4980a2a71c5cdc241843" name="Restructuration des ModelViewSet" color="#8cb6ce" meeting="false" start="2025-11-10" duration="3" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true">
+            <task id="66" name="Gestions des erreurs dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-07" duration="1" complete="0" thirdDate="2025-11-07" thirdDate-constraint="0" expand="true"/>
+            <task id="63" name="Restructuration des sérializers" color="#8cb6ce" meeting="false" start="2025-11-10" duration="1" complete="0" thirdDate="2025-11-10" thirdDate-constraint="0" expand="true"/>
+            <task id="71" name="Restructuration des ModelViewSet" color="#8cb6ce" meeting="false" start="2025-11-10" duration="3" complete="0" thirdDate="2025-10-17" thirdDate-constraint="0" expand="true">
                 <depend id="74" type="2" difference="0" hardness="Rubber"/>
             </task>
-            <task id="74" uid="96420a37c74c4385838e9ae45b97f1d4" name="Erreur connexion neo4j" color="#8cb6ce" meeting="false" start="2026-01-21" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true"/>
-            <task id="72" uid="21a2f61c715a425f82d5133c15d7635a" name="Ajout de l'authentifcation et des permissions sur les views" meeting="false" start="2025-11-10" duration="2" complete="0" expand="true">
+            <task id="74" name="Erreur connexion neo4j" color="#8cb6ce" meeting="false" start="2026-01-21" duration="1" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="true"/>
+            <task id="72" name="Ajout de l'authentifcation et des permissions sur les views" meeting="false" start="2025-11-10" duration="2" complete="0" expand="true">
                 <depend id="73" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="79" uid="62c1f82cce37464e83f5c904e2a5b72e" name="Algorithme de recommandation" meeting="false" start="2025-11-17" duration="20" complete="0" expand="true"/>
-            <task id="80" uid="d9c9dabfeec842f8aa2352fc5906141e" name="Changements modèle API" meeting="false" start="2025-12-15" duration="3" complete="0" expand="true">
-                <task id="81" uid="447b4cea71b742979ab1d39466527abd" name="Changements Base de données" meeting="false" start="2025-12-15" duration="1" complete="0" expand="true">
+            <task id="79" name="Algorithme de recommandation" meeting="false" start="2025-11-17" duration="20" complete="0" expand="true"/>
+            <task id="80" name="Changements modèle API" meeting="false" start="2025-12-15" duration="3" complete="0" expand="true">
+                <task id="81" name="Changements Base de données" meeting="false" start="2025-12-15" duration="1" complete="0" expand="true">
                     <depend id="82" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="82" uid="c49616f0f0814e96aa250762c49e8d0a" name="Changements API" meeting="false" start="2025-12-16" duration="1" complete="0" expand="true">
+                <task id="82" name="Changements API" meeting="false" start="2025-12-16" duration="1" complete="0" expand="true">
                     <depend id="83" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="83" uid="056e4455b3c24b0cabc2123d6b3ce1d5" name="Changements front end" meeting="false" start="2025-12-17" duration="1" complete="0" expand="true"/>
+                <task id="83" name="Changements front end" meeting="false" start="2025-12-17" duration="1" complete="0" expand="true"/>
             </task>
-            <task id="84" uid="939a022b6a7f4ce988ab4a228374985e" name="Corrections divers bugs" meeting="false" start="2025-12-18" duration="1" complete="0" expand="true"/>
+            <task id="84" name="Corrections divers bugs" meeting="false" start="2025-12-18" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="85" uid="8840937173a94420a8b83544d7454351" name="Mise en production test" meeting="false" start="2025-12-19" duration="1" complete="0" expand="true"/>
-        <task id="69" uid="92e0ac75200d49899a0268886211e33b" name="Connexion Frontend" color="#ffff33" meeting="false" start="2025-11-03" duration="5" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="false">
-            <task id="67" uid="3cf380edba3f44518321dbd680ce42e8" name="Connexion d'un Utilisateur dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-03" duration="1" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true"/>
-            <task id="68" uid="d804f41b09454667be7ee12055f33077" name="Modification du header lors de la connexion" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
-            <task id="70" uid="076be27faed449e08f6f0d7ed0db536f" name="Page de connexion" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
+        <task id="85" name="Mise en production test" meeting="false" start="2025-12-19" duration="1" complete="0" expand="true"/>
+        <task id="69" name="Connexion Frontend" color="#ffff33" meeting="false" start="2025-11-03" duration="5" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="false">
+            <task id="67" name="Connexion d'un Utilisateur dans le frontend" color="#8cb6ce" meeting="false" start="2025-11-03" duration="1" complete="0" thirdDate="2025-11-03" thirdDate-constraint="0" expand="true"/>
+            <task id="68" name="Modification du header lors de la connexion" color="#8cb6ce" meeting="false" start="2025-11-04" duration="1" complete="0" thirdDate="2025-11-04" thirdDate-constraint="0" expand="true"/>
+            <task id="70" name="Page de connexion" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="86" uid="3c9d1de5abcf4f4e990acced1e92b909" name="Rapport et Soutenance" meeting="false" start="2025-12-29" duration="14" complete="0" expand="true"/>
+        <task id="86" name="Rapport et Soutenance" meeting="false" start="2025-12-29" duration="14" complete="0" expand="true"/>
+        <task id="87" name="mindmap" color="#8cb6ce" meeting="false" start="2025-10-20" duration="71" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="false">
+            <task id="93" name="preview" color="#8cb6ce" meeting="false" start="2025-12-17" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="94" name="changement api/db" color="#8cb6ce" meeting="false" start="2025-12-10" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="101" name="moving" color="#8cb6ce" meeting="false" start="2025-12-10" duration="3" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
+            <task id="104" name="click" color="#8cb6ce" meeting="false" start="2025-12-15" duration="5" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="106" name="animation" color="#8cb6ce" meeting="false" start="2026-01-02" duration="2" complete="0" thirdDate="2025-12-08" thirdDate-constraint="0" expand="true"/>
+            <task id="108" name="chemin" color="#8cb6ce" meeting="false" start="2025-10-20" duration="30" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
+        </task>
     </tasks>
     <resources>
         <resource id="0" name="Pierre Gangneux" function="Default:1" contacts="" phone=""/>
