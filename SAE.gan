@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-12-21" view-index="0" gantt-divider-location="346" resource-divider-location="300" version="2.8.11" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-10-13" view-index="0" gantt-divider-location="343" resource-divider-location="300" version="3.2.3240" locale="fr_FR">
     <description/>
-    <view zooming-state="default:5" id="gantt-chart">
-        <field id="tpd3" name="Name" width="195" order="0"/>
-        <field id="tpd4" name="Begin date" width="74" order="1"/>
-        <field id="tpd5" name="End date" width="73" order="2"/>
+    <view zooming-state="default:7" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="195" order="0"/>
+        <field id="tpd4" name="Date de début" width="74" order="1"/>
+        <field id="tpd5" name="Date de fin" width="73" order="2"/>
+        <option id="filter.completedTasks" value="false"/>
         <option id="color.recent"><![CDATA[#ffff33 #3333ff #33ff33]]></option>
     </view>
     <view id="resource-table">
-        <field id="0" name="Name" width="210" order="0"/>
-        <field id="1" name="Default role" width="86" order="1"/>
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
     </view>
     <!-- -->
     <calendars base-id="fr.polynesie-francaise">
@@ -111,8 +112,8 @@
             <task id="13" name="page à propos" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             <task id="14" name="page condition général" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
-        <task id="2" name="Admin" meeting="false" start="2025-10-20" duration="28" complete="0" expand="false">
-            <task id="15" name="gestions des extraits" meeting="false" start="2025-10-20" duration="28" complete="0" expand="true">
+        <task id="2" name="Admin" meeting="false" start="2025-10-20" duration="73" complete="0" expand="false">
+            <task id="15" name="gestions des extraits" meeting="false" start="2025-10-20" duration="28" complete="0" expand="false">
                 <task id="75" name="afficher extraits" meeting="false" start="2025-10-20" duration="7" complete="0" expand="true"/>
                 <task id="19" name="créations des extraits" meeting="false" start="2025-11-07" duration="14" complete="0" expand="true"/>
                 <task id="20" name="ajout des meta données" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
@@ -134,8 +135,17 @@
             <task id="18" name="voir la date de dernière connexion d'un utlisateur" meeting="false" start="2025-11-07" duration="1" complete="0" expand="false">
                 <task id="29" name="envoie email" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
             </task>
+            <task id="110" name="Mise à jour du panel admin" color="#8cb6ce" meeting="false" start="2025-12-23" duration="28" complete="0" thirdDate="2026-01-29" thirdDate-constraint="0" expand="true"/>
         </task>
         <task id="30" name="header/footeur" meeting="false" start="2025-10-23" duration="2" complete="0" expand="true"/>
+        <task id="87" name="mindmap" color="#8cb6ce" meeting="false" start="2025-10-20" duration="71" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="false">
+            <task id="93" name="preview" color="#8cb6ce" meeting="false" start="2025-12-17" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="94" name="changement api/db" color="#8cb6ce" meeting="false" start="2025-12-10" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="101" name="moving" color="#8cb6ce" meeting="false" start="2025-12-10" duration="3" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
+            <task id="104" name="click" color="#8cb6ce" meeting="false" start="2025-12-15" duration="5" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
+            <task id="106" name="animation" color="#8cb6ce" meeting="false" start="2026-01-02" duration="2" complete="0" thirdDate="2025-12-08" thirdDate-constraint="0" expand="true"/>
+            <task id="108" name="chemin" color="#8cb6ce" meeting="false" start="2025-10-20" duration="30" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
+        </task>
         <task id="31" name="API" color="#33ff33" meeting="false" start="2025-10-20" duration="65" complete="0" thirdDate="2025-10-20" thirdDate-constraint="0" expand="false">
             <task id="35" name="connection avec une base de données cypher - Neo4j" meeting="false" start="2025-10-20" duration="1" complete="0" expand="true">
                 <depend id="33" type="2" difference="0" hardness="Strong"/>
@@ -199,14 +209,6 @@ Connexion non demandé pour les views]]></notes>
             <task id="70" name="Page de connexion" meeting="false" start="2025-11-07" duration="1" complete="0" expand="true"/>
         </task>
         <task id="86" name="Rapport et Soutenance" meeting="false" start="2025-12-29" duration="14" complete="0" expand="true"/>
-        <task id="87" name="mindmap" color="#8cb6ce" meeting="false" start="2025-10-20" duration="71" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="false">
-            <task id="93" name="preview" color="#8cb6ce" meeting="false" start="2025-12-17" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="94" name="changement api/db" color="#8cb6ce" meeting="false" start="2025-12-10" duration="30" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="101" name="moving" color="#8cb6ce" meeting="false" start="2025-12-10" duration="3" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
-            <task id="104" name="click" color="#8cb6ce" meeting="false" start="2025-12-15" duration="5" complete="0" thirdDate="2026-01-05" thirdDate-constraint="0" expand="true"/>
-            <task id="106" name="animation" color="#8cb6ce" meeting="false" start="2026-01-02" duration="2" complete="0" thirdDate="2025-12-08" thirdDate-constraint="0" expand="true"/>
-            <task id="108" name="chemin" color="#8cb6ce" meeting="false" start="2025-10-20" duration="30" complete="0" thirdDate="2025-12-29" thirdDate-constraint="0" expand="true"/>
-        </task>
     </tasks>
     <resources>
         <resource id="0" name="Pierre Gangneux" function="Default:1" contacts="" phone=""/>
