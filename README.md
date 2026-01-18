@@ -93,9 +93,3 @@ NEO4J_HOST=localhost
 NEO4J_PORT=7687
 ```
 
-### Serveur Neo4j en Docker (optionnel)
-Pour développer en local avec Neo4j :
-```bash
-docker run -d -p 17474:7474 -p 17687:7687 -e NEO4J_AUTH=neo4j/testtest neo4j:latest
-```
-
