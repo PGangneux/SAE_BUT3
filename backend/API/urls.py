@@ -74,4 +74,5 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),
+    path("csv_import/", CSVImportView.as_view(), name="csv_import"),
 ]

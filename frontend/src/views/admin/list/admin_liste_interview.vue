@@ -10,7 +10,7 @@ import Interview from '../../../model/interview.js';
 import Model from "../../../model/model.js";
 
 import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-import {parseAndImport} from "../../../model/parse_csv.js"
+import {parse} from "../../../model/parse_csv.js"
 
 export default {
     name: "page_admin_interview",
@@ -97,10 +97,7 @@ export default {
             if (!file) return;
 
             // Lire le contenu du fichier
-            const text = await file.text();
-
-            let test = await parseAndImport(text)
-            console.log(test)
+            parse(file);
 
             // const reader = new FileReader();
             // reader.onload = (e) => {
