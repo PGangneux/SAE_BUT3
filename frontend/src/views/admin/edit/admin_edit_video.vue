@@ -13,6 +13,9 @@ import supprimer from "../supprimer.vue";
 import tags from "../tags.vue"
 import Tag from "../../../model/tag.js";
 
+import edit_success from "../gestion/edit_success.vue"
+import edit_error from '../gestion/edit_error.vue';
+
 import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from '../fn_save_tags.js';
 
 export default {
@@ -27,6 +30,8 @@ export default {
     popup_valider,
     supprimer,
     tags,
+    edit_success,
+    edit_error
 
   },data() {
         return {
@@ -46,7 +51,8 @@ export default {
             popupSelectInterview: false, //Props pour popupSelectInterview
             popupEnregistrer:false,
             popupCreerQuestion:false,
-            
+            popupSuccess: false,
+            popupError: false,
             urlVimeoReconstruit:"",
             urlyoutubeReconstruit:"",
 
@@ -93,10 +99,22 @@ export default {
         await this.current_extrait.create();
         //this.new_extrait = new markRaw(new Extrait({}));
         await this.save_tags();
+
+        sessionStorage.setItem('popupSuccess', 'true');
+        sessionStorage.setItem('create', this.create ? 'true' : 'false');
+
+        // Reload brutal
+        window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+
         console.log("creer");
         alert("creer");
-      }catch{
-        alert('probleme lors de la creation');
+      }catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error.toString());
+                this.message_error = error.toString();
+                this.popupError = true;
+                setTimeout(()=>{
+                    this.popupError = false;
+                },5000)
       }
       
     },
@@ -106,9 +124,20 @@ export default {
       try{
         await this.current_extrait.update();
         await this.save_tags();
-        alert('element enregistrer');
-      }catch{
-        alert('probleme lors de l\'enregistrement');
+        
+        sessionStorage.setItem('popupSuccess', 'true');
+        sessionStorage.setItem('create', this.create ? 'true' : 'false');
+        
+        // Reload brutal
+        window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+
+      }catch (error) {
+                console.error('Erreur lors de la sauvegarde:', error.toString());
+                this.message_error = error.toString();
+                this.popupError = true;
+                setTimeout(()=>{
+                    this.popupError = false;
+                },5000)
       }
 
     },
@@ -445,6 +474,24 @@ export default {
 
 
  async mounted() {
+
+    // Popup succès après reload brutal
+    if (sessionStorage.getItem('popupSuccess') === 'true') {
+        this.popupSuccess = true;
+
+            // Déterminer si c'était en mode création ou modification
+        this.createMode = sessionStorage.getItem('create') === 'true';
+        console.log("createmode",this.createMode)
+
+        sessionStorage.removeItem('popupSuccess');
+        sessionStorage.removeItem('create');
+
+        // ⏱ cacher après 5 secondes
+        setTimeout(() => {
+            this.popupSuccess = false;
+        }, 5000);
+    }
+
     await this.recupeArtiste();
     await this.recupeQuestion();
   
@@ -486,7 +533,6 @@ export default {
     this.urlyoutubeReconstruit =this.current_extrait.youtube_url;
     this.migniature_video()
 
-    
 
   }
 };
@@ -550,7 +596,7 @@ export default {
           <img :src="thumbnail" class="migniature" alt="migniature">
         </div>
 
-        <div class="col-md-6 scroller" style="width: 65%; height: 33vh;">
+        <div class="col-md-6 scroller basemodif" style="width: 65%; height: 100%; padding: 1em;">
           
         <div class="row"  style="--bs-gutter-x: 0em;">
             <div class=" input-group mb-3" >
@@ -679,9 +725,28 @@ export default {
     <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
     <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
+    <edit_success 
+        v-if="popupSuccess && create"
+        message="Extrait créée !"
+    />
+    <edit_success 
+        v-else-if="popupSuccess && !create"
+        message="Modification enregistrée !"
+    />
+    <edit_error
+        v-if="popupError"
+        :message="this.message_error"
+    />
+
     </template>
 
 <style scoped>
+
+  .basemodif{
+    width: 65%;
+    height: 100%;
+    padding: 1em;
+  }
 
 .migniature{
   height: 90%;
