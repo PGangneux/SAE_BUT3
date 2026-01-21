@@ -79,6 +79,22 @@ export default {
         handleTagsConnected(this, tag)
     },
 
+    async getVideoDuration(url) {
+      return new Promise((resolve, reject) => {
+        const video = document.createElement("video")
+        video.preload = "metadata"
+        video.src = url
+
+        video.onloadedmetadata = () => {
+          resolve(video.duration)
+        }
+
+        video.onerror = () => {
+          reject(new Error("Impossible de charger la vidéo"))
+        }
+      })
+    },
+
 
 
 
@@ -94,7 +110,13 @@ export default {
 
       try{
         //fonction pour enregistrer un extraits dans L'api
-        this.current_extrait.duree = 0;
+
+
+        this.current_extrait.duree =  this.getVideoDuration( this.urlVimeoReconstruit);
+        this.current_extrait.duree =  this.getVideoDuration( this.urlyoutubeReconstruit);
+        
+
+
         this.popupEnregistrer = true;
         await this.current_extrait.create();
         //this.new_extrait = new markRaw(new Extrait({}));
@@ -122,6 +144,13 @@ export default {
 
     async Update(){
       try{
+        this.current_extrait.duree =  this.getVideoDuration( this.urlVimeoReconstruit);
+        this.current_extrait.duree =  this.getVideoDuration( this.urlyoutubeReconstruit);
+
+
+         console.log(this.urlVimeoReconstruit);
+        console.log(this.current_extrait.duree);
+
         await this.current_extrait.update();
         await this.save_tags();
         
