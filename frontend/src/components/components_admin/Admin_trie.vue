@@ -1,7 +1,7 @@
 <script>
 import { markRaw } from 'vue';
 import Tags from '../../model/tag.js';
-
+import Extrait from "../../model/extrait.js";
 
 
 export default {
@@ -10,9 +10,39 @@ export default {
     },
     data() {
         return {
-            tags: {type:Tags}
+            tags: {type:Tags},
+            motchercher:null,
+            extraitsearch:[]
         };
+        
     },
+
+
+    methods:{
+
+        changement_extrait() {
+            console.log("emits");
+            this.$emit('searchextrait', this.extraitsearch)
+        },
+
+        async searching(){
+            if(this.motchercher =="" || this.motchercher ==null){
+                console.log("vide");
+                this.extraitsearch=[];
+            } else{
+                this.extraitsearch = markRaw(await Extrait.search(this.motchercher));
+                console.log(this.extraitsearch);
+            }
+            this.changement_extrait(); 
+
+
+            
+        },
+
+
+    },
+
+    emits : [ "searchextrait"],   
 
     async mounted() {
        this.tags = markRaw(await Tags.list())
@@ -38,8 +68,8 @@ export default {
         <div class="recherche row">
             <div class="search-bar">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon">
-                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search" aria-describedby="search-addon" v-model="this.motchercher">
+                    <button class="btn btn-outline-secondary buttonsearch" type="button" id="search-addon" v-on:click="searching()">
                             <img src="/imgs/search.svg" alt="button search" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" > </button>
                 </div>
             </div>

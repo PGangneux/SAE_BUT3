@@ -15,8 +15,19 @@ export default {
     },data() {
         return {
             extraits: null,
+            search:[],
     };
   },
+
+    methods:{
+
+      searchExtrait($event){
+        this.search =$event;
+        console.log(this.search)
+    },
+  },
+
+  
   
 
   async mounted() {
@@ -36,13 +47,19 @@ export default {
   <h1 class="text-center"> Question-Extrait </h1>
 
   <div class="row" style="margin-right:0;margin-left:0; padding-left: 10px; padding-right: 20px;" >
-    <comp_admin_trie_extrait/>
+    <comp_admin_trie_extrait :extraitsearch="search" @searchextrait=searchExtrait($event) />
 
     <div class="col-md-9 aggrandir">
-      <ul class="scroller2  row" >
-        <li class="row carte" v-for="extrait in this.extraits">
+      <ul class="scroller2  row" v-if="search.length === 0">
+        <li class="row carte"  v-for="extrait in this.extraits">
             <comp_extrait :current_extrait=extrait></comp_extrait>
         </li>
+      </ul>
+
+      <ul class="scroller2  row" v-else >
+          <li class="row carte"  v-for="extrait in this.search">
+              <comp_extrait :current_extrait=extrait></comp_extrait>
+          </li>
       </ul>
       
     </div>
