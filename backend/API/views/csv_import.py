@@ -7,8 +7,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..serializers import ArtisteSerializer, ThemeSerializer, QuestionSerializer, TagSerializer, ExtraitSerializer, AudioSerializer, OccasionSerializer
 
+from ..models import Artiste, Audio, Question, Tag, Theme
+
+from ..serializers import (
+    ArtisteSerializer,
+    ThemeSerializer,
+    QuestionSerializer,
+    TagSerializer,
+    ExtraitSerializer,
+    AudioSerializer,
+    OccasionSerializer,
+    AudiosSerializer,
+    TagsExtraitRelationShipSerializer,
+)
 
 
 class CSVImportView(APIView):
@@ -21,28 +33,24 @@ class CSVImportView(APIView):
 
         if not csv_file:
             return Response(
-                {"error": "Aucun fichier envoyé"},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "Aucun fichier envoyé"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         # Vérification basique
         if not csv_file.name.endswith(".csv"):
             return Response(
                 {"error": "Le fichier doit être un CSV"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-
 
         self.save_data(csv_file)
 
         return Response(
-            {"message": "lignes importées avec succès"},
-            status=status.HTTP_201_CREATED
+            {"message": "lignes importées avec succès"}, status=status.HTTP_201_CREATED
         )
-    
 
     def save_data(self, csv_file):
-                # Lecture du fichier (UTF-8 recommandé)
+        # Lecture du fichier (UTF-8 recommandé)
         data = csv_file.read().decode("utf-8")
         io_string = io.StringIO(data)
 
@@ -53,91 +61,105 @@ class CSVImportView(APIView):
             print(type(row))  # Pour debug
             self.save_row(row)
 
-
-
-
-
     def save_row(self, row):
         serializer_artiste = ArtisteSerializer()
-        artiste  = row["Artiste"].strip() 
+        artiste = row["Artiste"].strip()
+        artiste_uuid = None
         if artiste != "" and artiste is not None:
             try:
-                serializer_artiste.create({"name": artiste})
+                artiste_uuid = serializer_artiste.create({"name": artiste}).uuid
             except:
-                pass
+                artiste_uuid = Artiste.nodes.get(name=artiste).uuid
 
         serializer_theme = ThemeSerializer()
-        theme  = row["Theme"].strip() 
+        theme = row["Theme"].strip()
+        theme_uuid = None
         if theme != "" and theme is not None:
             try:
-                serializer_theme.create({"name": theme})
+                theme_uuid = serializer_theme.create({"name": theme}).uuid
             except:
-                pass
+                theme_uuid = Theme.nodes.get(name=theme).uuid
 
         serializer_question = QuestionSerializer()
-        question  = row["Question"].strip()
+        question = row["Question"].strip()
+        question_uuid = None
         if question != "" and question is not None:
             try:
-                serializer_question.create({"text": question})
+                question_uuid = serializer_question.create(
+                    {"text": question, "theme_uuid": theme_uuid}
+                ).uuid
             except:
-                pass
-        
+                question_uuid = Question.nodes.get(texte=question).uuid
+
         serializer_occasion = OccasionSerializer()
-        evenement  = row["Evenement"].strip()
+        evenement = row["Evenement"].strip()
+        evenement_uuid = None
         if evenement != "" and evenement is not None:
             try:
-                serializer_occasion.create({"name": evenement})
+                evenement_uuid = serializer_occasion.create({"name": evenement}).uuid
             except:
-                pass
-
+                evenement_uuid = None
 
         serializer_tag = TagSerializer()
         tags = [tag.strip() for tag in row["Tags"].split("; ")]
+        tags_uuids = []
         for tag in tags:
             if tag != "" and tag is not None:
                 try:
-                    serializer_tag.create({"name": tag})
+                    tag_uuid = serializer_tag.create({"name": tag}).uuid
                 except:
-                    pass
+                    tag_uuid = Tag.nodes.get(name=tag).uuid
+                tags_uuids.append(tag_uuid)
 
         serializer_audio = AudioSerializer()
         audios = [audio.strip() for audio in row["Audios"].split("; ")]
+        audios_uuids = []
         for audio in audios:
             if audio != "" and audio is not None:
                 try:
-                    serializer_audio.create({"url": audio})
+                    audio_uuid = serializer_audio.create({"name": audio}).uuid
                 except:
-                    pass            
-        
+                    audio_uuid = Audio.nodes.get(name=audio).uuid
+                    audios_uuids.append(audio_uuid)
+
         youtube_url = self.get_code(row["Youtube"].strip())
-        
+
         date = row["Date"].strip()
         titre = artiste + " - " + evenement + " - " + question + " - " + date
         serializer_extrait = ExtraitSerializer()
         try:
-            serializer_extrait.create({
-                "titre": titre,
-                "artiste": artiste,
-                "theme": theme,
-                "question": question,
-                "evenement": evenement,
-                "tags": tags,
-                "audios": audios,
-                "uploaded_at": Date(date) if date != "" else None,
-                "lieu": row["Ville"].strip(),
-                "youtube_url": youtube_url,
-                "vimeo_url": row["Vimeo"].strip(),
-                "duree": 0,
-                "description": "", 
-            })
+            extrait_node = serializer_extrait.create(
+                {
+                    "titre": titre,
+                    "artiste_uuid": artiste_uuid,
+                    "question_uuid": question_uuid,
+                    "uploaded_at": Date(date) if date != "" else None,
+                    "lieu": row["Ville"].strip(),
+                    "youtube_url": youtube_url,
+                    "vimeo_url": row["Vimeo"].strip(),
+                    "duree": 0,
+                    "description": "",
+                }
+            )
+
+            context = {"extrait": extrait_node}
+            for audio_uuid in audios_uuids:
+                serializer = AudiosSerializer(
+                    data={"uuid": audio_uuid}, context=context
+                )
+                if serializer.is_valid():
+                    serializer.create(serializer.validated_data)
+
+            for tag_uuid in tags_uuids:
+                serializer = TagsExtraitRelationShipSerializer(
+                    data={"uuid": tag_uuid}, context=context
+                )
+                if serializer.is_valid():
+                    serializer.create(serializer.validated_data)
+
         except Exception as e:
             print(f"Erreur lors de la création de l'extrait: {e}")
 
-    
-    
-    
-    
-    
     def get_code(self, url):
         """
         Extrait le code vidéo d'une URL YouTube.
@@ -147,4 +169,3 @@ class CSVImportView(APIView):
         elif "youtu.be/" in url:
             return url.split("youtu.be/")[1]
         return url
-    
