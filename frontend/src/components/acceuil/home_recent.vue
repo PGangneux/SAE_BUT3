@@ -99,7 +99,7 @@ export default {
     min-width: 350px;
     min-height: 350px;
     max-width: 400px;
-    flex: 1 1 200px;
+    /* flex: 1 1 200px; */
 }
 
 .local h3 {
