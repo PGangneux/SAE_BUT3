@@ -21,6 +21,8 @@ function mm_reset_hard(mminfo) {
     mm_draw_onecat(mminfo, root, false);
 }
 
+// TODO : BUGGER
+
 /**
  * Soft reset of mindmap - clears previews and adjusts nodes based on search
  * @param {mm_Mindmap} mminfo mm_Mindmap  
@@ -75,6 +77,8 @@ export async function mm_reset_soft(mminfo) {
             // Calculate how many nodes to create
             nodesToCreate = search_cat.length - sameCount;
         }
+        // console.log("search_cat",search_cat,"sameCount",sameCount,"nodesToCreate",nodesToCreate);
+        
         // Handle nodes array
         if (search_cat.length > 0) {
             // Always slice to search count in search mode

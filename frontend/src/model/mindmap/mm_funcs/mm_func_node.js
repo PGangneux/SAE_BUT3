@@ -7,7 +7,7 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 /**
  *  utils to create a child node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @param {mmch_CheminT} node the parent node  
+ * @param {mmch_CheminT} parent the parent node  
  * @param {mmch_CheminT} category the class of node  
  * @param {boolean?} createLink? = true do we draw the white line or not
  * @param {boolean?} isPreview? = false whether this is a preview node
