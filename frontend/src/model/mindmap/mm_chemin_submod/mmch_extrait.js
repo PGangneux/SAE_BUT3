@@ -13,7 +13,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     #description = null;
 
     async* mmch_listinst(args = {}) {
-        const finalArgs = { ...this.mmch_default_listinst_args, ...args };
+        const finalArgs = { ...this.constructor.mmch_default_listinst_args, ...args };
         yield mmch_Artiste;
         yield mmch_Tag;
         yield mmch_Interview;
@@ -27,12 +27,13 @@ export default class mmch_Extrait extends mmch_CheminT {
     }
 
     async* mmch_searchinst(args = {}) {
-        const finalArgs = { ...this.mmch_default_searchinst_args, ...args };
+        const finalArgs = { ...this.constructor.mmch_default_searchinst_args, ...args };
         yield mmch_Artiste;
         yield mmch_Tag;
         yield mmch_Interview;
         yield mmch_Question;
         // TODO : put recomendation algorithm here
+        
         const items = await Extrait.search(finalArgs);
         return [
             ...items.map(item => ({ cls: mmch_Extrait, content: item })),
@@ -40,7 +41,7 @@ export default class mmch_Extrait extends mmch_CheminT {
     }
 
     async* mmch_previewinst(mminfo, args = {}) {
-        const finalArgs = { ...this.mmch_default_previewinst_args, ...args };
+        const finalArgs = { ...this.constructor.mmch_default_previewinst_args, ...args };
         // TODO : put recomendation algorithm here
         const recommend = await Extrait.list(finalArgs);
         for (const item of recommend) {
@@ -80,7 +81,7 @@ export default class mmch_Extrait extends mmch_CheminT {
         }
 
         try {
-            const tags = await extrait.tags({ limit: 3 });
+            const tags = await extrait.tags({ ...this.constructor.mmch_default_listinst_args });
             if (tags.length > 0) {
                 const tagNames = tags.map(t => t.name).join(', ');
                 description.push(`Tags: ${tagNames}`);
