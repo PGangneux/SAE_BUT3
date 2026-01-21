@@ -71,14 +71,6 @@ class CSVImportView(APIView):
             except:
                 artiste_uuid = Artiste.nodes.get(name=artiste).uuid
 
-        serializer_theme = ThemeSerializer()
-        theme = row["Theme"].strip()
-        theme_uuid = None
-        if theme != "" and theme is not None:
-            try:
-                theme_uuid = serializer_theme.create({"name": theme}).uuid
-            except:
-                theme_uuid = Theme.nodes.get(name=theme).uuid
 
         serializer_question = QuestionSerializer()
         question = row["Question"].strip()
@@ -86,10 +78,11 @@ class CSVImportView(APIView):
         if question != "" and question is not None:
             try:
                 question_uuid = serializer_question.create(
-                    {"text": question, "theme_uuid": theme_uuid}
+                    {"texte": question}
                 ).uuid
             except:
                 question_uuid = Question.nodes.get(texte=question).uuid
+
 
         serializer_occasion = OccasionSerializer()
         evenement = row["Evenement"].strip()
@@ -137,6 +130,7 @@ class CSVImportView(APIView):
                     "lieu": row["Ville"].strip(),
                     "youtube_url": youtube_url,
                     "vimeo_url": row["Vimeo"].strip(),
+                    "position": int(row["Position"].strip()) if row["Position"].strip() != "" else None,
                     "duree": 0,
                     "description": "",
                 }
