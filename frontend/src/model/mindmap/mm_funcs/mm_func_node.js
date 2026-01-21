@@ -13,7 +13,7 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
  * @param {boolean?} isPreview? = false whether this is a preview node
  * @return {mmch_CheminT} the created child
 */
-export function mm_createChildNode(mminfo, node, category, createLink = true, isPreview = false) {
+export function mm_createChildNode(mminfo, parent, category, createLink = true, isPreview = false) {
     const thickness_base = (mminfo.chemin.length + 1) * 3;
     let Cls, content;
     // Determine if category is a simple class or a config object
@@ -30,9 +30,10 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
         return null;
     }    
     // Create the instance
-    const tmp_child = new Cls(mminfo, node.x, node.y, node.depth, content);
+    
+    const tmp_child = new Cls(mminfo, parent.x, parent.y, parent.depth, content);
     // Add to parent's children
-    node.childrens.push(markRaw(tmp_child));
+    parent.childrens.push(markRaw(tmp_child));
     // add to mminfo nodes or previewnodes    
     if (isPreview) {
         tmp_child.ispreview = true;
@@ -42,14 +43,14 @@ export function mm_createChildNode(mminfo, node, category, createLink = true, is
     }
     // create linkage
     if (createLink) {
-        const linkage = new mm_Linkage(node, tmp_child, thickness_base * (1 / node.depth));
+        const linkage = new mm_Linkage(parent, tmp_child, thickness_base * (1 / tmp_child.depth));
         if (isPreview) {
             mminfo.previewlinkages.push(markRaw(linkage));
         } else {
             mminfo.linkages.push(markRaw(linkage));
         }
     }
-    set_children_pos(mminfo, node);
+    set_children_pos(mminfo, parent);
     return tmp_child;
 }
 
