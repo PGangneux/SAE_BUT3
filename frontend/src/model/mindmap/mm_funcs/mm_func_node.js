@@ -62,16 +62,13 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
 export function set_children_pos(mminfo, root) {
     // failsafe , si pas enfant
     if (!root.childrens.length) return;
-
     // est ce que c'est mm_Root ou pas 
     const isRoot = root instanceof mmch_Root;
     const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
-    const nb_child = root.childrens.length;
-
     // Count children with and without content (mmch_obj)
     let childrenWithPreview = 0;
     let childrenWithContent = 0;
-    let childrenWithoutContent = 0;
+    let childrenEmpty = 0;
 
     for (let child of root.childrens) {
         if (child.mmch_hasMiniature()) {
@@ -79,82 +76,65 @@ export function set_children_pos(mminfo, root) {
         } else if (child.mmch_obj) {
             childrenWithContent++;
         } else {
-            childrenWithoutContent++;
+            childrenEmpty++;
         }
     }
-
     // Calculate angle per child based on content
     // Children with content get 1.2x more angle space
-    const effectiveChildren = childrenWithPreview * 1.4 + childrenWithContent * 1.2 + childrenWithoutContent;
+    const childrenPreviewWeight = 10.0;
+    const childrenContentWeight = 1.3;
+    const childrenEmptyWeight = 1.0;
+    const effectiveChildren = childrenWithPreview * childrenPreviewWeight
+                            + childrenWithContent * childrenContentWeight
+                            + childrenEmpty * childrenEmptyWeight;
     const angle_per_child = totalArc / effectiveChildren;
 
-    // Check if all children already have origin_angle set with consistent spacing
-    if (root.childrens.length > 1) {
-        let allAnglesSet = true;
-        
-        for (let child of root.childrens) {
-            if (child.origin_angle === null || child.origin_angle === undefined) {
-                allAnglesSet = false;
-                break;
-            }
-        }
-        
-        // If all angles are set, check spacing consistency
-        if (allAnglesSet) {
-            // Calculate expected spacing between consecutive children
-            // We need to account for content weighting, so we check each pair
-            let spacing_ok = false;
-            let root_angle = root.childrens.origin_angle;
-            // TODO : REDO
-            if (root.childrens[1].mmch_hasMiniature()){
-                if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.4 < 5){
-                    spacing_ok = true;
-                }
-            } else if (root.childrens[1].mmch_obj){
-                if (root_angle - root.childrens[0].origin_angle - angle_per_child * 1.2 < 5){
-                    spacing_ok = true;
-                }
-            } else {
-                if (root_angle - root.childrens[0].origin_angle - angle_per_child < 5){
-                    spacing_ok = true;
-                }
-            }
-            if (spacing_ok) return; // spacing consistent, no need to recalculate
-        }
-    } 
-    // If we reach here, we need to recalculate positions
-    
     // distance entre root et enfant ;
     // so the distance is inversly proportional to the number of angle_per_child
-    const depthFactor = Math.max(0.7, 1 / root.depth); // Reduce distance as depth increases
+    const depthFactor = Math.min(0.9, Math.max(2.0, root.depth/10)); // Reduce distance as depth increases
 
-    // New spreadFactor based on number of children AND children with content
-    const spreadFactor = Math.max(1, (nb_child + childrenWithContent * 0.5) * 0.5);
-    const distance = 150 + 200 * mminfo.scale * depthFactor * spreadFactor;
+    // spreadFactor based on number of children AND children with content
+    const spreadFactor = Math.max(1, effectiveChildren);
+    const distance = 150 + 10 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
-    let start_angle = isRoot ? 0 : root.origin_angle - (totalArc / 2) + (angle_per_child / 2);
+    let start_angle = isRoot ? 0 : root.origin_angle;
     const degree_to_rad = Math.PI / 180;
-
     let currentEffectiveIndex = 0;
 
+    // console.log("commence");
+    
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
-        const hasContent = child.mmch_obj;
         // Calculate current angle - adjust for content weighting
-        const angleWeight = hasContent ? 1.2 : 1;
-        const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);
+        let angleWeight;
+        if (child.mmch_hasMiniature()) {
+            angleWeight = childrenPreviewWeight;
+        } else if (child.mmch_obj) {
+            angleWeight = childrenContentWeight;
+        } else {
+            angleWeight = childrenEmptyWeight;
+        }
+        const current_angle = start_angle + (index%2 == 0 ? 1 : -1)* (angle_per_child * currentEffectiveIndex);
+        // console.log(index,current_angle,child);
+        
         currentEffectiveIndex += angleWeight;
 
         const angleRad = current_angle * degree_to_rad;
 
-        child.x = root.x + Math.cos(angleRad) * distance;
-        child.y = root.y + Math.sin(angleRad) * distance;
+        child.targetX = root.x + Math.cos(angleRad) * distance;
+        child.targetY = root.y + Math.sin(angleRad) * distance;
         child.origin_angle = current_angle;
         
         // Trigger animation for this child if at appropriate depth
+        // console.log(root,child,mminfo.chemin.length, ">=", child.depth);
+        
         if (mminfo.chemin.length >= child.depth) {
             child.animateToTarget();
+        } else {
+            child.x = child.targetX;
+            child.y = child.targetY;
         }
     }
+    // console.log("fini");
 }
