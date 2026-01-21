@@ -1,12 +1,13 @@
 # views.py
 import csv
 import io
+from datetime import date as Date
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from ..serializers import ArtisteSerializer, ThemeSerializer, QuestionSerializer, TagSerializer
+from ..serializers import ArtisteSerializer, ThemeSerializer, QuestionSerializer, TagSerializer, ExtraitSerializer, AudioSerializer, OccasionSerializer
 
 
 
@@ -81,6 +82,15 @@ class CSVImportView(APIView):
             except:
                 pass
         
+        serializer_occasion = OccasionSerializer()
+        evenement  = row["Evenement"].strip()
+        if evenement != "" and evenement is not None:
+            try:
+                serializer_occasion.create({"name": evenement})
+            except:
+                pass
+
+
         serializer_tag = TagSerializer()
         tags = [tag.strip() for tag in row["Tags"].split("; ")]
         for tag in tags:
@@ -90,23 +100,51 @@ class CSVImportView(APIView):
                 except:
                     pass
 
+        serializer_audio = AudioSerializer()
+        audios = [audio.strip() for audio in row["Audios"].split("; ")]
+        for audio in audios:
+            if audio != "" and audio is not None:
+                try:
+                    serializer_audio.create({"url": audio})
+                except:
+                    pass            
         
+        youtube_url = self.get_code(row["Youtube"].strip())
         
+        date = row["Date"].strip()
+        titre = artiste + " - " + evenement + " - " + question + " - " + date
+        serializer_extrait = ExtraitSerializer()
+        try:
+            serializer_extrait.create({
+                "titre": titre,
+                "artiste": artiste,
+                "theme": theme,
+                "question": question,
+                "evenement": evenement,
+                "tags": tags,
+                "audios": audios,
+                "uploaded_at": Date(date) if date != "" else None,
+                "lieu": row["Ville"].strip(),
+                "youtube_url": youtube_url,
+                "vimeo_url": row["Vimeo"].strip(),
+                "duree": 0,
+                "description": "", 
+            })
+        except Exception as e:
+            print(f"Erreur lors de la création de l'extrait: {e}")
 
-
-
-
-        #serializer_theme = Theme
-
-
-        # return {
-        #     "artiste": row["ARTISTE"].strip(),
-        #     "theme": row["Thème"].strip(),
-        #     "question": row["Question"].strip(),
-        #     "tags": [tag.strip() for tag in row["Tags"].split(",")],
-        #     "date": row["Date"].strip(),
-        #     "evenement": row["Evénement"].strip(),
-        #     "ville": row["Ville"].strip(),
-        #     "youtube": row["YouTube"].strip(),
-        #     "vimeo": row["Vimeo"].strip()
-        # }
+    
+    
+    
+    
+    
+    def get_code(self, url):
+        """
+        Extrait le code vidéo d'une URL YouTube.
+        """
+        if "youtube.com/watch?v=" in url:
+            return url.split("v=")[1]
+        elif "youtu.be/" in url:
+            return url.split("youtu.be/")[1]
+        return url
+    
