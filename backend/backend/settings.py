@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
     # Permission par défaut d'accès à toutes les vues
     "DEFAULT_PERMISSION_CLASSES": [
         # "rest_framework.permissions.IsAuthenticatedOrReadOnly",  # Visiteur autorisé pour 'GET', 'HEAD', 'OPTIONS' sinon connexion
-        # "API.permissions.IsAdminOrReadOnly",  # Nécessite l'auth pour toute action (mesure de sécurité) sinon admin
+        "API.permissions.IsAdminOrReadOnly",  # Nécessite l'auth pour toute action (mesure de sécurité) sinon admin
     ],
 }
 
