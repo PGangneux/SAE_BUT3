@@ -26,8 +26,7 @@ class Recommandation(APIView):
 
     Objectif:
         TODO get x derniers Interview/extrait regardés
-        TODO filtrer celles avec watch time > 70%
-        TODO - proposées proportion interview/extratait en fonction de ce que l'utilisateur regarde le plus
+        TODO - proposées proportion interview/extrait en fonction de ce que l'utilisateur regarde le plus
             si user regarde plus extrait commencé par proposées x extraits, max 4 extrait 1 interview vise versa
             donc 4 pour 1 max pour choisir extrait/interview on fait classement de tags des x derniers regardés sup 70%
         classement des thèmes
@@ -72,12 +71,12 @@ class Recommandation(APIView):
         """
         data: dict = request.data
         poids = data.get("weights", {})
-        print("poids:", poids)
+        # print("poids:", poids)
         filtres = data.get("filters", {})
-        print("filtres:", filtres)
+        # print("filtres:", filtres)
 
         user = get_current_user(request)
-        print("user: ", user.pseudo if user else None)
+        # print("user: ", user.pseudo if user else None)
 
         context = {"request": request}
 
@@ -99,7 +98,7 @@ class Recommandation(APIView):
         video_class = Extrait.__name__
         playlist_class = Interview.__name__
 
-        print("uuid", video)
+        # print("uuid", video)
 
         # Algo complet
         # Construction des parties de la requête
@@ -270,7 +269,7 @@ class Recommandation(APIView):
             "size": size,
             "page": page,
         }
-        print(query, params)
+        # print(query, params)
         try:
             recommandations_cypher = db.cypher_query(query, params)[0]
         except ServiceUnavailable:

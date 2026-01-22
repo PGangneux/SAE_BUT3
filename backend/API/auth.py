@@ -7,16 +7,23 @@ from .models import Utilisateur
 from .errors import ConnexionDB
 
 
-class IsAuthenticated(BasePermission):
-    """
-    Allows access only to authenticated users.
-    """
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+from .models import Utilisateur
 
-    def has_permission(self, request, view):
-        print(request)
-        current_user = get_current_user(request)
-        print(current_user)
-        return bool(current_user)
+class Neo4jJWTAuthentication(JWTAuthentication):
+
+    def get_user(self, validated_token):
+        user_id = validated_token.get("user_id")
+
+        if not user_id:
+            raise AuthenticationFailed("Token invalide")
+
+        try:
+            return Utilisateur.nodes.get(uuid=user_id)
+        except Utilisateur.DoesNotExist:
+            raise AuthenticationFailed("Utilisateur introuvable")
+
 
 
 def get_current_user(request):

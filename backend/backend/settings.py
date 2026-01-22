@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    # "rest_framework_simplejwt.token_blacklist", (incompatible avec neo4j)
     "django_extensions",
     "corsheaders",
     "API",
@@ -90,19 +91,34 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    # "DEFAULT_AUTHENTICATION_CLASSES": (
-    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    # ),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        # "rest_framework.permissions.IsAuthenticated",
+    ],
 }
+from rest_framework.permissions import IsAuthenticated
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Temporaire et à redéfinir
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,
-    "AUTH_HEADER_TYPES": ("Bearer",),
-    "USER_ID_FIELD": "uuid",
-    "USER_ID_CLAIM": "user_id",
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=30
+    ),  # Temps de vie d'un token d'accès (à redéfinir)
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=7
+    ),  # Temps de vie d'un token refresh (à redéfinir)
+    # "BLACKLIST_AFTER_ROTATION": True,  # Quand claim d'un nouveau token refresh, supprime l'ancien (incompatible avec neo4j)
+    "ALGORITHM": "HS256",  # Algorithme de chiffrement
+    "SIGNING_KEY": SECRET_KEY,  # Clé de chiffrement
+    "AUDIENCE": "API",  # Actif sur l'application API
+    "AUTH_HEADER_TYPES": ("Bearer",),  # Prefix du token du header Autorization
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",  # Nom du champ du header du token access
+    "USER_ID_FIELD": "uuid",  # Champ d'utilisateur pour la génération des tokens
+    "USER_ID_CLAIM": "user_uuid",  # Nom du champ dans le token
+    "CHECK_REVOKE_TOKEN": True,  # Révoque les tokens en cas de changement de mdp
+    "REVOKE_TOKEN_CLAIM": "password",  # Fonction de changement de mot de passe
+    "TOKEN_OBTAIN_SERIALIZER": "API.serializers.TokenObtain",  # Serializer d'obtention des tokens (access et refresh)
+    "TOKEN_REFRESH_SERIALIZER": "API.serializers.TokenRefresh",  # Serializer d'obtention du token access à partir de refresh
 }
 
 

@@ -1,7 +1,10 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter
-from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from .views import *
 
 router = DefaultRouter()
@@ -71,7 +74,7 @@ urlpatterns = [
     path("", include(router_tag.urls)),
     path("", include(router_utilisateur.urls)),
     path("", include(router_occasion.urls)),
-    path("login/", LoginView.as_view(), name="login"),
-    path("login/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("login/", TokenObtainPairView.as_view(), name="login"),
+    path("login/refresh/", TokenRefreshView.as_view(), name="login-refresh"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),
 ]

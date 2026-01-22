@@ -8,8 +8,7 @@ from neomodel.sync_.match import NodeSet, RawCypher
 from neomodel import StructuredNode, db
 from neo4j.exceptions import ServiceUnavailable
 from ...errors import NotFound, ConnexionDB, OrderError
-from ...auth import IsAuthenticated
-
+from rest_framework.permissions import IsAuthenticated
 
 class BaseGenericViewSet(GenericViewSet):
     """
@@ -23,7 +22,7 @@ class BaseGenericViewSet(GenericViewSet):
     """
 
     lookup_field = "uuid"
-    authentication_classes = []
+    # authentication_classes = []
     permission_classes = [IsAuthenticated]
 
     def __init__(
