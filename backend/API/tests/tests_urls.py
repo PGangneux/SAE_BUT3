@@ -28,7 +28,7 @@ class URLsAPITests(Neo4jTestCase):
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_token_refresh_url(self):
-        url = reverse("token_refresh")
+        url = reverse("login-refresh")
         response = self.client.post(url, data={"refresh": "fake_token"}, format="json")
         # Le token est invalide -> 401 UNAUTHORIZED
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

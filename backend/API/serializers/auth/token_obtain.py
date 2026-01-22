@@ -47,14 +47,13 @@ def authentification(username: str, password: str) -> Utilisateur:
         Utilisateur: _description_
     """
     utilisateur: Utilisateur
-    utilisateur_nodeset: NodeSet = Utilisateur.nodes
     # Recherche par email ou pseudo
     # Test dans cette ordre à cause d'un défaut inérant à RegexProperty
     try:
-        utilisateur = utilisateur_nodeset.get(pseudo=username)
+        utilisateur = Utilisateur.nodes.get(pseudo=username)
     except DoesNotExist:
         try:
-            utilisateur = utilisateur_nodeset.get(email=username)
+            utilisateur = Utilisateur.nodes.get(email=username)
         except:
             raise AuthenticationFailed("Identifiants invalides")
 

@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-
+from django.contrib.auth.models import AnonymousUser
 
 class IsAdminOrReadOnly(BasePermission):
     """
@@ -10,7 +10,7 @@ class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return bool(
             request.method in SAFE_METHODS
-            or request.user
+            or type(request.user) != AnonymousUser
             and request.user.is_admin
         )
 
@@ -22,5 +22,5 @@ class IsAdmin(BasePermission):
 
     def has_permission(self, request, view):
         return bool(
-            request.user and request.user.is_admin
+            type(request.user) != AnonymousUser and request.user.is_admin
         )
