@@ -91,14 +91,15 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    # "DEFAULT_AUTHENTICATION_CLASSES": (
-    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
-    # ),
-    # "DEFAULT_PERMISSION_CLASSES": [
-    #     "rest_framework.permissions.IsAuthenticated",
-    # ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "API.auth.Neo4jJWTAuthentication",
+    ],
+    # Permission par défaut d'accès à toutes les vues
+    "DEFAULT_PERMISSION_CLASSES": [
+        # "rest_framework.permissions.IsAuthenticatedOrReadOnly",  # Visiteur autorisé pour 'GET', 'HEAD', 'OPTIONS' sinon connexion
+        "API.permissions.IsAdminOrReadOnly",  # Nécessite l'auth pour toute action (mesure de sécurité) sinon admin
+    ],
 }
-from rest_framework.permissions import IsAuthenticated
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(

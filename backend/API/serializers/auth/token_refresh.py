@@ -1,24 +1,25 @@
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from backend.settings import SIMPLE_JWT as api_settings
 
-from ...models import Utilisateur
 
 class TokenRefresh(TokenRefreshSerializer):
+    """
+    Permet d'obtenir un nouveau token d'accès à partir d'un token refresh
+    """
 
     def validate(self, attrs):
         refresh = self.token_class(attrs["refresh"])
 
-        user_id = refresh.payload.get(api_settings.get("USER_ID_CLAIM"), None)
-        if user_id:
-            user = Utilisateur.nodes.get(uuid=user_id)
+        # Pas encore pris en compte et non nécessaire
+        # user_id = refresh.payload.get(api_settings.get("USER_ID_CLAIM"), None)
+        # if user_id:
+        #     user = Utilisateur.nodes.get(uuid=user_id)
 
-            # Pas encore pris en compte
-            # if not api_settings.USER_AUTHENTICATION_RULE(user):
-            #     raise AuthenticationFailed(
-            #         self.error_messages["no_active_account"],
-            #         "no_active_account",
-            #     )
+        #     if not api_settings.USER_AUTHENTICATION_RULE(user):
+        #         raise AuthenticationFailed(
+        #             self.error_messages["no_active_account"],
+        #             "no_active_account",
+        #         )
 
         data = {"access": str(refresh.access_token)}
 

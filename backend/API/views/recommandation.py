@@ -1,19 +1,14 @@
-import json
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from neomodel import NodeSet, db
-from rest_framework import status
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.exceptions import ExpiredTokenError
-from ..models import Extrait, Interview, Utilisateur, StructuredNode
-from ..serializers import ExtraitSerializer, InterviewSerializer
-
-from rest_framework.exceptions import NotAuthenticated, ValidationError
-from neo4j.graph import Node
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 from neo4j.exceptions import ServiceUnavailable
+from neomodel import db
+from ..models import Extrait, Interview, Utilisateur
+from ..serializers import ExtraitSerializer, InterviewSerializer
 from ..errors import ConnexionDB
-from ..auth import get_current_user
 
 
 class Recommandation(APIView):
@@ -42,8 +37,7 @@ class Recommandation(APIView):
         récupérer égalment les interviews
     """
 
-    authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request: HttpRequest) -> Response:
         """L'Algorithme de recommandation de vidéos (Extrait / Interview)
@@ -75,7 +69,11 @@ class Recommandation(APIView):
         filtres = data.get("filters", {})
         # print("filtres:", filtres)
 
-        user = get_current_user(request)
+        user = request.user
+
+        print("utilisateur", user, type(user))
+
+        user: Utilisateur = user if type(user) != AnonymousUser else None
         # print("user: ", user.pseudo if user else None)
 
         context = {"request": request}

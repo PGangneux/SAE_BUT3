@@ -8,7 +8,6 @@ from neomodel.sync_.match import NodeSet, RawCypher
 from neomodel import StructuredNode, db
 from neo4j.exceptions import ServiceUnavailable
 from ...errors import NotFound, ConnexionDB, OrderError
-from rest_framework.permissions import IsAuthenticated
 
 class BaseGenericViewSet(GenericViewSet):
     """
@@ -20,10 +19,9 @@ class BaseGenericViewSet(GenericViewSet):
         NotFound: Instance introuvable
         OrderError: Erreur dans le champ pour ordonner
     """
+    # permission_classes = []  # Remplace les permissions par défaut
 
     lookup_field = "uuid"
-    # authentication_classes = []
-    # permission_classes = [IsAuthenticated]
 
     def __init__(
         self,

@@ -4,6 +4,7 @@ from rest_framework_nested.routers import NestedDefaultRouter
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
+    TokenVerifyView,
 )
 from .views import *
 
@@ -76,5 +77,6 @@ urlpatterns = [
     path("", include(router_occasion.urls)),
     path("login/", TokenObtainPairView.as_view(), name="login"),
     path("login/refresh/", TokenRefreshView.as_view(), name="login-refresh"),
+    path("login/verify/", TokenVerifyView.as_view(), name="login-verify"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),
 ]
