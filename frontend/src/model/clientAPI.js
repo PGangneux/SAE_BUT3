@@ -262,7 +262,7 @@ export default class ClientAPI {
     try {
       const res = await this.post(
         `${this.BASE_URL}api/login/`,
-        JSON.stringify({ identifiant: pseudo_email, password: password })
+        JSON.stringify({ "username": pseudo_email, "password": password })
       );
       this.save_tokens(res.access, res.refresh);
       this.current_user = new Utilisateur(await this.get(res.utilisateur));

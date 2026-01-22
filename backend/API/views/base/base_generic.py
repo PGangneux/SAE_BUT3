@@ -23,7 +23,7 @@ class BaseGenericViewSet(GenericViewSet):
 
     lookup_field = "uuid"
     # authentication_classes = []
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def __init__(
         self,
