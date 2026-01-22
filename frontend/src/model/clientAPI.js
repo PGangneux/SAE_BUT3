@@ -89,7 +89,6 @@ export default class ClientAPI {
     headers["Content-Type"] = "application/json";
     if (withAuth) {
       const token = this.get_token();
-      console.log(token)
       if (token) headers["Authorization"] = `Bearer ${token}`;
     }
     return headers;
