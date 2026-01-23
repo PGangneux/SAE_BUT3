@@ -8,15 +8,14 @@ export default {
             loading : false,
             username: "",
             password: "",
-            apiMessage: "",
+            stay_connected: true,
         };
     },
     methods: {
         async login() {
             // Refaire pour plus beau et intuitif (Messages d'erreurs, etc...)
             this.loading = true;
-            await ClientAPI.connectAPI(this.username, this.password);
-            this.apiMessage = ClientAPI.current_user ? "login bon" : "login pas bon";
+            await ClientAPI.connectAPI(this.username, this.password, this.stay_connected);
             if (ClientAPI.current_user) {
                 if (window.history.length > 1){
                     router.go(-1);
@@ -25,7 +24,6 @@ export default {
                 }
             }
             this.loading = false;
-            console.log(this.apiMessage);
         },
     },
 };
@@ -49,15 +47,20 @@ export default {
                     Mot de passe
                     <input v-model="password" type="password" required class="my-2 p-2 border rounded"/>
                 </label>
+                <label class="d-flex justify-content-center px-5 fw-bold fs-5 gap-5">
+                    Rester connecter ?
+                    <!-- Refaire le style de la checkbox -->
+                    <input v-model="stay_connected" type="checkbox" class="my-2 p-2 border rounded"/>
+                </label>
                 <div class="d-flex flex-column align-items-center m-5 gap-3">
                     <button class="p-2 w-25 h-100 border-0 rounded bg-vert-pale text-white">
                         <img v-if="this.loading" src="/imgs/spinner.gif" alt="loading image..." class="w-25">
                         <span v-else="this.loading" >Valider</span>
                     </button>
+                    <!-- TODO -->
                     <a href="" class="p-2 text-white text-decoration-none fw-bold">Mot de passe oublié ?</a>
                 </div>
             </form>
-            <!-- <p v-if="apiMessage">{{ apiMessage }}</p> -->
         </div>
     </div>
 </template>
