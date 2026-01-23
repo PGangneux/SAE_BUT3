@@ -84,10 +84,7 @@ export default {
   
 
     async modificationDonnees(){
-      if (this.create) {
-
-        this.popupEnregistrer = true;
-        
+      if (this.create) {        
         await this.enregistrer();
       } else {
         await this.Update();
@@ -95,7 +92,18 @@ export default {
     },
 
 
-
+    async validationExtrait(){
+      let erreur ="";
+      if(this.current_extrait.titre == null || this.current_extrait.titre ==""){
+        erreur += "il manque un titre  \n";
+      }if(this.current_extrait.question_uuid == null){
+        erreur += "il manque une question  \n";
+      }if(this.current_extrait.youtube_url =="" && this.current_extrait.vimeo_url=="" ){
+        erreur += "il faut au moins un lien de video  \n";
+      }
+      console.log(this.current_extrait);
+      return erreur;
+    },
 
     
     
@@ -106,18 +114,33 @@ export default {
       try{
         //fonction pour enregistrer un extraits dans L'api
         this.current_extrait.duree =  1;
-        await this.current_extrait.create();
-        //this.new_extrait = new markRaw(new Extrait({}));
-        await this.save_tags();
 
-        sessionStorage.setItem('popupSuccess', 'true');
-        sessionStorage.setItem('create', this.create ? 'true' : 'false');
+        this.message_error = await this.validationExtrait();
 
-        // Reload brutal
-        window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+        if(this.message_error  == ""){
 
-        console.log("creer");
-        alert("creer");
+          this.popupEnregistrer = true;
+
+          await this.current_extrait.create();
+          //this.new_extrait = new markRaw(new Extrait({}));
+          await this.save_tags();
+
+          sessionStorage.setItem('popupSuccess', 'true');
+          sessionStorage.setItem('create', this.create ? 'true' : 'false');
+
+          // Reload brutal
+          window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+
+          console.log("creer");
+          alert("creer");
+        }else{
+          this.popupError = true;
+                setTimeout(()=>{
+                    this.popupError = false;
+          },5000)
+        }
+
+
       }catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
@@ -134,18 +157,26 @@ export default {
       try{
         this.current_extrait.duree =  0;
 
+        this.message_error = await this.validationExtrait();
 
-         console.log(this.urlVimeoReconstruit);
-        console.log(this.current_extrait.duree);
+        if(this.message_error  == ""){
+            console.log(this.urlVimeoReconstruit);
+            console.log(this.current_extrait.duree);
 
-        await this.current_extrait.update();
-        await this.save_tags();
-        
-        sessionStorage.setItem('popupSuccess', 'true');
-        sessionStorage.setItem('create', this.create ? 'true' : 'false');
-        
-        // Reload brutal
-        window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+            await this.current_extrait.update();
+            await this.save_tags();
+            
+            sessionStorage.setItem('popupSuccess', 'true');
+            sessionStorage.setItem('create', this.create ? 'true' : 'false');
+            
+            // Reload brutal
+            window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+        }else{
+          this.popupError = true;
+                setTimeout(()=>{
+                    this.popupError = false;
+          },5000)
+        }
 
       }catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
