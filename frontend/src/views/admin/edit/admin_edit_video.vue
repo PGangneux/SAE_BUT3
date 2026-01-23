@@ -86,27 +86,26 @@ export default {
     async modificationDonnees(){
       if (this.create) {
 
-          await this.vousetessur();
-
-          await this.enregistrer();
+        this.popupEnregistrer = true;
+        
+        await this.enregistrer();
       } else {
         await this.Update();
       }
     },
 
 
-    async vousetessur(){
-      this.popupEnregistrer = true;
 
 
-    },
+    
+    
 
 
     async enregistrer(){
 
       try{
         //fonction pour enregistrer un extraits dans L'api
-        this.current_extrait.duree =  0;
+        this.current_extrait.duree =  1;
         await this.current_extrait.create();
         //this.new_extrait = new markRaw(new Extrait({}));
         await this.save_tags();
@@ -734,13 +733,13 @@ export default {
     />
     
    
-   <div v-if="popupCreerQuestion === true">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" /> </div>
+   <div v-if="popupCreerQuestion">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" /> </div>
 
 
-    <div v-if="popup === true">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
+    <div v-if="popup">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 
     <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
-    <div v-if="popupEnregistrer === true">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
+    <div v-if="popupEnregistrer">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
     <edit_success 
         v-if="popupSuccess && create"

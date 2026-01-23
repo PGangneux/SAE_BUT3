@@ -28,7 +28,7 @@ mettre en place avec une api plus tard
 reutiliser callback pour validation
 
 
-reccuperer object a la place de id ( qi on a la liste de base au moment daller sur une autre pages on la genere)
+
 
 # Tests
 Se placer dans frontnend 
