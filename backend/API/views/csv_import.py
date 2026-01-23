@@ -11,7 +11,7 @@ from rest_framework import status
 
 
 
-from ..models import Artiste, Audio, Occasion, Question, Tag, Theme
+from ..models import Artiste, Audio, Extrait, Occasion, Question, Tag, Theme
 
 from ..serializers import (
     ArtisteSerializer,
@@ -29,10 +29,25 @@ from ..serializers import (
 
 class CSVImportView(APIView):
     """
-    Permet d'importer un fichier CSV contenant des extraits d'interviews.
+    Vue API permettant l'import d'un fichier CSV contenant des extraits
+    d'interviews (artistes, questions, tags, audios, occasions, etc.).
+
+    Chaque ligne du CSV correspond à un extrait. Les extraits sont ensuite
+    regroupés par artiste et événement afin de créer automatiquement
+    des interviews.
     """
 
     def post(self, request, *args, **kwargs):
+        """
+        Endpoint POST pour importer un fichier CSV.
+
+        Attend un fichier CSV envoyé via le champ `file` du formulaire.
+        Effectue une validation basique (présence du fichier et extension),
+        puis déclenche le traitement et l'enregistrement des données.
+
+        :param request: Requête HTTP contenant le fichier CSV
+        :return: Réponse HTTP indiquant le succès ou l'erreur
+        """
         csv_file = request.FILES.get("file")
 
         if not csv_file:
@@ -54,6 +69,15 @@ class CSVImportView(APIView):
         )
 
     def save_data(self, csv_file):
+        """
+        Lit et parcourt le fichier CSV ligne par ligne.
+
+        Les extraits sont regroupés par artiste et événement.
+        Lorsqu'un changement d'artiste ou d'événement est détecté,
+        une interview est créée à partir des extraits accumulés.
+
+        :param csv_file: Fichier CSV envoyé par l'utilisateur
+        """
         # Lecture du fichier (UTF-8 recommandé)
         data = csv_file.read().decode("utf-8")
         io_string = io.StringIO(data)
@@ -68,7 +92,6 @@ class CSVImportView(APIView):
             print(row)
             if artiste != None:
                 if (artiste != row["Artiste"].strip() or occasion != row["Evenement"].strip()):
-                    print("iiiiiiiiiiiiiiiii")
                     self.save_interview(liste_extraits, occasion)
                     liste_extraits = []
                     artiste = row["Artiste"].strip()
@@ -81,6 +104,17 @@ class CSVImportView(APIView):
             liste_extraits.append(extrait)
 
     def save_row(self, row):
+        """
+        Traite une ligne du CSV et crée (ou récupère) les entités associées :
+        artiste, question, tags, audios, occasion, puis crée l'extrait.
+
+        Gère également les relations entre l'extrait et les tags / audios.
+
+        :param row: Dictionnaire représentant une ligne du CSV
+        :return: Instance de l'extrait créé
+        """
+
+        # crée (ou récupère) artiste
         serializer_artiste = ArtisteSerializer()
         artiste = row["Artiste"].strip()
         artiste_uuid = None
@@ -90,7 +124,7 @@ class CSVImportView(APIView):
             except:
                 artiste_uuid = Artiste.nodes.get(name=artiste).uuid
 
-
+        # crée (ou récupère) question
         serializer_question = QuestionSerializer()
         question = row["Question"].strip()
         question_uuid = None
@@ -102,16 +136,16 @@ class CSVImportView(APIView):
             except:
                 question_uuid = Question.nodes.get(texte=question).uuid
 
-
+        # crée (ou récupère) occasion
         serializer_occasion = OccasionSerializer()
         evenement = row["Evenement"].strip()
-        evenement_uuid = None
         if evenement != "" and evenement is not None:
             try:
-                evenement_uuid = serializer_occasion.create({"name": evenement}).uuid
+                serializer_occasion.create({"name": evenement}).uuid
             except:
-                evenement_uuid = None
+                pass
 
+        # crée (ou récupère) tags
         serializer_tag = TagSerializer()
         tags = [tag.strip() for tag in row["Tags"].split("; ")]
         tags_uuids = []
@@ -123,6 +157,7 @@ class CSVImportView(APIView):
                     tag_uuid = Tag.nodes.get(name=tag).uuid
                 tags_uuids.append(tag_uuid)
 
+        # crée (ou récupère) audio
         serializer_audio = AudioSerializer()
         audios = [audio.strip() for audio in row["Audios"].split("; ")]
         audios_uuids = []
@@ -134,49 +169,119 @@ class CSVImportView(APIView):
                     audio_uuid = Audio.nodes.get(name=audio).uuid
                     audios_uuids.append(audio_uuid)
 
-        youtube_url = self.get_code(row["Youtube"].strip())
+        # récupère le code de la vidéo YouTube
+        youtube_url = self.get_code_yt(row["Youtube"].strip())
+        vimeo_url = self.get_code_vimeo(row["Vimeo"].strip())
 
+        # création du titre
         date = row["Date"].strip()
         titre = artiste + " - " + evenement + " - " + question + " - " + date
+
+        # création ou update de l'extrait
         serializer_extrait = ExtraitSerializer()
-        try:
-            extrait_node = serializer_extrait.create(
-                {
-                    "titre": titre,
-                    "artiste_uuid": artiste_uuid,
-                    "question_uuid": question_uuid,
-                    "uploaded_at": Date(date) if date != "" else None,
-                    "lieu": row["Ville"].strip(),
-                    "youtube_url": youtube_url,
-                    "vimeo_url": row["Vimeo"].strip(),
-                    "position": int(row["Position"].strip()) if row["Position"].strip() != "" else None,
-                    "duree": 0,
-                    "description": "",
-                }
+        extrait_node = None
+
+
+        # 1. Recherche par Vimeo
+        if vimeo_url:
+            try:
+                extrait_node = Extrait.nodes.get(vimeo_url=vimeo_url)
+            except Extrait.DoesNotExist:
+                extrait_node = None
+
+        # 2. Recherche par YouTube (si pas trouvé via Vimeo)
+        if not extrait_node and youtube_url:
+            try:
+                extrait_node = Extrait.nodes.get(youtube_url=youtube_url)
+            except Extrait.DoesNotExist:
+                extrait_node = None
+
+        # 3. UPDATE si l'extrait existe déjà
+        if extrait_node:
+            extrait_node.titre = titre
+            extrait_node.artiste_uuid = artiste_uuid
+            extrait_node.question_uuid = question_uuid
+            extrait_node.uploaded_at = Date(date) if date else None
+            extrait_node.lieu = row["Ville"].strip()
+            extrait_node.youtube_url = youtube_url
+            extrait_node.vimeo_url = vimeo_url
+            extrait_node.position = (
+                int(row["Position"].strip())
+                if row["Position"].strip()
+                else None
             )
+            extrait_node.save()
 
             context = {"extrait": extrait_node}
+
             for audio_uuid in audios_uuids:
                 serializer = AudiosSerializer(
                     data={"uuid": audio_uuid}, context=context
                 )
-                if serializer.is_valid():
-                    serializer.create(serializer.validated_data)
+                serializer.delete(audio_uuid)
 
             for tag_uuid in tags_uuids:
                 serializer = TagsExtraitRelationShipSerializer(
                     data={"uuid": tag_uuid}, context=context
                 )
-                if serializer.is_valid():
-                    serializer.create(serializer.validated_data)
-            
-            return extrait_node
+                serializer.delete(tag_uuid)
 
-        except Exception as e:
-            print(f"Erreur lors de la création de l'extrait: {e}")
+        # 4. CREATE sinon
+        else:
+            extrait_node = serializer_extrait.create(
+                {
+                    "titre": titre,
+                    "artiste_uuid": artiste_uuid,
+                    "question_uuid": question_uuid,
+                    "uploaded_at": Date(date) if date else None,
+                    "lieu": row["Ville"].strip(),
+                    "youtube_url": youtube_url,
+                    "vimeo_url": vimeo_url,
+                    "position": (
+                        int(row["Position"].strip())
+                        if row["Position"].strip()
+                        else None
+                    ),
+                    "duree": 0,
+                    "description": "",
+                }
+            )
+
+        context = {"extrait": extrait_node}
+
+        for audio_uuid in audios_uuids:
+            serializer = AudiosSerializer(
+                data={"uuid": audio_uuid}, context=context
+            )
+            if serializer.is_valid():
+                serializer.create(serializer.validated_data)
+
+        for tag_uuid in tags_uuids:
+            serializer = TagsExtraitRelationShipSerializer(
+                data={"uuid": tag_uuid}, context=context
+            )
+            if serializer.is_valid():
+                serializer.create(serializer.validated_data)
+
+        return extrait_node     
+
+            
+            
+
+
 
     
     def save_interview(self, liste_extraits, occasion):
+        """
+        Crée une interview à partir d'une liste d'extraits
+        partageant le même artiste et la même occasion.
+
+        Chaque extrait est ensuite rattaché à l'interview
+        avec sa position.
+
+        :param liste_extraits: Liste d'extraits à regrouper
+        :param occasion: Nom de l'événement associé
+        """
         if not liste_extraits:
             return
 
@@ -184,14 +289,8 @@ class CSVImportView(APIView):
         first_extrait = liste_extraits[0]
         artiste_node = first_extrait.interviewer.single()
 
-        serializer_occasion = OccasionSerializer()
         if occasion != "" and occasion is not None:
-            try:
-                occasion_node = serializer_occasion.create(
-                    {"name": occasion}
-                )
-            except:
-                occasion_node = Occasion.nodes.get(name=occasion)
+            occasion_node = Occasion.nodes.get(name=occasion)
 
         titre = f"Interview de {artiste_node.name} pour {occasion_node.name if occasion_node else 'une occasion inconnue'}"
         try:
@@ -215,12 +314,50 @@ class CSVImportView(APIView):
         except Exception as e:
             print(f"Erreur lors de la création de l'interview: {e}")
     
-    def get_code(self, url):
+
+    def get_code_yt(self, url):
         """
-        Extrait le code vidéo d'une URL YouTube.
+        Extrait l'identifiant vidéo depuis une URL YouTube.
+
+        Supporte les formats :
+        - youtube.com/watch?v=XXXX
+        - youtu.be/XXXX
+
+        :param url: URL YouTube complète
+        :return: Code vidéo ou l'URL si aucun format connu n'est détecté
         """
         if "youtube.com/watch?v=" in url:
             return url.split("v=")[1]
         elif "youtu.be/" in url:
             return url.split("youtu.be/")[1]
         return url
+    
+
+    def get_code_vimeo(self, url):
+        """
+        Extrait l'identifiant vidéo d'une URL Vimeo.
+
+        Formats supportés :
+        - https://vimeo.com/123456789
+        - https://player.vimeo.com/video/123456789
+        - https://vimeo.com/123456789?h=xxxx
+
+        :param url: URL Vimeo complète
+        :return: Identifiant de la vidéo ou l'URL si aucun format connu n'est détecté
+        """
+        if not url:
+            return url
+
+        if "vimeo.com/" in url:
+            # Cas player.vimeo.com/video/XXXX
+            if "/video/" in url:
+                code = url.split("/video/")[1]
+            else:
+                code = url.split("vimeo.com/")[1]
+
+            # Supprime les paramètres éventuels (?h=..., &...)
+            return code.split("?")[0].split("&")[0]
+
+        return url
+
+
