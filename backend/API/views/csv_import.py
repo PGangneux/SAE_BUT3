@@ -11,7 +11,7 @@ from rest_framework import status
 
 
 
-from ..models import Artiste, Audio, Extrait, Occasion, Question, Tag, Theme
+from ..models import Artiste, Audio, Extrait, Interview, Occasion, Question, Tag, Theme
 
 from ..serializers import (
     ArtisteSerializer,
@@ -112,9 +112,7 @@ class CSVImportView(APIView):
             )
 
         # On repart sur un DictReader (ordre libre)
-        reader = csv.DictReader(decoded_file)
-
-        self.save_data(reader)
+        self.save_data(decoded_file)
 
         return Response(
             {"message": "lignes importées avec succès"},
@@ -131,11 +129,7 @@ class CSVImportView(APIView):
 
         :param csv_file: Fichier CSV envoyé par l'utilisateur
         """
-        # Lecture du fichier (UTF-8 recommandé)
-        data = csv_file.read().decode("utf-8")
-        io_string = io.StringIO(data)
-
-        reader = csv.DictReader(io_string)
+        reader = csv.DictReader(csv_file)
 
 
         artiste = None
@@ -353,6 +347,9 @@ class CSVImportView(APIView):
                 pass  # occasion_node reste None
 
         titre = f"Interview de {artiste_node.name} pour {occasion_node.name if occasion_node else 'une occasion inconnue'}"
+        if titre in [interview.titre for interview in Interview.nodes.all()]:
+            print(f"Avertissement: Interview déjà existante - {titre}")
+            return
         try:
             interview_node = serializer_interview.create(
                 {
