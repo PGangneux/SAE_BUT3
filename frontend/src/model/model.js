@@ -110,6 +110,7 @@ export default class Model {
      */
     async fetchDetail(url, Class) {
         try {
+            console.log(url,Class);
             return new Class(await ClientAPI.get(url));
         } catch (error) {
             console.error(error.toString());

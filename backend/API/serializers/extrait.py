@@ -2,7 +2,7 @@ from rest_framework import serializers
 from neomodel.exceptions import DoesNotExist
 from neomodel import db, RelationshipManager, NodeSet
 from ..serializers import BaseSerializer
-from ..models import Artiste, Extrait, Question
+from ..models import Artiste, Extrait, Question,Audio
 
 
 class ExtraitSerializer(BaseSerializer):
@@ -24,9 +24,11 @@ class ExtraitSerializer(BaseSerializer):
 
     # Input:
     input_fields = {
+        "audio_uuid": {"relationship": "AUDIOS", "node": Audio},
         "artiste_uuid": {"relationship": "interviewer", "node": Artiste},
         "question_uuid": {"relationship": "question", "node": Question},
     }
+    audio_uuid = serializers.CharField(write_only=True, required=False)
     artiste_uuid = serializers.CharField(write_only=True, required=False)
     question_uuid = serializers.CharField(write_only=True, required=False)
 
