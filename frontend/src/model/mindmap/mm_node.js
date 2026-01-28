@@ -1,13 +1,11 @@
-import Extrait from "../extrait.js";
-import Interview from "../interview.js";
 import mm_Mindmap from "./mm_mindmap.js";
 
 export default class mm_Node {
     // Real/current positions (animating positions)
     /** @type {number} */
-    x;           
+    x;
     /** @type {number} */
-    y;           
+    y;
     // Target positions
     /** @type {number} */
     targetX;
@@ -34,13 +32,13 @@ export default class mm_Node {
     * @param {number} depth depth
     * @param {boolean} ispreview is a preview node
     */
-    constructor(mminfo, x, y, depth,ispreview = false) {
+    constructor(mminfo, targetX, targetY, depth, ispreview = false) {
         this.mminfo = mminfo;
         // Both start at same position initially
-        this.x = x;
-        this.y = y;
-        this.targetX = x;
-        this.targetY = y;
+        this.x = targetX;
+        this.y = targetY;
+        this.targetX = targetX;
+        this.targetY = targetY;
         this.depth = depth;
         this.childrens = [];
         this.ispreview = ispreview;
@@ -61,35 +59,24 @@ export default class mm_Node {
 
     // Animate to target position
     animateToTarget(duration = 1000) {
-        // TODO : TEST
-        // this.childrens.forEach(child => {
-        //     child.animateToTarget();
-        // });
-
-        // console.table(this.toJSON());
-        
-        const startX = this._x;
-        const startY = this._y;
+        const startX = this.x;
+        const startY = this.y;
         const endX = this.targetX;
         const endY = this.targetY;
         const startTime = performance.now();
 
         const animate = (currentTime) => {
-            
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
             const easeProgress = this.easeInOutCubic(progress);
-            
+
             this.x = startX + (endX - startX) * easeProgress;
             this.y = startY + (endY - startY) * easeProgress;
-            // console.log("animating",startX + (endX - startX) * easeProgress,startY + (endY - startY) * easeProgress,this);
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
             }
         };
-
         requestAnimationFrame(animate);
     }
 

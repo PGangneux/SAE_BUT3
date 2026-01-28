@@ -241,32 +241,14 @@
 }
 
 /* Mobile styles - controls at top right when screen < 800px */
-@media (max-width: 800px) {
-    .mm_controls {
+/* if the viewport width is 800px or less */
+@media screen and (max-width: 800px) {
+    .mm_control_outer {
         position: absolute;
-        top: 20px;
-        right: 20px;
-        bottom: auto;
-        flex-direction: column;
-        gap: 8px;
-        padding: 15px;
-    }
-
-    .mm_fullscreenbtn {
-        top: 20px;
-        right: auto;
         left: 20px;
-    }
-
-    .mm_relative {
-        width: calc(100% - 10%);
-        height: 70vh;
-        padding: 15px;
-    }
-
-    .mm_legend {
-        max-height: 200px;
-        padding: 15px;
+        bottom: auto;
+        flex-direction: row;
+        gap: 8px;
     }
 }
 
@@ -346,17 +328,13 @@
 }
 
 .mm_node_title {
-    font-size: 0.9em;
     margin: 0 0 4px 0;
-    line-height: 1.1;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .mm_node_subtitle {
-    font-size: 0.7em;
     margin: 0 0 8px 0;
-    line-height: 1;
     opacity: 0.9;
     font-weight: normal;
 }
@@ -371,9 +349,7 @@
 }
 
 .mm_node_description p {
-    font-size: 0.6em;
     margin: 2px 0;
-    line-height: 1.2;
     opacity: 0.8;
 }
 

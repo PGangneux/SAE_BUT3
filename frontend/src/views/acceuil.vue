@@ -204,17 +204,20 @@ export default {
     margin: 1%;
     width: 30%;
     min-width: 300px;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Vertical layout for small screens */
-@media (max-width: 200px), (max-height: 200px) {
+/* Mobile styles - controls at top right when screen < 800px */
+/* if the viewport width is 800px or less */
+@media screen and (max-width: 800px) {
     .local-flex {
         flex-direction: column;
     }
     
     .flex-grow {
-        width: 100%;
         margin-bottom: 1rem;
+        min-height: 50vmin;
     }
     
     .recent-component {

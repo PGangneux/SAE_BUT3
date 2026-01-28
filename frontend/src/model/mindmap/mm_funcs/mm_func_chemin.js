@@ -5,6 +5,9 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 import mmch_Extrait from "../mm_chemin_submod/mmch_extrait.js";
 import mmch_Interview from "../mm_chemin_submod/mmch_interview.js";
 
+// TODO : ADD THAT IT CAN BE HARD RESET
+// TODO : BUGGER
+
 /**
  *  check video
  * @param {mm_Mindmap} mminfo mm_mindmap  
@@ -41,6 +44,8 @@ export function mm_chemin_filter(mminfo) {
     let original_lenght = mminfo.chemin.length;
     let change_goto_video = false;
     let change_in_path = false;
+    // console.log("HERE mm_chemin_filter 1",mminfo.chemin);
+    
     
     // Step 1: Validate depth and handle depth mismatches
     if (mminfo.chemin.length > 0) {
@@ -77,7 +82,8 @@ export function mm_chemin_filter(mminfo) {
     // Step 5: Determine if path changed
     change_in_path = original_lenght != mminfo.chemin.length;
     
-    return false, change_in_path;
+    // console.log("HERE mm_chemin_filter 1",mminfo.chemin);
+    return false, change_in_path ;// change_in_path;
 }
 
 /**
@@ -128,6 +134,10 @@ export function mm_clean_preview(mminfo){
  */
 export function mm_convert_preview_to_regular(mminfo, targetNode) {
     // Convert the target node if it is a preview node
+    // console.log("mm_convert_preview_to_regular",targetNode);
+    // TODO : FIX UNDERFINED 
+    if (!targetNode) return;
+    
     if (targetNode.ispreview) {
         targetNode.ispreview = false;
         
