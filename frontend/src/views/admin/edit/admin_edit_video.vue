@@ -556,10 +556,38 @@ export default {
         console.warn("URL Vimeo invalide :", url);
       }
       return null;
-    }
+    },
 
+
+  async chargerSelection(field,displayProp){
+      if (this.current_extrait[field] != null) {
+        const entity = markRaw(await this.current_extrait[field]);
+
+        // Valeur affichée
+        switch (field) {
+          case "question":
+              this.laselectedQuestion = entity[displayProp];
+            break;
+
+          case "audio":
+              this.laselectedAudio = entity[displayProp];
+            break;
+          case "artiste":
+              this.laselectedArtiste = entity[displayProp];
+            break;
+
+        }
+
+        
+
+        // Remplacement par l'uuid
+        this.current_extrait[field] = entity.uuid;
+        this.current_extrait[field].uuid = entity.uuid;
+      }
   },
 
+
+  },
 
 
 
@@ -606,20 +634,11 @@ export default {
       console.log(this.interviews);
       this.tags = markRaw(await this.current_extrait.tags());
 
-
-      if(await this.current_extrait.question != null){
-        const question =  markRaw(await this.current_extrait.question);
-        this.laselectedQuestion = question.texte;
-        this.current_extrait.question.uuid = question.uuid;
-        this.current_extrait.question = question.uuid;
-      }
-
-      if(await this.current_extrait.artiste != null){
-        const artiste = markRaw(await this.current_extrait.artiste);
-        this.laselectedArtiste  = artiste.name;
-        this.current_extrait.artiste = artiste.uuid;
-        this.current_extrait.artiste.uuid = artiste.uuid;
-      }
+    
+    
+      await this.chargerSelection('question', 'texte');
+      await this.chargerSelection('audio', 'name');
+      await this.chargerSelection('artiste', 'name');
 
       
       
