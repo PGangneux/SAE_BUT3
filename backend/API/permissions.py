@@ -29,5 +29,5 @@ class IsUserOrAdmin(BasePermission):
             field = view.router_lookup_field
         return bool(
             type(request.user) != AnonymousUser
-            and (request.user.is_admin or request.user.uuid == view.kwargs[field])
+            and (request.user.is_admin or request.user.uuid == view.kwargs.get(field))
         )

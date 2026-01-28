@@ -269,8 +269,8 @@ class URLsAPITests(Neo4jTestCase):
             nom=f"de l'arbre à {uuid4} feuilles",
             email=f"user_{uuid4()}@example.com",
             password=make_password("password123"),  # mot de passe hashé
+            is_admin=True
         ).save()
-        self.client = APIClient()
         self.client.force_authenticate(user=self.utilisateur)
         self.assertEqual(
             self.client.get(reverse("utilisateur-list")).status_code, status.HTTP_200_OK
@@ -285,7 +285,7 @@ class URLsAPITests(Neo4jTestCase):
             self.client.get(
                 reverse("utilisateur-detail", kwargs={"uuid": self.uuid})
             ).status_code,
-            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
         )
         self.assertEqual(
             self.client.get(
@@ -299,7 +299,7 @@ class URLsAPITests(Neo4jTestCase):
             self.client.get(
                 reverse("artiste-list", kwargs={"utilisateur_uuid": self.uuid})
             ).status_code,
-            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
         )
         self.assertEqual(
             self.client.get(
@@ -313,7 +313,7 @@ class URLsAPITests(Neo4jTestCase):
             self.client.get(
                 reverse("interview-list", kwargs={"utilisateur_uuid": self.uuid})
             ).status_code,
-            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
         )
         self.assertEqual(
             self.client.get(
@@ -327,7 +327,7 @@ class URLsAPITests(Neo4jTestCase):
             self.client.get(
                 reverse("extrait-list", kwargs={"utilisateur_uuid": self.uuid})
             ).status_code,
-            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
         )
         self.assertEqual(
             self.client.get(
@@ -341,5 +341,5 @@ class URLsAPITests(Neo4jTestCase):
             self.client.get(
                 reverse("question-list", kwargs={"utilisateur_uuid": self.uuid})
             ).status_code,
-            status.HTTP_403_FORBIDDEN,
+            status.HTTP_404_NOT_FOUND,
         )

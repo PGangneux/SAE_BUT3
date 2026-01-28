@@ -13,7 +13,7 @@ class UtilisateurViewSet(BaseModelViewSet):
     # permission_classes = [IsUserOrAdmin]
 
     def get_permissions(self):
-        if self.action in ["retrieve", "update", "destroy"]:
+        if self.action in ["list", "retrieve", "update", "destroy"]:
             return [IsUserOrAdmin()]
         return [AllowAny()]
 
