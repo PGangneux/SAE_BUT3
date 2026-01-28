@@ -1,6 +1,7 @@
-import { mm_draw_root , mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
-import mm_Linkage from "./mm_linkage.js";
+import { markRaw } from "vue";
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
+import mm_Linkage from "./mm_linkage.js";
+import { mm_draw_root , mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 
 export default class mm_Mindmap {
     /** @type {Object} */
@@ -13,26 +14,28 @@ export default class mm_Mindmap {
     nodes;
     /** @type {Array<Number>} */
     chemin;
+    /** @type {Number} the key of the mmch_root node*/
+    root_key = null;
     /** @type {boolean} */
-    fullscreen;
+    fullscreen = false;
     /** @type {boolean} */
-    togglelegend;
+    togglelegend = true;
     /** @type {number} */
-    scale;
+    scale = 0.5;
     /** @type {number} */
-    offx;
+    offx = 0;
     /** @type {number} */
-    offy;
+    offy = 0;
     /** @type {number} */
-    lastMouseX;
+    lastMouseX = 0;
     /** @type {number} */
-    lastMouseY;
+    lastMouseY = 0;
     /** @type {number} */
-    clickTimer;
+    clickTimer = null;
     /** @type {boolean} */
-    dragging;
+    dragging = false;
     /** @type {String} */
-    searchval;
+    searchval = "";
 
     interview_current;
     extrait_current;
@@ -46,24 +49,12 @@ export default class mm_Mindmap {
         // vue object reference
         this.vueobj = vueobj;
         // mm data
-        this.linkages = [];
-        this.nodes = {};
+        this.linkages = markRaw([]);
+        this.nodes = markRaw({});
         // mm preview data
-        this.previewlinkages = [];
+        this.previewlinkages = markRaw([]);
         // mm chemin
-        this.chemin = [];
-        // vars
-        this.fullscreen = false;
-        this.togglelegend = true;
-        this.scale = 0.5;
-        this.offx = 0;
-        this.offy = 0;
-        this.lastMouseX = 0;
-        this.lastMouseY = 0;
-        this.clickTimer = null;
-        this.dragging = false;
-        this.searchval = "";
-
+        this.chemin = markRaw([]);
         // funcs ref
         this.interview_current = interview_current;
         this.extrait_current = extrait_current;
