@@ -1,8 +1,8 @@
 <script>
-import { videoStore } from "../model/videoStore.js";
-import comp_mindmap from "../components/acceuil/mindmap.vue";
-import comp_recent from "../components/acceuil/home_recent.vue";
-import iframe_lecture_video from "../components/lecteur_video/iframe_lecture_video.vue";
+import { videoStore } from "@model/videoStore.js";
+import comp_mindmap from "@components/acceuil/mindmap.vue";
+import comp_recent from "@components/acceuil/home_recent.vue";
+import iframe_lecture_video from "@components/lecteur_video/iframe_lecture_video.vue";
 
 export default {
     name: "page_accueil",

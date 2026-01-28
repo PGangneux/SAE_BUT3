@@ -1,10 +1,10 @@
 <script>
 import { markRaw, toRaw } from 'vue';
-import Extrait from '../../model/extrait';
-import { videoStore } from "../../model/videoStore";
+import Extrait from '@model/extrait';
+import { videoStore } from "@model/videoStore";
 import miniature_video from "./miniature_video.vue";
-import ClientAPI from '../../model/clientAPI';
-import Interview from '../../model/interview';
+import ClientAPI from '@model/clientAPI';
+import Interview from '@model/interview';
 
 
 // Todo ajouter gif de chargement pendant le fetch des vidéos

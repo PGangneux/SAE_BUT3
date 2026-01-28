@@ -2,8 +2,8 @@
 import { markRaw } from 'vue';
 
 
-import Theme from '../../model/theme.js';
-import Question from "../../model/question";
+import Theme from '@model/theme.js';
+import Question from "@model/question";
 
 
 export default {

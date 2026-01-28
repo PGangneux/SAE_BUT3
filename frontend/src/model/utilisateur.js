@@ -1,8 +1,8 @@
-import Artiste from "./artiste.js";
-import Extrait from "./extrait.js";
-import Interview from "./interview.js";
-import Model from "./model.js";
-import Question from "./question.js";
+import Artiste from "@model/artiste.js";
+import Extrait from "@model/extrait.js";
+import Interview from "@model/interview.js";
+import Model from "@model/model.js";
+import Question from "@model/question.js";
 
 export default class Utilisateur extends Model {
     #pseudo;

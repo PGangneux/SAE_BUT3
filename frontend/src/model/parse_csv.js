@@ -1,11 +1,11 @@
 import Papa from 'papaparse';
-import Interview from './interview.js';
-import Extrait from './extrait.js';
-import Artiste from './artiste.js';
-import Question from './question.js';
-import Tag from './tag.js';
-import Theme from './theme.js';
-import Occasion from './occasion.js';
+import Interview from '@model/interview.js';
+import Extrait from '@model/extrait.js';
+import Artiste from '@model/artiste.js';
+import Question from '@model/question.js';
+import Tag from '@model/tag.js';
+import Theme from '@model/theme.js';
+import Occasion from '@model/occasion.js';
 
 export function get_YT_videoId(url) {
   try {

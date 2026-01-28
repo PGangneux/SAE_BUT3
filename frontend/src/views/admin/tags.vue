@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import Tag from '../../model/tag';
+import Tag from '@model/tag';
 
 export default {
     name: "tags",

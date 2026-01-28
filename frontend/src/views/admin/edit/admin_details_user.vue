@@ -1,9 +1,9 @@
 <script>
 
 import { markRaw } from 'vue';
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-import Utilisateur from "../../../model/utilisateur.js";
-import Tags from '../../../model/tag.js';
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
+import Utilisateur from "@model/utilisateur.js";
+import Tags from '@model/tag.js';
 
 export default {
   name: "page_admin_details_client",
