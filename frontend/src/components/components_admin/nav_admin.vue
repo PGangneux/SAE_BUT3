@@ -22,7 +22,7 @@ export default {
                     </li>
                     
                     <li class="nav-item text-white ">
-                        <RouterLink class="bt btn " to="/admin/user"> User </RouterLink>
+                        <RouterLink class="bt btn " to="/admin/users"> User </RouterLink>
                     </li>
 
                     <li class="nav-item text-white ">

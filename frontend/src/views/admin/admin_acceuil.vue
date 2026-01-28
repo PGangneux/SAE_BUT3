@@ -28,7 +28,7 @@ export default {
         </RouterLink>
       </li>
       <li>
-        <RouterLink class="card col" to="/admin/user">
+        <RouterLink class="card col" to="/admin/users">
           <h1 class="text-center">User</h1>
           <div class="text-center">
             <img class="text-center" src="/imgs/adminlogo.svg" alt="admin logo" height="311" width="311">

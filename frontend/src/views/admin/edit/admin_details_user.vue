@@ -46,11 +46,7 @@ export default {
       
     },
 
-    isAdmin(){
-        if(this.current_utilisateur.is_admin){
 
-        }
-    },
 
 
     async validationUSER(){
@@ -68,7 +64,11 @@ export default {
 
 
 
+    changeAdmin(){
 
+        this.current_utilisateur.is_admin != this.current_utilisateur.is_admin;
+        console.log(this.current_utilisateur);
+    },
 
 
 
@@ -163,6 +163,15 @@ export default {
 
   },
 
+  computed: {
+        isAdmin(){
+            if(this.current_utilisateur.is_admin){
+                return true;
+            }
+            return false;
+        },
+  },
+
 
   async mounted() {
 
@@ -254,7 +263,7 @@ export default {
                 <div class="row"  style="--bs-gutter-x: 0em;">
                     <div class=" input-group mb-3" >
                         <span  class="input-group-text colovert" id="basic-addon3" > ACTIVER ADMIN :</span>
-                        <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off">
+                        <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off" @click="changeAdmin" v-model="this.current_utilisateur.is_admin" :checked="isAdmin">
                         <label class="btn btn-outline-danger" for="btn-check">OUI</label>
                     </div>
                 </div>
@@ -265,7 +274,7 @@ export default {
         </div>
         <div class="row bottom_button client">
 
-          <RouterLink v-if="!create" to="/admin/extrait/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
+          <RouterLink v-if="!create" to="/admin/user/" class="btn btn-outline-light"> <img src="/imgs/add.svg" alt="add">
               Ajouter un USER</RouterLink>
           <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                   alt="Enregistrer"> Enregistrer </button>

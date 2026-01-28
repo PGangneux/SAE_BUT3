@@ -16,7 +16,7 @@ const admin_routes = {
   children: [
     // Admin pages
     { path: "/admin", component: () => import(/* webpackPrefetch: true */"@views/admin/admin_acceuil.vue") },
-    { path: "/admin/user", component: () => import(/* webpackPrefetch: true */"@views/admin/list/admin_liste_user.vue") },
+    { path: "/admin/users", component: () => import(/* webpackPrefetch: true */"@views/admin/list/admin_liste_user.vue") },
     { path: "/admin/user/:id", component: () => import("@views/admin/edit/admin_details_user.vue") },
     { path: "/admin/interview", component: () => import("@views/admin/list/admin_liste_interview.vue") },
     { path: "/admin/interview/:id", component: () => import("@views/admin/admin_interview.vue") },
@@ -26,7 +26,7 @@ const admin_routes = {
     { path: "/admin/autres", component: () => import("@views/admin/autres.vue") },
 
     // creer admin
-    { path: "/admin/user/creer/", component: () => import("@views/admin//creer/admin_creer_user.vue") },
+    { path: "/admin/user/", component: () => import("@views/admin/edit/admin_details_user.vue") },
     { path: "/admin/interview/creer/", component: () => import("@views/admin/admin_interview.vue") },
     { path: "/admin/extrait/", component: () => import("@views/admin/edit/admin_edit_video.vue") },
     { path: "/admin/:type/supprimer/:id", component: () => import("@views/admin/supprimer.vue") },

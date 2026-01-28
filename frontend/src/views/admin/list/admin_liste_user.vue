@@ -32,7 +32,7 @@ export default {
     <h1 class="text-center">Utilisateur</h1>
 
     <div class="row"> 
-        <RouterLink  to="/admin/user/creer/" class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></RouterLink>
+        <RouterLink  to="/admin/user/" class="col btgris btn"> Ajouter un utilisateur  <img src="/imgs/add.svg" alt="ajouter"></RouterLink>
 
 
         <div class="container col">
