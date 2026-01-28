@@ -1,7 +1,7 @@
 # views.py
 import csv
 import io
-from datetime import date as Date
+from datetime import date as Date, datetime
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -37,6 +37,23 @@ class CSVImportView(APIView):
     des interviews.
     """
 
+
+    _EXPECTED_HEADERS = {
+        "Artiste",
+        "Position",
+        "Question",
+        "Audios",
+        "Tags",
+        "Origine",
+        "Date",
+        "Evenement",
+        "Ville",
+        "Youtube",
+        "Vimeo",
+        "Auteur",
+    }
+
+
     def post(self, request, *args, **kwargs):
         """
         Endpoint POST pour importer un fichier CSV.
@@ -52,20 +69,56 @@ class CSVImportView(APIView):
 
         if not csv_file:
             return Response(
-                {"error": "Aucun fichier envoyé"}, status=status.HTTP_400_BAD_REQUEST
+                {"error": "Aucun fichier envoyé"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Vérification basique
         if not csv_file.name.endswith(".csv"):
             return Response(
                 {"error": "Le fichier doit être un CSV"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        self.save_data(csv_file)
+        try:
+            decoded_file = csv_file.read().decode("utf-8").splitlines()
+        except UnicodeDecodeError:
+            return Response(
+                {"error": "Encodage du fichier invalide (UTF-8 requis)"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        reader = csv.reader(decoded_file)
+        headers = next(reader, None)
+
+        if not headers:
+            return Response(
+                {"error": "Le fichier CSV est vide"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        headers_set = {h.strip() for h in headers}
+
+        missing = self._EXPECTED_HEADERS - headers_set
+        extra = headers_set - self._EXPECTED_HEADERS
+
+        if missing or extra:
+            return Response(
+                {
+                    "error": "Le fichier CSV ne contient pas les bons champs",
+                    "missing": sorted(missing),
+                    "extra": sorted(extra),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # On repart sur un DictReader (ordre libre)
+        reader = csv.DictReader(decoded_file)
+
+        self.save_data(reader)
 
         return Response(
-            {"message": "lignes importées avec succès"}, status=status.HTTP_201_CREATED
+            {"message": "lignes importées avec succès"},
+            status=status.HTTP_201_CREATED,
         )
 
     def save_data(self, csv_file):
@@ -89,7 +142,6 @@ class CSVImportView(APIView):
         occasion = None
         liste_extraits = []
         for row in reader:
-            print(row)
             if artiste != None:
                 if (artiste != row["Artiste"].strip() or occasion != row["Evenement"].strip()):
                     self.save_interview(liste_extraits, occasion)
@@ -102,6 +154,10 @@ class CSVImportView(APIView):
 
             extrait = self.save_row(row)
             liste_extraits.append(extrait)
+        
+        # Sauvegarde de la dernière interview
+        if liste_extraits:
+            self.save_interview(liste_extraits, occasion)
 
     def save_row(self, row):
         """
@@ -201,7 +257,7 @@ class CSVImportView(APIView):
             extrait_node.titre = titre
             extrait_node.artiste_uuid = artiste_uuid
             extrait_node.question_uuid = question_uuid
-            extrait_node.uploaded_at = Date(date) if date else None
+            extrait_node.uploaded_at = self.parse_date(row["Date"].strip()) if date else None
             extrait_node.lieu = row["Ville"].strip()
             extrait_node.youtube_url = youtube_url
             extrait_node.vimeo_url = vimeo_url
@@ -233,7 +289,7 @@ class CSVImportView(APIView):
                     "titre": titre,
                     "artiste_uuid": artiste_uuid,
                     "question_uuid": question_uuid,
-                    "uploaded_at": Date(date) if date else None,
+                    "uploaded_at": self.parse_date(row["Date"].strip()) if date else None,
                     "lieu": row["Ville"].strip(),
                     "youtube_url": youtube_url,
                     "vimeo_url": vimeo_url,
@@ -289,8 +345,12 @@ class CSVImportView(APIView):
         first_extrait = liste_extraits[0]
         artiste_node = first_extrait.interviewer.single()
 
+        occasion_node = None  # Initialiser à None
         if occasion != "" and occasion is not None:
-            occasion_node = Occasion.nodes.get(name=occasion)
+            try:  # Ajouter try/except
+                occasion_node = Occasion.nodes.get(name=occasion)
+            except:
+                pass  # occasion_node reste None
 
         titre = f"Interview de {artiste_node.name} pour {occasion_node.name if occasion_node else 'une occasion inconnue'}"
         try:
@@ -359,5 +419,14 @@ class CSVImportView(APIView):
             return code.split("?")[0].split("&")[0]
 
         return url
+    
+    def parse_date(self, date_str):
+        if not date_str:
+            return None
+        try:
+            dt = datetime.strptime(date_str, "%Y-%m-%d").date()
+            return Date(dt.year, dt.month, dt.day)
+        except ValueError:
+            return None
 
 
