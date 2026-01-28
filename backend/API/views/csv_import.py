@@ -6,6 +6,7 @@ from datetime import date as Date, datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from ..permissions import IsAdminOrReadOnly
 
 
 
@@ -36,6 +37,7 @@ class CSVImportView(APIView):
     regroupés par artiste et événement afin de créer automatiquement
     des interviews.
     """
+    permission_classes = [IsAdminOrReadOnly]
 
 
     _EXPECTED_HEADERS = {
@@ -127,10 +129,17 @@ class CSVImportView(APIView):
         Lorsqu'un changement d'artiste ou d'événement est détecté,
         une interview est créée à partir des extraits accumulés.
 
-        :param csv_file: Fichier CSV envoyé par l'utilisateur
+        :param csv_file: Fichier CSV envoyé par l'utilisateur (liste de strings ou BytesIO)
         """
-        reader = csv.DictReader(csv_file)
-
+        # Gérer les deux types d'entrée: liste de strings ou BytesIO
+        if isinstance(csv_file, (list, tuple)):
+            # Si c'est une liste de strings, créer un DictReader
+            reader = csv.DictReader(csv_file)
+        else:
+            # Si c'est un fichier (BytesIO ou similaire), le décoder d'abord
+            content = csv_file.read().decode("utf-8")
+            lines = content.splitlines()
+            reader = csv.DictReader(lines)
 
         artiste = None
         occasion = None

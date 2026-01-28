@@ -1,23 +1,36 @@
 import io
 from unittest.mock import Mock, patch
-from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
+from uuid import uuid4
 
 from ...serializers.extrait import Extrait
-
+from ...models import Utilisateur
 from ...views.csv_import import CSVImportView
+from ...tests import Neo4jTestCase
 
 
 
-class TestCSVImportView(TestCase):
+class TestCSVImportView(Neo4jTestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.client = APIClient()
-        cls.url = reverse("csv_import")
+    def setUp(self):
+        super().setUp()
+        self.client = APIClient()
+        self.url = reverse("csv_import")
+        
+        # Create an admin user
+        self.admin_user = Utilisateur(
+            pseudo=f"admin_{uuid4()}",
+            prenom="Admin",
+            nom="Test",
+            email=f"admin_{uuid4()}@test.com",
+            password="password123",
+            is_admin=True,
+        ).save()
+        
+        # Authenticate the client with the admin user
+        self.client.force_authenticate(user=self.admin_user)
 
     # =========================
     # POST endpoint
@@ -520,8 +533,11 @@ class TestCSVImportView(TestCase):
         mock_interview_serializer.create.side_effect = Exception("Database error")
         mock_interview_serializer_class.return_value = mock_interview_serializer
 
-        # Ne devrait pas lever d'exception
-        view.save_interview([fake_extrait], "Event")
+        # Ne doit pas lever d'exception
+        try:
+            view.save_interview([fake_extrait], "Event")
+        except Exception:
+            self.fail("save_interview a levé une exception alors qu'elle devait la gérer.")
 
         # Vérifie que la tentative de création a été faite
         mock_interview_serializer.create.assert_called_once()
