@@ -13,8 +13,10 @@ export default {
 
             if(this.Element_Supp.youtube_url != null || this.Element_Supp.vimeo_url!= null){
                 chemin_redirection="extraits";
-            }else{
+            }else if(this.Element_Supp.titre != null || this.Element_Supp.titre!= null){
                 chemin_redirection="interview";
+            }else if(this.Element_Supp.is_admin != null || this.Element_Supp.is_admin!= null){
+                chemin_redirection="user";
             }
             
             
