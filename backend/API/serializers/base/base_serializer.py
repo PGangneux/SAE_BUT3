@@ -2,8 +2,13 @@ import re
 from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
-from neomodel import StructuredNode, RelationshipManager, NodeSet
-from neomodel.exceptions import UniqueProperty, DeflateError, DoesNotExist, RequiredProperty
+from neomodel import StructuredNode, RelationshipManager, NodeSet, StructuredRel
+from neomodel.exceptions import (
+    UniqueProperty,
+    DeflateError,
+    DoesNotExist,
+    RequiredProperty,
+)
 from ...errors import ValidatorUnique, ValidatorRequired, NotFound
 
 
@@ -76,7 +81,9 @@ class BaseSerializer(serializers.Serializer):
             if uuid:
                 node_class: StructuredNode = self.input_fields[field]["node"]
                 nodeset: NodeSet = node_class.nodes
-                relationship: RelationshipManager = instance.__dict__.get(self.input_fields[field]["relationship"])
+                relationship: RelationshipManager = instance.__dict__.get(
+                    self.input_fields[field]["relationship"]
+                )
                 try:
                     relationship.connect(nodeset.get(uuid=uuid))
                 except DoesNotExist:
@@ -117,9 +124,15 @@ class BaseSerializer(serializers.Serializer):
             if uuid:
                 node_class: StructuredNode = self.input_fields[field]["node"]
                 nodeset: NodeSet = node_class.nodes
-                relationship: RelationshipManager = instance.__dict__.get(self.input_fields[field]["relationship"])
+                relationship: RelationshipManager = instance.__dict__.get(
+                    self.input_fields[field]["relationship"]
+                )
                 try:
-                    if relationship.single():
+                    # Si le type de relation ne permet pas d'avoir plus de 1 relation
+                    if relationship.single() and relationship.__class__.__name__ in (
+                        "ZeroOrOne",
+                        "One",
+                    ):
                         relationship.reconnect(
                             relationship.single(), nodeset.get(uuid=uuid)
                         )
