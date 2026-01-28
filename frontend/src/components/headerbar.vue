@@ -1,12 +1,12 @@
 <script>
 import comp_searchbar from './searchbar.vue';
 import parametres_lecteur from './lecteur_video/parametres_lecteur.vue';
-import { videoStore } from "../model/videoStore";
-import ClientAPI from "../model/clientAPI.js";
+import { videoStore } from "@model/videoStore";
+import ClientAPI from "@model/clientAPI.js";
 import { markRaw } from 'vue';
 
 export default {
-    emits : ['set_lecteur'],
+    emits: ['set_lecteur'],
     name: "comp_headerbar",
     components: {
         comp_searchbar,
@@ -19,14 +19,18 @@ export default {
             unsubscribe_current_user: null,
         }
     },
-    methods : {
-        popup_param_lecteur(){
+    methods: {
+        popup_param_lecteur() {
             this.param_lecteur = !this.param_lecteur
         },
 
-        async set_lecteur(new_lecteur){
+        async set_lecteur(new_lecteur) {
             videoStore.lecteur = new_lecteur
-            videoStore.iframeComponent.set_url(videoStore.lecteur) 
+            videoStore.iframeComponent.set_url(videoStore.lecteur)
+        },
+
+        disconnect() {
+            ClientAPI.disconnectAPI();
         }
 
     },
@@ -62,17 +66,14 @@ export default {
                 </li>
                 <li>
                     <img src="/imgs/Settings.svg" alt="paramètres" @click="popup_param_lecteur"></img>
-                    <parametres_lecteur
-                        v-if="param_lecteur" 
-                        @set_lecteur="this.set_lecteur($event)"
-                    />
+                    <parametres_lecteur v-if="param_lecteur" @set_lecteur="this.set_lecteur($event)" />
                 </li>
                 <li class="btn local" v-if="isconnected && isadmin">
                     <RouterLink class="nav-link" to="/admin">Admin</RouterLink>
                 </li>
                 <li class="btn local" v-if="isconnected">
                     <RouterLink class="nav-link" to="/account">
-                        <img src="/imgs/compte.svg"  alt="compte">
+                        <img src="/imgs/compte.svg" alt="compte">
                     </RouterLink>
                 </li>
 
@@ -81,6 +82,9 @@ export default {
                 </li>
                 <li class="btn local" v-if="!isconnected">
                     <RouterLink class="nav-link" to="/connexion">Se Connecter</RouterLink>
+                </li>
+                <li class="btn local" v-if="isconnected">
+                    <label class="nav-link" @click="disconnect">Déconnexion</label>
                 </li>
             </ul>
         </nav>
@@ -99,6 +103,7 @@ export default {
     justify-content: space-around;
     align-items: center;
 }
+
 .local {
     background-color: var(--vert-pale) !important;
     color: var(--blanc);
@@ -108,12 +113,12 @@ export default {
     background-color: var(--vert-neon) !important;
 }
 
-ul{
+ul {
     margin: 0;
     border-bottom: 3px solid var(--gris-taupe);
 }
 
-img{
+img {
     max-height: 1.5em;
     cursor: pointer;
 }

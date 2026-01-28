@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import Interview from '../../model/interview.js';
+import Interview from '@model/interview.js';
 import miniature_video from '../lecteur_video/miniature_video.vue';
 
 export default {
@@ -99,7 +99,7 @@ export default {
     min-width: 350px;
     min-height: 350px;
     max-width: 400px;
-    flex: 1 1 200px;
+    /* flex: 1 1 200px; */
 }
 
 .local h3 {

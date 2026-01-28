@@ -1,5 +1,5 @@
-import Utilisateur from "./utilisateur";
-import FetchError from "./errors/fetch_error";
+import Utilisateur from "@model/utilisateur";
+import FetchError from "@model/errors/fetch_error";
 
 /**
  * Classe client faisant le lien avec l'api
@@ -115,7 +115,7 @@ export default class ClientAPI {
    * @param {string|null} access
    * @param {string|null} refresh
    */
-  static save_tokens(access, refresh = null) {
+  static save_tokens(access, refresh = null, user = null) {
     if (access) localStorage.setItem("access", access);
     if (refresh) localStorage.setItem("refresh", refresh);
   }
@@ -126,6 +126,7 @@ export default class ClientAPI {
   static clear_tokens() {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
+    localStorage.removeItem("user");
   }
 
   /**
@@ -215,7 +216,7 @@ export default class ClientAPI {
    * @param {boolean} withAuth
    * @returns {Promise<Object>}
    */
-  static async get(url, args = null, withAuth = false) {
+  static async get(url, args = null, withAuth = true) {
     return await this.fetch("GET", url, args, null, withAuth);
   }
 
@@ -259,14 +260,17 @@ export default class ClientAPI {
    * @param {string} password
    * @returns {Promise<Utilisateur>}
    */
-  static async connectAPI(pseudo_email, password) {
+  static async connectAPI(pseudo_email, password, stay_connected) {
     try {
       const res = await this.post(
         `${this.BASE_URL}api/login/`,
-        JSON.stringify({ identifiant: pseudo_email, password: password })
+        JSON.stringify({ "username": pseudo_email, "password": password })
       );
       this.save_tokens(res.access, res.refresh);
       this.current_user = new Utilisateur(await this.get(res.utilisateur));
+      if (stay_connected) localStorage.setItem("user", this.current_user.uuid);
+      else localStorage.removeItem("user");
+
       return this.current_user;
     } catch (error) {
       console.error(error.toString());
@@ -276,13 +280,10 @@ export default class ClientAPI {
 
   /**
    * Déconnecte un utilisateur de l'application
-   * @returns {null}
+   * @returns {void}
    */
   static disconnectAPI() {
-    const refresh = this.get_refresh_token();
-    if (refresh) {
-      this.clear_tokens();
-    }
+    this.clear_tokens();
     this.current_user = null;
     return this.current_user;
   }
@@ -337,4 +338,14 @@ export default class ClientAPI {
     return await response.json();
   }
 
+}
+
+// Reconnexion automatique si rester connecter
+if (!(ClientAPI.current_user)) {
+  const user = localStorage.getItem("user");
+  if (user) {
+    try {
+      ClientAPI.current_user = await Utilisateur.detail(user);
+    } catch (error) { }
+  }
 }

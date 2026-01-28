@@ -1,6 +1,6 @@
 <script>
 import { toRaw, markRaw } from "vue";
-import { videoStore } from "../../model/videoStore";
+import { videoStore } from "@model/videoStore";
 
 
 export default {

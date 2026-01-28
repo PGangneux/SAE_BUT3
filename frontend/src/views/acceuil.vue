@@ -1,8 +1,8 @@
 <script>
-import { videoStore } from "../model/videoStore.js";
-import comp_mindmap from "../components/acceuil/mindmap.vue";
-import comp_recent from "../components/acceuil/home_recent.vue";
-import iframe_lecture_video from "../components/lecteur_video/iframe_lecture_video.vue";
+import { videoStore } from "@model/videoStore.js";
+import comp_mindmap from "@components/acceuil/mindmap.vue";
+import comp_recent from "@components/acceuil/home_recent.vue";
+import iframe_lecture_video from "@components/lecteur_video/iframe_lecture_video.vue";
 
 export default {
     name: "page_accueil",
@@ -204,17 +204,20 @@ export default {
     margin: 1%;
     width: 30%;
     min-width: 300px;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Vertical layout for small screens */
-@media (max-width: 200px), (max-height: 200px) {
+/* Mobile styles - controls at top right when screen < 800px */
+/* if the viewport width is 800px or less */
+@media screen and (max-width: 800px) {
     .local-flex {
         flex-direction: column;
     }
     
     .flex-grow {
-        width: 100%;
         margin-bottom: 1rem;
+        min-height: 50vmin;
     }
     
     .recent-component {

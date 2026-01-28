@@ -1,14 +1,24 @@
 from django.urls import reverse
+from django.contrib.auth.hashers import make_password
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
-from ...models import Extrait, Tag
+from ...models import Extrait, Tag, Utilisateur
 from ...tests import Neo4jTestCase
 
 
 class TagsExtraitRelationShipViewSetAPITests(Neo4jTestCase):
     def setUp(self):
+        self.user = Utilisateur(
+            pseudo=f"pseudo_{uuid4()}",
+            prenom="Prenom1",
+            nom="Nom1",
+            email=f"user1_{uuid4()}@example.com",
+            password=make_password("password"),
+            is_admin=True
+        ).save()
         self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
 
         # Création d'un extrait
         self.extrait = Extrait(

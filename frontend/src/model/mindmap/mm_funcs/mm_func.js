@@ -1,5 +1,5 @@
 import { markRaw } from "vue";
-import { mm_createChildNode, set_children_pos } from "./mm_func_node.js"
+import { mm_createChildNode } from "./mm_func_node.js"
 import { mm_find_compare } from "./mm_func_chemin.js";
 import mm_Mindmap from "../mm_mindmap.js";
 import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
@@ -20,6 +20,8 @@ function mm_reset_hard(mminfo) {
     mminfo.nodes.push(root);
     mm_draw_onecat(mminfo, root, false);
 }
+
+// TODO : BUGGER
 
 /**
  * Soft reset of mindmap - clears previews and adjusts nodes based on search
@@ -75,6 +77,8 @@ export async function mm_reset_soft(mminfo) {
             // Calculate how many nodes to create
             nodesToCreate = search_cat.length - sameCount;
         }
+        // console.log("search_cat",search_cat,"sameCount",sameCount,"nodesToCreate",nodesToCreate);
+        
         // Handle nodes array
         if (search_cat.length > 0) {
             // Always slice to search count in search mode
@@ -84,7 +88,7 @@ export async function mm_reset_soft(mminfo) {
                 // Create the nodes that are different/new
                 for (let i = sameCount; i < search_cat.length; i++) {
                     const nodeData = search_cat[i];
-                    await mm_createChildNode(mminfo, rootNode, nodeData, true, false);
+                    mm_createChildNode(mminfo, rootNode, nodeData, true, false);
                 }
             }
         } else {
@@ -117,7 +121,6 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
     /// await new Promise(r => setTimeout(r, 1000));
     node.loading = true;
     try {
-
         if (node.ispreview) {
             if (node.depth > mminfo.chemin.length + 4) {
                 // safeguard to avoid expanding too deep previews
@@ -144,12 +147,12 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 }
                 /// TMP
                 node.loading = false;
-                for (const child of node.childrens) {
-                    // if that node is parent then only draw content preview
-                    if (child.mmch_obj) {
-                        await mm_draw_onecat(mminfo, child, true, true);
-                    }
-                }
+                // for (const child of node.childrens) {
+                //     // if that node is parent then only draw content preview
+                //     if (child.mmch_obj) {
+                //         await mm_draw_onecat(mminfo, child, true, true);
+                //     }
+                // }
             }
         } else if (node.depth > mminfo.chemin.length + 2) {
             // safeguard to avoid expanding too deep previews
@@ -167,10 +170,10 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 mm_createChildNode(mminfo, node, instnode,isPreview);
             }
             /// TMP
-            node.loading = false;
-            for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, true, true);
-            }
+            // node.loading = false;
+            // for (const child of node.childrens) {
+            //     await mm_draw_onecat(mminfo, child, true, true);
+            // }
         } else {
             // ─────────────────────────────
             // 1a. CATEGORY NODE → CONTENT
@@ -185,10 +188,10 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 mm_createChildNode(mminfo, node, catnode, createLink,isPreview);
             }
             /// TMP
-            node.loading = false;
-            for (const child of node.childrens) {
-                await mm_draw_onecat(mminfo, child, true, true);
-            }
+            // node.loading = false;
+            // for (const child of node.childrens) {
+            //     await mm_draw_onecat(mminfo, child, true, true);
+            // }
         }
         if (node.depth > mminfo.chemin.length) {
             // ─────────────────────────────

@@ -1,6 +1,6 @@
 <script>
-import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import mmch_Root from '../../model/mindmap/mm_chemin_submod/mmch_root.js';
+import { mm_LegendClassMap } from '@model/mindmap/mm_const.js';
+import mmch_Root from '@model/mindmap/mm_chemin_submod/mmch_root.js';
 
 export default {
     name: "mindmap_node",

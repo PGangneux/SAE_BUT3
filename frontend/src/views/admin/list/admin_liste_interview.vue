@@ -6,11 +6,11 @@
  * - Calcule dynamiquement le nombre d'extraits et la durée
  */
 import { markRaw, nextTick } from 'vue';
-import Interview from '../../../model/interview.js';
-import Model from "../../../model/model.js";
+import Interview from '@model/interview.js';
+import Model from "@model/model.js";
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
+import {parse} from "@model/parse_csv.js"
 
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-import {parse} from "../../../model/parse_csv.js"
 
 export default {
     name: "page_admin_interview",

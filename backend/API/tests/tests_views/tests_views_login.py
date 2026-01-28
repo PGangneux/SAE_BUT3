@@ -24,8 +24,7 @@ class LoginViewAPITests(Neo4jTestCase):
         url = reverse("login")
         response = self.client.post(
             url,
-            data={"identifiant": self.utilisateur.email, "password": "password123"},
-            format="json",
+            data={"username": self.utilisateur.email, "password": "password123"},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         data = response.json()
@@ -37,7 +36,7 @@ class LoginViewAPITests(Neo4jTestCase):
         url = reverse("login")
         response = self.client.post(
             url,
-            data={"identifiant": self.utilisateur.pseudo, "password": "password123"},
+            data={"username": self.utilisateur.pseudo, "password": "password123"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -50,26 +49,24 @@ class LoginViewAPITests(Neo4jTestCase):
         url = reverse("login")
         response = self.client.post(
             url,
-            data={"identifiant": self.utilisateur.email, "password": "wrongpassword"},
+            data={"username": self.utilisateur.email, "password": "wrongpassword"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json()["detail"], "Identifiants invalides.")
+        self.assertEqual(response.json()["detail"], "Identifiants invalides")
 
     def test_login_nonexistent_user(self):
         url = reverse("login")
         response = self.client.post(
             url,
-            data={"identifiant": "doesnotexist@example.com", "password": "password123"},
+            data={"username": "doesnotexist@example.com", "password": "password123"},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(response.json()["detail"], "Identifiants invalides.")
+        self.assertEqual(response.json()["detail"], "Identifiants invalides")
 
     def test_login_missing_fields(self):
         url = reverse("login")
         response = self.client.post(url, data={}, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.json()["detail"], "Veuillez fournir identifiant et mot de passe."
-        )
+        self.assertTrue(response.json().get("username", False))

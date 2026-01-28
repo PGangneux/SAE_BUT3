@@ -1,7 +1,7 @@
 <script>
 
-import ClientAPI from "../../model/clientAPI";
-import { videoStore } from "../../model/videoStore";
+import ClientAPI from "@model/clientAPI";
+import { videoStore } from "@model/videoStore";
 import { nextTick } from 'vue';
 
 export default {

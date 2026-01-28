@@ -1,8 +1,8 @@
 <script>
 
 import { markRaw } from 'vue';
-import ClientAPI from "../model/clientAPI.js";
-import Utilisateur from "../model/utilisateur.js";
+import ClientAPI from "@model/clientAPI.js";
+import Utilisateur from "@model/utilisateur.js";
 
 
 export default {

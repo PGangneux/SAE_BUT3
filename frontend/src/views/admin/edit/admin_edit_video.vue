@@ -1,17 +1,17 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
 
-import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
-import popup_creer_question from "../../../components/components_admin/popup_creer_question.vue";
-import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
-import Extrait from "../../../model/extrait";
+import popup_interview from "@components/components_admin/popup_admin_edit.vue";
+import popup_creer_question from "@components/components_admin/popup_creer_question.vue";
+import popup_valider from "@components/components_admin/popup_validation_creation.vue";
+import Extrait from "@model/extrait";
 
-import Question from "../../../model/question";
-import Artiste from "../../../model/artiste";
+import Question from "@model/question";
+import Artiste from "@model/artiste";
 import supprimer from "../supprimer.vue";
 import tags from "../tags.vue"
-import Tag from "../../../model/tag.js";
+import Tag from "@model/tag.js";
 
 import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from '../fn_save_tags.js';
 
