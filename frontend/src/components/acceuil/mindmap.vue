@@ -44,8 +44,8 @@ export default {
         @mousedown="mm_instance.startDrag" @mouseup="mm_instance.stopDrag"
         @mousemove="mm_instance.doDrag" @mouseleave="mm_instance.stopDrag"
         @wheel="mm_instance.handleWheel"
-        @touchstart="mm_instance.startDragTouch" @touchend="mm_instance.stopDrag"
-        @touchmove="mm_instance.doDragTouch"
+        @touchstart="mm_instance.startDrag" @touchend="mm_instance.stopDrag"
+        @touchmove="mm_instance.doDrag"
         >
         <button class="mm_fullscreenbtn" @click="mm_instance.toggleFullscreen" @touchend="mm_instance.toggleFullscreen">
             <img :src="mm_instance.fullscreen ? '/imgs/reduire.svg' : '/imgs/agrandir.svg'" 

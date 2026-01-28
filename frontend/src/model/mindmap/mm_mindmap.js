@@ -122,10 +122,6 @@ export default class mm_Mindmap {
         this.dragging = false;
     }
 
-    startDragTouch(event) {
-        this.startDrag(event);
-    }
-
     zoomin() {
         this.scale += 0.2;
         this.scale = Math.min(2, this.scale);
@@ -215,6 +211,10 @@ export default class mm_Mindmap {
 
     doDrag(event) {
         if (!this.dragging) return;
+        event.preventDefault();
+        if (event.type.includes('touch')) {
+            event.stopPropagation();
+        }
 
         const { clientX, clientY } = this.getEventCoordinates(event);
         const deltaX = clientX - this.lastMouseX;
