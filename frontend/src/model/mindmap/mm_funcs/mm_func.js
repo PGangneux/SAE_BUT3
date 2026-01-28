@@ -1,5 +1,5 @@
 import { markRaw } from "vue";
-import { mm_createChildNode , set_children_pos } from "./mm_func_node.js"
+import { mm_createChildNode, set_children_pos } from "./mm_func_node.js"
 import { mm_find_compare } from "./mm_func_chemin.js";
 import mm_Mindmap from "../mm_mindmap.js";
 import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
@@ -11,35 +11,32 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 */
 function mm_reset_hard(mminfo) {
     // reset everything
-    mminfo.nodes = [];
+    mminfo.nodes = {};
     mminfo.linkages = [];
-    mminfo.previewnodes = [];
     mminfo.previewlinkages = [];
+    // reset the mmch_cheminT master class key counter
+    mmch_CheminT.reset_key_counter();
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
-    mminfo.nodes.push(root);
+    mminfo.nodes[root.mmch_key] = root;
     mm_draw_onecat(mminfo, root, false);
 }
 
-// TODO : BUGGER
-
 /**
  * Soft reset of mindmap - clears previews and adjusts nodes based on search
- * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @returns {Promise<boolean>} whether there was an hard reset
+ * @param {mm_Mindmap} mminfo mm_Mindmap
  */
 export async function mm_reset_soft(mminfo) {
     try {
         // Clear all preview elements and linkages
-        mminfo.previewnodes = [];
-        mminfo.previewlinkages = [];
         mminfo.linkages = []; // Root has no linkages anyway
+        mminfo.previewlinkages = [];
 
         // Safeguard: Check if we have a valid root node
-        // if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
+        if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
             mm_reset_hard(mminfo);
-            return true;
-        // }
+            return;
+        }
 
         const rootNode = mminfo.nodes[0];
         const list_cat = [];
@@ -78,7 +75,7 @@ export async function mm_reset_soft(mminfo) {
             nodesToCreate = search_cat.length - sameCount;
         }
         // console.log("search_cat",search_cat,"sameCount",sameCount,"nodesToCreate",nodesToCreate);
-        
+
         // Handle nodes array
         if (search_cat.length > 0) {
             // Always slice to search count in search mode
@@ -143,7 +140,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 /// console.log(node.depth,"3b expand PREVIEW NODE without content",node);
 
                 // Handle async* generator
-                for await (const catnode of node.mmch_previewinst(mminfo)) {                    
+                for await (const catnode of node.mmch_previewinst(mminfo)) {
                     mm_createChildNode(mminfo, node, catnode, true, true);
                 }
                 set_children_pos(mminfo, node);
@@ -169,7 +166,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             /// console.log(node.depth,"1b CONTENT NODE → CATEGORIES",node);
             // Handle async* generator for instance methods
             for await (const instnode of node.mmch_listinst()) {
-                mm_createChildNode(mminfo, node, instnode,isPreview);
+                mm_createChildNode(mminfo, node, instnode, isPreview);
             }
             set_children_pos(mminfo, node);
             /// TMP
@@ -188,7 +185,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
 
             // Handle async* generator for static methods
             for await (const catnode of getnodefunc()) {
-                mm_createChildNode(mminfo, node, catnode, createLink,isPreview);
+                mm_createChildNode(mminfo, node, catnode, createLink, isPreview);
             }
             set_children_pos(mminfo, node);
             /// TMP
