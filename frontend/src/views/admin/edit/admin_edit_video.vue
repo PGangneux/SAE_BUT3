@@ -7,6 +7,7 @@ import popup_creer_question from "../../../components/components_admin/popup_cre
 import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
 import Extrait from "../../../model/extrait";
 
+import Audio from "../../../model/audio";
 import Question from "../../../model/question";
 import Artiste from "../../../model/artiste";
 import supprimer from "../supprimer.vue";
@@ -36,12 +37,15 @@ export default {
   },data() {
         return {
             current_extrait : null,
-            thumbnail: '/imgs/width551.png',          
+            thumbnail: '/imgs/width551.png',     
+            laselectedAudio: "",    //Audio selectionner retourn null si rien     
             laselectedArtiste: "", //Artiste selectionner retourn null si rien
             laselectedQuestion: "",//Questio selectionner retourn null si rien 
 
             interviews:[],
             listeArtiste:[],    //liste des Artistes totals
+            listeAudios:[],    //liste des Artistes totals
+
             listeQuestion:[],   //liste des Questions totals
             listetheme:[],   //liste des Questions totals
             popupDelete: false,
@@ -252,6 +256,28 @@ export default {
       
     },
 
+        
+    async creerNouveauAudio(){
+
+    if( this.laselectedAudio != "" && this.laselectedAudio != null ){
+          if (!this.listeArtiste.find(a => a.name === this.laselectedAudio)){
+            const newAudio = new Audio({});
+            newAudio.name = this.laselectedAudio;
+            await newAudio.create()
+            this.listeAudios.push(newAudio);
+            this.current_extrait.audio = await newAudio.uuid;
+            this.current_extrait.audio_uuid = await newAudio.uuid;
+            
+            alert('l\'audio ' + newAudio.name + ' est creer');
+          }else{
+            alert('l\'audio existe deja')
+          }
+      }else{
+        alert('pas de champs null pour audio');
+      }
+      
+    },
+
     creerNouvelleQuestion(){
 
       if( this.laselectedQuestion != "" &&  this.laselectedQuestion != null){     
@@ -330,10 +356,29 @@ export default {
 
     },
 
+
+    SelectedAudioId() {
+      //reccupere l'audio de la liste en reccuperant le nom de l'artiste selectionner
+      //reccupere l'audio de la liste
+      const audio = this.listeAudios.find(a => a.name === this.laselectedAudio);
+
+      
+
+      //verifie si audio existe et n'es pas null
+      if (audio) {
+          this.current_extrait.audio = audio.uuid;
+          this.current_extrait.audio_uuid = audio.uuid;
+        } else {
+          this.current_extrait.audio = null;
+          this.current_extrait.audio_uuid = null;
+      }
+
+    },
+
     FoncSelectedQuestion() {
       //reccupere la Question de la liste en reccuperant le text de la Question selectionner
 
-      //reccupere l'artiste de la liste
+      //reccupere l'question de la liste
       const question = this.listeQuestion.find(a => a.texte === this.laselectedQuestion);
 
       //verifie si question existe et n'es pas null
@@ -350,6 +395,12 @@ export default {
     async recupeArtiste(){
       //reccupere la liste des Artistes
       this.listeArtiste =  markRaw(await Artiste.list());
+    },
+
+
+    async recupeAudio(){
+      //reccupere la liste des Artistes
+      this.listeAudios =  markRaw(await Audio.list());
     },
 
     async recupeQuestion(){
@@ -541,6 +592,7 @@ export default {
 
     await this.recupeArtiste();
     await this.recupeQuestion();
+    await this.recupeAudio();
   
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
@@ -707,6 +759,19 @@ export default {
               </div>
           </div>
           
+
+          <div class="row"  style="--bs-gutter-x: 0em;">
+              <div class="input-group mb-3" >
+                <span class="input-group-text colovert" >Audios :</span>
+                <input list="Audiodata" id="choixAudio" name="choixAudio" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedAudio" @input="SelectedAudiosId">
+                
+                <datalist id="Audiodata">
+                <option v-for="audio in listeAudios" :key="audio.id" :value="audio.name" :label="audio.name" > </option> 
+                </datalist>
+
+                <button class="bt" type="button" @click="creerNouveauAudio" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
+              </div>
+          </div>
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group">
