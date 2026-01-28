@@ -42,6 +42,7 @@ class UtilisateurViewSetAPITests(Neo4jTestCase):
         """
         Vérifie qu'un utilisateur peut être récupéré individuellement
         """
+        self.client.force_authenticate(user=self.utilisateur1)
         url = reverse("utilisateur-detail", kwargs={"uuid": self.utilisateur1.uuid})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -56,4 +57,4 @@ class UtilisateurViewSetAPITests(Neo4jTestCase):
             kwargs={"uuid": "00000000-0000-0000-0000-000000000000"},
         )
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

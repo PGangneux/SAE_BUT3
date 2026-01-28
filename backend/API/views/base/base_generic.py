@@ -9,7 +9,6 @@ from neomodel import StructuredNode, db
 from neo4j.exceptions import ServiceUnavailable
 from ...errors import NotFound, ConnexionDB, OrderError
 
-
 class BaseGenericViewSet(GenericViewSet):
     """
     Classe de base contenant les méthodes pour les viewsets de l'api
@@ -20,10 +19,9 @@ class BaseGenericViewSet(GenericViewSet):
         NotFound: Instance introuvable
         OrderError: Erreur dans le champ pour ordonner
     """
+    # permission_classes = []  # Remplace les permissions par défaut
 
     lookup_field = "uuid"
-    authentication_classes = []
-    permission_classes = []
 
     def __init__(
         self,
