@@ -1,6 +1,7 @@
 import Model from "./model.js";
 import Artiste from "./artiste.js";
 import Question from "./question.js";
+import Audio from "./audio.js";
 import Interview from "./interview.js";
 import Tag from "./tag.js";
 import ClientAPI from "./clientAPI.js";
@@ -14,11 +15,13 @@ export default class Extrait extends Model {
     #uploaded_at;
     #artiste;
     #question;
+    #audio;
     #interviews;
     #tags;
     #position;
     #artiste_uuid;
     #question_uuid;
+    #audio_uuid;
     #duree;
 
     constructor({
@@ -34,6 +37,7 @@ export default class Extrait extends Model {
         interviews,
         tags,
         position,
+        audio,
         duree,
     }) {
         super(uuid);
@@ -45,11 +49,13 @@ export default class Extrait extends Model {
         this.#uploaded_at = uploaded_at;
         this.#artiste = artiste;
         this.#question = question;
+        this.#audio = audio;
         this.#interviews = interviews;
         this.#tags = tags;
         this.#position = position;
         this.#artiste_uuid = null;
         this.#question_uuid = null;
+        this.#audio_uuid = null;
         this.#duree = duree;
     }
 
@@ -114,6 +120,14 @@ export default class Extrait extends Model {
             value,
             "question_uuid"
         );
+    }
+
+
+    get audio() {
+        return this.fetchDetail(this.#audio, Audio);
+    }
+    set audio(value) {
+        this.#audio_uuid = this.constructor.validateString(value, "audio_uuid");
     }
 
     get duree() {
@@ -215,6 +229,7 @@ export default class Extrait extends Model {
         this.#interviews = json.interviews;
         this.#tags = json.tags;
         this.#position = json.position;
+        this.#audio = json.audio;
         this.#duree = json.duree;
         return this;
     }
@@ -229,6 +244,7 @@ export default class Extrait extends Model {
         if (this.uploaded_at) json['uploaded_at'] = this.uploaded_at;
         if (this.#artiste_uuid) json['artiste_uuid'] = this.#artiste_uuid;
         if (this.#question_uuid) json['question_uuid'] = this.#question_uuid;
+        if (this.#audio_uuid) json['audio_uuid'] = this.#audio_uuid;
         if (this.duree) json['duree'] = this.duree;
         return json;
     }
