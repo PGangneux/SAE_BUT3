@@ -35,7 +35,7 @@ export default {
             }
             this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
             // Load description
-            this.nodeDescription = await this.node_instance.mmch_getDescription();
+            this.nodeDescription = await this.node_instance.mmch_getDescription() || "";
             // Check if has miniature
             this.thumbnailLoading = true;
             this.hasMiniature = await this.node_instance.mmch_hasMiniature();
@@ -63,16 +63,6 @@ export default {
 
 <template>
     <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
-        <div style="display: none;">
-            typeof node_instance {{ typeof this.node_instance }}
-            thumbnailLoading {{ thumbnailLoading }}
-            thumbnailUrl {{ thumbnailUrl }}
-            nodeTitle {{ nodeTitle }}
-            nodeDescription {{ nodeDescription }}
-            hasMiniature {{ hasMiniature }}
-            node_instance {{ }}
-        </div>
-
         <!-- Case 1: No content -->
         <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">
