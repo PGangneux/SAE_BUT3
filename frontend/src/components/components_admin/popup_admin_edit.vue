@@ -1,9 +1,9 @@
 <script>
 import { markRaw } from 'vue';
-import Tags from '../../model/tag.js';
+import Tags from '@model/tag.js';
 
 
-import Interview from '../../model/interview.js';
+import Interview from '@model/interview.js';
 
 export default {
     name: "comp_admin_edit_popup",

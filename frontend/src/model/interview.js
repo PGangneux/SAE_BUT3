@@ -1,7 +1,7 @@
-import Model from "./model.js";
-import Extrait from "./extrait.js";
-import Tag from "./tag.js";
-import Occasion from "./occasion.js";
+import Model from "@model/model.js";
+import Extrait from "@model/extrait.js";
+import Tag from "@model/tag.js";
+import Occasion from "@model/occasion.js";
 
 export default class Interview extends Model {
     #titre;

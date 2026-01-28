@@ -1,16 +1,16 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
-import comp_petit_extrait from '../../components/components_admin/Admin_presentation_petit_extrait.vue';
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
+import comp_petit_extrait from '@components/components_admin/Admin_presentation_petit_extrait.vue';
 import supprimer from "./supprimer.vue";
 import tags from "./tags.vue"
 import edit_success from "./gestion/edit_success.vue"
 import edit_error from './gestion/edit_error.vue';
 
-import Interview from '../../model/interview.js';
-import Extrait from "../../model/extrait.js";
-import Tag from "../../model/tag.js";
-import Occasion from "../../model/occasion.js"
+import Interview from '@model/interview.js';
+import Extrait from "@model/extrait.js";
+import Tag from "@model/tag.js";
+import Occasion from "@model/occasion.js"
 
 import { handleTagsConnected, handleTagsDisconnected, handleTagsCreated } from './fn_save_tags.js';
 

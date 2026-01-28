@@ -1,5 +1,5 @@
-import Utilisateur from "./utilisateur";
-import FetchError from "./errors/fetch_error";
+import Utilisateur from "@model/utilisateur";
+import FetchError from "@model/errors/fetch_error";
 
 /**
  * Classe client faisant le lien avec l'api

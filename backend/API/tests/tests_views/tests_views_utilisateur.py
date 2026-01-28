@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.contrib.auth.hashers import make_password
 from rest_framework.test import APIClient
 from rest_framework import status
 from uuid import uuid4
@@ -30,6 +31,15 @@ class UtilisateurViewSetAPITests(Neo4jTestCase):
         """
         Vérifie que la liste des utilisateurs est correctement renvoyée
         """
+        self.user = Utilisateur(
+            pseudo=f"pseudo_{uuid4()}",
+            prenom="Prenom1",
+            nom="Nom1",
+            email=f"user1_{uuid4()}@example.com",
+            password=make_password("password"),
+            is_admin=True
+        ).save()
+        self.client.force_authenticate(user=self.user)
         url = reverse("utilisateur-list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

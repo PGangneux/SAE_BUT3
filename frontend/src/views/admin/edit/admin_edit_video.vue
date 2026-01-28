@@ -1,11 +1,11 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
 
-import popup_interview from "../../../components/components_admin/popup_admin_edit.vue";
-import popup_creer_question from "../../../components/components_admin/popup_creer_question.vue";
-import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
-import Extrait from "../../../model/extrait";
+import popup_interview from "@components/components_admin/popup_admin_edit.vue";
+import popup_creer_question from "@components/components_admin/popup_creer_question.vue";
+import popup_valider from "@components/components_admin/popup_validation_creation.vue";
+import Extrait from "@model/extrait";
 
 import Audio from "../../../model/audio";
 import Question from "../../../model/question";

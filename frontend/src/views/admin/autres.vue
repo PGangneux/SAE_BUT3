@@ -1,11 +1,11 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from "../../components/components_admin/nav_admin.vue";
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
 
-import Tags from '../../model/tag.js';
-import Artistes from '../../model/artiste.js';
-import Questions from '../../model/question.js';
-import Themes from '../../model/theme.js';
+import Tags from '@model/tag.js';
+import Artistes from '@model/artiste.js';
+import Questions from '@model/question.js';
+import Themes from '@model/theme.js';
 
 export default {
     name: "page_autres",

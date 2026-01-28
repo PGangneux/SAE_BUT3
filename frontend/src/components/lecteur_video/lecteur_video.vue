@@ -3,7 +3,7 @@ import { markRaw } from 'vue';
 import iframe_lecture_video from './iframe_lecture_video.vue';
 import bar_liste_video from "./bar_liste_video.vue";
 import timecode from "./timecode.vue";
-import { videoStore } from "../../model/videoStore";
+import { videoStore } from "@model/videoStore";
 
 
 export default {

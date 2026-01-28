@@ -1,8 +1,8 @@
 <script>
 import comp_searchbar from './searchbar.vue';
 import parametres_lecteur from './lecteur_video/parametres_lecteur.vue';
-import { videoStore } from "../model/videoStore";
-import ClientAPI from "../model/clientAPI.js";
+import { videoStore } from "@model/videoStore";
+import ClientAPI from "@model/clientAPI.js";
 import { markRaw } from 'vue';
 
 export default {

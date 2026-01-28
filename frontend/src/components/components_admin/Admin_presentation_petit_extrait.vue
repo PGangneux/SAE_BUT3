@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import Extrait from '../../model/extrait.js';
+import Extrait from '@model/extrait.js';
 
 export default {
     name: "comp_admin_presentation_petit_extrait",
