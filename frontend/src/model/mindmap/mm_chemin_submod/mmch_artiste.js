@@ -5,7 +5,7 @@ import mmch_Extrait from "./mmch_extrait.js";
 
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
-    /** @type {Array<[String>} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {

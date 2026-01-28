@@ -102,11 +102,7 @@ export default class mmch_CheminT extends mm_Node {
 
     // Get style for rendering (using x/y for smooth animation)
     getStyle() {
-        // if (this.x == NaN || this.y == NaN) {
-        //     console.warn("Node has NaN position", this);
-        //     this.x = this.targetX;
-        //     this.y = this.targetY;
-        // }
+        // TODO : REDO
 
         const isVideoContent = this.mmch_hasMiniature(); // this.isVideoContent();
         const nodeDimensions = isVideoContent ?
