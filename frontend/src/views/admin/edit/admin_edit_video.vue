@@ -7,12 +7,12 @@ import popup_creer_question from "@components/components_admin/popup_creer_quest
 import popup_valider from "@components/components_admin/popup_validation_creation.vue";
 import Extrait from "@model/extrait";
 
-import Audio from "../../../model/audio";
-import Question from "../../../model/question";
-import Artiste from "../../../model/artiste";
+import Audio from "@model/audio";
+import Question from "@model/question";
+import Artiste from "@model/artiste";
 import supprimer from "../supprimer.vue";
 import tags from "../tags.vue"
-import Tag from "../../../model/tag.js";
+import Tag from "@model/tag.js";
 
 import edit_success from "../gestion/edit_success.vue"
 import edit_error from '../gestion/edit_error.vue';

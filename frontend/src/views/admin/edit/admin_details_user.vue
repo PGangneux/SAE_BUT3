@@ -1,13 +1,13 @@
 <script>
 
 import { markRaw } from 'vue';
-import comp_baradmin from "../../../components/components_admin/nav_admin.vue";
-import popup_valider from "../../../components/components_admin/popup_validation_creation.vue";
-import Utilisateur from "../../../model/utilisateur.js";
+import comp_baradmin from "@components/components_admin/nav_admin.vue";
+import popup_valider from "@components/components_admin/popup_validation_creation.vue";
+import Utilisateur from "@model/utilisateur.js";
 import supprimer from "../supprimer.vue";
 import edit_success from "../gestion/edit_success.vue"
 import edit_error from '../gestion/edit_error.vue';
-import Tags from '../../../model/tag.js';
+import Tags from '@model/tag.js';
 
 export default {
   name: "page_admin_details_client",
