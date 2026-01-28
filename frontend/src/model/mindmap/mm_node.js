@@ -13,7 +13,7 @@ export default class mm_Node {
     targetY;
     /** @type {number} */
     depth;
-    /** @type {Array<[mm_Node>} */
+    /** @type {Array<Number>} key number of mminfo.nodes*/
     childrens;
     /** @type {boolean} */
     ispreview;
@@ -22,7 +22,7 @@ export default class mm_Node {
     /** @type {boolean} */
     loading = false;
     /** @type {mm_Mindmap} */
-    mminfo; // Reference to mindmap instance
+    mminfo; // Reference to mindmap instance needed by mmch_draw
 
     /**
     * constructor for mindmap node

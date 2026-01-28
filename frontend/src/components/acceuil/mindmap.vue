@@ -79,17 +79,8 @@ export default {
         </div>
         <transition-group name="mm_node_outer" tag="div">
             <mindmap_node
-                v-for="node in mm_instance.nodes"
-                :key="node.mmch_key"
-                :node_instance="node"
-                @click="mm_instance.handleClick(node)"
-                @touchend="mm_instance.handleClick(node)"
-            />
-        </transition-group>
-        <transition-group name="mm_node_outer" tag="div">
-            <mindmap_node
-                v-for="node in mm_instance.previewnodes"
-                :key="node.mmch_key"
+                v-for="key,node in mm_instance.nodes.entries()"
+                :key="key"
                 :node_instance="node"
                 @click="mm_instance.handleClick(node)"
                 @touchend="mm_instance.handleClick(node)"

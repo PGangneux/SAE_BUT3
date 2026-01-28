@@ -7,14 +7,12 @@ export default class mm_Mindmap {
     vueobj;
     /** @type {Array<mm_Linkage>} */
     linkages;
-    /** @type {Array<mmch_CheminT>} */
-    nodes;
-    /** @type {Array<mmch_CheminT>} */
-    chemin;
     /** @type {Array<mm_Linkage>} */
     previewlinkages;
-    /** @type {Array<mmch_CheminT>} */
-    previewnodes;
+    /** @type {map<Number,mmch_CheminT>} */
+    nodes;
+    /** @type {Array<Number>} */
+    chemin;
     /** @type {boolean} */
     fullscreen;
     /** @type {boolean} */
@@ -49,10 +47,9 @@ export default class mm_Mindmap {
         this.vueobj = vueobj;
         // mm data
         this.linkages = [];
-        this.nodes = [];
+        this.nodes = {};
         // mm preview data
         this.previewlinkages = [];
-        this.previewnodes = [];
         // mm chemin
         this.chemin = [];
         // vars

@@ -3,6 +3,9 @@ import Audio from "../../audio.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 
+/**
+ * @extends mmch_CheminT<Audio>
+ */
 export default class mmch_Audio extends mmch_CheminT {
     static mmch_dbjsclass = Audio;
     /** @type {Array<String>} */
