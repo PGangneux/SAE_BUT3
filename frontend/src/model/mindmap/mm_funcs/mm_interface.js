@@ -39,10 +39,19 @@ export async function mm_draw_update(mminfo) {
     return false;
 }
 
+export const doesblock = false;
+
 /**
  * the main entry interface for Mind Map shenanigans 
 */
 export async function mm_interface_handleclick(mminfo,node){
+    if (doesblock) {
+        console.log("spam blocked");
+        return;
+    }
+    console.log("running mm algo");
+    doesblock = true;
+
     mminfo.chemin.push(node);
     console.log("mm hanldeclick",mminfo.chemin);
     let isvideo = await mm_draw_update(mminfo);
@@ -51,4 +60,5 @@ export async function mm_interface_handleclick(mminfo,node){
         console.log("video store set",mminfo.chemin,mminfo);
         videoStore.chemin = mminfo.chemin;
     }
+    doesblock = false;
 }

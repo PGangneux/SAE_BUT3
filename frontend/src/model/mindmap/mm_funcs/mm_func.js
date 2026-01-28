@@ -1,5 +1,5 @@
 import { markRaw } from "vue";
-import { mm_createChildNode } from "./mm_func_node.js"
+import { mm_createChildNode , set_children_pos } from "./mm_func_node.js"
 import { mm_find_compare } from "./mm_func_chemin.js";
 import mm_Mindmap from "../mm_mindmap.js";
 import mmch_CheminT from "../mm_chemin_submod/mmch_chemin.js";
@@ -36,10 +36,10 @@ export async function mm_reset_soft(mminfo) {
         mminfo.linkages = []; // Root has no linkages anyway
 
         // Safeguard: Check if we have a valid root node
-        if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
+        // if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
             mm_reset_hard(mminfo);
             return true;
-        }
+        // }
 
         const rootNode = mminfo.nodes[0];
         const list_cat = [];
@@ -90,6 +90,7 @@ export async function mm_reset_soft(mminfo) {
                     const nodeData = search_cat[i];
                     mm_createChildNode(mminfo, rootNode, nodeData, true, false);
                 }
+                set_children_pos(mminfo, rootNode);
             }
         } else {
             // List mode: slice to list count
@@ -145,6 +146,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
                 for await (const catnode of node.mmch_previewinst(mminfo)) {                    
                     mm_createChildNode(mminfo, node, catnode, true, true);
                 }
+                set_children_pos(mminfo, node);
                 /// TMP
                 node.loading = false;
                 // for (const child of node.childrens) {
@@ -169,6 +171,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             for await (const instnode of node.mmch_listinst()) {
                 mm_createChildNode(mminfo, node, instnode,isPreview);
             }
+            set_children_pos(mminfo, node);
             /// TMP
             // node.loading = false;
             // for (const child of node.childrens) {
@@ -187,6 +190,7 @@ export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview 
             for await (const catnode of getnodefunc()) {
                 mm_createChildNode(mminfo, node, catnode, createLink,isPreview);
             }
+            set_children_pos(mminfo, node);
             /// TMP
             // node.loading = false;
             // for (const child of node.childrens) {

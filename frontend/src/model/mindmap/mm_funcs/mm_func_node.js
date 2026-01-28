@@ -32,6 +32,8 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
     // Create the instance
     
     const tmp_child = new Cls(mminfo, parent.x, parent.y, parent.depth, content);
+    console.log(mminfo);
+    
     // Add to parent's children
     parent.childrens.push(markRaw(tmp_child));
     // add to mminfo nodes or previewnodes    
@@ -50,7 +52,6 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
             mminfo.linkages.push(markRaw(linkage));
         }
     }
-    set_children_pos(mminfo, parent);
     return tmp_child;
 }
 
@@ -64,7 +65,7 @@ export function set_children_pos(mminfo, root) {
     if (!root.childrens.length) return;
     // est ce que c'est mm_Root ou pas 
     const isRoot = root instanceof mmch_Root;
-    const totalArc = isRoot ? 360 : 160; // Full circle for root, semicircle for others
+    const totalArc = isRoot ? 360 : 170; // Full circle for root, semicircle for others
     // Count children with and without content (mmch_obj)
     let childrenWithPreview = 0;
     let childrenWithContent = 0;
@@ -82,12 +83,17 @@ export function set_children_pos(mminfo, root) {
     // Calculate angle per child based on content
     // Children with content get 1.2x more angle space
     const childrenPreviewWeight = 10.0;
-    const childrenContentWeight = 1.3;
+    const childrenContentWeight = 1.4;
     const childrenEmptyWeight = 1.0;
     const effectiveChildren = childrenWithPreview * childrenPreviewWeight
                             + childrenWithContent * childrenContentWeight
                             + childrenEmpty * childrenEmptyWeight;
     const angle_per_child = totalArc / effectiveChildren;
+
+    console.log("prev",childrenWithPreview,childrenWithPreview * childrenPreviewWeight, "content",
+                             childrenWithContent,childrenWithContent * childrenContentWeight
+                            ,"empty",childrenEmpty, childrenEmpty * childrenEmptyWeight);
+    
 
     // distance entre root et enfant ;
     // so the distance is inversly proportional to the number of angle_per_child
@@ -102,7 +108,7 @@ export function set_children_pos(mminfo, root) {
     const degree_to_rad = Math.PI / 180;
     let currentEffectiveIndex = 0;
 
-    // console.log("commence");
+    console.log("commence");
     
     for (let index = 0; index < root.childrens.length; index++) {
         const child = root.childrens[index];
@@ -115,16 +121,20 @@ export function set_children_pos(mminfo, root) {
         } else {
             angleWeight = childrenEmptyWeight;
         }
-        const current_angle = start_angle + (index%2 == 0 ? 1 : -1)* (angle_per_child * currentEffectiveIndex);
-        // console.log(index,current_angle,child);
+        console.log(angleWeight);
         
-        currentEffectiveIndex += angleWeight;
-
+        const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);
+        
         const angleRad = current_angle * degree_to_rad;
-
+        
         child.targetX = root.x + Math.cos(angleRad) * distance;
         child.targetY = root.y + Math.sin(angleRad) * distance;
         child.origin_angle = current_angle;
+        console.log("origin_angle",root.origin_angle,"start_angle",start_angle,"effectiveChildren",effectiveChildren,"currentEffectiveIndex",currentEffectiveIndex,"angle_per_child",angle_per_child,"i",index,"current_angle",current_angle,child);
+        
+        currentEffectiveIndex += angleWeight;
+        console.log("currentEffectiveIndex",currentEffectiveIndex);
+        
         
         // Trigger animation for this child if at appropriate depth
         // console.log(root,child,mminfo.chemin.length, ">=", child.depth);
