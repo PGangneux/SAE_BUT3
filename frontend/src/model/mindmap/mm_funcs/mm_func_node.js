@@ -37,7 +37,7 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
     if (isPreview) {
         tmp_child.ispreview = true;
     }
-    mminfo.nodes[tmp_child.mmch_key] = markRaw(tmp_child);
+    mminfo.nodes.set(tmp_child.mmch_key, markRaw(tmp_child));
     // create linkage
     if (createLink) {
         const linkage = new mm_Linkage(parent, tmp_child, thickness_base * (1 / tmp_child.depth));
@@ -48,6 +48,16 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
         }
     }
     return tmp_child;
+}
+
+/**
+ * 
+ * @param {mm_Mindmap} mminfo mm_Mindmap 
+ * @param {mmch_CheminT<T>} parent parent node 
+ * @param {Number} categoryK the number key of the child to delete
+ */
+export function mm_DeleteChildNode(mminfo,parent,categoryK){
+    ;
 }
 
 /**
@@ -67,7 +77,7 @@ export function set_children_pos(mminfo, parent) {
     let childrenEmpty = 0;
 
     for (let child_key of parent.childrens) {
-        let child = mminfo.nodes[child_key];
+        let child = mminfo.nodes.get(child_key);
         if (child.mmch_hasMiniature()) {
             childrenWithPreview++;
         } else if (child.mmch_obj) {
@@ -108,7 +118,7 @@ export function set_children_pos(mminfo, parent) {
     let currentEffectiveIndex = 0;
 
     for (let index = 0; index < parent.childrens.length; index++) {
-        const child = parent.childrens[index];
+        const child = mminfo.nodes.get(parent.childrens[index]);
         // Calculate current angle - adjust for content weighting
         let angleWeight;
         if (child.mmch_hasMiniature()) {
@@ -142,6 +152,6 @@ export function set_children_pos(mminfo, parent) {
             child.x = child.targetX;
             child.y = child.targetY;
         }
+        mminfo.update++;
     }
-    // console.log("fini");
 }

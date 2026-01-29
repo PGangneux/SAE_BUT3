@@ -11,14 +11,14 @@ export default {
     },
     data() {
         let inter = this.interview_current;
-        let ext = this.extrait_current;        
+        let ext = this.extrait_current; 
         return {
             mm_LegendClassMap: mm_LegendClassMap,
             mm_instance : new mm_Mindmap(this, inter, ext),
             searchval : "",
         };
     },
-    async mounted() {
+    async mounted() {        
         this.searchval = this.searchterm.get();
         this.mm_instance.searchval = this.searchval;
         this.mm_instance.centerMindmap();
@@ -57,11 +57,13 @@ export default {
                 <button @click="mm_instance.zoomin()" @touchend="mm_instance.zoomin()">+</button>
                 <button @click="mm_instance.zoomout()" @touchend="mm_instance.zoomout()">-</button>
                 <button @click="mm_instance.zoomreset()" @touchend="mm_instance.zoomreset()">reset zoom</button>
-                <button @click="mm_instance.centerOnNode(mm_instance.nodes[0])" @touchend="mm_instance.centerOnNode(mm_instance.nodes[0])">recenter</button>
+                <button @click="mm_instance.centerOnNode(mm_instance.nodes.get(mm_instance.root_key))" @touchend="mm_instance.centerOnNode(mm_instance.nodes.get(mm_instance.root_key))">recenter</button>
+                <button @click="$forceUpdate();mm_instance.update++">redraw</button>
+                <p>{{ mm_instance }}</p>
             </div>
             <div class="mm_legend_outer">
-                <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false" @touchend="mm_instance.togglelegend = false;">></button>
-                <button v-else @click="mm_instance.togglelegend = true" @touchend="mm_instance.togglelegend = true;"><</button>
+                <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false;mm_instance.update++" @touchend="mm_instance.togglelegend = false;mm_instance.update++">></button>
+                <button v-else @click="mm_instance.togglelegend = true;mm_instance.update++" @touchend="mm_instance.togglelegend = true;mm_instance.update++"><</button>
                 <transition name="mm_legend_anim">
                     <div class="mm_legend" v-if="mm_instance.togglelegend">
                         <div v-for="(nameproper, nameclass) in mm_LegendClassMap">
@@ -77,14 +79,14 @@ export default {
         </div>
         <div v-for="link in mm_instance.previewlinkages" :key="link.id" :style="link.getStyle(mm_instance)" class="mm_linkage">
         </div>
-        <transition-group name="mm_node_outer" tag="div">
-            <mindmap_node
-                v-for="key,node in mm_instance.nodes.entries()"
-                :key="key"
-                :node_instance="node"
-                @click="mm_instance.handleClick(node)"
-                @touchend="mm_instance.handleClick(node)"
-            />
-        </transition-group>
+            <transition-group name="mm_node_outer" tag="div">
+               <mindmap_node
+                    v-for="(val, key) in mm_instance.nodes"
+                    :key="key"
+                    :node_instance="val"
+                    @click="mm_instance.handleClick(val)"
+                    @touchend="mm_instance.handleClick(val)"
+                />
+            </transition-group>
     </div>
 </template>

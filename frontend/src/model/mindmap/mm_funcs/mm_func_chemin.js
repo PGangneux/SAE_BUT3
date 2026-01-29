@@ -5,20 +5,14 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 import mmch_Extrait from "../mm_chemin_submod/mmch_extrait.js";
 import mmch_Interview from "../mm_chemin_submod/mmch_interview.js";
 
-// TODO : ADD THAT IT CAN BE HARD RESET
-// TODO : BUGGER
-
 /**
  *  check video
  * @param {mm_Mindmap} mminfo mm_mindmap  
  * @return {boolean} if there is a goto video or not
 */
 export function mm_checkvideo(mminfo) {
-    if (mminfo.chemin.length == 0) return false;
-    
-    let last = mminfo.chemin[mminfo.chemin.length - 1];
-    if (!last) return false;
-    
+    if (mminfo.chemin.length == 0) return false;    
+    let last = mminfo.nodes.get(mminfo.chemin[mminfo.chemin.length - 1]);
     if (last instanceof mmch_Extrait && last.mmch_obj) {
         mminfo.extrait_current.set(last.mmch_obj);
         router.push({
@@ -41,6 +35,9 @@ export function mm_checkvideo(mminfo) {
  * @return {boolean,boolean} change goto video , change in path
 */
 export function mm_chemin_filter(mminfo) {
+    // Step 1: Filter out mm_Root from chemin if present
+    mminfo.chemin = mminfo.chemin.filter(item => !(item instanceof mmch_Root));
+    
     let original_lenght = mminfo.chemin.length;
     let change_goto_video = false;
     let change_in_path = false;
@@ -48,26 +45,26 @@ export function mm_chemin_filter(mminfo) {
     
     
     // Step 1: Validate depth and handle depth mismatches
-    if (mminfo.chemin.length > 0) {
-        let lastElement = mminfo.chemin[mminfo.chemin.length - 1];
-        let minDepth = lastElement.depth;
-        mminfo.chemin = mminfo.chemin.filter((element, index) => {
-            // Always keep the last element
-            if (index === mminfo.chemin.length - 1) return true;
-            // Keep if depth is smaller
-            if (element.depth < minDepth) {
-                return true;
-            } else {
-                return false;
-            }
-        });
-    }
+    // if (mminfo.chemin.length > 0) {
+    //     let lastElement = mminfo.chemin[mminfo.chemin.length - 1];
+    //     let minDepth = lastElement.depth;
+    //     mminfo.chemin = mminfo.chemin.filter((element, index) => {
+    //         // Always keep the last element
+    //         if (index === mminfo.chemin.length - 1) return true;
+    //         // Keep if depth is smaller
+    //         if (element.depth < minDepth) {
+    //             return true;
+    //         } else {
+    //             return false;
+    //         }
+    //     });
+    // }
     
     // Step 2: Clean preview nodes (after depth filtering, so we have the correct parent)
-    if (mminfo.chemin.length >= 2) {
-        mm_convert_preview_to_regular(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
-        mm_clean_preview(mminfo);
-    }
+    // if (mminfo.chemin.length >= 2) {
+    //     mm_convert_preview_to_regular(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
+    //     mm_clean_preview(mminfo);
+    // }
     
     // Step 3: Check if we need to go to video
     change_goto_video = mm_checkvideo(mminfo);
@@ -76,8 +73,7 @@ export function mm_chemin_filter(mminfo) {
         return true, false;
     }
     
-    // Step 4: Filter out mm_Root from chemin if present
-    mminfo.chemin = mminfo.chemin.filter(item => !(item instanceof mmch_Root));
+    
     
     // Step 5: Determine if path changed
     change_in_path = original_lenght != mminfo.chemin.length;
@@ -130,7 +126,7 @@ export function mm_clean_preview(mminfo){
 /**
  * Convert preview nodes to regular nodes when they become part of the main path
  * @param {mm_Mindmap} mminfo - The mindmap instance
- * @param {mmch_CheminT} targetNode - The node that was just clicked
+ * @param {mmch_CheminT<T>} targetNode - The node that was just clicked
  */
 export function mm_convert_preview_to_regular(mminfo, targetNode) {
     // Convert the target node if it is a preview node
@@ -246,7 +242,7 @@ function mm_find_top(mminfo, searched) {
  */
 function mm_find_fromroot(mminfo, searched) {
     if (!searched || mminfo.nodes.length === 0) return null;
-    return dfs_search_stack(mminfo.nodes[0], searched, [mminfo.nodes[0]]);
+    return dfs_search_stack(mminfo.nodes.get(mminfo.root_key), searched, [mminfo.nodes.get(mminfo.root_key)]);
 }
 
 /**

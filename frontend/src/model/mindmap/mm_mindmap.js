@@ -1,7 +1,7 @@
-import { markRaw } from "vue";
+import { shallowRef } from 'vue';
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 import mm_Linkage from "./mm_linkage.js";
-import { mm_draw_root , mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
+import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 
 export default class mm_Mindmap {
     /** @type {Object} */
@@ -36,6 +36,8 @@ export default class mm_Mindmap {
     dragging = false;
     /** @type {String} */
     searchval = "";
+    /** @type {Number} use to update */
+    update = 0;
 
     interview_current;
     extrait_current;
@@ -49,12 +51,12 @@ export default class mm_Mindmap {
         // vue object reference
         this.vueobj = vueobj;
         // mm data
-        this.linkages = markRaw([]);
-        this.nodes = markRaw({});
+        this.linkages = shallowRef([]);
+        this.nodes = shallowRef(new Map());
         // mm preview data
-        this.previewlinkages = markRaw([]);
+        this.previewlinkages = shallowRef([]);
         // mm chemin
-        this.chemin = markRaw([]);
+        this.chemin = shallowRef([]);
         // funcs ref
         this.interview_current = interview_current;
         this.extrait_current = extrait_current;
@@ -94,8 +96,9 @@ export default class mm_Mindmap {
 
     async draw_root() {
         this.centerMindmap();
-        await mm_draw_root(this);
-        this.centerOnNode(this.nodes[0]);
+        await mm_interface_handleclick(this,null);
+        this.centerOnNode(this.nodes.get(this.root_key));
+        this.vueobj.$forceUpdate();
     }
 
     startDrag(event) {
@@ -144,6 +147,7 @@ export default class mm_Mindmap {
     async handleClick(node) {
         this.centerOnNode(node);
         await mm_interface_handleclick(this,node);
+        this.vueobj.$forceUpdate();
     }
 
     centerMindmap() {
@@ -156,6 +160,8 @@ export default class mm_Mindmap {
 
     centerOnNode(node) {
         const container = this.vueobj.$el;
+        // console.trace(node);
+        
         if (container) {
             // Calculate target position to center the node
             const targetOffx = container.clientWidth / 2 - node.x * this.scale;

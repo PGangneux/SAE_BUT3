@@ -9,17 +9,20 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
  *  recreate the root node and reset everything
  * @param {mm_Mindmap} mminfo mm_Mindmap  
 */
-function mm_reset_hard(mminfo) {
+async function mm_reset_hard(mminfo) {
     // reset everything
-    mminfo.nodes = {};
+    mminfo.nodes = new Map();
     mminfo.linkages = [];
     mminfo.previewlinkages = [];
     // reset the mmch_cheminT master class key counter
     mmch_CheminT.reset_key_counter();
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
-    mminfo.nodes[root.mmch_key] = root;
-    mm_draw_onecat(mminfo, root, false);
+    mminfo.nodes.set(root.mmch_key, root);
+    mminfo.root_key = root.mmch_key;
+    console.log("mm_reset_hard root.mmch_key",root.mmch_key,mminfo);
+    
+    await mm_draw_onecat(mminfo, root, false,false);
 }
 
 /**
@@ -27,85 +30,104 @@ function mm_reset_hard(mminfo) {
  * @param {mm_Mindmap} mminfo mm_Mindmap
  */
 export async function mm_reset_soft(mminfo) {
-    try {
-        // Clear all preview elements and linkages
-        mminfo.linkages = []; // Root has no linkages anyway
-        mminfo.previewlinkages = [];
+    // Clear all preview elements and linkages
+    mminfo.linkages = []; // Root has no linkages anyway
+    mminfo.previewlinkages = [];
+    // Safeguard: Check if we have a valid root node
+    if (!mminfo.root_key || !mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes.get(mminfo.root_key)) {
+        await mm_reset_hard(mminfo);
+        return;
+    }
+    const rootNode = mminfo.nodes.get(mminfo.root_key);
+    const list_cat = [];
+    const list_obj = [];
+    let search_cat = [];
+    let search_obj = [];
+    for await (const item of rootNode.constructor.mmch_listcat()) {
+        // Determine if category is a simple class or a config object
+        if (typeof item.cls === 'function') {
+            // It's a config object { cls: mmch_Extrait, content: item }
+            list_obj.push(item);
+        } else if (typeof item === 'function' && category.prototype) {
+            // It's a class constructor (like mmch_Extrait)
+            list_cat.push(item);
+        } else {
+            console.error("Invalid category passed to mm_createChildNode:", category);
+            return null;
+        }
+    }
+    for await (const item of rootNode.constructor.mmch_searchcat()) {
+        // Determine if category is a simple class or a config object
+        if (typeof item.cls === 'function') {
+            // It's a config object { cls: mmch_Extrait, content: item }
+            search_obj.push(item);
+        } else if (typeof item === 'function' && category.prototype) {
+            // It's a class constructor (like mmch_Extrait)
+            search_cat.push(item);
+        } else {
+            console.error("Invalid category passed to mm_createChildNode:", category);
+            return null;
+        }
+    }
+    console.log("mm_reset_soft list_cat");
+    console.table({"list_cat" : list_cat,
+                    "list_obj" : list_obj,
+                    "search_cat" : search_cat,
+                    "search_obj" : search_obj});
 
-        // Safeguard: Check if we have a valid root node
-        if (!mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes[0]) {
+    if (mminfo.searchval && mminfo.searchval.trim()){
+        // on fait une recherche
+        if (rootNode.childrens.lenght == (list_cat.length + list_obj.length)){
+            // on etait sur une list -> create nodes
+            // TODO : rm
+            mm_reset_hard(mminfo);
+            return;
+        } else if (rootNode.childrens.lenght == (search_cat.length + search_obj.length)) {
+            // on etait en mode search -> rien
+            ;
+            // TODO : rm
+            mm_reset_hard(mminfo);
+            return;
+        } else {
+            console.error("unknown mm_reset_soft state in search",rootNode.childrens.lenght,"!= list",(list_cat.length + list_obj.length),"!= search",(search_cat.length + search_obj.length));
+            console.table({"list_cat" : list_cat,
+                    "list_obj" : list_obj,
+                    "search_cat" : search_cat,
+                    "search_obj" : search_obj});
             mm_reset_hard(mminfo);
             return;
         }
-
-        const rootNode = mminfo.nodes[0];
-        const list_cat = [];
-        for await (const item of rootNode.constructor.mmch_listcat()) {
-            list_cat.push(item);
-        }
-
-        let search_cat = [];
-        let sameCount = 0; // How many nodes are the same between existing and search
-        let nodesToCreate = 0; // How many new nodes to create
-
-        // Only get search_cat if we have a search value
-        if (mminfo.searchval && mminfo.searchval.trim() !== "") {
-            for await (const item of rootNode.constructor.mmch_searchcat()) {
-                search_cat.push(item);
-            }
-
-            // Compare each position to see how many nodes are the same
-            for (let i = 0; i < Math.min(search_cat.length, mminfo.nodes.length - 1); i++) {
-                const existingChild = mminfo.nodes[i + 1]; // +1 to skip root
-                const searchResult = search_cat[i];
-
-                if (searchResult && existingChild) {
-                    // Compare
-                    if (mm_find_compare(searchResult, existingChild)) {
-                        sameCount = i + 1; // Update count of same nodes
-                    } else {
-                        break; // Stop at first difference
-                    }
-                } else {
-                    break; // Stop if either is missing
-                }
-            }
-
-            // Calculate how many nodes to create
-            nodesToCreate = search_cat.length - sameCount;
-        }
-        // console.log("search_cat",search_cat,"sameCount",sameCount,"nodesToCreate",nodesToCreate);
-
-        // Handle nodes array
-        if (search_cat.length > 0) {
-            // Always slice to search count in search mode
-            mminfo.nodes.length = search_cat.length + 1;
-            // If we have nodes to create, create them
-            if (nodesToCreate > 0) {
-                // Create the nodes that are different/new
-                for (let i = sameCount; i < search_cat.length; i++) {
-                    const nodeData = search_cat[i];
-                    mm_createChildNode(mminfo, rootNode, nodeData, true, false);
-                }
-                set_children_pos(mminfo, rootNode);
-            }
+    } else {
+        // on est en mode liste
+        if (rootNode.childrens.lenght == (list_cat.length + list_obj.length)){
+            // on etait en mode liste -> rien
+            ;
+            // TODO : rm
+            mm_reset_hard(mminfo);
+            return;
+        } else if (rootNode.childrens.lenght == (search_cat.length + search_obj.length)) {
+            // on etait en mode search -> rm nodes
+            ;
+            // TODO : rm
+            mm_reset_hard(mminfo);
+            return;
         } else {
-            // List mode: slice to list count
-            mminfo.nodes.length = list_cat.length + 1;
+            console.error("unknown mm_reset_soft state in search",rootNode.childrens.lenght,"!= list",(list_cat.length + list_obj.length),"!= search",(search_cat.length + search_obj.length));
+            console.table({"list_cat" : list_cat,
+                    "list_obj" : list_obj,
+                    "search_cat" : search_cat,
+                    "search_obj" : search_obj});
+            mm_reset_hard(mminfo);
+            return;
         }
-    } catch (error) {
-        console.error("Error in mm_reset_soft:", error);
-        mm_reset_hard(mminfo);
-        return true;
     }
-    return false;
 }
 
 
 /**
  * draw the categories of one node
  * @param {mm_Mindmap} mminfo mm_Mindmap  
- * @param {mmch_CheminT} node the root node to apply the new nodes to
+ * @param {mmch_CheminT<T>} node the root node to apply the new nodes to
  * @param {boolean?} createLink? = true do we draw the white line or not
  * @param {boolean?} isPreview? = false whether this is a preview node
 */

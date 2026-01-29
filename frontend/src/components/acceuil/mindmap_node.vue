@@ -48,10 +48,10 @@ export default {
     },
     computed: {
         nodeClass() {
-            const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
+            // const baseClass = `mm_node ${this.node_instance.constructor.mmch_getStyle()}`;
             const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
 
-            return `${baseClass} ${shapeClass}`;
+            return `${shapeClass}`;
         },
     },
     async mounted() {
@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-    <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
+    <div class="mm_node" :class="nodeClass">
         <!-- Case 1: No content -->
         <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">

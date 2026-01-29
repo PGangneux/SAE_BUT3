@@ -57,7 +57,6 @@ export default class mmch_Extrait extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const extrait = this.mmch_obj;
-        /// console.log(extrait);
         
         ///try {
         ///    const question = await extrait.question();
