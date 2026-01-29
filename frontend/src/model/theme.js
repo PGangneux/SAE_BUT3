@@ -1,5 +1,5 @@
-import Model from "./model.js";
-import Question from "./question.js";
+import Model from "@model/model.js";
+import Question from "@model/question.js";
 
 export default class Theme extends Model {
     #name;

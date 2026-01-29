@@ -1,5 +1,5 @@
-import Model from "./model.js";
-import Interview from "./interview.js";
+import Model from "@model/model.js";
+import Interview from "@model/interview.js";
 
 export default class Occasion extends Model {
     #name;

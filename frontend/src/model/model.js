@@ -1,4 +1,4 @@
-import ClientAPI from "./clientAPI.js";
+import ClientAPI from "@model/clientAPI.js";
 
 /**
  * Classe par parent du Model

@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import Model from '../../model/model';
+import Model from '@model/model';
 
 export default {
   name: 'miniature_video',

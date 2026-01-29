@@ -1,9 +1,9 @@
-import Model from "./model.js";
-import Artiste from "./artiste.js";
-import Question from "./question.js";
-import Interview from "./interview.js";
-import Tag from "./tag.js";
-import ClientAPI from "./clientAPI.js";
+import Model from "@model/model.js";
+import Artiste from "@model/artiste.js";
+import Question from "@model/question.js";
+import Interview from "@model/interview.js";
+import Tag from "@model/tag.js";
+import ClientAPI from "@model/clientAPI.js";
 
 export default class Extrait extends Model {
     #titre;
