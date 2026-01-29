@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import Iframe from "../../src/components/lecteur_video/iframe_lecture_video.vue";
-import { videoStore } from "../../src/model/videoStore";
+import Iframe from "@components/lecteur_video/iframe_lecture_video.vue";
+import { videoStore } from "@model/videoStore";
 
 // Reset videoStore et DOM avant chaque test
 beforeEach(() => {

@@ -1,7 +1,7 @@
 <script>
 import { markRaw } from 'vue';
 import Interview from '@model/interview.js';
-import miniature_video from '../lecteur_video/miniature_video.vue';
+import miniature_video from '@components/lecteur_video/miniature_video.vue';
 
 export default {
     name: "comp_recent",

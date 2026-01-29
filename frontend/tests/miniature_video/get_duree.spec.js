@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
-import miniature_video from '../../src/components/lecteur_video/miniature_video.vue'
+import miniature_video from '@components/lecteur_video/miniature_video.vue'
 
 describe("get_duree", () => {
 

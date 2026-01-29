@@ -1,5 +1,5 @@
-import Extrait from "../../extrait.js";
-import Artiste from "../../artiste.js";
+import Extrait from "@model/extrait.js";
+import Artiste from "@model/artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 
