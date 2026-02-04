@@ -63,13 +63,14 @@ export default {
     },
 
 
+    
+
 
     changeAdmin(){
-
         this.current_utilisateur.is_admin = !this.current_utilisateur.is_admin;
         console.log(this.current_utilisateur.is_admin );
     },
-
+    
 
 
 
@@ -144,7 +145,8 @@ export default {
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
             
             // Reload brutal
-            //window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
+            window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
+            
         }else{
           this.popupError = true;
                 setTimeout(()=>{
@@ -263,7 +265,7 @@ export default {
                 <div class="row"  style="--bs-gutter-x: 0em;">
                     <div class=" input-group mb-3" >
                         <span  class="input-group-text colovert" id="basic-addon3" > ACTIVER ADMIN :</span>
-                        <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off" @click="changeAdmin" v-model="this.current_utilisateur.is_admin" :checked="isAdmin">
+                        <input type="checkbox" class="btn-check" id="btn-check" autocomplete="off" @click="changeAdmin" disabled v-model="this.current_utilisateur.is_admin" :checked="isAdmin">
                         <label class="btn btn-outline-danger" for="btn-check">OUI</label>
                     </div>
                 </div>
