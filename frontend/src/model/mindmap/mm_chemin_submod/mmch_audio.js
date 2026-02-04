@@ -1,5 +1,5 @@
-import Extrait from "../../extrait.js";
-import Audio from "../../audio.js";
+import Extrait from "@model/extrait.js";
+import Audio from "@model/audio.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 

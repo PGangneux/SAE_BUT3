@@ -1,6 +1,6 @@
 <script>
 import ClientAPI from "@model/clientAPI.js";
-import router from "../router.js";
+import router from "@/router.js";
 export default {
     name: "page_connexion",
     data() {
