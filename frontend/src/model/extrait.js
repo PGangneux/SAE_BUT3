@@ -19,7 +19,6 @@ export default class Extrait extends Model {
     #interviews;
     #tags;
     #position;
-    #duree;
     #audios;
     #artiste_uuid;
     #question_uuid;
@@ -61,7 +60,6 @@ export default class Extrait extends Model {
         this.#artiste_uuid = null;
         this.#question_uuid = null;
         this.#audio_uuid = null;
-        this.#duree = duree;
     }
 
     static get endpoint() {
@@ -255,7 +253,6 @@ export default class Extrait extends Model {
         this.#position = json.position;
         this.#audio = json.audio;
         this.#duree = json.duree;
-        this.#audios = json.audios;
         return this;
     }
 
@@ -269,7 +266,6 @@ export default class Extrait extends Model {
         if (this.uploaded_at) json['uploaded_at'] = this.uploaded_at;
         if (this.#artiste_uuid) json['artiste_uuid'] = this.#artiste_uuid;
         if (this.#question_uuid) json['question_uuid'] = this.#question_uuid;
-        if (this.#audio_uuid) json['audio_uuid'] = this.#audio_uuid;
         if (this.#audio_uuid) json['audio_uuid'] = this.#audio_uuid;
         if (this.duree) json['duree'] = this.duree;
         return json;
