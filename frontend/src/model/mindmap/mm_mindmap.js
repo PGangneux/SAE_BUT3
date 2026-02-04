@@ -1,7 +1,8 @@
-import { shallowRef, ref ,triggerRef } from 'vue';
+import { shallowRef, ref } from 'vue';
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 import mm_Linkage from "./mm_linkage.js";
 import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
+import mm_Node from './mm_node.js';
 
 export default class mm_Mindmap {
     /** @type {Object} */
@@ -45,7 +46,7 @@ export default class mm_Mindmap {
      * @param {any} interview_current 
      * @param {any} extrait_current 
      */
-    constructor(vueobj, interview_current, extrait_current) {        
+    constructor(vueobj, interview_current, extrait_current) {
         // vue object reference
         this.vueobj = vueobj;
         // funcs ref
@@ -56,6 +57,9 @@ export default class mm_Mindmap {
         this.reset();
     }
 
+    /**
+     * @returns json
+     */
     toJSON() {
         return {
             // linkages: this.linkages,
@@ -74,36 +78,53 @@ export default class mm_Mindmap {
         };
     }
 
-    node_add(node){
-        this.node_data["data"].set(node.mmch_key,node);
+    /**
+     * add node to mminfo map
+     * @param {mm_Node} node add node to mminfo map
+     */
+    node_add(node) {
+        this.node_data["data"].set(node.mmch_key, node);
     }
 
-    node_get(key){
-        if (!(this.node_data["data"].has(key))){
+    /**
+     * get node to mminfo map
+     * @param {Number} key 
+     * @returns {mm_Node | null} the node || null
+     */
+    node_get(key) {
+        if (!(this.node_data["data"].has(key))) {
             console.error(`key not in mindmap.node_data["data"] Map ${key}`);
             return null;
         }
         return this.node_data["data"].get(key);
     }
 
-    reset(){
+    /**
+     * reset mminfo links nodes previewlinks
+     */
+    reset() {
         // mm data
         this.linkages = ref([]);
-        this.node_data = {"data": shallowRef(new Map()),"key" : 0};
+        this.node_data = { "data": shallowRef(new Map()), "key": 0 };
         // mm preview data
         this.previewlinkages = ref([]);
     }
 
-    update(){
-        console.log("mm update");
+    /**
+     * do update
+     */
+    update() {
         this.node_data["key"]++;
-        triggerRef(this.node_data["data"]);
-        triggerRef(this.linkages);
-        triggerRef(this.previewlinkages);
-        triggerRef(this.chemin);
     }
 
+    /**
+     * toggleFullscreen
+     */
     toggleFullscreen() {
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
         this.fullscreen = !this.fullscreen;
         const element = this.vueobj.$el;
         if (this.fullscreen) {
@@ -117,13 +138,20 @@ export default class mm_Mindmap {
         }
     }
 
+    /**
+     * center mm et draw root
+     */
     draw_root() {
         this.centerMindmap();
-        mm_interface_handleclick(this,null).then(() => {
+        mm_interface_handleclick(this, null).then(() => {
             this.centerOnNode(this.node_get(this.root_key));
         });
     }
 
+    /**
+     * start Drag
+     * @param {*} event 
+     */
     startDrag(event) {
         this.dragging = true;
         const { clientX, clientY } = this.getEventCoordinates(event);
@@ -132,24 +160,56 @@ export default class mm_Mindmap {
         event.preventDefault();
     }
 
+    /**
+     * stop Drag
+     */
     stopDrag() {
         this.dragging = false;
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
     }
 
+    /**
+     * clamped zoom in +
+     */
     zoomin() {
         this.scale += 0.2;
         this.scale = Math.min(2, this.scale);
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
     }
 
+    /**
+     * clamped zoom out -
+     */
     zoomout() {
         this.scale -= 0.2;
         this.scale = Math.max(0.2, this.scale);
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
     }
 
+    /**
+     * zoom reset
+     */
     zoomreset() {
         this.scale = 0.8;
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
     }
 
+    /**
+     * handleWheel
+     * @param {*} event 
+     */
     handleWheel(event) {
         event.preventDefault();
         const delta = -Math.sign(event.deltaY) * 0.1;
@@ -167,15 +227,20 @@ export default class mm_Mindmap {
         this.scale = newScale;
     }
 
+    /**
+     * handleClick
+     * @param {mm_Node} node 
+     */
     handleClick(node) {
-        console.log("mm handleClick",node);
-        
         this.centerOnNode(node);
-        mm_interface_handleclick(this,node).then(() => {
+        mm_interface_handleclick(this, node).then(() => {
             ;
         });
     }
 
+    /**
+     * center the mm on screen
+     */
     centerMindmap() {
         const container = this.vueobj.$el;
         if (container) {
@@ -184,20 +249,30 @@ export default class mm_Mindmap {
         }
     }
 
+    /**
+     * center mm on node
+     * @param {mm_Node} node 
+     */
     centerOnNode(node) {
         const container = this.vueobj.$el;
         // console.trace(node);
-        
+
         if (container) {
             // Calculate target position to center the node
-            const targetOffx = container.clientWidth / 2 - node.x * this.scale;
-            const targetOffy = container.clientHeight / 2 - node.y * this.scale;
+            const targetOffx = container.clientWidth / 2 - node.targetX * this.scale;
+            const targetOffy = container.clientHeight / 2 - node.targetY * this.scale;
 
             // Animate over 1 second (1000ms)
             this.animateToPosition(targetOffx, targetOffy, 1000);
         }
     }
 
+    /**
+     * animate mm to node
+     * @param {Number} targetOffx 
+     * @param {Number} targetOffy 
+     * @param {Number} duration 
+     */
     animateToPosition(targetOffx, targetOffy, duration) {
         const startOffx = this.offx;
         const startOffy = this.offy;
@@ -247,7 +322,11 @@ export default class mm_Mindmap {
         this.lastMouseY = clientY;
     }
 
-    // Helper methods
+    /**
+     * Helper methods for mobile vs web events type
+     * @param {*} event 
+     * @returns clientX clientY
+     */
     getEventCoordinates(event) {
         if (event.type.includes('touch')) {
             const touch = event.touches[0];

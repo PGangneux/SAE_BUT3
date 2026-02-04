@@ -19,8 +19,6 @@ export default {
         };
     },
     mounted() {
-        console.log(this.mm_instance);
-        
         this.searchval = this.searchterm.get();
         this.mm_instance.searchval = this.searchval;
         this.mm_instance.centerMindmap();
@@ -80,13 +78,8 @@ export default {
         </div>
         <div v-if="mm_instance.node_data" :key="mm_instance.node_data.key">
             <transition-group name="mm_node_outer" tag="div">
-                <mindmap_node 
-                    v-for="(val, key) in mm_instance.node_data.data" 
-                    :key="key" 
-                    :node_instance="val"
-                    @click="mm_instance.handleClick(val)" 
-                    @touchend="mm_instance.handleClick(val)" 
-                />
+                <mindmap_node v-for="(val, key) in mm_instance.node_data.data" :key="key" :node_instance="val[1]"
+                    @click="mm_instance.handleClick(val[1])" @touchend="mm_instance.handleClick(val[1])" />
             </transition-group>
         </div>
     </div>
