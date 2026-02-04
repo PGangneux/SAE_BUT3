@@ -14,36 +14,30 @@ export default {
             failed: false,
             loading: true,
             interviews: [],
-            redirect: null,
         };
     },
-    async mounted() {
+    mounted() {
         this.loading = true;
-        try {
-            this.interviews = markRaw(await Interview.list());
-            let l = [];
-            let i = 0;
-            while (l.length < 3 && i < this.interviews.length) {
-                l.push(markRaw(this.interviews[i]));
-                i += 1;
+        Interview.list({"size" : 3,"order":"date"}).then((interviews) => {
+            if (!interviews){
+                this.failed = true;
             }
-            this.redirect = markRaw(l);
-        } catch (error) {
+            this.interviews = markRaw(interviews);
+            this.loading = false;
+        }).catch((error) => {
+            this.loading = false;
             this.failed = true;
             console.error(error);
-        } finally {
-            this.loading = false;
-        }
+        });
     },
     methods: {
-        async gotoInter(inter) {
+        gotoInter(inter) {
+            this.loading = true;
             this.interview_current.set(inter);
-            let ext = await inter.extraits()
-            /// console.log("extraits dans gotoInter: HERER", ext);
-            this.extrait_current.set(markRaw(ext[0]));
-            /// console.log("interview current dans gotoInter:", await this.interview_current.get())
-            /// console.log("extrait current dans gotoInter:", await this.extrait_current.get())
-            this.$router.push(`/lecteur_video/`);
+            inter.extraits().then((extraits) => {
+                this.extrait_current.set(markRaw(extraits[0]));
+                this.$router.push(`/lecteur_video/`);
+            });
         },
     },
 };
@@ -60,7 +54,7 @@ export default {
             <img src="/imgs/close.svg" alt="erreur image">
             <p>erreur</p>
         </div>
-        <div v-else v-for="inter in redirect" :key="inter.uuid" class="local">
+        <div v-else v-for="inter in this.interviews" :key="inter.uuid" class="local">
 
             <div @click="gotoInter(inter)">
                 <p>{{ inter.titre }}</p>
