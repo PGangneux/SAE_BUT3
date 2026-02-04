@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from neomodel import db
+from neomodel import db, StructuredNode
+from ..errors import ValidatorUnique
 from ..serializers import BaseSerializer
 from ..models import Artiste, Audio, Extrait, Question
 
@@ -95,3 +96,41 @@ class ExtraitSerializer(BaseSerializer):
                 {"extrait_uuid": extrait.uuid, "interview_uuid": interview.uuid},
             )[0][0][0]
         )
+    
+    def create(self, validated_data: dict) -> StructuredNode:
+        """
+        Avant la création d'un extrait, on vérifie que les liens yt et vimeo ne sont pas déjà présent dans la bd
+        
+        Args:
+            validated_data (dict): Les données permettant de créer la relation
+
+        Raises:
+            ValidatorUnique: url déjà présent
+
+        Returns:
+            StructuredNode: node ajouter aux relations du node de context
+        """
+        youtube_url = validated_data.get("youtube_url", None)
+        vimeo_url = validated_data.get("vimeo_utl", None)
+        node = None
+
+        if youtube_url:
+            try:
+                node = Extrait.nodes.get(youtube_url=youtube_url)
+                raise ValidatorUnique("youtube_url")
+            except ValidatorUnique as e:
+                raise e
+            except:
+                pass
+  
+        elif not node:
+            try:
+                node = Extrait.nodes.get(vimeo_url=vimeo_url)
+                raise ValidatorUnique("vimeo_url")
+            except ValidatorUnique as e:
+                raise e
+            except:
+                pass
+
+        return super().create(validated_data)
+ 

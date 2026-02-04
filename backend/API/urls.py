@@ -79,4 +79,5 @@ urlpatterns = [
     path("login/refresh/", TokenRefreshView.as_view(), name="login-refresh"),
     path("login/verify/", TokenVerifyView.as_view(), name="login-verify"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),
+    path("csv_import/", CSVImportView.as_view(), name="csv_import"),
 ]
