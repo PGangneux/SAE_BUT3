@@ -1,9 +1,9 @@
 <script>
 import { markRaw } from 'vue';
-import comp_headerbar from './components/headerbar.vue';
-import comp_footerbar from './components/footerbar.vue';
-import Interview from './model/interview';
-import Extrait from './model/extrait';
+import comp_headerbar from '@components/headerbar.vue';
+import comp_footerbar from '@components/footerbar.vue';
+import Interview from '@model/interview';
+import Extrait from '@model/extrait';
 
 export default {
     name: "page_router",

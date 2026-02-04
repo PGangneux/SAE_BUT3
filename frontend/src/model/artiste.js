@@ -1,5 +1,5 @@
-import Model from "./model.js";
-import Extrait from "./extrait.js";
+import Model from "@model/model.js";
+import Extrait from "@model/extrait.js";
 
 export default class Artiste extends Model {
     #name;

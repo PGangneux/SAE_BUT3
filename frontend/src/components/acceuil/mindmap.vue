@@ -1,6 +1,6 @@
 <script>
-import { mm_LegendClassMap } from '../../model/mindmap/mm_const.js';
-import mm_Mindmap from '../../model/mindmap/mm_mindmap.js';
+import { mm_LegendClassMap } from '@model/mindmap/mm_const.js';
+import mm_Mindmap from '@model/mindmap/mm_mindmap.js';
 import mindmap_node from './mindmap_node.vue';
 
 export default {

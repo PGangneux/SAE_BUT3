@@ -23,8 +23,8 @@ from .tags_interview import TagsInterviewRelationShipViewSet
 from .audio import AudioViewSet
 from .audios import AudiosViewSet
 from .occasion import OccasionViewSet
-from .login import LoginView
 from .recommandation import Recommandation
+from .csv_import import CSVImportView
 
 
 __all__ = (
@@ -56,6 +56,6 @@ __all__ = (
     "AudioExtraitViewSet",
     "OccationInterviewViewSet",
     "OccasionViewSet",
-    "LoginView",
     "Recommandation",
+    "CSVImportView",
 )

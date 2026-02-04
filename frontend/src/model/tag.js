@@ -1,6 +1,6 @@
-import Model from "./model.js";
-import Interview from "./interview.js";
-import Extrait from "./extrait.js";
+import Model from "@model/model.js";
+import Interview from "@model/interview.js";
+import Extrait from "@model/extrait.js";
 
 export default class Tag extends Model {
     #name;

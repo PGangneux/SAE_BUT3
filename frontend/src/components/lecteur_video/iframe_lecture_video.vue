@@ -1,7 +1,7 @@
 <script>
 
-import ClientAPI from "../../model/clientAPI";
-import { videoStore } from "../../model/videoStore";
+import ClientAPI from "@model/clientAPI";
+import { videoStore } from "@model/videoStore";
 import { nextTick } from 'vue';
 
 export default {
@@ -50,6 +50,7 @@ export default {
   },
 
   methods: {
+    /* Charge l'API YouTube si elle n'est pas déjà chargée */
     loadYouTubeAPI() {
       if (window.YT && window.YT.Player) return Promise.resolve(window.YT);
 
@@ -65,6 +66,8 @@ export default {
       return window._ytApiPromise;
     },
 
+
+    /* Extrait l'ID vidéo YouTube d'une URL donnée */
     get_YT_videoId(url) {
       try {
         const u = new URL(url);

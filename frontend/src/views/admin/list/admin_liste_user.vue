@@ -1,8 +1,8 @@
 <script>
 import { markRaw } from 'vue';
-import comp_baradmin from '../../../components/components_admin/nav_admin.vue';
+import comp_baradmin from '@components/components_admin/nav_admin.vue';
 
-import Utilisateur from "../../../model/utilisateur.js";
+import Utilisateur from "@model/utilisateur.js";
 
 export default {
     name: "page_admin_listuser",

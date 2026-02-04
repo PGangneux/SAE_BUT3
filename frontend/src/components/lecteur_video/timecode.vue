@@ -1,6 +1,6 @@
 <script>
 import { toRaw, markRaw } from "vue";
-import { videoStore } from "../../model/videoStore";
+import { videoStore } from "@model/videoStore";
 
 
 export default {
@@ -51,8 +51,6 @@ export default {
             current_time += extrait.duree;
         }
         this.dico_timecode["duree"] = this.format_duree(current_time);
-        // console.log("les extraits: ", this.liste_extraits);
-        // console.log("dico_timecode: ", toRaw(this.dico_timecode));
     },
 
     async onClick(extrait) {
@@ -69,7 +67,7 @@ export default {
 
   async mounted() {
       // console.log("les extraoit")
-      // console.log(this.liste_extraits)
+      console.log("liste extrait ", this.liste_extraits)
 
       this.set_dico_timecode();
       // console.log("dico_timecode dans timecode.vue: ", markRaw(this.dico_timecode));

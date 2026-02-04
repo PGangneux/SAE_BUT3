@@ -1,17 +1,13 @@
-import json
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest
+from django.contrib.auth.models import AnonymousUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from neomodel import NodeSet, db
-from rest_framework import status
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.exceptions import ExpiredTokenError
-from ..models import Extrait, Interview, Utilisateur, StructuredNode
-from ..serializers import ExtraitSerializer, InterviewSerializer
-
-from rest_framework.exceptions import NotAuthenticated, ValidationError
-from neo4j.graph import Node
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
 from neo4j.exceptions import ServiceUnavailable
+from neomodel import db
+from ..models import Extrait, Interview, Utilisateur
+from ..serializers import ExtraitSerializer, InterviewSerializer
 from ..errors import ConnexionDB
 
 
@@ -25,8 +21,7 @@ class Recommandation(APIView):
 
     Objectif:
         TODO get x derniers Interview/extrait regardés
-        TODO filtrer celles avec watch time > 70%
-        TODO - proposées proportion interview/extratait en fonction de ce que l'utilisateur regarde le plus
+        TODO - proposées proportion interview/extrait en fonction de ce que l'utilisateur regarde le plus
             si user regarde plus extrait commencé par proposées x extraits, max 4 extrait 1 interview vise versa
             donc 4 pour 1 max pour choisir extrait/interview on fait classement de tags des x derniers regardés sup 70%
         classement des thèmes
@@ -42,8 +37,7 @@ class Recommandation(APIView):
         récupérer égalment les interviews
     """
 
-    authentication_classes = []
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def post(self, request: HttpRequest) -> Response:
         """L'Algorithme de recommandation de vidéos (Extrait / Interview)
@@ -71,12 +65,16 @@ class Recommandation(APIView):
         """
         data: dict = request.data
         poids = data.get("weights", {})
-        print("poids:", poids)
+        # print("poids:", poids)
         filtres = data.get("filters", {})
-        print("filtres:", filtres)
+        # print("filtres:", filtres)
 
-        user = get_current_user(request)
-        print("user: ", user.pseudo if user else None)
+        user = request.user
+
+        print("utilisateur", user, type(user))
+
+        user: Utilisateur = user if type(user) != AnonymousUser else None
+        # print("user: ", user.pseudo if user else None)
 
         context = {"request": request}
 
@@ -98,7 +96,7 @@ class Recommandation(APIView):
         video_class = Extrait.__name__
         playlist_class = Interview.__name__
 
-        print("uuid", video)
+        # print("uuid", video)
 
         # Algo complet
         # Construction des parties de la requête
@@ -269,7 +267,7 @@ class Recommandation(APIView):
             "size": size,
             "page": page,
         }
-        print(query, params)
+        # print(query, params)
         try:
             recommandations_cypher = db.cypher_query(query, params)[0]
         except ServiceUnavailable:
@@ -306,19 +304,3 @@ class Recommandation(APIView):
 
         return Response(recommandations)
 
-
-def get_current_user(request):
-    authorization = request.headers.get("Authorization", None)
-    if authorization:
-        token = authorization.split()[1]
-        try:
-            access = AccessToken(token)
-        except ExpiredTokenError:
-            raise NotAuthenticated()
-        try:
-            user: Utilisateur = Utilisateur.nodes.get(uuid=access["user_id"])
-        except ServiceUnavailable:
-            raise ConnexionDB()
-        return user
-    else:
-        return None
