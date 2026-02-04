@@ -65,6 +65,6 @@ export async function mm_interface_handleclick(mminfo, node) {
         console.error(error);
     }
     console.log("mm hanldeclick end",mminfo);
-    mminfo.update++;
+    mminfo.update();
     doesblock = false;
 }

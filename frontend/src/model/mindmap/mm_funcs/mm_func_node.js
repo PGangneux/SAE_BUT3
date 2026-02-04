@@ -152,6 +152,6 @@ export function set_children_pos(mminfo, parent) {
             child.x = child.targetX;
             child.y = child.targetY;
         }
-        mminfo.update++;
+        mminfo.update();
     }
 }

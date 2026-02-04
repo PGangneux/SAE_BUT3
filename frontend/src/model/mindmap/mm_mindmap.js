@@ -1,4 +1,4 @@
-import { shallowRef } from 'vue';
+import { shallowRef, triggerRef } from 'vue';
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 import mm_Linkage from "./mm_linkage.js";
 import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
@@ -36,8 +36,6 @@ export default class mm_Mindmap {
     dragging = false;
     /** @type {String} */
     searchval = "";
-    /** @type {Number} use to update */
-    update = 0;
 
     interview_current;
     extrait_current;
@@ -80,6 +78,13 @@ export default class mm_Mindmap {
         };
     }
 
+    update(){
+        triggerRef(this.nodes);
+        triggerRef(this.linkages);
+        triggerRef(this.previewlinkages);
+        triggerRef(this.chemin);
+    }
+
     toggleFullscreen() {
         this.fullscreen = !this.fullscreen;
         const element = this.vueobj.$el;
@@ -94,11 +99,11 @@ export default class mm_Mindmap {
         }
     }
 
-    async draw_root() {
+    draw_root() {
         this.centerMindmap();
-        await mm_interface_handleclick(this,null);
-        this.centerOnNode(this.nodes.get(this.root_key));
-        this.vueobj.$forceUpdate();
+        mm_interface_handleclick(this,null).then(() => {
+            this.centerOnNode(this.nodes.get(this.root_key));
+        });
     }
 
     startDrag(event) {
@@ -144,10 +149,11 @@ export default class mm_Mindmap {
         this.scale = newScale;
     }
 
-    async handleClick(node) {
+    handleClick(node) {
         this.centerOnNode(node);
-        await mm_interface_handleclick(this,node);
-        this.vueobj.$forceUpdate();
+        mm_interface_handleclick(this,node).then(() => {
+            ;
+        });
     }
 
     centerMindmap() {
@@ -192,7 +198,7 @@ export default class mm_Mindmap {
                 requestAnimationFrame(animate);
             } else {
                 // Final position - force a complete repaint
-                this.vueobj.$forceUpdate();
+                this.update();
             }
         };
 

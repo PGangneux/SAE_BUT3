@@ -18,11 +18,11 @@ export default {
             searchval : "",
         };
     },
-    async mounted() {        
+    mounted() {        
         this.searchval = this.searchterm.get();
         this.mm_instance.searchval = this.searchval;
         this.mm_instance.centerMindmap();
-        await this.mm_instance.draw_root();
+        this.mm_instance.draw_root();
     },
     computed: {
         searchValue: {
@@ -58,12 +58,11 @@ export default {
                 <button @click="mm_instance.zoomout()" @touchend="mm_instance.zoomout()">-</button>
                 <button @click="mm_instance.zoomreset()" @touchend="mm_instance.zoomreset()">reset zoom</button>
                 <button @click="mm_instance.centerOnNode(mm_instance.nodes.get(mm_instance.root_key))" @touchend="mm_instance.centerOnNode(mm_instance.nodes.get(mm_instance.root_key))">recenter</button>
-                <button @click="$forceUpdate();mm_instance.update++">redraw</button>
-                <p>{{ mm_instance }}</p>
+                <button @click="this.mm_instance.update">redraw</button>
             </div>
             <div class="mm_legend_outer">
-                <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false;mm_instance.update++" @touchend="mm_instance.togglelegend = false;mm_instance.update++">></button>
-                <button v-else @click="mm_instance.togglelegend = true;mm_instance.update++" @touchend="mm_instance.togglelegend = true;mm_instance.update++"><</button>
+                <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false;" @touchend="mm_instance.togglelegend = false;">></button>
+                <button v-else @click="mm_instance.togglelegend = true;" @touchend="mm_instance.togglelegend = true;"><</button>
                 <transition name="mm_legend_anim">
                     <div class="mm_legend" v-if="mm_instance.togglelegend">
                         <div v-for="(nameproper, nameclass) in mm_LegendClassMap">
