@@ -24,6 +24,7 @@ from .audio import AudioViewSet
 from .audios import AudiosViewSet
 from .occasion import OccasionViewSet
 from .recommandation import Recommandation
+from .csv_import import CSVImportView
 
 
 __all__ = (
@@ -56,4 +57,5 @@ __all__ = (
     "OccationInterviewViewSet",
     "OccasionViewSet",
     "Recommandation",
+    "CSVImportView",
 )
