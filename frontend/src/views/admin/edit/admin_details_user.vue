@@ -66,8 +66,8 @@ export default {
 
     changeAdmin(){
 
-        this.current_utilisateur.is_admin != this.current_utilisateur.is_admin;
-        console.log(this.current_utilisateur);
+        this.current_utilisateur.is_admin = !this.current_utilisateur.is_admin;
+        console.log(this.current_utilisateur.is_admin );
     },
 
 
@@ -134,14 +134,17 @@ export default {
         this.message_error = await this.validationUSER();
 
         if(this.message_error  == ""){
+
+            console.log("AVANT update :", this.current_utilisateur.is_admin);
             await this.current_utilisateur.update();
+            console.log("APRÈS update :", this.current_utilisateur.is_admin);
    
             
             sessionStorage.setItem('popupSuccess', 'true');
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
             
             // Reload brutal
-            window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
+            //window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
         }else{
           this.popupError = true;
                 setTimeout(()=>{
@@ -164,12 +167,9 @@ export default {
   },
 
   computed: {
-        isAdmin(){
-            if(this.current_utilisateur.is_admin){
-                return true;
-            }
-            return false;
-        },
+        isAdmin() {
+            return this.current_utilisateur.is_admin;
+        }
   },
 
 
