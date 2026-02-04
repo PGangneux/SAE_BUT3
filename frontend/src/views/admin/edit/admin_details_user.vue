@@ -89,6 +89,8 @@ export default {
 
       try{
 
+        
+
         this.message_error = await this.validationUSER();
 
         if(this.message_error  == ""){
@@ -260,6 +262,13 @@ export default {
                 </div>
             </div>
 
+            <div v-if="create==true" class="row client">
+                <div class="input-group mb-3 col">
+                    <label class="row client" for="MDP">MDP</label>
+                    <input type="password"  class="form-control row client" id="MDP" name="MDP" placeholder="MDP" v-model="this.current_utilisateur.password">
+                </div>
+            </div>
+
             <div class="row client">
 
                 <div class="row"  style="--bs-gutter-x: 0em;">
@@ -286,46 +295,50 @@ export default {
         </div>
     </form>
 
-    <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
+    <section v-if="create==false">
+
+        <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
 
 
-        <div class="row grisee" style=" margin: 1em;">
-            <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique non definie</p>
+            <div class="row grisee" style=" margin: 1em;">
+                <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
+                        <p class="row pcentrer">Historique non definie</p>
+                    </div>
+
+                    <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
+                        <p class="row pcentrer">Historique Video</p>
+                        <ul class="scroller ultagger row tagsfully">
+                            <li class="col" v-for="tag in this.tags">
+                                <button class="btn btn-primary"> {{ tag.name }} </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique Video</p>
-                    <ul class="scroller ultagger row tagsfully">
-                        <li class="col" v-for="tag in this.tags">
-                            <button class="btn btn-primary"> {{ tag.name }} </button>
-                        </li>
-                    </ul>
+                <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
+                    <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
+                        <p class="row pcentrer">Historique non definie</p>
+                    </div>
+
+                    <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
+                        <p class="row pcentrer">Historique Tag</p>
+                        <ul class="scroller ultagger row tagsfully">
+                            <li class="col" v-for="tag in this.tags">
+                                <button class="btn btn-primary"> {{ tag.name }} </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
+            <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important; padding: 1em;" action="">
+                <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
+            </form>
+
+
             </div>
 
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique non definie</p>
-                </div>
-
-                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique Tag</p>
-                    <ul class="scroller ultagger row tagsfully">
-                        <li class="col" v-for="tag in this.tags">
-                            <button class="btn btn-primary"> {{ tag.name }} </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-        <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important; padding: 1em;" action="">
-            <button  type="button"   class=" btn btred col" > <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer Historique </button>
-        </form>
-
-
-        </div>
+        </section>
 
         <supprimer v-if="popupDelete" :Element_Supp="current_utilisateur" @closePopup="popupDelete = false" />
 

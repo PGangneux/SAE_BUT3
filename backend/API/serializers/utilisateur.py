@@ -14,7 +14,7 @@ class UtilisateurSerializer(BaseSerializer):
     nom = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(write_only=True, required=True)
-    is_admin = serializers.BooleanField()
+    is_admin = serializers.BooleanField(read_only=True)
 
     # Outputs
     recherches_artistes = serializers.SerializerMethodField(read_only=True)
