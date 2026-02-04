@@ -52,6 +52,9 @@ export default {
 
 
     // À déplacer
+    /* Récupère les vidéos recommandées en fonction de l'extrait ou de l'interview actuelle.
+       Utilise un algorithme de recommandation basé sur des poids prédéfinis.
+    */
     async current_reco() {
       if (this.selected != "reco") {
         this.page = 0
@@ -100,13 +103,19 @@ export default {
 
 
 
-
+    /*
+      * Récupère les interviews associées à l'extrait actuel.
+      * Met à jour la liste des vidéos affichées avec ces interviews.
+      */
     async interview_current_extrait() {
       this.selected = "playlists"
       this.videos = markRaw(await this.extrait.interviews())
     },
 
 
+    /* Récupère les extraits associés à la question actuelle.
+      * Met à jour la liste des vidéos affichées avec ces extraits.
+      */
     async extraits_current_question() {
       if (this.selected != "questions") {
         this.page = 0
@@ -147,6 +156,10 @@ export default {
         );
     },
 
+
+    /* Récupère les extraits et interviews associés à l'artiste actuel.
+      * Met à jour la liste des vidéos affichées avec ces extraits et interviews.
+      */
     async extraits_interviews_current_artiste() {
       if (this.selected != "artiste") {
         this.page = 0
@@ -188,6 +201,10 @@ export default {
 
     },
 
+
+    /* Récupère les extraits associés au thème actuel.
+      * Met à jour la liste des vidéos affichées avec ces extraits.
+      */
     async extrait_current_theme() {
       if (this.selected != "thèmes") {
         this.page = 0
@@ -231,7 +248,10 @@ export default {
 
 
 
-
+    /* Met à jour la liste vidéo en fonction de la vidéo sélectionnée.
+      * Met à jour l'extrait ou l'interview actuelle selon le type de vidéo sélectionnée.
+      * Réinitialise le store vidéo et émet un événement de mise à jour.
+      */
     async update_liste_video(video) {
       console.log("update liste videp");
       // maj du extrait_current ou interview_current selon le type de video
@@ -276,6 +296,10 @@ export default {
       
     },
 
+
+    /* Charge plus de vidéos en fonction de la catégorie sélectionnée.
+      * Incrémente la page et appelle la méthode appropriée pour récupérer plus de vidéos.
+      */
     async plus_video() {
       this.page++;
       switch (this.selected) {

@@ -2,11 +2,11 @@
 
 
 import { mount } from "@vue/test-utils";
-import bar_list_video from "../../src/components/lecteur_video/bar_liste_video.vue";
-import Extrait from "../../src/model/extrait";
+import bar_list_video from "@components/lecteur_video/bar_liste_video.vue";
+import Extrait from "@model/extrait";
 import { vi, describe, it, expect } from "vitest";
 
-vi.mock("../../src/model/extrait", () => ({
+vi.mock("@model/extrait", () => ({
   default: {
     list: vi.fn().mockResolvedValue([
       { uuid: "1", titre: "A" },

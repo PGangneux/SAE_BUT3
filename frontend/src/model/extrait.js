@@ -19,6 +19,8 @@ export default class Extrait extends Model {
     #interviews;
     #tags;
     #position;
+    #duree;
+    #audios;
     #artiste_uuid;
     #question_uuid;
     #audio_uuid;
@@ -39,6 +41,7 @@ export default class Extrait extends Model {
         position,
         audio,
         duree,
+        audios,
     }) {
         super(uuid);
         this.#titre = titre;
@@ -53,6 +56,8 @@ export default class Extrait extends Model {
         this.#interviews = interviews;
         this.#tags = tags;
         this.#position = position;
+        this.#duree = duree;
+        this.#audios = audios;
         this.#artiste_uuid = null;
         this.#question_uuid = null;
         this.#audio_uuid = null;
@@ -145,6 +150,10 @@ export default class Extrait extends Model {
         return await this.fetchList(this.#tags, Tag, args);
     }
 
+    async audios(args) {
+        return await this.fetchList(this.#audios, Audio, args);
+    }
+
     get position() {
         return this.#position;
     }
@@ -155,8 +164,7 @@ export default class Extrait extends Model {
 
     async get_url_miniature_vimeo() {
         const response = await fetch(
-            `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.#vimeo_url
-            }`
+            `https://vimeo.com/api/oembed.json?url=https://vimeo.com/${this.#vimeo_url}`
         );
         const data = await response.json();
         return data.thumbnail_url;
@@ -216,6 +224,22 @@ export default class Extrait extends Model {
         await this.disconnect(this.#interviews, interview);
     }
 
+    /**
+     * Connecte un extrait à un audio
+     * @param {Audio} audio 
+     */
+    async connect_audio(audio) {
+        await this.connect(this.#audios, { uuid: audio.uuid });
+    }
+
+    /**
+     * Déconnecte un extrait d'un audio
+     * @param {Audio} audio 
+     */
+    async connect_audio(audio) {
+        await this.disconnect(this.#audios, audio);
+    }
+
     fromJSON(json) {
         super.fromJSON(json);
         this.#titre = json.titre;
@@ -231,6 +255,7 @@ export default class Extrait extends Model {
         this.#position = json.position;
         this.#audio = json.audio;
         this.#duree = json.duree;
+        this.#audios = json.audios;
         return this;
     }
 
@@ -244,6 +269,7 @@ export default class Extrait extends Model {
         if (this.uploaded_at) json['uploaded_at'] = this.uploaded_at;
         if (this.#artiste_uuid) json['artiste_uuid'] = this.#artiste_uuid;
         if (this.#question_uuid) json['question_uuid'] = this.#question_uuid;
+        if (this.#audio_uuid) json['audio_uuid'] = this.#audio_uuid;
         if (this.#audio_uuid) json['audio_uuid'] = this.#audio_uuid;
         if (this.duree) json['duree'] = this.duree;
         return json;

@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import lecteur from "../../src/components/lecteur_video/lecteur_video.vue";
+import lecteur from "@components/lecteur_video/lecteur_video.vue";
 import { vi } from "vitest";
 
 // Fonction utilitaire pour monter le composant avec provide/mock
@@ -25,7 +25,7 @@ describe("page_lecteur_video - update()", () => {
 
   beforeAll(() => {
     // Mock du Model global utilisé par Artiste, etc.
-    vi.mock("../../src/model/model.js", () => {
+    vi.mock("@model/model.js", () => {
       return {
         default: class Model { }
       };

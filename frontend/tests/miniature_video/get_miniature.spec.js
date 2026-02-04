@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import miniature_video from '../../src/components/lecteur_video/miniature_video.vue'
+import miniature_video from '@components/lecteur_video/miniature_video.vue'
 
 
 test('get_miniature extrait : retourne url miniature youtube', async () => {

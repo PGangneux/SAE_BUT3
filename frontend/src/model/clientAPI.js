@@ -262,7 +262,7 @@ export default class ClientAPI {
     try {
       const res = await this.post(
         `${this.BASE_URL}api/login/`,
-        JSON.stringify({ "username": pseudo_email, "password": password })
+        JSON.stringify({ username: pseudo_email, password: password }),
       );
       this.save_tokens(res.access, res.refresh);
       this.current_user = new Utilisateur(await this.get(res.utilisateur));
@@ -285,14 +285,59 @@ export default class ClientAPI {
     this.current_user = null;
     return this.current_user;
   }
+
+  /**
+   * Permet d'envoyer un fichier via un formData
+   * @param {string} url
+   * @param {File} file
+   * @param {boolean} withAuth
+   * @returns {Promise<Object>} réposnse de l'api
+   */
+  static async sendFile(url, file, withAuth = true) {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const headers = await this.get_headers(withAuth);
+
+    // SUPPRIMER Content-Type
+    delete headers["Content-Type"];
+
+    const opts = {
+      method: "POST",
+      headers,
+      body: formData,
+    };
+
+    let response = await fetch(url, opts);
+
+    if (response.status === 401 && withAuth) {
+      const refreshed = await this.tryRefresh();
+      if (refreshed) {
+        opts.headers = await this.get_headers(true);
+        delete opts.headers["Content-Type"];
+        response = await fetch(url, opts);
+      } else {
+        this.clear_tokens();
+        throw new FetchError(response.status, await response.json(), response);
+      }
+    }
+
+    if (!response.ok) {
+      throw new FetchError(response.status, await response.json(), response);
+    }
+
+    if (response.status === 204) return null;
+
+    return await response.json();
+  }
 }
 
 // Reconnexion automatique si rester connecter
-if (!(ClientAPI.current_user)) {
+if (!ClientAPI.current_user) {
   const user = localStorage.getItem("user");
   if (user) {
     try {
       ClientAPI.current_user = await Utilisateur.detail(user);
-    } catch (error) { }
+    } catch (error) {}
   }
 }

@@ -1,9 +1,9 @@
 import { mount } from "@vue/test-utils";
 import { vi } from "vitest";
-import lecteur from "../../src/components/lecteur_video/lecteur_video.vue";
+import lecteur from "@components/lecteur_video/lecteur_video.vue";
 
 // --- Mock global pour Model ---
-vi.mock("../../src/model/model.js", () => {
+vi.mock("@model/model.js", () => {
   return { default: class Model {} };
 });
 
