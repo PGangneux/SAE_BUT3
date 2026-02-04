@@ -271,7 +271,7 @@ export default class ClientAPI {
 
       return this.current_user;
     } catch (error) {
-      console.error(error.toString());
+      console.error(error);
       return null;
     }
   }
