@@ -6,7 +6,9 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+
 from .views import *
+from .views.csv_import_job_status import CSVImportJobStatusView
 
 router = DefaultRouter()
 
@@ -80,4 +82,5 @@ urlpatterns = [
     path("login/verify/", TokenVerifyView.as_view(), name="login-verify"),
     path("recommandations", Recommandation.as_view(), name="recommandation"),
     path("csv_import/", CSVImportView.as_view(), name="csv_import"),
+    path('csv_import/status/<str:job_uuid>/', CSVImportJobStatusView.as_view(), name='csv_import_status'),
 ]

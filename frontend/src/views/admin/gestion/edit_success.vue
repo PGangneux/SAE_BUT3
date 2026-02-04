@@ -25,7 +25,7 @@ export default {
     background-color: var(--vert-midel);
     color: var(--white);
     padding: 20px 30px;
-    /* ✅ arrondi seulement à gauche (haut gauche et bas gauche) */
+    /* arrondi seulement à gauche (haut gauche et bas gauche) */
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     border-top-right-radius: 0;
