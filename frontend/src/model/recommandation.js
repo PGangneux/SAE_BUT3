@@ -20,27 +20,21 @@ function get_reco_weights(chemin) {
 
 
 /* Récupère les vidéos recommandées en fonction de l'extrait ou de l'interview actuelle.
-   Utilise un algorithme de recommandation basé sur des poids prédéfinis.
+   Utilise un algorithme de recommandation basé sur des poids et des filtres prédéfinis.
 */
 export default async function fetchRecommendations({ video = null, chemin = null, filters = null, page = 0, size = 10 }) {
 
-    // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
-    let weights;
-    if (false) {
-        weights = localStorage.getItem('weights')
-            .then((weights) => weights ? JSON.parse(weights) : get_reco_weights(chemin));
-        localStorage.setItem('weights', JSON.stringify(weights));
-    }
-    else {
-        weights = get_reco_weights(chemin);
-    }
-
     // Récupération des poids
+    const weights = chemin ? get_reco_weights(chemin) :
+        localStorage.getItem('weights')
+            .then((weights) => weights ? JSON.parse(weights) : null);
+    localStorage.setItem('weights', JSON.stringify(weights));
+
     const payload = {
         'weights': weights
     };
 
-    // Construction des filtres (optionnelle)
+    // Construction des filtres
     if (filters) {
         payload['filters'] = filters;
     };
