@@ -65,16 +65,11 @@ class Recommandation(APIView):
         """
         data: dict = request.data
         poids = data.get("weights", {})
-        # print("poids:", poids)
         filtres = data.get("filters", {})
-        # print("filtres:", filtres)
 
         user = request.user
 
-        print("utilisateur", user, type(user))
-
         user: Utilisateur = user if type(user) != AnonymousUser else None
-        # print("user: ", user.pseudo if user else None)
 
         context = {"request": request}
 
@@ -95,8 +90,6 @@ class Recommandation(APIView):
         # Modulabilité du modèle
         video_class = Extrait.__name__
         playlist_class = Interview.__name__
-
-        # print("uuid", video)
 
         # Algo complet
         # Construction des parties de la requête
@@ -267,13 +260,10 @@ class Recommandation(APIView):
             "size": size,
             "page": page,
         }
-        # print(query, params)
         try:
             recommandations_cypher = db.cypher_query(query, params)[0]
         except ServiceUnavailable:
             raise ConnexionDB()
-
-        # print(recommandations_cypher[0])
 
         # Convertir le retour de la requête CYPHER en liste d'Extrait et Interview en json
         recommandations = [
