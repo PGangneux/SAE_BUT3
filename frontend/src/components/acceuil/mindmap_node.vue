@@ -23,35 +23,34 @@ export default {
     },
     methods: {
         async loadNodeData() {
-            if (!this.node_instance.mmch_obj) {
-                if (this.node_instance.constructor != mmch_Root) {
-                    this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+            let [key , inst] = this.node_instance;
+            // console.log("loadNodeData",key,"/",inst);
+            if (!inst.mmch_obj) {
+                if (inst.constructor != mmch_Root) {
+                    this.nodeTitle = this.mm_LegendClassMap[inst.constructor.mmch_dbjsclass.name] || 'Inconnue';
                 } else {
                     this.nodeTitle = '';
                 }
                 return;
             } else {
-                this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+                this.nodeSubtitle = this.mm_LegendClassMap[inst.constructor.mmch_dbjsclass.name] || 'Inconnue';
             }
-            this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
+            this.nodeTitle = await inst.mmch_getTitle() || 'Titre Inconnue';
             // Load description
-            this.nodeDescription = await this.node_instance.mmch_getDescription() || "";
+            this.nodeDescription = await inst.mmch_getDescription() || "";
             // Check if has miniature
             this.thumbnailLoading = true;
-            this.hasMiniature = await this.node_instance.mmch_hasMiniature();
+            this.hasMiniature = await inst.mmch_hasMiniature();
             // Load miniature if available
             if (this.hasMiniature) {
-                this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
+                this.thumbnailUrl = await inst.mmch_getMiniature();
             }
             this.thumbnailLoading = false;
         }
     },
     computed: {
         nodeClass() {
-            // const baseClass = `mm_node ${this.node_instance.constructor.mmch_getStyle()}`;
-            const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
-
-            return `${shapeClass}`;
+            return `mm_node ${this.node_instance[1].mmch_getStyle()}`;
         },
     },
     async mounted() {
@@ -62,7 +61,7 @@ export default {
 </script>
 
 <template>
-    <div class="mm_node" :class="nodeClass">
+    <div class="mm_node" :class="nodeClass" :style="this.node_instance[1].getStyle()">
         <!-- Case 1: No content -->
         <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">
