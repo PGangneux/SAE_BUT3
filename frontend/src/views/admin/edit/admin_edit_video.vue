@@ -134,8 +134,6 @@ export default {
 
           // Reload brutal
           window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
-
-          console.log("creer");
           alert("creer");
         }else{
           this.popupError = true;
@@ -164,9 +162,6 @@ export default {
         this.message_error = await this.validationExtrait();
 
         if(this.message_error  == ""){
-            console.log(this.urlVimeoReconstruit);
-            console.log(this.current_extrait.duree);
-
             await this.current_extrait.update();
             await this.save_tags();
             
@@ -509,7 +504,6 @@ export default {
 
         try{
           this.current_extrait.vimeo_url = await this.get_Vimeo_videoId(this.urlVimeoReconstruit);
-          console.log(this.current_extrait.vimeo_url);
         }catch{
           this.current_extrait.vimeo_url="";
           console.log('erreur');
@@ -560,20 +554,20 @@ export default {
 
 
   async chargerSelection(field,displayProp){
-      if (this.current_extrait[field] != null) {
+      if (await this.current_extrait[field] != null && await this.current_extrait[field]!== undefined) {
         const entity = markRaw(await this.current_extrait[field]);
 
         // Valeur affichée
         switch (field) {
           case "question":
-              this.laselectedQuestion = entity[displayProp];
+              this.laselectedQuestion = await entity[displayProp];
             break;
 
           case "audio":
-              this.laselectedAudio = entity[displayProp];
+              this.laselectedAudio = await entity[displayProp];
             break;
           case "artiste":
-              this.laselectedArtiste = entity[displayProp];
+              this.laselectedArtiste = await entity[displayProp];
             break;
 
         }
@@ -624,24 +618,24 @@ export default {
   
     //reccuperation de l'id en parametre
     const ExtraitId = this.$route.params.id;
-    console.log(ExtraitId);
-
     if (ExtraitId != null) {
         //reccuperation de l'Extrait via l'id
-      this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
-      console.log(this.current_extrait);
-      this.interviews = markRaw(await this.current_extrait.interviews());
-      console.log(this.interviews);
-      this.tags = markRaw(await this.current_extrait.tags());
 
-    
+
+
+      this.current_extrait =  markRaw(await Extrait.detail(ExtraitId));
+      this.interviews = markRaw(await this.current_extrait.interviews());
+      this.tags = markRaw(await this.current_extrait.tags()); 
+
+      console.log(this.current_extrait);
+
+      this.current_extrait.question_uuid =  (await this.current_extrait.question).uuid
+
+      console.log(this.current_extrait.question_uuid);
     
       await this.chargerSelection('question', 'texte');
       await this.chargerSelection('audio', 'name');
-      await this.chargerSelection('artiste', 'name');
-
-      
-      
+      await this.chargerSelection('artiste', 'name');     
 
     }else{
       this.current_extrait = markRaw( await new Extrait({}));

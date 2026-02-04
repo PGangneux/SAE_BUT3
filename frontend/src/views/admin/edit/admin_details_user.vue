@@ -58,7 +58,6 @@ export default {
       }if(this. current_utilisateur.email == null || this. current_utilisateur.email ==""){
         erreur += "il manque une email  \n";
       }
-      console.log(this.current_utilisateur);
       return erreur;
     },
 
@@ -68,7 +67,6 @@ export default {
 
     changeAdmin(){
         this.current_utilisateur.is_admin = !this.current_utilisateur.is_admin;
-        console.log(this.current_utilisateur.is_admin );
     },
     
 
@@ -106,8 +104,6 @@ export default {
 
           // Reload brutal
           window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
-
-          console.log("creer");
           alert("creer");
         }else{
           this.popupError = true;
@@ -137,12 +133,7 @@ export default {
         this.message_error = await this.validationUSER();
 
         if(this.message_error  == ""){
-
-            console.log("AVANT update :", this.current_utilisateur.is_admin);
             await this.current_utilisateur.update();
-            console.log("APRÈS update :", this.current_utilisateur.is_admin);
-   
-            
             sessionStorage.setItem('popupSuccess', 'true');
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
             
@@ -201,8 +192,6 @@ export default {
         if (utilisateurId != null) {
             //reccuperation de l'Extrait via l'id
         this.current_utilisateur = markRaw(await Utilisateur.detail(utilisateurId));
-            console.log(this.current_utilisateur);
-
             this.recherches_artistes = (markRaw(await this.current_utilisateur.recherches_artistes()));
             this.regarder_interviews = (markRaw(await this.current_utilisateur.regarder_interviews()));
             this.regarder_extraits = (markRaw(await this.current_utilisateur.regarder_extraits()));

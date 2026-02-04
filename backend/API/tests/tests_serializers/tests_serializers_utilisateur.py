@@ -39,7 +39,6 @@ class UtilisateurSerializerTests(Neo4jTestCase):
             "nom": "Smith",
             "email": "alice@example.com",
             "password": "secret123",
-            "is_admin": True,
         }
         serializer = UtilisateurSerializer(
             data=payload, context={"request": self.request}
@@ -53,7 +52,7 @@ class UtilisateurSerializerTests(Neo4jTestCase):
         self.assertEqual(reloaded.nom, "Smith")
         self.assertEqual(reloaded.email, "alice@example.com")
         self.assertTrue(check_password("secret123", reloaded.password))
-        self.assertTrue(reloaded.is_admin)
+        self.assertFalse(reloaded.is_admin)
 
     def test_create_raises_uniqueproperty(self):
         Utilisateur(
@@ -88,14 +87,13 @@ class UtilisateurSerializerTests(Neo4jTestCase):
             nom="Brown",
             email="bob@example.com",
             password="oldpwd",
-            is_admin=False,
+            is_admin=True,
         ).save()
 
         payload = {
             "pseudo": "updateuser2",
             "prenom": "Robert",
             "password": "newsecret",
-            "is_admin": True,
         }
         serializer = UtilisateurSerializer(
             instance=user, data=payload, context={"request": self.request}, partial=True
