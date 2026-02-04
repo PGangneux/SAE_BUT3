@@ -24,7 +24,7 @@ export default {
     methods: {
         async loadNodeData() {
             let [key , inst] = this.node_instance;
-            // console.log("loadNodeData",key,"/",inst);
+            console.log("loadNodeData",key,"/",inst);
             if (!inst.mmch_obj) {
                 if (inst.constructor != mmch_Root) {
                     this.nodeTitle = this.mm_LegendClassMap[inst.constructor.mmch_dbjsclass.name] || 'Inconnue';

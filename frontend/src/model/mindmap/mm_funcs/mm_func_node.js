@@ -37,7 +37,7 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
     if (isPreview) {
         tmp_child.ispreview = true;
     }
-    mminfo.nodes.set(tmp_child.mmch_key, markRaw(tmp_child));
+    mminfo.node_add(markRaw(tmp_child));
     // create linkage
     if (createLink) {
         const linkage = new mm_Linkage(parent, tmp_child, thickness_base * (1 / tmp_child.depth));
@@ -77,7 +77,11 @@ export function set_children_pos(mminfo, parent) {
     let childrenEmpty = 0;
 
     for (let child_key of parent.childrens) {
-        let child = mminfo.nodes.get(child_key);
+        console.log("avant");
+        
+        let child = mminfo.node_get(child_key);
+        console.log("set_children_pos child","child_key",child_key,"child",child,"parent",parent,"mminfo",mminfo);
+        
         if (child.mmch_hasMiniature()) {
             childrenWithPreview++;
         } else if (child.mmch_obj) {
@@ -118,7 +122,7 @@ export function set_children_pos(mminfo, parent) {
     let currentEffectiveIndex = 0;
 
     for (let index = 0; index < parent.childrens.length; index++) {
-        const child = mminfo.nodes.get(parent.childrens[index]);
+        const child = mminfo.node_get(parent.childrens[index]);
         // Calculate current angle - adjust for content weighting
         let angleWeight;
         if (child.mmch_hasMiniature()) {

@@ -11,14 +11,12 @@ import mmch_Root from "../mm_chemin_submod/mmch_root.js";
 */
 async function mm_reset_hard(mminfo) {
     // reset everything
-    mminfo.nodes = new Map();
-    mminfo.linkages = [];
-    mminfo.previewlinkages = [];
+    mminfo.reset();
     // reset the mmch_cheminT master class key counter
     mmch_CheminT.reset_key_counter();
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
-    mminfo.nodes.set(root.mmch_key, root);
+    mminfo.node_add(root);
     mminfo.root_key = root.mmch_key;
     console.log("mm_reset_hard root.mmch_key",root.mmch_key,mminfo);
     
@@ -34,11 +32,11 @@ export async function mm_reset_soft(mminfo) {
     mminfo.linkages = []; // Root has no linkages anyway
     mminfo.previewlinkages = [];
     // Safeguard: Check if we have a valid root node
-    if (!mminfo.root_key || !mminfo.nodes || mminfo.nodes.length === 0 || !mminfo.nodes.get(mminfo.root_key)) {
+    if (!mminfo.root_key || mminfo.node_data["data"].size === 0 || !mminfo.node_get(mminfo.root_key)) {
         await mm_reset_hard(mminfo);
         return;
     }
-    const rootNode = mminfo.nodes.get(mminfo.root_key);
+    const rootNode = mminfo.node_get(mminfo.root_key);
     const list_cat = [];
     const list_obj = [];
     let search_cat = [];

@@ -12,7 +12,7 @@ import mmch_Interview from "../mm_chemin_submod/mmch_interview.js";
 */
 export function mm_checkvideo(mminfo) {
     if (mminfo.chemin.length == 0) return false;    
-    let last = mminfo.nodes.get(mminfo.chemin[mminfo.chemin.length - 1]);
+    let last = mminfo.node_get(mminfo.chemin[mminfo.chemin.length - 1]);
     if (last instanceof mmch_Extrait && last.mmch_obj) {
         mminfo.extrait_current.set(last.mmch_obj);
         router.push({
@@ -141,7 +141,7 @@ export function mm_convert_preview_to_regular(mminfo, targetNode) {
         const previewIndex = mminfo.previewnodes.indexOf(targetNode);
         if (previewIndex !== -1) {
             mminfo.previewnodes.splice(previewIndex, 1);
-            mminfo.nodes.push(targetNode);
+            mminfo.node_add(targetNode);
         }
         
         // Process preview links that connect to the target node
@@ -155,9 +155,9 @@ export function mm_convert_preview_to_regular(mminfo, targetNode) {
         }
         
         // Recursively process parent node if it is also a preview node
-        const parent = mminfo.nodes.find(node => 
-            node.childrens && node.childrens.includes(targetNode)
-        );
+        // const parent = mminfo.nodes.find(node => 
+        //     node.childrens && node.childrens.includes(targetNode)
+        // );
         
         if (parent && parent.ispreview) {
             mm_convert_preview_to_regular(mminfo, parent);
@@ -241,8 +241,8 @@ function mm_find_top(mminfo, searched) {
  * @returns {Array<mmch_CheminT>|null} - Path from root to found node or null if not found
  */
 function mm_find_fromroot(mminfo, searched) {
-    if (!searched || mminfo.nodes.length === 0) return null;
-    return dfs_search_stack(mminfo.nodes.get(mminfo.root_key), searched, [mminfo.nodes.get(mminfo.root_key)]);
+    if (!searched || mminfo.node_data["data"].size === 0) return null;
+    return dfs_search_stack(mminfo.node_get(mminfo.root_key), searched, [mminfo.node_get(mminfo.root_key)]);
 }
 
 /**

@@ -1,4 +1,4 @@
-import { shallowRef, triggerRef } from 'vue';
+import { shallowRef, ref ,triggerRef } from 'vue';
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 import mm_Linkage from "./mm_linkage.js";
 import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
@@ -10,8 +10,8 @@ export default class mm_Mindmap {
     linkages;
     /** @type {Array<mm_Linkage>} */
     previewlinkages;
-    /** @type {map<Number,mmch_CheminT>} */
-    nodes;
+    /** @type {Map<Number,mmch_CheminT>} */
+    node_data;
     /** @type {Array<Number>} */
     chemin;
     /** @type {Number} the key of the mmch_root node*/
@@ -48,22 +48,18 @@ export default class mm_Mindmap {
     constructor(vueobj, interview_current, extrait_current) {        
         // vue object reference
         this.vueobj = vueobj;
-        // mm data
-        this.linkages = shallowRef([]);
-        this.nodes = shallowRef(new Map());
-        // mm preview data
-        this.previewlinkages = shallowRef([]);
-        // mm chemin
-        this.chemin = shallowRef([]);
         // funcs ref
         this.interview_current = interview_current;
         this.extrait_current = extrait_current;
+        // mm chemin
+        this.chemin = ref([]);
+        this.reset();
     }
 
     toJSON() {
         return {
             // linkages: this.linkages,
-            // nodes: this.nodes,
+            // node_data: this.node_data,
             chemin: this.chemin,
             fullscreen: this.fullscreen,
             togglelegend: this.togglelegend,
@@ -78,8 +74,30 @@ export default class mm_Mindmap {
         };
     }
 
+    node_add(node){
+        this.node_data["data"].set(node.mmch_key,node);
+    }
+
+    node_get(key){
+        if (!(this.node_data["data"].has(key))){
+            console.error(`key not in mindmap.node_data["data"] Map ${key}`);
+            return null;
+        }
+        return this.node_data["data"].get(key);
+    }
+
+    reset(){
+        // mm data
+        this.linkages = ref([]);
+        this.node_data = {"data": shallowRef(new Map()),"key" : 0};
+        // mm preview data
+        this.previewlinkages = ref([]);
+    }
+
     update(){
-        triggerRef(this.nodes);
+        console.log("mm update");
+        this.node_data["key"]++;
+        triggerRef(this.node_data["data"]);
         triggerRef(this.linkages);
         triggerRef(this.previewlinkages);
         triggerRef(this.chemin);
@@ -102,7 +120,7 @@ export default class mm_Mindmap {
     draw_root() {
         this.centerMindmap();
         mm_interface_handleclick(this,null).then(() => {
-            this.centerOnNode(this.nodes.get(this.root_key));
+            this.centerOnNode(this.node_get(this.root_key));
         });
     }
 
@@ -150,6 +168,8 @@ export default class mm_Mindmap {
     }
 
     handleClick(node) {
+        console.log("mm handleClick",node);
+        
         this.centerOnNode(node);
         mm_interface_handleclick(this,node).then(() => {
             ;
