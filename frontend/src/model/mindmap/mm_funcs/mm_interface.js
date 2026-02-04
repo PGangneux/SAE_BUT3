@@ -16,7 +16,8 @@ async function mm_draw_root(mminfo) {
     if (changevideo) return true;
     console.log("mm_draw_root changepath:", changepath);
     for (const cheminpath of mminfo.chemin) {
-        await mm_draw_onecat(mminfo, cheminpath);
+        console.log("mm_draw_root loop","chemin",mminfo.chemin,cheminpath);
+        await mm_draw_onecat(mminfo, mminfo.node_get(cheminpath));
     }
     return false;
 }
@@ -32,7 +33,7 @@ async function mm_draw_update(mminfo) {
     let changevideo, changepath = mm_chemin_filter(mminfo);
     if (changevideo) return true;
     if (changepath) return mm_draw_root(mminfo);
-    await mm_draw_onecat(mminfo, mminfo.chemin[mminfo.chemin.length - 1]);
+    await mm_draw_onecat(mminfo, mminfo.node_get(mminfo.chemin[mminfo.chemin.length - 1]));
     return false;
 }
 
@@ -43,7 +44,7 @@ var doesblock = false;
  * @param {mm_Mindmap} mminfo mm_Mindmap
  * @param {mmch_CheminT<T>} node mm_Node clicked
 */
-export async function mm_interface_handleclick(mminfo, node) {
+export async function mm_interface_handleclick(mminfo, node) {    
     if (doesblock) {
         console.log("spam blocked");
         return;
@@ -52,8 +53,8 @@ export async function mm_interface_handleclick(mminfo, node) {
     doesblock = true;
     try {
         if (node) {
-            console.log("mm hanldeclick", mminfo.chemin, node.mmch_key, node);
             mminfo.chemin.push(node.mmch_key);
+            console.log("mm hanldeclick","chemin", mminfo.chemin,"node key", node.mmch_key, "node",node);
         }
         let isvideo = await mm_draw_update(mminfo);
         if (isvideo) {

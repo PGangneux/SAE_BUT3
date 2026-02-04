@@ -43,17 +43,15 @@ export default {
             if (descriptions) this.nodeDescription = descriptions;
         });
         // Check if has miniature
-        this.node_instance.mmch_hasMiniature().then((hasMiniature) => {
-            this.hasMiniature = hasMiniature;
-            if (hasMiniature) {
-                this.node_instance.mmch_getMiniature().then((miniurl) => {
-                    if (miniurl) this.thumbnailUrl = miniurl;
-                    this.thumbnailLoading = false;
-                });
-            } else {
+        this.hasMiniature = this.node_instance.mmch_hasMiniature()
+        if (this.hasMiniature) {
+            this.node_instance.mmch_getMiniature().then((miniurl) => {
+                if (miniurl) this.thumbnailUrl = miniurl;
                 this.thumbnailLoading = false;
-            }
-        });
+            });
+        } else {
+            this.thumbnailLoading = false;
+        }
     },
 }
 </script>
@@ -61,6 +59,11 @@ export default {
 <template>
     <div class="mm_node" :class="`mm_node ${this.node_instance.mmch_getStyle()}`"
         :style="this.node_instance.getStyle()">
+        <!--
+        <div style="display: none;">
+            {{ this.node_instance }}
+        </div>
+        -->
         <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">
                 <p class="mm_node_title">{{ this.nodeTitle }}</p>

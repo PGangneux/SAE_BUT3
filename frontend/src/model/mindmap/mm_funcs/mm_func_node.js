@@ -51,16 +51,6 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
 }
 
 /**
- * 
- * @param {mm_Mindmap} mminfo mm_Mindmap 
- * @param {mmch_CheminT<T>} parent parent node 
- * @param {Number} categoryK the number key of the child to delete
- */
-export function mm_DeleteChildNode(mminfo,parent,categoryK){
-    ;
-}
-
-/**
  * pos the children of a node in a circle
  * @param {mm_Mindmap} mminfo mm_Mindmap  
  * @param {mmch_CheminT<T>} parent the root node to witch the children has been added

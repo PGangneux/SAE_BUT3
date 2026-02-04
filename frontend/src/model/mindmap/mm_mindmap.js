@@ -1,8 +1,8 @@
 import { shallowRef, ref } from 'vue';
 import mmch_CheminT from './mm_chemin_submod/mmch_chemin.js';
 import mm_Linkage from "./mm_linkage.js";
-import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 import mm_Node from './mm_node.js';
+import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 
 export default class mm_Mindmap {
     /** @type {Object} */
@@ -79,6 +79,24 @@ export default class mm_Mindmap {
     }
 
     /**
+     * reset mminfo links nodes previewlinks
+     */
+    reset() {
+        // mm data
+        this.linkages = ref([]);
+        this.node_data = { "data": shallowRef(new Map()), "key": 0 };
+        // mm preview data
+        this.previewlinkages = ref([]);
+    }
+
+    /**
+     * do update
+     */
+    update() {
+        this.node_data["key"]++;
+    }
+
+    /**
      * add node to mminfo map
      * @param {mm_Node} node add node to mminfo map
      */
@@ -100,21 +118,33 @@ export default class mm_Mindmap {
     }
 
     /**
-     * reset mminfo links nodes previewlinks
+     * recursivly delete a child
+     * @param {mmch_CheminT<T>} parent parent node 
+     * @param {Number} categoryK the number key of the child to delete
      */
-    reset() {
-        // mm data
-        this.linkages = ref([]);
-        this.node_data = { "data": shallowRef(new Map()), "key": 0 };
-        // mm preview data
-        this.previewlinkages = ref([]);
+    node_delete(parent,categoryK){
+        ;
     }
 
     /**
-     * do update
+     * center mm et draw root
      */
-    update() {
-        this.node_data["key"]++;
+    draw_root() {
+        this.centerMindmap();
+        mm_interface_handleclick(this, null).then(() => {
+            this.centerOnNode(this.node_get(this.root_key));
+        });
+    }
+
+    /**
+     * handleClick
+     * @param {mm_Node} node 
+     */
+    handleClick(node) {
+        this.centerOnNode(node);
+        mm_interface_handleclick(this, node).then(() => {
+            ;
+        });
     }
 
     /**
@@ -135,39 +165,6 @@ export default class mm_Mindmap {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             }
-        }
-    }
-
-    /**
-     * center mm et draw root
-     */
-    draw_root() {
-        this.centerMindmap();
-        mm_interface_handleclick(this, null).then(() => {
-            this.centerOnNode(this.node_get(this.root_key));
-        });
-    }
-
-    /**
-     * start Drag
-     * @param {*} event 
-     */
-    startDrag(event) {
-        this.dragging = true;
-        const { clientX, clientY } = this.getEventCoordinates(event);
-        this.lastMouseX = clientX;
-        this.lastMouseY = clientY;
-        event.preventDefault();
-    }
-
-    /**
-     * stop Drag
-     */
-    stopDrag() {
-        this.dragging = false;
-        if (!this.offx || !this.offy) {
-            this.centerMindmap();
-            this.centerOnNode(this.node_get(this.root_key));
         }
     }
 
@@ -225,17 +222,6 @@ export default class mm_Mindmap {
         this.offy = mouseY - (mouseY - this.offy) * scaleFactor;
 
         this.scale = newScale;
-    }
-
-    /**
-     * handleClick
-     * @param {mm_Node} node 
-     */
-    handleClick(node) {
-        this.centerOnNode(node);
-        mm_interface_handleclick(this, node).then(() => {
-            ;
-        });
     }
 
     /**
@@ -302,6 +288,29 @@ export default class mm_Mindmap {
 
     easeInOutCubic(t) {
         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    /**
+     * start Drag
+     * @param {*} event 
+     */
+    startDrag(event) {
+        this.dragging = true;
+        const { clientX, clientY } = this.getEventCoordinates(event);
+        this.lastMouseX = clientX;
+        this.lastMouseY = clientY;
+        event.preventDefault();
+    }
+
+    /**
+     * stop Drag
+     */
+    stopDrag() {
+        this.dragging = false;
+        if (!this.offx || !this.offy) {
+            this.centerMindmap();
+            this.centerOnNode(this.node_get(this.root_key));
+        }
     }
 
     doDrag(event) {

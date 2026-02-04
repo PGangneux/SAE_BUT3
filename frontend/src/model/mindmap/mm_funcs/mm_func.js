@@ -130,6 +130,7 @@ export async function mm_reset_soft(mminfo) {
  * @param {boolean?} isPreview? = false whether this is a preview node
 */
 export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false) {
+    console.log("mm_draw_onecat","mminfo",mminfo, "depth",node.depth,"node",node, "createLink",createLink , "isPreview",isPreview);
     // 0. safe Guards
     // Video / preview-only nodes never expand
     /// console.warn(node.depth, "Link",createLink, "isPreview", isPreview,"isPreview Node" , node.ispreview, "node obj", !!node.mmch_obj, node, mminfo.chemin);
