@@ -1,4 +1,4 @@
-import ClientAPI from "./clientAPI.js";
+import ClientAPI from "@model/clientAPI.js";
 
 /**
  * Parse un fichier CSV contenant des extraits d'interviews d'artistes
@@ -7,11 +7,5 @@ import ClientAPI from "./clientAPI.js";
  * @returns {Promise<Object>} Objet contenant les données parsées
  */
 export async function parse(file) {
-  console.log("Parsing CSV...");
-  console.log(file);
-  console.log("import")
-  ClientAPI.sendFile(ClientAPI.BASE_URL + "api/csv_import/", file  );
-
+  ClientAPI.sendFile(ClientAPI.BASE_URL + "api/csv_import/", file);
 }
-
-

@@ -2,18 +2,11 @@
 import csv
 import io
 from datetime import date as Date, datetime
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ..permissions import IsAdminOrReadOnly
-
-
-
-
-
 from ..models import Artiste, Audio, Extrait, Interview, Occasion, Question, Tag, Theme
-
 from ..serializers import (
     ArtisteSerializer,
     QuestionSerializer,
@@ -37,8 +30,8 @@ class CSVImportView(APIView):
     regroupés par artiste et événement afin de créer automatiquement
     des interviews.
     """
-    permission_classes = [IsAdminOrReadOnly]
 
+    permission_classes = [IsAdminOrReadOnly]
 
     _EXPECTED_HEADERS = {
         "Artiste",
@@ -54,7 +47,6 @@ class CSVImportView(APIView):
         "Vimeo",
         "Auteur",
     }
-
 
     def post(self, request, *args, **kwargs):
         """
@@ -146,18 +138,21 @@ class CSVImportView(APIView):
         liste_extraits = []
         for row in reader:
             if artiste != None:
-                if (artiste != row["Artiste"].strip() or occasion != row["Evenement"].strip()):
+                if (
+                    artiste != row["Artiste"].strip()
+                    or occasion != row["Evenement"].strip()
+                ):
                     self.save_interview(liste_extraits, occasion)
                     liste_extraits = []
                     artiste = row["Artiste"].strip()
                     occasion = row["Evenement"].strip()
-            else: 
+            else:
                 artiste = row["Artiste"].strip()
                 occasion = row["Evenement"].strip()
 
             extrait = self.save_row(row)
             liste_extraits.append(extrait)
-        
+
         # Sauvegarde de la dernière interview
         if liste_extraits:
             self.save_interview(liste_extraits, occasion)
@@ -189,9 +184,7 @@ class CSVImportView(APIView):
         question_uuid = None
         if question != "" and question is not None:
             try:
-                question_uuid = serializer_question.create(
-                    {"texte": question}
-                ).uuid
+                question_uuid = serializer_question.create({"texte": question}).uuid
             except:
                 question_uuid = Question.nodes.get(texte=question).uuid
 
@@ -240,7 +233,6 @@ class CSVImportView(APIView):
         serializer_extrait = ExtraitSerializer()
         extrait_node = None
 
-
         # 1. Recherche par Vimeo
         if vimeo_url:
             try:
@@ -260,14 +252,14 @@ class CSVImportView(APIView):
             extrait_node.titre = titre
             extrait_node.artiste_uuid = artiste_uuid
             extrait_node.question_uuid = question_uuid
-            extrait_node.uploaded_at = self.parse_date(row["Date"].strip()) if date else None
+            extrait_node.uploaded_at = (
+                self.parse_date(row["Date"].strip()) if date else None
+            )
             extrait_node.lieu = row["Ville"].strip()
             extrait_node.youtube_url = youtube_url
             extrait_node.vimeo_url = vimeo_url
             extrait_node.position = (
-                int(row["Position"].strip())
-                if row["Position"].strip()
-                else None
+                int(row["Position"].strip()) if row["Position"].strip() else None
             )
             extrait_node.save()
 
@@ -292,7 +284,9 @@ class CSVImportView(APIView):
                     "titre": titre,
                     "artiste_uuid": artiste_uuid,
                     "question_uuid": question_uuid,
-                    "uploaded_at": self.parse_date(row["Date"].strip()) if date else None,
+                    "uploaded_at": (
+                        self.parse_date(row["Date"].strip()) if date else None
+                    ),
                     "lieu": row["Ville"].strip(),
                     "youtube_url": youtube_url,
                     "vimeo_url": vimeo_url,
@@ -309,9 +303,7 @@ class CSVImportView(APIView):
         context = {"extrait": extrait_node}
 
         for audio_uuid in audios_uuids:
-            serializer = AudiosSerializer(
-                data={"uuid": audio_uuid}, context=context
-            )
+            serializer = AudiosSerializer(data={"uuid": audio_uuid}, context=context)
             if serializer.is_valid():
                 serializer.create(serializer.validated_data)
 
@@ -322,14 +314,8 @@ class CSVImportView(APIView):
             if serializer.is_valid():
                 serializer.create(serializer.validated_data)
 
-        return extrait_node     
+        return extrait_node
 
-            
-            
-
-
-
-    
     def save_interview(self, liste_extraits, occasion):
         """
         Crée une interview à partir d'une liste d'extraits
@@ -372,14 +358,14 @@ class CSVImportView(APIView):
             for extrait in liste_extraits:
                 context = {"extrait": extrait}
                 serializer = InterviewsSerializer(
-                    data={"uuid": interview_node.uuid, "position":extrait.position}, context=context
+                    data={"uuid": interview_node.uuid, "position": extrait.position},
+                    context=context,
                 )
                 if serializer.is_valid():
                     serializer.create(serializer.validated_data)
 
         except Exception as e:
             print(f"Erreur lors de la création de l'interview: {e}")
-    
 
     def get_code_yt(self, url):
         """
@@ -397,7 +383,6 @@ class CSVImportView(APIView):
         elif "youtu.be/" in url:
             return url.split("youtu.be/")[1]
         return url
-    
 
     def get_code_vimeo(self, url):
         """
@@ -425,7 +410,7 @@ class CSVImportView(APIView):
             return code.split("?")[0].split("&")[0]
 
         return url
-    
+
     def parse_date(self, date_str):
         if not date_str:
             return None
@@ -434,5 +419,3 @@ class CSVImportView(APIView):
             return Date(dt.year, dt.month, dt.day)
         except ValueError:
             return None
-
-
