@@ -20,6 +20,7 @@ export default class FetchError extends Error {
             this.#detail = detail;
         }
         this.#response = response;
+        this.message = this.toString();
     }
 
     get status() { return this.#status; }
@@ -34,18 +35,34 @@ export default class FetchError extends Error {
 
     get isNotFound() { return (typeof this.detail == 'object' && this.status == 404 && 'Not Found' in this.detail); }
 
-    get isUniqueProperty() { return (typeof(this.detail) == 'object' && this.status == 400 && 'Unique Property' in this.detail); }
+    get isUniqueProperty() { return (typeof (this.detail) == 'object' && this.status == 400 && 'Unique Property' in this.detail); }
 
-    get isRequiredProperty() { return (typeof(this.detail) == 'object' && this.status == 400 && 'Required Property' in this.detail); }
+    get isRequiredProperty() { return (typeof (this.detail) == 'object' && this.status == 400 && 'Required Property' in this.detail); }
 
     get isContextError() { return (typeof this.detail == 'object' && this.status == 400 && 'Context error' in this.detail); }
 
     get isAuthentification() { return (typeof this.detail == 'object' && this.status == 401 && 'detail' in this.detail); }
 
-    // Pas encore implémenter coté API
     get isPermission() { return (this.status == 403); }
 
     get isDataBaseOffline() { return (this.status == 503); }
+
+    get isSerializerError() {
+        return (
+            this.status === 400 &&
+            typeof this.detail === 'object' &&
+            !Array.isArray(this.detail)
+        );
+    }
+
+    formatSerializerErrors() {
+        return Object.entries(this.detail)
+            .map(([field, messages]) => {
+                if (Array.isArray(messages)) { messages = messages.join(', '); }
+                return `${messages.replaceAll('.', '')} : ${field}`;
+            })
+            .join('\n');
+    }
 
     toString() {
         if (this.isClient) {
@@ -61,8 +78,10 @@ export default class FetchError extends Error {
                 return `Vous n'avez pas la permission pour effectuer cette action`;
             } else if (this.isRequiredProperty) {
                 return `La propriété ${this.detail['Required Property']} est requise`
+            } else if (this.isSerializerError) {
+                return this.formatSerializerErrors();
             }
-            else{
+            else {
                 return this.detail;
             }
         } else if (this.isServer) {
