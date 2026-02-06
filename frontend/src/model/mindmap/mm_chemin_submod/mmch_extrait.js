@@ -5,6 +5,9 @@ import mmch_Tag from "./mmch_tag.js";
 import mmch_Interview from "./mmch_interview.js";
 import mmch_Question from "./mmch_question.js";
 
+/**
+ * @extends mmch_CheminT<Extrait>
+ */
 export default class mmch_Extrait extends mmch_CheminT {
     static mmch_dbjsclass = Extrait;
     /** @type {String} */
@@ -54,7 +57,6 @@ export default class mmch_Extrait extends mmch_CheminT {
         if (this.#description) return this.#description;
         const description = [];
         const extrait = this.mmch_obj;
-        /// console.log(extrait);
         
         ///try {
         ///    const question = await extrait.question();

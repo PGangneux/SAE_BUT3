@@ -4,6 +4,9 @@ import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
 
+/**
+ * @extends mmch_CheminT<Tag>
+ */
 export default class mmch_Tag extends mmch_CheminT {
     static mmch_dbjsclass = Tag;
     /** @type {Array<String>} */

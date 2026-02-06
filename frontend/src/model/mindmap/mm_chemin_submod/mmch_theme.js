@@ -4,6 +4,9 @@ import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Question from "./mmch_question.js";
 
+/**
+ * @extends mmch_CheminT<Theme>
+ */
 export default class mmch_Theme extends mmch_CheminT {
     static mmch_dbjsclass = Theme;
     /** @type {Array<String>} */

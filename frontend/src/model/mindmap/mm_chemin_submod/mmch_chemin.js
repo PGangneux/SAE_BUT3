@@ -1,5 +1,10 @@
 import mm_Node from "../mm_node.js";
+
+/**
+ * @template dbjsclass
+ */
 export default class mmch_CheminT extends mm_Node {
+    /** @type {dbjsclass} */
     static mmch_dbjsclass = null;
 
     static mmch_default_listcat_args = { size : 1 };
@@ -10,7 +15,9 @@ export default class mmch_CheminT extends mm_Node {
 
     static mmch_default_previewcat_args = { size : 1 };
     static mmch_default_previewinst_args = { size : 1 };
+    /** @type {dbjsclass} */
     mmch_obj;
+    /** @type {Number} */
     mmch_key;
     static #mmch_counter = 0;
 
@@ -22,6 +29,10 @@ export default class mmch_CheminT extends mm_Node {
         this.mmch_obj = content;
         this.mmch_key = mmch_CheminT.#mmch_counter;
         mmch_CheminT.#mmch_counter += 1;
+    }
+
+    static reset_key_counter(){
+        mmch_CheminT.#mmch_counter = 0;
     }
 
     static async* mmch_listcat(args = {}) {
@@ -102,11 +113,7 @@ export default class mmch_CheminT extends mm_Node {
 
     // Get style for rendering (using x/y for smooth animation)
     getStyle() {
-        // if (this.x == NaN || this.y == NaN) {
-        //     console.warn("Node has NaN position", this);
-        //     this.x = this.targetX;
-        //     this.y = this.targetY;
-        // }
+        // TODO : REDO
 
         const isVideoContent = this.mmch_hasMiniature(); // this.isVideoContent();
         const nodeDimensions = isVideoContent ?

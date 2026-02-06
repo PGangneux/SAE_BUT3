@@ -13,118 +13,104 @@ export default {
     data() {
         return {
             mm_LegendClassMap: mm_LegendClassMap,
-            nodeTitle: 'Inconnue',
-            nodeSubtitle: "Inconnue",
-            nodeDescription: [],
+            nodeTitle: 'Titre Inconnue',
+            nodeSubtitle: "Sous-Titre Inconnue",
+            nodeDescription: ["Description Inconnue"],
             hasMiniature: false,
-            thumbnailLoading: false,
-            thumbnailUrl: null,
+            thumbnailLoading: true,
+            thumbnailUrl: "",
         };
     },
-    methods: {
-        async loadNodeData() {
-            if (!this.node_instance.mmch_obj) {
-                if (this.node_instance.constructor != mmch_Root) {
-                    this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
-                } else {
-                    this.nodeTitle = '';
-                }
-                return;
+    mounted() {
+        this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Sous-Titre Inconnue';
+        // if it's a category without data
+        if (!this.node_instance.mmch_obj) {
+            if (this.node_instance.constructor != mmch_Root) {
+                this.nodeTitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Titre Inconnue';
             } else {
-                this.nodeSubtitle = this.mm_LegendClassMap[this.node_instance.constructor.mmch_dbjsclass.name] || 'Inconnue';
+                this.nodeTitle = '';
             }
-            this.nodeTitle = await this.node_instance.mmch_getTitle() || 'Titre Inconnue';
-            // Load description
-            this.nodeDescription = await this.node_instance.mmch_getDescription();
-            // Check if has miniature
-            this.thumbnailLoading = true;
-            this.hasMiniature = await this.node_instance.mmch_hasMiniature();
-            // Load miniature if available
-            if (this.hasMiniature) {
-                this.thumbnailUrl = await this.node_instance.mmch_getMiniature();
-            }
+            return;
+        }
+        // it's an object / video node
+        this.thumbnailLoading = true;
+        // load title
+        this.node_instance.mmch_getTitle().then((title) => {
+            if (title) this.nodeTitle = title;
+        });
+        // Load description
+        this.node_instance.mmch_getDescription().then((descriptions) => {
+            if (descriptions) this.nodeDescription = descriptions;
+        });
+        // Check if has miniature
+        this.hasMiniature = this.node_instance.mmch_hasMiniature()
+        if (this.hasMiniature) {
+            this.node_instance.mmch_getMiniature().then((miniurl) => {
+                if (miniurl) this.thumbnailUrl = miniurl;
+                this.thumbnailLoading = false;
+            });
+        } else {
             this.thumbnailLoading = false;
         }
-    },
-    computed: {
-        nodeClass() {
-            const baseClass = `mm_node ${this.node_instance.mmch_getStyle()}`;
-            const shapeClass = this.hasMiniature ? 'mm_nodeSquircle' : 'mm_nodeRound';
-
-            return `${baseClass} ${shapeClass}`;
-        },
-    },
-    async mounted() {
-        // Load all async data
-        await this.loadNodeData();
     },
 }
 </script>
 
 <template>
-    <div class="mm_node" :class="nodeClass" :style="node_instance.getStyle()">
+    <div class="mm_node" :class="`mm_node ${this.node_instance.mmch_getStyle()}`"
+        :style="this.node_instance.getStyle()">
+        <!--
         <div style="display: none;">
-            typeof node_instance {{ typeof this.node_instance }}
-            thumbnailLoading {{ thumbnailLoading }}
-            thumbnailUrl {{ thumbnailUrl }}
-            nodeTitle {{ nodeTitle }}
-            nodeDescription {{ nodeDescription }}
-            hasMiniature {{ hasMiniature }}
-            node_instance {{ }}
+            {{ this.node_instance }}
         </div>
-
-        <!-- Case 1: No content -->
+        -->
         <template v-if="!this.node_instance.mmch_obj">
             <div class="mm_node_content">
-                <p class="mm_node_title">{{ nodeTitle }}</p>
-                <template v-if="node_instance.loading">
+                <p class="mm_node_title">{{ this.nodeTitle }}</p>
+                <template v-if="this.node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>
         </template>
-
-        <!-- Case 3: Has content and miniature -->
         <template v-else-if="this.node_instance.mmch_obj && hasMiniature">
             <div class="mm_node_content">
                 <p class="mm_node_title">
-                    {{ nodeTitle }}
+                    {{ this.nodeTitle }}
                 </p>
-                <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
+                <p class="mm_node_subtitle">{{ this.nodeSubtitle }}</p>
                 <div class="mm_node_description">
-                    <p v-for="(line, index) in nodeDescription" :key="index">
+                    <p v-for="(line, index) in this.nodeDescription" :key="index">
                         {{ line }}
                     </p>
                 </div>
-                <template v-if="node_instance.loading">
+                <template v-if="this.node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>
             <div class="mm_node_preview">
-                <template v-if="thumbnailLoading">
+                <template v-if="this.thumbnailLoading">
                     <img src="/imgs/spinner.gif" alt="Loading thumbnail..." class="mm_node_loading-spinner" />
                 </template>
-                <template v-else-if="thumbnailUrl">
-                    <img :src="thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
+                <template v-else-if="this.thumbnailUrl">
+                    <img :src="this.thumbnailUrl" alt="Miniature" class="mm_node_thumbnail">
                 </template>
                 <template v-else>
                     <img src="/imgs/close.svg" alt="erreur image" class="mm_node_no-thumbnail">
                 </template>
             </div>
         </template>
-
-        <!-- Case 2: Has content but no miniature -->
         <template v-else-if="this.node_instance.mmch_obj && !hasMiniature">
             <div class="mm_node_content">
                 <p class="mm_node_title">
-                    {{ nodeTitle }}
+                    {{ this.nodeTitle }}
                 </p>
-                <p class="mm_node_subtitle">{{ nodeSubtitle }}</p>
+                <p class="mm_node_subtitle">{{ this.nodeSubtitle }}</p>
                 <div class="mm_node_description">
                     <p v-for="(line, index) in nodeDescription" :key="index">
                         {{ line }}
                     </p>
                 </div>
-                <template v-if="node_instance.loading">
+                <template v-if="this.node_instance.loading">
                     <img src="/imgs/spinner.gif" alt="Loading..." class="mm_node_loading-spinner" />
                 </template>
             </div>

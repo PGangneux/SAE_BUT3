@@ -1,13 +1,58 @@
 /* the Balls colors */
-.mmLegendColorMapmm_Root { background-color: #fff;}
-.mmLegendColorMapArtiste { background-color: #A0522D;}
-.mmLegendColorMapExtrait { background-color: #941C1C;}
-.mmLegendColorMapInterview { background-color: #9747FF;}
-.mmLegendColorMapOccasion    {background-color : #c24e00ff ;}
-.mmLegendColorMapQuestion { background-color: #FFCD06;}
-.mmLegendColorMapAudio { background-color: #010582;}
-.mmLegendColorMapTag { background-color: #02b360ff;}
-.mmLegendColorMapTheme { background-color: #016969ff;}
+.mmLegendColorMapmm_Root {
+    background-color: #fff;
+    clip-path: circle(50%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+}
+
+.mmLegendColorMapArtiste {
+    background-color: #A0522D;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    aspect-ratio: 1.2;
+}
+
+.mmLegendColorMapExtrait {
+    background-color: #941C1C;
+    border-radius: 10%;
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapInterview {
+    background-color: #9747FF;
+    border-radius: 10%;
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapOccasion {
+    background-color: #c24e00ff;
+    clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapQuestion {
+    background-color: #FFCD06;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapAudio {
+    background-color: #010582;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapTag {
+    background-color: #02b360ff;
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+    aspect-ratio: 1;
+}
+
+.mmLegendColorMapTheme {
+    background-color: #016969ff;
+    clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+    aspect-ratio: 1;
+}
 
 /*
 * MINDMAP CSS
@@ -304,15 +349,6 @@
 .mm_node:hover {
     transform: scale(1.08);
     box-shadow: 0 0 25px var(--vert-neon);
-}
-
-.mm_nodeSquircle {
-    border-radius: 10%;
-}
-
-.mm_nodeRound {
-    aspect-ratio: 1;
-    border-radius: 50%;
 }
 
 /* Node content layout title subtitle description */
