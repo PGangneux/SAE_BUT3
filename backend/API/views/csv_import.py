@@ -1,4 +1,5 @@
 import csv
+import logging
 from datetime import date as Date, datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,6 +19,8 @@ from ..serializers import (
     InterviewsSerializer,
 )
 import threading
+
+logger = logging.getLogger(__name__)
 
 
 class CSVImportView(APIView):
@@ -355,7 +358,7 @@ class CSVImportView(APIView):
 
         titre = f"Interview de {artiste_node.name} pour {occasion_node.name if occasion_node else 'une occasion inconnue'}"
         if titre in [interview.titre for interview in Interview.nodes.all()]:
-            print(f"Avertissement: Interview déjà existante - {titre}")
+            logger.warning(f"Interview déjà existante - {titre}")
             return
         try:
             interview_node = serializer_interview.create(
@@ -377,7 +380,7 @@ class CSVImportView(APIView):
                     serializer.create(serializer.validated_data)
 
         except Exception as e:
-            print(f"Erreur lors de la création de l'interview: {e}")
+            logger.debug(f"Erreur lors de la création de l'interview: {e}")
 
     def get_code_yt(self, url):
         """
