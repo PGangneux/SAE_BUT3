@@ -62,7 +62,7 @@ class TestCSVImportView(Neo4jTestCase):
         )
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.data["error"] == "Le fichier CSV est vide"
+        assert response.data["error"] == "CSV vide"
 
 
     def test_csv_missing_headers(self):
@@ -96,8 +96,8 @@ class TestCSVImportView(Neo4jTestCase):
         assert "extra" in response.data
 
 
-    @patch("API.views.csv_import.CSVImportView.save_data")
-    def test_valid_csv_file(self, mock_save_data):
+    @patch("API.views.csv_import.CSVImportView.run_import")
+    def test_valid_csv_file(self, mock_run_import):
         csv_content = (
             "Ville,Artiste,Auteur,Date,Evenement,Position,Question,"
             "Audios,Tags,Origine,Youtube,Vimeo\n"
@@ -111,10 +111,11 @@ class TestCSVImportView(Neo4jTestCase):
             self.url, {"file": csv_file}, format="multipart"
         )
 
-        assert response.status_code == status.HTTP_201_CREATED
-        assert "lignes importées avec succès" in response.data["message"]
+        assert response.status_code == status.HTTP_202_ACCEPTED
+        assert "Import CSV lancé" in response.data["message"]
+        assert "job_id" in response.data
 
-        mock_save_data.assert_called_once()
+        mock_run_import.assert_called_once()
 
 
 
