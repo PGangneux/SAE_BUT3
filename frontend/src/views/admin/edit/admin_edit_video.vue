@@ -65,6 +65,11 @@ export default {
             tagsConnected: [],
             tagsToDisconnect: [],
             tagsToCreate: [],  
+
+            // Gestion des audios
+            audioSelected: null,
+            audioToConnect: null,
+            audioToDisconnect: null,  
         };
     },
     
@@ -127,7 +132,7 @@ export default {
 
           await this.current_extrait.create();
           //this.new_extrait = new markRaw(new Extrait({}));
-          await this.save_tags();
+          await this.save_relations();
 
           sessionStorage.setItem('popupSuccess', 'true');
           sessionStorage.setItem('create', this.create ? 'true' : 'false');
@@ -163,7 +168,7 @@ export default {
 
         if(this.message_error  == ""){
             await this.current_extrait.update();
-            await this.save_tags();
+            await this.save_relations();
             
             sessionStorage.setItem('popupSuccess', 'true');
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
@@ -190,11 +195,79 @@ export default {
 
 
 
-    async save_tags() {
+    async save_relations() {
+        try {
+            // Gérer les audios
+            await this.save_audio();
+            
+            // Gérer les tags
+            await this.save_tags_only();
+            
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde des relations:', error);
+            throw error;
+        }
+    },
+
+    async save_audio() {
+        try {
+            console.log('save_audio appelé');
+            console.log('audioToConnect:', this.audioToConnect);
+            console.log('audioToDisconnect:', this.audioToDisconnect);
+            
+            if (this.audioToConnect) {
+                console.log('Tentative de connexion audio:', this.audioToConnect);
+                
+                // Récupérer l'UUID directement depuis l'objet markRaw
+                const audioUuid = this.audioToConnect.uuid;
+                const audioName = this.audioToConnect.name;
+                
+                console.log('UUID:', audioUuid, 'Name:', audioName);
+                
+                // Créer une instance Audio propre sans utiliser les données réactives
+                const audioInstance = Object.create(Audio.prototype);
+                audioInstance.constructor({ uuid: audioUuid, name: audioName });
+                
+                // Alternative plus simple : créer un objet simple avec les bonnes propriétés
+                const simpleAudio = {
+                    uuid: audioUuid,
+                    name: audioName
+                };
+                
+                console.log('Instance créée:', simpleAudio);
+                
+                await this.current_extrait.connect_audio(simpleAudio);
+                console.log('Audio connecté avec succès:', audioName);
+            }
+            if (this.audioToDisconnect) {
+                console.log('Tentative de déconnexion audio:', this.audioToDisconnect);
+                
+                const audioUuid = this.audioToDisconnect.uuid;
+                const audioName = this.audioToDisconnect.name;
+                
+                const simpleAudio = {
+                    uuid: audioUuid,
+                    name: audioName
+                };
+                
+                await this.current_extrait.disconnect_audio(simpleAudio);
+                console.log('Audio déconnecté avec succès:', audioName);
+            }
+            
+            // Réinitialiser les variables audio
+            this.audioToConnect = null;
+            this.audioToDisconnect = null;
+        } catch (error) {
+            console.error('Erreur lors de la sauvegarde de l\'audio:', error);
+            console.error('Détail de l\'erreur:', error.message);
+            throw error;
+        }
+    },
+
+    async save_tags_only() {
         try {
             // Connecter les tags existants
             for (const tag of this.tagsConnected) {
-                console.log(tag)
                 await this.current_extrait.connect_tag(tag);
             }
             
@@ -209,7 +282,7 @@ export default {
                 await this.current_extrait.disconnect_tag(tag);
             }
             
-            // Réinitialiser les listes après sauvegarde
+            // Réinitialiser les listes de tags
             this.tagsConnected = [];
             this.tagsToCreate = [];
             this.tagsToDisconnect = [];
@@ -255,13 +328,16 @@ export default {
     async creerNouveauAudio(){
 
     if( this.laselectedAudio != "" && this.laselectedAudio != null ){
-          if (!this.listeArtiste.find(a => a.name === this.laselectedAudio)){
+          if (!this.listeAudios.find(a => a.name === this.laselectedAudio)){
             const newAudio = new Audio({});
             newAudio.name = this.laselectedAudio;
             await newAudio.create()
             this.listeAudios.push(newAudio);
-            this.current_extrait.audio = await newAudio.uuid;
-            this.current_extrait.audio_uuid = await newAudio.uuid;
+            
+            // Connecter l'audio à l'extrait via la relation audios
+            if (this.current_extrait.uuid) {
+              await this.current_extrait.connect_audio(newAudio);
+            }
             
             alert('l\'audio ' + newAudio.name + ' est creer');
           }else{
@@ -358,18 +434,18 @@ export default {
       const audio = this.listeAudios.find(a => a.name === this.laselectedAudio);
 
       
-
       //verifie si audio existe et n'es pas null
       if (audio) {
-          this.current_extrait.audio = audio.uuid;
-          this.current_extrait.audio_uuid = audio.uuid;
+          this.audioSelected = audio;
+          this.audioToConnect = audio;
+          this.audioToDisconnect = null;
         } else {
-          this.current_extrait.audio = null;
-          this.current_extrait.audio_uuid = null;
+          this.audioSelected = null;
+          this.audioToConnect = null;
+          this.audioToDisconnect = this.audioSelected;
       }
 
       console.log(this.current_extrait);
-
     },
 
     FoncSelectedQuestion() {
@@ -396,8 +472,8 @@ export default {
 
 
     async recupeAudio(){
-      //reccupere la liste des Artistes
-      this.listeAudios =  markRaw(await Audio.list());
+      //reccupere la liste des Audios
+      this.listeAudios = markRaw(await Audio.list());
     },
 
     async recupeQuestion(){

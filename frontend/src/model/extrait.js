@@ -234,7 +234,7 @@ export default class Extrait extends Model {
      * Déconnecte un extrait d'un audio
      * @param {Audio} audio 
      */
-    async connect_audio(audio) {
+    async disconnect_audio(audio) {
         await this.disconnect(this.#audios, audio);
     }
 
