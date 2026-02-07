@@ -3,16 +3,41 @@
 import { markRaw } from 'vue';
 import ClientAPI from "@model/clientAPI.js";
 import Utilisateur from "@model/utilisateur.js";
-
+import edit_success from "./admin/gestion/edit_success.vue"
+import edit_error from './admin/gestion/edit_error.vue';
 
 export default {
     name: "page_account",
+    components: {
+        edit_success,
+        edit_error
+    },
+
     data() {
         return {
-            current_utilisateur : {type:Utilisateur},
-            dico_user:{},
+
+            current_utilisateur: { type: Utilisateur },
+            popupEnregistrer: false,
+            popupDelete: false,
+            popupSuccess: false,
+            popupError: false,
+            create: true,
+            showPassword: false,
+            showNewPassword: false,
+
         };
     },
+    methods: {
+        togglePassword() {
+            this.showPassword = !this.showPassword;
+        },
+
+        toggleNewPassword() {
+            this.showNewPassword = !this.showNewPassword;
+        }
+
+    },
+
     
     async mounted() {
         this.current_utilisateur = markRaw(await ClientAPI.current_user);
@@ -26,59 +51,96 @@ export default {
 
 <h1 class="text-center colorneon"> Compte  </h1>
 
-<form action="" class="heit" style="padding: 1em;">
-    <div class="row client" style="height: 80%;">
-        <div class="row imputexte client">
+ <form action="" class="grisee" style="padding: 1em;">
+        <div class="row client">
+            <div class="row client">
 
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="Pseudo"> Pseudo </label>
-                <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo" v-model="this.current_utilisateur.pseudo" >
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text  colovert client" for="Pseudo"> Pseudo </span>
+                    <input type="text" class="form-control" id="Pseudo" name="Pseudo" placeholder="Pseudo"
+                        v-model="this.current_utilisateur.pseudo">
+                </div>
+
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text client colovert" for="Prénom">Prénom</span>
+                    <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom"
+                        v-model="this.current_utilisateur.prenom">
+                </div>
+
             </div>
 
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="Prénom">Prénom</label>
-                <input type="text" class="form-control row client" id="Prénom" name="Prénom" placeholder="Prénom" v-model="this.current_utilisateur.prenom" >
+            <div class="row client">
+
+
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text  colovert client" for="Nom">Nom</span>
+                    <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom"
+                        v-model="this.current_utilisateur.nom">
+                </div>
+
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text client colovert" for="Adresse">Adresse</span>
+                    <input type="text" class="form-control row client " id="Adresse" name="Adresse"
+                        placeholder="Adresse e-mail" v-model="this.current_utilisateur.email">
+                </div>
+            </div>
+
+            <div class="row client">
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text client colovert" for="MDP">MDP</span>
+
+                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
+                        name="MDP" placeholder="MDP" v-model="this.current_utilisateur.password">
+                    <button class="btn btn-outline-secondary colovert" type="button" @click="togglePassword">
+                        <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+
+                </div>
+            </div>
+
+            <div class="row client">
+                <div class="input-group mb-3 col">
+                    <span class="row input-group-text client colovert" for="MDP">New MDP</span>
+
+                    <input :type="showNewPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
+                        name="MDP" placeholder="New MDP" v-model="this.current_utilisateur.newPassword">
+                    <button class="btn btn-outline-secondary colovert" type="button" @click="toggleNewPassword">
+                        <i :class="showNewPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </button>
+
+                </div>
             </div>
 
         </div>
+        <div class="row bottom_button client">
 
-        <div class="row client imputexte">
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="Nom">Nom</label>
-                <input type="text" class="form-control row client" id="Nom" name="Nom" placeholder="Nom" v-model="this.current_utilisateur.nom">
-            </div>
-
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="mot de passe">Nouveau Mot De Passe</label>
-                <input type="text" class="form-control row client" id="mot de passe" name="mot de passe" placeholder="mot de passe" >
-            </div>
-
-
+            <button @click="Enregistrer()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+                    alt="Enregistrer"> Enregistrer </button>
+            <RouterLink class="btn  btn-outline-danger" to="/account"> <img src="/imgs/delete.svg" alt="Supprimer"> Annuler
+            </RouterLink>
         </div>
-
-        <div class="row client imputexte">
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="Adresse">Adresse</label>
-                    <input type="text" class="form-control row client " id="Adresse" name="Adresse" placeholder="Adresse e-mail" v-model="this.current_utilisateur.email" >
-            </div>
-
-            <div class="input-group imputexte mb-3 col">
-                <label class="row client" for="confirmer mdp">Confirmer Nouveau <br></br> Mot De Passe</label>
-                    <input type="text" class="form-control row client " id="confirmer mdp" name="confirmer mdp" placeholder="confirmer mot de passe" >
-            </div>
-        </div>
-
-
-    </div>
-    <div class="row client groupebutton" style="height: 10%;">
-        <button  type="submit"   class="bt btn col" > <img src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-        <button  type="reset"  class="bt btn col" > <img src="/imgs/cancel.svg" alt="Annuler"> Annuler </button>
-    </div>
-</form>
+    </form>
 
 </template>
 
 <style scoped>
+
+.client {
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+
+.colovert {
+    border-color: var(--vert-pale);
+    background-color: var(--vert-pale);
+    color: var(--blanc);
+}
+
+span {
+    min-width: 5em;
+}
+
 
 .bt{
     color: var(--blanc);
