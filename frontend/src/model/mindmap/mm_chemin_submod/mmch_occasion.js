@@ -5,6 +5,9 @@ import mmch_Extrait from "./mmch_extrait.js";
 import mmch_Interview from "./mmch_interview.js";
 import mmch_Theme from "./mmch_theme.js";
 
+/**
+ * @extends mmch_CheminT<Occasion>
+ */
 export default class mmch_Occasion extends mmch_CheminT {
     static mmch_dbjsclass = Occasion;
     /** @type {Array<String>} */

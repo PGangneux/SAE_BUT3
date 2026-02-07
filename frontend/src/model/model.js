@@ -113,7 +113,7 @@ export default class Model {
             console.log(url,Class);
             return new Class(await ClientAPI.get(url));
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return null;
         }
     }
@@ -132,7 +132,7 @@ export default class Model {
                 });
             });
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return [];
         }
     }
@@ -153,7 +153,7 @@ export default class Model {
                 });
             });
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return [];
         }
     }
@@ -182,7 +182,7 @@ export default class Model {
                 return new this(data);
             });
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return null;
         }
     }
@@ -251,7 +251,7 @@ export default class Model {
                     return true;
                 });
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return false;
         }
     }
@@ -266,7 +266,7 @@ export default class Model {
         try {
             return await ClientAPI.post(url, JSON.stringify(data));
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return null;
         }
     }
@@ -281,7 +281,7 @@ export default class Model {
         try {
             return await ClientAPI.delete(ClientAPI.url_uuid(url, instance.uuid));
         } catch (error) {
-            console.error(error.toString());
+            console.error(error);
             return false;
         }
     }

@@ -21,6 +21,9 @@ const mm_CategorysSearch = [
 class mm_Root {
 }
 
+/**
+ * @extends mmch_CheminT<mm_Root>
+ */
 export default class mmch_Root extends mmch_CheminT {
     static mmch_dbjsclass = mm_Root;
 

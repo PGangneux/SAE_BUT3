@@ -1,10 +1,8 @@
 <script>
 import { markRaw, toRaw } from 'vue';
-import Extrait from '@model/extrait';
 import { videoStore } from "@model/videoStore";
-import miniature_video from "./miniature_video.vue";
-import ClientAPI from '@model/clientAPI';
-import Interview from '@model/interview';
+import miniature_video from "@components/lecteur_video/miniature_video.vue";
+import fetchRecommendations from '@model/recommandation';
 
 
 // Todo ajouter gif de chargement pendant le fetch des vidéos
@@ -32,25 +30,6 @@ export default {
   },
 
   methods: {
-    /**
-     * Génère un dictionnaire de poids selon le chemin d'entrée de l'utilisateur.
-     * les poids sont plus lourd au debut du chemin.
-     *
-     * @param {Array} chemin - liste représentant le chemin d'entrée de l'utilisateur
-     * @return {Dict} Dictionnaire des poids pour les recommandations
-    */
-    get_reco_weights(chemin) {
-      const weights = {};
-      console.log("bar_list_video get_reco_weights", chemin);
-
-      chemin.forEach((value, index, array) => {
-        console.log("bar_list_video get_reco_weights", value);
-        weights[value.constructor.mmch_dbjsclass.name] = array.length - index;
-      });
-      return weights;
-    },
-
-
     // À déplacer
     /* Récupère les vidéos recommandées en fonction de l'extrait ou de l'interview actuelle.
        Utilise un algorithme de recommandation basé sur des poids prédéfinis.
@@ -61,43 +40,16 @@ export default {
         this.selected = "reco";
         this.videos = []
       }
-      // Feature-flag de l'algorithme de recommandation
-      if (true) {
-        const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
-        // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
-        let weights;
-        if (false) {
-          weights = localStorage.getItem('weights');
-          weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
-          localStorage.setItem('weights', JSON.stringify(weights));
-        }
-        else {
-          weights = this.get_reco_weights(videoStore.chemin);
-        }
-        this.videos = this.videos.concat(
-          markRaw(
-            await ClientAPI.post(
-              `${ClientAPI.BASE_URL}api/recommandations`,
-              JSON.stringify({ 'weights': weights }),
-              ClientAPI.current_user ? true : false,
-              video ? { 'video': video, 'size': 10, 'page':this.page } : null
-            )
-              .then(
-                json => {
-                  return json.map(
-                    (v) => {
-                      if (v.type == 'Extrait') { return markRaw(new Extrait(v.value)); }
-                      else { return markRaw(new Interview(v.value)); }
-                    }
-                  );
-                }
-              )
-          )
-        );
-      }
-      else {
-        this.videos = markRaw(await Extrait.list({ size: 10 })); // récupère les 10 derniers extraits/interviews
-      }
+      this.videos = this.videos.concat(
+        await fetchRecommendations(
+          {
+            video: this.extrait ? this.extrait.uuid :
+              this.interview ? this.interview.uuid : null,
+            chemin: videoStore.chemin,
+            filters: null, page: this.page, size: 10
+          }
+        )
+      );
       console.log('vidéo', this.videos);
     },
 
@@ -122,38 +74,18 @@ export default {
         this.selected = "questions"
         this.videos = []
       }
-      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
-      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
-      let weights;
-      if (false) {
-        weights = localStorage.getItem('weights');
-        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
-        localStorage.setItem('weights', JSON.stringify(weights));
-      }
-      else {
-        weights = this.get_reco_weights(videoStore.chemin);
-      }
       const question = markRaw(await this.extrait.question);
       this.videos = this.videos.concat(
-        markRaw(
-          await ClientAPI.post(
-            `${ClientAPI.BASE_URL}api/recommandations`,
-            JSON.stringify({ 'weights': weights, 'filters': { 'Question': question.uuid } }),
-            ClientAPI.current_user ? true : false,
-            video ? { 'video': video, 'size': 10, 'page':this.page } : null
-          )
-            .then(
-              json => {
-                return json.map(
-                  (v) => {
-                    if (v.type == 'Extrait') { return markRaw(new Extrait(v.value)); }
-                    else { return markRaw(new Interview(v.value)); }
-                  }
-                );
-              }
-            )
-          )
-        );
+        await fetchRecommendations(
+          {
+            video: this.extrait ? this.extrait.uuid :
+              this.interview ? this.interview.uuid : null,
+            chemin: videoStore.chemin,
+            filters: { 'Question': question.uuid },
+            page: this.page, size: 10
+          }
+        )
+      );
     },
 
 
@@ -166,38 +98,18 @@ export default {
         this.selected = "artiste";
         this.videos = []
       }
-      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
-      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
-      let weights;
-      if (false) {
-        weights = localStorage.getItem('weights');
-        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
-        localStorage.setItem('weights', JSON.stringify(weights));
-      }
-      else {
-        weights = this.get_reco_weights(videoStore.chemin);
-      }
       const artiste = markRaw(await this.extrait.artiste);
       this.videos = this.videos.concat(
-        markRaw(
-          await ClientAPI.post(
-            `${ClientAPI.BASE_URL}api/recommandations`,
-            JSON.stringify({ 'weights': weights, 'filters': { 'Artiste': artiste.uuid } }),
-            ClientAPI.current_user ? true : false,
-            video ? { 'video': video, 'size': 10, 'page':this.page } : null
-          )
-            .then(
-              json => {
-                return json.map(
-                  (v) => {
-                    if (v.type == 'Extrait') { return markRaw(new Extrait(v.value)); }
-                    else { return markRaw(new Interview(v.value)); }
-                  }
-                );
-              }
-            )
-            )
-        );
+        await fetchRecommendations(
+          {
+            video: this.extrait ? this.extrait.uuid :
+              this.interview ? this.interview.uuid : null,
+            chemin: videoStore.chemin,
+            filters: { 'Artiste': artiste.uuid },
+            page: this.page, size: 10
+          }
+        )
+      );
 
     },
 
@@ -211,39 +123,19 @@ export default {
         this.selected = "thèmes"
         this.videos = []
       }
-      const video = this.extrait ? this.extrait.uuid : this.interview ? this.interview.uuid : null;
-      // TODO Nécessite d'enregistrer et modifier les poids à chaque fois
-      let weights;
-      if (false) {
-        weights = localStorage.getItem('weights');
-        weights = weights ? JSON.parse(weights) : this.get_reco_weights(videoStore.chemin);
-        localStorage.setItem('weights', JSON.stringify(weights));
-      }
-      else {
-        weights = this.get_reco_weights(videoStore.chemin);
-      }
       const question = markRaw(await this.extrait.question);
       const theme = markRaw(await question.theme);
       this.videos = this.videos.concat(
-        markRaw(
-          await ClientAPI.post(
-            `${ClientAPI.BASE_URL}api/recommandations`,
-            JSON.stringify({ 'weights': weights, 'filters': { 'Thème': theme.uuid } }),
-            ClientAPI.current_user ? true : false,
-            video ? { 'video': video, 'size': 10, 'page':this.page } : null
-          )
-            .then(
-              json => {
-                return json.map(
-                  (v) => {
-                    if (v.type == 'Extrait') { return markRaw(new Extrait(v.value)); }
-                    else { return markRaw(new Interview(v.value)); }
-                  }
-                );
-              }
-            )
-          )
-        );
+        await fetchRecommendations(
+          {
+            video: this.extrait ? this.extrait.uuid :
+              this.interview ? this.interview.uuid : null,
+            chemin: videoStore.chemin,
+            filters: { 'Thème': theme.uuid },
+            page: this.page, size: 10
+          }
+        )
+      );
     },
 
 
@@ -285,7 +177,7 @@ export default {
 
       //update bar liste video
       this.selected = '';
-      console.log("this.current_reco test") 
+      console.log("this.current_reco test")
       await this.current_reco()
       console.log("after update video reco", this.videos)
 
@@ -293,7 +185,7 @@ export default {
         child.update_miniature();
       });
 
-      
+
     },
 
 

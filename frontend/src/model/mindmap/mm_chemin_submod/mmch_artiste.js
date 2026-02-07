@@ -3,9 +3,12 @@ import Artiste from "@model/artiste.js";
 import mmch_CheminT from "./mmch_chemin.js";
 import mmch_Extrait from "./mmch_extrait.js";
 
+/**
+ * @extends mmch_CheminT<Artiste>
+ */
 export default class mmch_Artiste extends mmch_CheminT {
     static mmch_dbjsclass = Artiste;
-    /** @type {Array<[String>} */
+    /** @type {Array<String>} */
     #description = null;
 
     async* mmch_listinst(args = {}) {
