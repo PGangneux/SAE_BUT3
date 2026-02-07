@@ -69,60 +69,50 @@ export default {
 
 </template>
 
-<style scoped>
-
-
-
-.carte{
+<style scoped>.carte {
   padding: 5px;
   padding-bottom: 1em;
-  /*!margin: 5px; */
+  transition: transform 0.3s ease, filter 0.3s ease; 
 }
 
+.carte:hover {
+  transform: translateY(-8px); 
+  cursor: pointer; 
+}
 
-
-.card{
+.card {
   background-color: var(--gris-moyen);
-  filter: drop-shadow(20px 13px 4px var(--noir)) ;
-
- 
+  filter: drop-shadow(20px 13px 4px var(--noir));
+  transition: filter 0.3s ease;
 }
 
-
-
-
-li > .card{
-    padding: 20px 50px 150px;
-    margin: 10px 10px 10px 10px;
-  
+.carte:hover .card {
+  filter: drop-shadow(25px 18px 8px var(--noir));
 }
 
-
-
-ul {
-  display: flex;
-  list-style-type: none;
-  justify-content: space-between;
-
-  
+li > .card {
+  padding: 20px 50px 150px;
+  margin: 10px 10px 10px 10px;
 }
 
 .scroller2 {
   width: 100%;
-  height: 100%;
+  height: 80vh;
   overflow-y: scroll;
-  scrollbar-color: var(---blanc) #A6A6A6;
+  scrollbar-color: var(--blanc) #A6A6A6;
   scrollbar-width: thin;
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  display: block;
 }
 
-
-.aggrandir{
+.aggrandir {
   display: flex;
   flex-wrap: nowrap;
   list-style-type: none;
   flex-grow: 1;
-
+  height: 80vh;
+  overflow: hidden;
 }
-
-
 </style>

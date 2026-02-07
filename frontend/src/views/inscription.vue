@@ -60,8 +60,6 @@ export default {
                     await this.current_utilisateur.create();
                     sessionStorage.setItem('popupSuccess', 'true');
                     sessionStorage.setItem('create', this.create ? 'true' : 'false');
-
-                    alert("creer");
                 } else {
                     this.popupError = true;
                     setTimeout(() => {

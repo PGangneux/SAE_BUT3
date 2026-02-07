@@ -4,7 +4,7 @@ import comp_baradmin from "@components/components_admin/nav_admin.vue";
 
 import popup_interview from "@components/components_admin/popup_admin_edit.vue";
 import popup_creer_question from "@components/components_admin/popup_creer_question.vue";
-import popup_valider from "@components/components_admin/popup_validation_creation.vue";
+
 import Extrait from "@model/extrait";
 
 import Audio from "@model/audio";
@@ -28,7 +28,6 @@ export default {
     comp_baradmin,
     popup_interview,
     popup_creer_question,
-    popup_valider,
     supprimer,
     tags,
     edit_success,
@@ -53,7 +52,6 @@ export default {
             create:false,
             popup: false,
             popupSelectInterview: false, //Props pour popupSelectInterview
-            popupEnregistrer:false,
             popupCreerQuestion:false,
             popupSuccess: false,
             popupError: false,
@@ -126,8 +124,6 @@ export default {
         this.message_error = await this.validationExtrait();
 
         if(this.message_error  == ""){
-
-          this.popupEnregistrer = true;
 
           await this.current_extrait.create();
           //this.new_extrait = new markRaw(new Extrait({}));
@@ -395,11 +391,6 @@ export default {
     },
 
 
-    popupchangeEnregistrer(){
-      //permet de changer l'etat de la popup Enregistrer
-      this.popupEnregistrer = !this.popupEnregistrer
-      
-    },
 
     popupchangeInterview(){
       //permet de changer l'etat de la popup Interview
@@ -950,8 +941,6 @@ export default {
 
     <div v-if="popup">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
 
-    <!-- <div v-if="popupSelectInterview === true">  <popup_interview v-on:ecoutepopup="popupchangeInterview" v-on:Interview_ajouter="interview_ajouter" v-on:Interview_retirer="interview_retirer" /> </div> -->
-    <div v-if="popupEnregistrer">  <popup_valider  v-on:popupenregistrer="popupchangeEnregistrer"/> </div>
 
     <edit_success 
         v-if="popupSuccess && create"
