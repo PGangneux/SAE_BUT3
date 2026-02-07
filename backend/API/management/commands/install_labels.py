@@ -1,6 +1,5 @@
-from neomodel import db
 from django.core.management.base import BaseCommand
-from neomodel import install_all_labels
+from neomodel import install_all_labels, db
 
 
 class Command(BaseCommand):

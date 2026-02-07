@@ -1,5 +1,6 @@
-from datetime import date
 from django.core.management.base import BaseCommand
+from django.contrib.auth.hashers import make_password
+from datetime import date
 from neomodel import db
 from ...models import (
     Artiste,
@@ -11,7 +12,6 @@ from ...models import (
     Utilisateur,
     Occasion,
 )
-from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
