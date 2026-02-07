@@ -10,7 +10,7 @@ from ...models import Utilisateur
 
 class TokenObtain(TokenObtainPairSerializer):
     """
-    Permet de se connecter avec pseudo ou email + mot de passe.
+    Permet de se connecter avec pseudo / email + mot de passe.
     Retourne les tokens JWT (access, refresh) et lien utilisateur
     """
 

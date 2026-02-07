@@ -16,15 +16,19 @@ class BaseSerializer(serializers.Serializer):
     """
     Classe de base contenant les méthodes pour la gestion des données (node)
 
+    Afin d'avoir une gestion des champs write_only, utiliser pour créer des relations one-to-many, il faut ajouter dans la classe fille un dictionnaire input_fields de la forme :
+    {"nom du champ du serializer": {"relationship": "attribut python relationship dans node", "node": Classe de node (model)}, }
+
+    Champs :
+        - uuid : uuid du node (read_only)
+
     Raises:
         ValidatorUnique: Lors de la création et la mise à jour d'un node,
             vérifie que les propriétés uniques sont bien uniques
     """
 
+    # uuid en read_only commun a tous les serializers
     uuid = serializers.CharField(read_only=True)
-
-    # Input:
-    # {"uuid": {"relationship": "attribut relationship dans node", "node": Classe de node}, }
     input_fields = {}
 
     def __init__(self, node: StructuredNode, *args, **kwargs):

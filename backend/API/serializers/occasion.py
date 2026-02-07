@@ -6,6 +6,11 @@ from ..models import Occasion
 class OccasionSerializer(BaseSerializer):
     """
     Sérializer du node Occasion
+
+    Champs aditionnels :
+        - name : nom de l'occasion (obligatoire)
+        Relations :
+            - interviews : les interviews liées à l'occasion
     """
 
     name = serializers.CharField(required=True)
@@ -14,6 +19,9 @@ class OccasionSerializer(BaseSerializer):
     interviews = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Occasion
+        """
         super().__init__(Occasion, *args, **kwargs)
 
     def get_interviews(self, occasion: Occasion):

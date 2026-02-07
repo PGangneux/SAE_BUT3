@@ -8,6 +8,11 @@ from ..serializers import BaseSerializer
 class ArtisteSerializer(BaseSerializer):
     """
     Sérializer du node Artiste
+
+    Champs aditionnels :
+        - name : nom de l'artiste (obligatoire)
+        Relations :
+            - extraits : les extraits liés à l'artiste
     """
 
     name = serializers.CharField(required=True)
@@ -16,6 +21,9 @@ class ArtisteSerializer(BaseSerializer):
     extraits = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Artiste
+        """
         super().__init__(Artiste, *args, **kwargs)
 
     def get_extraits(self, artiste):

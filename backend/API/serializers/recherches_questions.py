@@ -6,6 +6,15 @@ from ..models import Question
 class RecherchesQuestionsSerializer(RelationShipUtilisateurSerializer):
     """
     Sérializer RelationShip recherches_questions (Utilisateur <-> Question)
+
+    Gestion des questions liées à une recherche d'un utilisateur
+
+    Champs aditionnels :
+        Relations :
+            - theme : le thème lié à la question
+            - extraits : les extraits liés à la question
+        Champs en read_only :
+            - texte : texte de la question
     """
 
     # Outputs

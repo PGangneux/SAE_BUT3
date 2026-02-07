@@ -10,7 +10,8 @@ class TokenRefresh(TokenRefreshSerializer):
     def validate(self, attrs):
         refresh = self.token_class(attrs["refresh"])
 
-        # Pas encore pris en compte et non nécessaire
+        # Pas encore pris en compte et non nécessaire dans notre cas, mais à garder en tête pour une future évolution
+        # Copie de la méthode validate de TokenRefreshSerializer pour ajouter la possibilité de faire des vérifications supplémentaires sur le token refresh
         # user_id = refresh.payload.get(api_settings.get("USER_ID_CLAIM"), None)
         # if user_id:
         #     user = Utilisateur.nodes.get(uuid=user_id)

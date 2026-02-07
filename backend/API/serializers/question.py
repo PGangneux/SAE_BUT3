@@ -8,6 +8,12 @@ from ..errors import NotFound
 class QuestionSerializer(BaseSerializer):
     """
     Sérializer du node Question
+
+    Champs aditionnels :
+        - texte : texte de la question (obligatoire)
+        Relations :
+            - theme : le thème lié à la question
+            - extraits : les extraits liés à la question
     """
 
     texte = serializers.CharField(required=True)
@@ -21,6 +27,9 @@ class QuestionSerializer(BaseSerializer):
     extraits = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Question
+        """
         super().__init__(Question, *args, **kwargs)
 
     def get_theme(self, question):

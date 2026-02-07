@@ -7,6 +7,20 @@ from ..models import Utilisateur
 class UtilisateurSerializer(BaseSerializer):
     """
     Sérializer du node Utilisateur
+
+    Champs aditionnels :
+        - pseudo : pseudo de l'utilisateur (obligatoire)
+        - prenom : prénom de l'utilisateur (obligatoire)
+        - nom : nom de l'utilisateur (obligatoire)
+        - email : email de l'utilisateur (obligatoire)
+        - password : mot de passe de l'utilisateur (obligatoire, write_only)
+        Relations :
+            - recherches_artistes : les artistes recherchés par l'utilisateur
+            - regarder_interviews : les interviews regardées par l'utilisateur
+            - regarder_extraits : les extraits regardés par l'utilisateur
+            - recherches_questions : les questions recherchées par l'utilisateur
+        Champs en read_only :
+            - is_admin : indique si l'utilisateur est un administrateur
     """
 
     pseudo = serializers.CharField(required=True)
@@ -23,6 +37,9 @@ class UtilisateurSerializer(BaseSerializer):
     recherches_questions = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Utilisateur
+        """
         super().__init__(Utilisateur, *args, **kwargs)
 
     def get_recherches_artistes(self, utilisateur):

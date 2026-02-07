@@ -8,6 +8,21 @@ from ..models import Artiste, Audio, Extrait, Question
 class ExtraitSerializer(BaseSerializer):
     """
     Sérializer du node Extrait
+
+    Champs aditionnels :
+        - titre : titre de l'extrait
+        - description : description de l'extrait
+        - youtube_url : url de la vidéo youtube de l'extrait
+        - vimeo_url : url de la vidéo vimeo de l'extrait
+        - lieu : lieu de l'extrait
+        - uploaded_at : date de mise en ligne de l'extrait
+        - duree : durée de l'extrait en secondes
+        Relations :
+            - artiste : l'artiste lié à l'extrait
+            - question : la question liée à l'extrait
+            - interviews : les interviews liées à l'extrait
+            - audios : les audios liés à l'extrait
+            - tags : les tags liés à l'extrait
     """
 
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
@@ -41,7 +56,11 @@ class ExtraitSerializer(BaseSerializer):
     position = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
-        """Retire le champ `position` si aucune interview n'est dans le contexte."""
+        """
+        node : Extrait
+
+        Retire le champ `position` si aucune interview n'est dans le contexte.
+        """
         super().__init__(Extrait, *args, **kwargs)
         if not self.context.get("interview"):
             self.fields.pop("position", None)
@@ -96,11 +115,11 @@ class ExtraitSerializer(BaseSerializer):
                 {"extrait_uuid": extrait.uuid, "interview_uuid": interview.uuid},
             )[0][0][0]
         )
-    
+
     def create(self, validated_data: dict) -> StructuredNode:
         """
         Avant la création d'un extrait, on vérifie que les liens yt et vimeo ne sont pas déjà présent dans la bd
-        
+
         Args:
             validated_data (dict): Les données permettant de créer la relation
 
@@ -122,7 +141,7 @@ class ExtraitSerializer(BaseSerializer):
                 raise e
             except:
                 pass
-  
+
         elif not node:
             try:
                 node = Extrait.nodes.get(vimeo_url=vimeo_url)
@@ -133,4 +152,3 @@ class ExtraitSerializer(BaseSerializer):
                 pass
 
         return super().create(validated_data)
- 
