@@ -223,7 +223,8 @@ export default {
 <template>
     <comp_baradmin />
 
-    <h1 class="text-center colorneon"> Éditer {{ this.current_utilisateur.pseudo }} </h1>
+    <h1 v-if="!create" class="text-center colorneon"> Éditer {{ this.current_utilisateur.pseudo }} </h1>
+    <h1 v-else class="text-center colorneon"> Créer Utilisateur</h1>
 
     <form action="" class="grisee" style="padding: 1em;">
         <div class="row client">
@@ -261,10 +262,10 @@ export default {
 
             <div v-if="create == true" class="row client">
                 <div class="input-group mb-3 col">
-                    <span class="row input-group-text client colovert" for="MDP">MDP</span>
+                    <span class="row input-group-text client colovert" for="Mot De Passe">Mot De Passe</span>
 
-                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
-                        name="MDP" placeholder="MDP" v-model="this.current_utilisateur.password">
+                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="Mot De Passe"
+                        name="Mot De Passe" placeholder="Mot De Passe" v-model="this.current_utilisateur.password">
                     <button class="btn btn-outline-secondary colovert" type="button" @click="togglePassword">
                         <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                     </button>
@@ -289,62 +290,23 @@ export default {
         </div>
         <div class="row bottom_button client">
 
-            <RouterLink v-if="!create" to="/admin/user/" class="btn btn-outline-light"> <img src="/imgs/add.svg"
+            <RouterLink v-if="!create" to="/admin/user/" class="btn btn-outline-light" > <img src="/imgs/add.svg"
                     alt="add">
                 Ajouter un USER</RouterLink>
+
             <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img
                     src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-            <button v-if="!this.current_utilisateur.is_admin" @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
-                    src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+
+            <button v-if="!this.current_utilisateur.is_admin && create == false" @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+
+            <button v-if="create" @click="$router.go(-1)" type="button" class="btn btn-outline-danger"> 
+                <img src="/imgs/delete.svg" alt="Annuler"> Annuler 
+            </button>
 
         </div>
     </form>
 
-    <section v-if="false">
-
-        <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
-
-
-        <div class="row grisee" style=" margin: 1em;">
-            <div class="row " style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique non definie</p>
-                </div>
-
-                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique Video</p>
-                    <ul class="scroller ultagger row tagsfully">
-                        <li class="col" v-for="tag in this.tags">
-                            <button class="btn btn-primary"> {{ tag.name }} </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="row" style=" margin-left: 0 !important; margin-right: 0 !important;">
-                <div class="col " style="background-color: var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique non definie</p>
-                </div>
-
-                <div class="col " style="background-color:var(--gris-taupe); margin: 1%;">
-                    <p class="row pcentrer">Historique Tag</p>
-                    <ul class="scroller ultagger row tagsfully">
-                        <li class="col" v-for="tag in this.tags">
-                            <button class="btn btn-primary"> {{ tag.name }} </button>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <form class="row" style=" margin-left: 0 !important; margin-right: 0 !important; padding: 1em;" action="">
-                <button type="button" class=" btn btred col"> <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer
-                    Historique </button>
-            </form>
-
-
-        </div>
-
-    </section>
+    
 
     <supprimer v-if="popupDelete" :Element_Supp="current_utilisateur" @closePopup="popupDelete = false" />
 
@@ -364,7 +326,6 @@ export default {
     color: var(--blanc);
     background-color: var(--vert-pale);
     border-radius: 2em;
-
 }
 
 h2 {
@@ -375,11 +336,12 @@ h2 {
     color: var(--blanc);
     background-color: var(--rouge);
     border-radius: 2em;
-
 }
 
 .grisee {
     background-color: var(--gris-moyen);
+    margin-top: 5vh; 
+    margin-bottom: 5vh; 
 }
 
 label {
@@ -390,17 +352,14 @@ label {
     color: var(--vert-neon);
 }
 
-
 .pcentrer {
     margin-top: 1em;
     margin-bottom: 1em;
-    justify-content: center
+    justify-content: center;
 }
-
 
 .ultagger {
     list-style-type: none;
-
 }
 
 .tagsfully {
@@ -408,27 +367,10 @@ label {
     height: 100%;
 }
 
-
 .test {
     margin: 1%;
     text-align: center;
 }
-
-
-.bt {
-    color: var(--blanc);
-    background-color: var(--vert-pale);
-    border-radius: 2em;
-
-}
-
-.btred {
-    color: var(--blanc);
-    background-color: var(--rouge);
-    border-radius: 2em;
-}
-
-
 
 .colovert {
     border-color: var(--vert-pale);
@@ -439,6 +381,32 @@ label {
 .client {
     margin-right: 0px;
     margin-left: 0px;
+}
+
+
+.input-group {
+    height: 60px;
+}
+
+.input-group .form-control {
+    height: 100%;
+    font-size: 1.1rem;
+}
+
+.input-group-text {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.input-group .btn {
+    height: 100%;
+}
+
+
+.bottom_button .btn {
+    height: 60px;
+    font-size: 1.1rem;
 }
 
 label {

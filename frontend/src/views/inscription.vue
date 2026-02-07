@@ -159,10 +159,10 @@ export default {
 
             <div class="row client">
                 <div class="input-group mb-3 col">
-                    <span class="row input-group-text client colovert" for="MDP">MDP</span>
+                    <span class="row input-group-text client colovert" for="Mot De Passe">Mot De Passe</span>
 
-                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
-                        name="MDP" placeholder="MDP" v-model="this.current_utilisateur.password">
+                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="Mot De Passe"
+                        name="Mot De Passe" placeholder="Mot De Passe" v-model="this.current_utilisateur.password">
                     <button class="btn btn-outline-secondary colovert" type="button" @click="togglePassword">
                         <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                     </button>
