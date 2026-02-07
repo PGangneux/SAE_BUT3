@@ -2,6 +2,7 @@
 import { markRaw } from 'vue';
 import comp_headerbar from '@components/headerbar.vue';
 import comp_footerbar from '@components/footerbar.vue';
+import global_popup from './views/admin/gestion/global_popup.vue';
 import Interview from '@model/interview';
 import Extrait from '@model/extrait';
 
@@ -10,6 +11,7 @@ export default {
     components: {
         comp_headerbar,
         comp_footerbar,
+        global_popup,
     },
     data() {
         return {
@@ -128,4 +130,6 @@ export default {
         -->
     </main>
     <comp_footerbar />
-</template>
+
+    <global_popup/>
+</template> 
