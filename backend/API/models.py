@@ -152,3 +152,16 @@ class Tag(StructuredNode):
 
     uuid = UniqueIdProperty()
     name = RegexProperty(unique_index=True, required=True, expression=r".+")
+
+
+class CSVImportJob(StructuredNode):
+    uuid = UniqueIdProperty()
+    status = StringProperty(
+        choices={v: v for v in ["pending", "success", "error", "in_progress"]},
+        default="pending"
+    )
+    message = StringProperty(default="")
+
+
+    
+

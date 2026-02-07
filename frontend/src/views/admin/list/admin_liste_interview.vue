@@ -9,13 +9,17 @@ import { markRaw, nextTick } from 'vue';
 import Interview from '@model/interview.js';
 import Model from "@model/model.js";
 import comp_baradmin from "@components/components_admin/nav_admin.vue";
-import {parse} from "@model/parse_csv.js"
+import { parse, pollCSVJob, showGlobalToast } from "@model/parse_csv.js";
+import edit_error from '../gestion/edit_error.vue';
+import edit_success from "../gestion/edit_success.vue"
 
 
 export default {
     name: "page_admin_interview",
     components: {
         comp_baradmin,
+        edit_error,
+        edit_success,
 
     }, data() {
         return {
@@ -28,7 +32,10 @@ export default {
              *  - duree  : durée formatée
              */
             dico_interviews: {},
-            search: ""  // Texte de recherche (filtrage par titre) 
+            search: "",  // Texte de recherche (filtrage par titre)
+            message_error: "",
+            popupError: false,
+            popupSuccess: false,
         };
     },
 
@@ -87,27 +94,35 @@ export default {
             return string_tags.trim();
         },
 
-
+        /**
+         * Ouvre le sélecteur de fichier pour l'importation CSV
+         */
         importCSV() {
             this.$refs.csvInput.click();
         },
 
+        /**
+         * Gère le changement de fichier sélectionné et envoie le fichier pour traitement
+         * @param event L'événement de changement de fichier
+         */
         async handleFile(event) {
             const file = event.target.files[0];
+            event.target.value = "";
             if (!file) return;
 
-            // Lire le contenu du fichier
-            parse(file);
-
-            // const reader = new FileReader();
-            // reader.onload = (e) => {
-            //     const csv = e.target.result;
-            //     console.log(csv); // contenu du CSV
-            // };
-            // reader.readAsText(file);
+            try {
+                const jobId = await parse(file); // lance l'import
+                console.log("Import CSV lancé, job ID :", jobId);
+                pollCSVJob(jobId); // démarre le polling pour afficher le toast
+                this.popupSuccess = true;
+                setTimeout(() => {
+                    this.popupSuccess = false;
+                }, 5000);
+                
+            } catch (error) {
+                showGlobalToast(error.message || "Erreur lors de l'import CSV", "error");
+            }
         }
-
-
     },
 };
 </script>
@@ -134,7 +149,7 @@ export default {
             </div>
 
 
-            <button @click="importCSV">Importer un CSV</button>
+            <button ref="btn_csv" @click="importCSV">Importer un CSV</button>
             <input
                 type="file"
                 ref="csvInput"
@@ -190,6 +205,12 @@ export default {
 
     </div>
 
+    <edit_error v-if="popupError" :message="this.message_error" />
+
+    <edit_success 
+        v-if="popupSuccess"
+        message="Lancement de l'import CSV en arrière-plan."
+    />
 </template>
 
 

@@ -1,12 +1,11 @@
-# views.py
 import csv
-import io
+import logging
 from datetime import date as Date, datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from ..permissions import IsAdminOrReadOnly
-from ..models import Artiste, Audio, Extrait, Interview, Occasion, Question, Tag, Theme
+from ..models import Artiste, Audio, CSVImportJob, Extrait, Interview, Occasion, Question, Tag, Theme
 from ..serializers import (
     ArtisteSerializer,
     QuestionSerializer,
@@ -19,6 +18,9 @@ from ..serializers import (
     InterviewSerializer,
     InterviewsSerializer,
 )
+import threading
+
+logger = logging.getLogger(__name__)
 
 
 class CSVImportView(APIView):
@@ -48,6 +50,20 @@ class CSVImportView(APIView):
         "Auteur",
     }
 
+
+    @staticmethod
+    def run_import(csv_lines, job_uuid):
+        job = CSVImportJob.nodes.get(uuid=job_uuid)
+        try:
+            CSVImportView().save_data(csv_lines)
+            job.status = "success"
+            job.message = "CSV importé avec succès !"
+        except Exception as e:
+            job.status = "error"
+            job.message = str(e)
+        finally:
+            job.save()
+
     def post(self, request, *args, **kwargs):
         """
         Endpoint POST pour importer un fichier CSV.
@@ -59,59 +75,58 @@ class CSVImportView(APIView):
         :param request: Requête HTTP contenant le fichier CSV
         :return: Réponse HTTP indiquant le succès ou l'erreur
         """
-        csv_file = request.FILES.get("file")
-
-        if not csv_file:
+        # Vérifie s'il existe déjà un import en cours
+        try:
+            existing_job = CSVImportJob.nodes.get(status="in_progress")
             return Response(
-                {"error": "Aucun fichier envoyé"},
-                status=status.HTTP_400_BAD_REQUEST,
+                {"error": "Un import CSV est déjà en cours. Veuillez attendre sa fin."},
+                status=409,
             )
+        except CSVImportJob.DoesNotExist:
+            pass  # aucun job en cours, on peut continuer
+
+
+
+
+        csv_file = request.FILES.get("file")
+        if not csv_file:
+            return Response({"error": "Aucun fichier envoyé"}, status=400)
 
         if not csv_file.name.endswith(".csv"):
-            return Response(
-                {"error": "Le fichier doit être un CSV"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"error": "Le fichier doit être un CSV"}, status=400)
 
         try:
             decoded_file = csv_file.read().decode("utf-8").splitlines()
         except UnicodeDecodeError:
-            return Response(
-                {"error": "Encodage du fichier invalide (UTF-8 requis)"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"error": "Encodage invalide"}, status=400)
 
         reader = csv.reader(decoded_file)
         headers = next(reader, None)
-
         if not headers:
-            return Response(
-                {"error": "Le fichier CSV est vide"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"error": "CSV vide"}, status=400)
 
         headers_set = {h.strip() for h in headers}
-
         missing = self._EXPECTED_HEADERS - headers_set
         extra = headers_set - self._EXPECTED_HEADERS
-
         if missing or extra:
             return Response(
-                {
-                    "error": "Le fichier CSV ne contient pas les bons champs",
-                    "missing": sorted(missing),
-                    "extra": sorted(extra),
-                },
-                status=status.HTTP_400_BAD_REQUEST,
+                {"error": "CSV incorrect", "missing": sorted(missing), "extra": sorted(extra)},
+                status=400,
             )
 
-        # On repart sur un DictReader (ordre libre)
-        self.save_data(decoded_file)
+        # Crée un job
+        job = CSVImportJob(status="in_progress", message="Import en cours...")
+        job.save()
 
-        return Response(
-            {"message": "lignes importées avec succès"},
-            status=status.HTTP_201_CREATED,
+        # Lance le traitement en arrière-plan
+        thread = threading.Thread(
+            target=CSVImportView.run_import,
+            args=(decoded_file, job.uuid),
+            daemon=True,
         )
+        thread.start()
+
+        return Response({"job_id": job.uuid, "message": "Import CSV lancé"}, status=202)
 
     def save_data(self, csv_file):
         """
@@ -343,7 +358,7 @@ class CSVImportView(APIView):
 
         titre = f"Interview de {artiste_node.name} pour {occasion_node.name if occasion_node else 'une occasion inconnue'}"
         if titre in [interview.titre for interview in Interview.nodes.all()]:
-            print(f"Avertissement: Interview déjà existante - {titre}")
+            logger.warning(f"Interview déjà existante - {titre}")
             return
         try:
             interview_node = serializer_interview.create(
@@ -365,7 +380,7 @@ class CSVImportView(APIView):
                     serializer.create(serializer.validated_data)
 
         except Exception as e:
-            print(f"Erreur lors de la création de l'interview: {e}")
+            logger.debug(f"Erreur lors de la création de l'interview: {e}")
 
     def get_code_yt(self, url):
         """
