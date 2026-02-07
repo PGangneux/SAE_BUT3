@@ -284,7 +284,7 @@ export default {
         </div>
     </form>
 
-    <section v-if="create==false">
+    <section v-if="false">
 
         <h2 class="text-center colorneon"> Historique De {{ this.current_utilisateur.pseudo }} </h2>
 
