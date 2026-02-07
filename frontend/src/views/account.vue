@@ -24,6 +24,7 @@ export default {
             create: true,
             showPassword: false,
             showNewPassword: false,
+            stay_connected: true,
 
         };
     },
@@ -34,13 +35,82 @@ export default {
 
         toggleNewPassword() {
             this.showNewPassword = !this.showNewPassword;
+        },    
+        
+        async validationUSER() {
+            await ClientAPI.connectAPI(this.oldusername, this.current_utilisateur.password, this.stay_connected);
+            let erreur = "";
+            if (this.current_utilisateur.pseudo == null || this.current_utilisateur.pseudo == "") {
+                erreur += "il manque un pseudo  \n";
+            } if (this.current_utilisateur.nom == null || this.current_utilisateur.nom == "") {
+                erreur += "il manque une nom  \n";
+            } if (this.current_utilisateur.email == null || this.current_utilisateur.email == "") {
+                erreur += "il manque une email  \n";
+            }if (this.current_utilisateur.password == null || this.current_utilisateur.password == "") {
+                erreur += "il manque le mot de passe pour la modif \n";
+            }if (!ClientAPI.current_user) {
+                erreur += "mauvais mot de passe \n";
+            }
+            if (this.current_utilisateur.password == this.current_utilisateur.newPassword) {
+                erreur += "même mot de passe \n";
+            }else if (this.current_utilisateur.password != this.current_utilisateur.newPassword && (this.current_utilisateur.newPassword != null || this.current_utilisateur.newPassword != "")){
+                this.current_utilisateur.password = this.current_utilisateur.newPassword;
+            }
+            return erreur;
+        },
+
+        async Update(){
+        try{
+            console.log(this.current_utilisateur);
+
+            this.message_error = await this.validationUSER();
+
+            if(this.message_error  == ""){
+                await this.current_utilisateur.update();                
+                sessionStorage.setItem('popupSuccess', 'true');
+                
+                // Reload brutal
+                window.location.href = `/account`;
+            }else{
+            this.popupError = true;
+                    setTimeout(()=>{
+                        this.popupError = false;
+            },5000)
+            }
+
+        }catch (error) {
+                    console.error('Erreur lors de la sauvegarde:', error.toString());
+                    this.message_error = error.toString();
+                    this.popupError = true;
+                    setTimeout(()=>{
+                        this.popupError = false;
+                    },5000)
         }
+
+    },
+
 
     },
 
     
     async mounted() {
         this.current_utilisateur = markRaw(await ClientAPI.current_user);
+        this.oldusername = this.current_utilisateur.pseudo;
+        console.log(this.current_utilisateur.password);
+        
+        // Popup succès après reload brutal
+        if (sessionStorage.getItem('popupSuccess') === 'true') {
+            this.popupSuccess = true;
+
+            // Déterminer si c'était en mode création ou modification
+            sessionStorage.removeItem('popupSuccess');
+            sessionStorage.removeItem('create');
+
+            // ⏱ cacher après 5 secondes
+            setTimeout(() => {
+                this.popupSuccess = false;
+            }, 5000);
+        }
 
         console.log("affiche",this.current_utilisateur)
     },
@@ -114,7 +184,7 @@ export default {
         </div>
         <div class="row bottom_button client">
 
-            <button @click="Enregistrer()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+            <button @click="Update()" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                     alt="Enregistrer"> Enregistrer </button>
             <RouterLink class="btn  btn-outline-danger" to="/account"> <img src="/imgs/delete.svg" alt="Supprimer"> Annuler
             </RouterLink>
