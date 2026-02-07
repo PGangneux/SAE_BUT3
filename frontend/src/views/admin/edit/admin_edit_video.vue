@@ -66,10 +66,10 @@ export default {
             tagsToDisconnect: [],
             tagsToCreate: [],  
 
-            // Gestion des audios
+            // Gestion des audios (liste pour un extrait)
             audioSelected: null,
-            audioToConnect: null,
-            audioToDisconnect: null,  
+            audioToConnect: [],  // Tableau d'audios à connecter
+            audioToDisconnect: [],  // Tableau d'audios à déconnecter  
         };
     },
     
@@ -174,7 +174,7 @@ export default {
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
             
             // Reload brutal
-            //window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+            window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
         }else{
           this.popupError = true;
                 setTimeout(()=>{
@@ -215,20 +215,17 @@ export default {
             console.log('audioToConnect:', this.audioToConnect);
             console.log('audioToDisconnect:', this.audioToDisconnect);
             
-            if (this.audioToConnect) {
-                console.log('Tentative de connexion audio:', this.audioToConnect);
+            // Connecter les audios dans le tableau
+            for (const audio of this.audioToConnect) {
+                console.log('Tentative de connexion audio:', audio);
                 
-                // Récupérer l'UUID directement depuis l'objet markRaw
-                const audioUuid = this.audioToConnect.uuid;
-                const audioName = this.audioToConnect.name;
+                // Récupérer l'UUID et le nom depuis l'objet markRaw
+                const audioUuid = audio.uuid;
+                const audioName = audio.name;
                 
                 console.log('UUID:', audioUuid, 'Name:', audioName);
                 
-                // Créer une instance Audio propre sans utiliser les données réactives
-                const audioInstance = Object.create(Audio.prototype);
-                audioInstance.constructor({ uuid: audioUuid, name: audioName });
-                
-                // Alternative plus simple : créer un objet simple avec les bonnes propriétés
+                // Créer un objet simple pour la connexion
                 const simpleAudio = {
                     uuid: audioUuid,
                     name: audioName
@@ -239,24 +236,28 @@ export default {
                 await this.current_extrait.connect_audio(simpleAudio);
                 console.log('Audio connecté avec succès:', audioName);
             }
-            if (this.audioToDisconnect) {
-                console.log('Tentative de déconnexion audio:', this.audioToDisconnect);
-                
-                const audioUuid = this.audioToDisconnect.uuid;
-                const audioName = this.audioToDisconnect.name;
-                
-                const simpleAudio = {
-                    uuid: audioUuid,
-                    name: audioName
-                };
-                
-                await this.current_extrait.disconnect_audio(simpleAudio);
-                console.log('Audio déconnecté avec succès:', audioName);
+            
+            // Déconnecter les audios dans le tableau
+            for (const audio of this.audioToDisconnect) {
+                if (audio) {  // Vérifier que l'audio n'est pas null
+                    console.log('Tentative de déconnexion audio:', audio);
+                    
+                    const audioUuid = audio.uuid;
+                    const audioName = audio.name;
+                    
+                    const simpleAudio = {
+                        uuid: audioUuid,
+                        name: audioName
+                    };
+                    
+                    await this.current_extrait.disconnect_audio(simpleAudio);
+                    console.log('Audio déconnecté avec succès:', audioName);
+                }
             }
             
-            // Réinitialiser les variables audio
-            this.audioToConnect = null;
-            this.audioToDisconnect = null;
+            // Réinitialiser les tableaux audio
+            this.audioToConnect = [];
+            this.audioToDisconnect = [];
         } catch (error) {
             console.error('Erreur lors de la sauvegarde de l\'audio:', error);
             console.error('Détail de l\'erreur:', error.message);
@@ -334,9 +335,18 @@ export default {
             await newAudio.create()
             this.listeAudios.push(newAudio);
             
+            // Ajouter le nouvel audio au tableau des audios à connecter
+            this.audioToConnect = [newAudio];
+            this.audioToDisconnect = [];
+            
             // Connecter l'audio à l'extrait via la relation audios
             if (this.current_extrait.uuid) {
-              await this.current_extrait.connect_audio(newAudio);
+              // Créer un objet simple pour éviter les problèmes markRaw
+              const audioData = {
+                  uuid: newAudio.uuid,
+                  name: newAudio.name
+              };
+              await this.current_extrait.connect_audio(audioData);
             }
             
             alert('l\'audio ' + newAudio.name + ' est creer');
@@ -429,23 +439,27 @@ export default {
 
 
     SelectedAudiosId() {
-      //reccupere l'audio de la liste en reccuperant le nom de l'artiste selectionner
-      //reccupere l'audio de la liste
+      //reccupere l'audio de la liste en reccuperant le nom de l'audio selectionner
       const audio = this.listeAudios.find(a => a.name === this.laselectedAudio);
 
       
       //verifie si audio existe et n'es pas null
       if (audio) {
           this.audioSelected = audio;
-          this.audioToConnect = audio;
-          this.audioToDisconnect = null;
+          
+          // Vider et ajouter le nouvel audio à connecter
+          this.audioToConnect = [audio];
+          this.audioToDisconnect = [];
+          
+          console.log('Audio sélectionné pour connexion:', audio);
         } else {
           this.audioSelected = null;
-          this.audioToConnect = null;
-          this.audioToDisconnect = this.audioSelected;
+          this.audioToConnect = [];
+          // Si on déselectionne, on déconnecte tous les audios actuels
+          this.audioToDisconnect = [this.audioSelected];
       }
 
-      console.log(this.current_extrait);
+      console.log('État audio - ToConnect:', this.audioToConnect, 'ToDisconnect:', this.audioToDisconnect);
     },
 
     FoncSelectedQuestion() {
@@ -706,6 +720,13 @@ export default {
       this.tags = markRaw(await this.current_extrait.tags()); 
 
       console.log(this.current_extrait);
+
+      try {
+        this.current_extrait.audio =  (await this.current_extrait.audios)
+        console.log(this.current_extrait.audio );
+      } catch (error) {
+         console.log("pas de audio definie")
+      }
 
       try{
         this.current_extrait.question_uuid =  (await this.current_extrait.question).uuid
