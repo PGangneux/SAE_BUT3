@@ -21,7 +21,7 @@ export default {
             popupDelete: false,
             popupSuccess: false,
             popupError: false,
-            create: true,
+            create: false,
             showPassword: false,
             showNewPassword: false,
             stay_connected: true,
@@ -46,16 +46,13 @@ export default {
                 erreur += "il manque un nom  \n";
             } if (this.current_utilisateur.email == null || this.current_utilisateur.email == "") {
                 erreur += "il manque un email  \n";
-            }if (this.current_utilisateur.password == null || this.current_utilisateur.password == "") {
-                erreur += "il manque le mot de passe pour la modif \n";
             }if (!ClientAPI.current_user) {
                 erreur += "mauvais mot de passe \n";
             }
-            if (this.current_utilisateur.password == this.current_utilisateur.newPassword) {
-                erreur += "même mot de passe \n";
-            }else if (this.current_utilisateur.password != this.current_utilisateur.newPassword && (this.current_utilisateur.newPassword != null || this.current_utilisateur.newPassword != "")){
-                this.current_utilisateur.password = this.current_utilisateur.newPassword;
+            if (this.current_utilisateur.password != this.current_utilisateur.newPassword && (this.current_utilisateur.newPassword != null || this.current_utilisateur.newPassword != "")) {
+                erreur += "pas le même mot de passe \n";
             }
+            console.log(erreur);
             return erreur;
         },
 
@@ -79,7 +76,7 @@ export default {
             }
 
         }catch (error) {
-                    console.error('Erreur lors de la sauvegarde:', error.toString());
+                    console.error('Erreur lors de la modification de account:', error.toString());
                     this.message_error = error.toString();
                     this.popupError = true;
                     setTimeout(()=>{
@@ -157,10 +154,10 @@ export default {
 
             <div class="row client">
                 <div class="input-group mb-3 col">
-                    <span class="row input-group-text client colovert" for="MDP">MDP</span>
+                    <span class="row input-group-text client colovert" for="Mot De Passe">Mot De Passe</span>
 
-                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
-                        name="MDP" placeholder="MDP" v-model="this.current_utilisateur.password">
+                    <input :type="showPassword ? 'text' : 'password'" class="form-control row client" id="Mot De Passe"
+                        name="Mot De Passe" placeholder="Mot De Passe" v-model="this.current_utilisateur.password">
                     <button class="btn btn-outline-secondary colovert" type="button" @click="togglePassword">
                         <i :class="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                     </button>
@@ -170,10 +167,10 @@ export default {
 
             <div class="row client">
                 <div class="input-group mb-3 col">
-                    <span class="row input-group-text client colovert" for="MDP">New MDP</span>
+                    <span class="row input-group-text client colovert" for="confirmer Mot De Passe">Mot De Passe</span>
 
-                    <input :type="showNewPassword ? 'text' : 'password'" class="form-control row client" id="MDP"
-                        name="MDP" placeholder="New MDP" v-model="this.current_utilisateur.newPassword">
+                    <input :type="showNewPassword ? 'text' : 'password'" class="form-control row client" id="Mot De Passe"
+                        name="Mot De Passe" placeholder="confirmer Mot De Passe" v-model="this.current_utilisateur.newPassword">
                     <button class="btn btn-outline-secondary colovert" type="button" @click="toggleNewPassword">
                         <i :class="showNewPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
                     </button>
@@ -190,6 +187,19 @@ export default {
             </RouterLink>
         </div>
     </form>
+
+    <edit_success 
+        v-if="popupSuccess && create"
+        message="Extrait créée !"
+    />
+    <edit_success 
+        v-else-if="popupSuccess && !create"
+        message="Modification enregistrée !"
+    />
+    <edit_error
+        v-if="popupError"
+        :message="this.message_error"
+    />
 
 </template>
 
@@ -208,7 +218,7 @@ export default {
 }
 
 span {
-    min-width: 5em;
+    min-width: 8em;
 }
 
 

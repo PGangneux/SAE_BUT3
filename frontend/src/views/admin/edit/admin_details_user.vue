@@ -294,7 +294,7 @@ export default {
                 Ajouter un USER</RouterLink>
             <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img
                     src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
-            <button @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
+            <button v-if="!this.current_utilisateur.is_admin" @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img
                     src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
 
         </div>

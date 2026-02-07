@@ -110,7 +110,6 @@ export default {
       }if(this.current_extrait.youtube_url =="" && this.current_extrait.vimeo_url=="" ){
         erreur += "il faut au moins un lien de video  \n";
       }
-      console.log(this.current_extrait);
       return erreur;
     },
 

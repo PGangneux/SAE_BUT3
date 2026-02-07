@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import Tags from '@model/model/tag.js';
+import Tags from '@model/tag.js';
 import Extrait from '../../model/extrait.js';
 
 
