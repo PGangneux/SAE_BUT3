@@ -1,6 +1,6 @@
 <script>
 import { markRaw } from 'vue';
-import Tags from '../../model/tag.js';
+import Tags from '@model/model/tag.js';
 import Extrait from '../../model/extrait.js';
 
 
@@ -21,7 +21,6 @@ export default {
     methods:{
 
         changement_extrait() {
-            console.log("emits");
             this.$emit('searchextrait', this.extraitsearch)
         },
 
@@ -31,7 +30,6 @@ export default {
                 this.extraitsearch=[];
             } else{
                 this.extraitsearch = markRaw(await Extrait.search(this.motchercher));
-                console.log(this.extraitsearch);
             }
             this.changement_extrait(); 
 

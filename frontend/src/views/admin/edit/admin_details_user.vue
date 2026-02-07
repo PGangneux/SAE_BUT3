@@ -55,9 +55,9 @@ export default {
             if (this.current_utilisateur.pseudo == null || this.current_utilisateur.pseudo == "") {
                 erreur += "il manque un pseudo  \n";
             } if (this.current_utilisateur.nom == null || this.current_utilisateur.nom == "") {
-                erreur += "il manque une nom  \n";
+                erreur += "il manque un nom  \n";
             } if (this.current_utilisateur.email == null || this.current_utilisateur.email == "") {
-                erreur += "il manque une email  \n";
+                erreur += "il manque un email  \n";
             }
             return erreur;
         },
