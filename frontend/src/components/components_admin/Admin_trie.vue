@@ -74,16 +74,9 @@ export default {
                 </div>
             </div>
         </div>
-        
-        <div class="row">
-            <button class="bt btn col ">Date</button>
-            <button class="bt btn col ">Question</button>
-            <button class="bt btn col ">Playlist</button>
-        </div>
-
         <div class="row  trie-tags centrer">
 
-            <p class="row pcentrer" >Trier par tag</p>
+            <p class="row pcentrer" >Liste des Tags</p>
 
             <ul class="scroller ultagger row tagsfully">
                 <li class="col" v-for="tag in this.tags">

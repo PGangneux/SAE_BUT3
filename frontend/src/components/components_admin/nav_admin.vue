@@ -24,11 +24,6 @@ export default {
                     <li class="nav-item text-white ">
                         <RouterLink class="bt btn " to="/admin/users"> User </RouterLink>
                     </li>
-
-                    <li class="nav-item text-white ">
-                        <RouterLink class="bt btn " to="/admin/autres"> Autres </RouterLink>
-                    </li>
-
                 </ul>
         </nav>
 </template>
