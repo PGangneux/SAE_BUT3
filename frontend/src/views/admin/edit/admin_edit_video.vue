@@ -169,7 +169,7 @@ export default {
             sessionStorage.setItem('create', this.create ? 'true' : 'false');
             
             // Reload brutal
-            window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
+            //window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
         }else{
           this.popupError = true;
                 setTimeout(()=>{
@@ -352,7 +352,7 @@ export default {
     },
 
 
-    SelectedAudioId() {
+    SelectedAudiosId() {
       //reccupere l'audio de la liste en reccuperant le nom de l'artiste selectionner
       //reccupere l'audio de la liste
       const audio = this.listeAudios.find(a => a.name === this.laselectedAudio);
@@ -367,6 +367,8 @@ export default {
           this.current_extrait.audio = null;
           this.current_extrait.audio_uuid = null;
       }
+
+      console.log(this.current_extrait);
 
     },
 
@@ -629,7 +631,13 @@ export default {
 
       console.log(this.current_extrait);
 
-      this.current_extrait.question_uuid =  (await this.current_extrait.question).uuid
+      try{
+        this.current_extrait.question_uuid =  (await this.current_extrait.question).uuid
+      }catch{
+        console.log("pas de question definie")
+      }
+
+      
 
       console.log(this.current_extrait.question_uuid);
     
@@ -784,7 +792,10 @@ export default {
 
                 <button class="bt" type="button" @click="creerNouveauAudio" style="background-color: var(--gris-ultraclair);"> <img src="/imgs/add_black.svg" alt="add" class="col  "> </button>
               </div>
+
           </div>
+
+
 
           <div class="row"  style="--bs-gutter-x: 0em;">
             <div class="input-group">
@@ -794,7 +805,6 @@ export default {
 
             <div v-if="!create" class="row" style="margin-right: 0em; margin-left: 0em;">
               <h1 class="row pcentrer"> Tableau des Playlist
-                 <div class="bt btn row"  @click="popup = !popup" style="width: 8%; border-radius: 100%; margin-right:0px; margin-left: 0px;"> <img src="/imgs/search.svg" alt="Edit" style="width: 100%;"> </div>
               </h1>
              
               <table  class="ultagger table tables table-striped">
@@ -1013,7 +1023,6 @@ ul {
   align-items: center;
   margin: 1em;
 }
-
 
 
 
