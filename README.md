@@ -95,3 +95,19 @@ YOUTUBE_API_KEY=cle_api_youtube
 VIMEO_ACCESS_TOKEN=token_vimeo
 ```
 
+
+## API youtube et vimeo
+
+#### youtube
+https://developers.google.com/youtube/v3/getting-started?hl=fr
+
+video  
+https://www.youtube.com/watch?v=7_22jCiq4nk
+
+#### vimeo
+https://developer.vimeo.com/api/guides/start
+
+video   
+https://www.youtube.com/watch?v=DY-Hw4YJX2s
+
+une fois terminer completer metté les clef api dans le fichier .env
