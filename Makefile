@@ -6,7 +6,7 @@ pip = ${venv}/pip
 npm = npm --prefix ./frontend
 coverage = $(venv)/coverage
 
-.PHONY: install migration tests coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
+.PHONY: install migration tests tests_front coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
 
 run_back:
 	$(python) $(manage) runserver
@@ -32,6 +32,9 @@ migration:
 # docker run -d -p 17474:7474 -p 17687:7687 -e NEO4J_AUTH=neo4j/testtest neo4j:latest
 tests:
 	$(python) $(manage) test $(APP)
+
+tests_front:
+	$(npm) run test
 
 coverage:
 	$(coverage) run --source='$(APP)' $(manage) test ./backend/$(APP)/tests/$(package)
