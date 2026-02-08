@@ -230,7 +230,6 @@ export default {
             try {
                 console.log("titre", this.titre)
                 this.current_interview.titre = this.titre;
-                console.log(this.current_interview)
                 // if(this.titre === ''){
                 // //     throw new Error("Le titre est obligatoire")
                 //     this.current_interview.titre = null;
@@ -244,7 +243,6 @@ export default {
                 }
                 else {
                     if (this.name_occasion) {
-                        console.log("create occas")
                         const occas_object = new Occasion({ 'name': this.name_occasion })
                         await occas_object.create()
                         this.occasion = occas_object.uuid

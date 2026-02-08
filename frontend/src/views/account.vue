@@ -58,8 +58,6 @@ export default {
 
         async Update() {
             try {
-                console.log(this.current_utilisateur);
-
                 this.message_error = await this.validationUSER();
 
                 if (this.message_error == "") {
@@ -93,7 +91,6 @@ export default {
     async mounted() {
         this.current_utilisateur = markRaw(await ClientAPI.current_user);
         this.oldusername = this.current_utilisateur.pseudo;
-        console.log(this.current_utilisateur.password);
 
         // Popup succès après reload brutal
         if (sessionStorage.getItem('popupSuccess') === 'true') {
@@ -108,8 +105,6 @@ export default {
                 this.popupSuccess = false;
             }, 5000);
         }
-
-        console.log("affiche", this.current_utilisateur)
     },
 };
 </script>

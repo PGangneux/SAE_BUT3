@@ -61,7 +61,6 @@ export default {
         try {
             for (let interview of this.interviews) {
                 this.dico_interviews[interview.uuid] = { "length": (await interview.extraits()).length, "tags": markRaw(await interview.tags()) };
-                // console.log(markRaw(this.dico_interviews));
             }
 
         } catch (error) {

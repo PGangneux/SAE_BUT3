@@ -43,17 +43,8 @@ export default {
             return erreur;
         },
 
-
-
-
-
-
         async Enregistrer() {
-
-
             try {
-                console.log("hello");
-
                 this.message_error = await this.validationUSER();
 
                 if (this.message_error == "") {
@@ -84,10 +75,6 @@ export default {
             this.showPassword = !this.showPassword;
         }
 
-
-
-
-
     },
 
     async mounted() {
@@ -98,8 +85,6 @@ export default {
 
             // Déterminer si c'était en mode création ou modification
             this.createMode = sessionStorage.getItem('create') === 'true';
-            console.log("createmode", this.createMode)
-
             sessionStorage.removeItem('popupSuccess');
             sessionStorage.removeItem('create');
 
@@ -110,10 +95,6 @@ export default {
         }
 
         this.current_utilisateur = markRaw(await new Utilisateur({}));
-
-
-
-
     },
 };
 

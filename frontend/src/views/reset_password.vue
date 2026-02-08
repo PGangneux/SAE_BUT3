@@ -7,7 +7,7 @@ export default {
 <template>
     <h1 class="vert-neon">mot de passe oublier</h1>
     <form>
-        <p>address mail</p>
+        <label>adresse e-mail</label>
         <input type="text" placeholder="adresse mail">
         <input type="submit" value="">
     </form>

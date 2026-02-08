@@ -65,16 +65,10 @@ export default {
 
                 if (!this.listeQuestion.find(a => a.texte === this.laselectedQuestion)) {
                     const newQuestion = new Question({});
-                    console.log("ha", this.laselectedQuestion);
                     newQuestion.texte = await this.laselectedQuestion;
                     newQuestion.theme = await this.laselectedThemeUuid;
                     newQuestion.theme_uuid = await this.laselectedThemeUuid;
-
-                    console.log(newQuestion);
-
                     await newQuestion.create();
-
-                    console.log(newQuestion);
                     this.listeQuestion.push(markRaw(newQuestion));
                     alert('Question creer');
                     // Reload brutal

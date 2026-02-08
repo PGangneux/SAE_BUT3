@@ -1,7 +1,7 @@
 <script>
 import { markRaw } from 'vue';
 import Tags from '@model/tag.js';
-import Extrait from '../../model/extrait.js';
+import Extrait from '@model/extrait.js';
 
 
 export default {
@@ -19,25 +19,18 @@ export default {
 
 
     methods: {
-
         changement_extrait() {
             this.$emit('searchextrait', this.extraitsearch)
         },
 
         async searching() {
             if (this.motchercher == "" || this.motchercher == null) {
-                console.log("vide");
                 this.extraitsearch = [];
             } else {
                 this.extraitsearch = markRaw(await Extrait.search(this.motchercher));
             }
             this.changement_extrait();
-
-
-
         },
-
-
     },
 
     emits: ["searchextrait"],
@@ -87,8 +80,6 @@ export default {
             </ul>
         </div>
     </div>
-
-
 
 
 

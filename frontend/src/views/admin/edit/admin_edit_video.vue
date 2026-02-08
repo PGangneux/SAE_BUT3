@@ -848,10 +848,6 @@ export default {
         console.log("pas de question definie")
       }
 
-
-
-      console.log(this.current_extrait.question_uuid);
-
       await this.chargerSelection('question', 'texte');
       await this.chargerSelection('audio', 'name');
       await this.chargerSelection('artiste', 'name');
