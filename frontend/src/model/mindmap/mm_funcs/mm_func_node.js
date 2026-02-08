@@ -50,6 +50,10 @@ export function mm_createChildNode(mminfo, parent, category, createLink = true, 
     return tmp_child;
 }
 
+function mod(n, m) {
+    return ((n % m) + m) % m;
+}
+
 /**
  * pos the children of a node in a circle
  * @param {mm_Mindmap} mminfo mm_Mindmap  
@@ -66,11 +70,9 @@ export function set_children_pos(mminfo, parent) {
     let childrenWithContent = 0;
     let childrenEmpty = 0;
 
-    for (let child_key of parent.childrens) {
-        console.log("avant");
-        
+    for (let child_key of parent.childrens) {        
         let child = mminfo.node_get(child_key);
-        console.log("set_children_pos child","child_key",child_key,"child",child,"parent",parent,"mminfo",mminfo);
+        // console.log("set_children_pos child","child_key",child_key,"child",child,"parent",parent,"mminfo",mminfo);
         
         if (child.mmch_hasMiniature()) {
             childrenWithPreview++;
@@ -90,12 +92,12 @@ export function set_children_pos(mminfo, parent) {
         + childrenEmpty * childrenEmptyWeight;
     const angle_per_child = totalArc / effectiveChildren;
 
-    console.log("set_children_pos", parent.depth, parent);
-    console.table({
-        "prev": childrenWithPreview, "calc": childrenWithPreview * childrenPreviewWeight,
-        "content": childrenWithContent, "calc": childrenWithContent * childrenContentWeight,
-        "empty": childrenEmpty, "calc": childrenEmpty * childrenEmptyWeight
-    });
+    // console.log("set_children_pos", parent.depth, parent);
+    // console.table({
+    //     "prev": childrenWithPreview, "calc": childrenWithPreview * childrenPreviewWeight,
+    //     "content": childrenWithContent, "calc": childrenWithContent * childrenContentWeight,
+    //     "empty": childrenEmpty, "calc": childrenEmpty * childrenEmptyWeight
+    // });
 
 
     // distance entre root et enfant ;
@@ -104,7 +106,7 @@ export function set_children_pos(mminfo, parent) {
 
     // spreadFactor based on number of children AND children with content
     const spreadFactor = Math.max(1, effectiveChildren);
-    const distance = 150 + 10 * mminfo.scale * depthFactor * spreadFactor;
+    const distance = 200 + 15 * mminfo.scale * depthFactor * spreadFactor;
 
     // Calculate starting position - centered on origin_angle
     let start_angle = isRoot ? 0 : parent.origin_angle;
@@ -124,16 +126,17 @@ export function set_children_pos(mminfo, parent) {
         }
         console.log(angleWeight);
 
-        const current_angle = start_angle + (angle_per_child * currentEffectiveIndex);
-
+        currentEffectiveIndex += angleWeight/2;
+        const current_angle = mod(start_angle + ((index%2 == 0 ? 1 : -1 ) * (angle_per_child * currentEffectiveIndex)), 360);
+        
         const angleRad = current_angle * degree_to_rad;
-
+        
         child.targetX = parent.x + Math.cos(angleRad) * distance;
         child.targetY = parent.y + Math.sin(angleRad) * distance;
         child.origin_angle = current_angle;
         console.log("origin_angle", parent.origin_angle, "start_angle", start_angle, "effectiveChildren", effectiveChildren, "currentEffectiveIndex", currentEffectiveIndex, "angle_per_child", angle_per_child, "i", index, "current_angle", current_angle, child);
-
-        currentEffectiveIndex += angleWeight;
+        
+        currentEffectiveIndex += angleWeight/2;
         console.log("currentEffectiveIndex", currentEffectiveIndex);
 
 
