@@ -51,6 +51,7 @@ export default {
                     await this.current_utilisateur.create();
                     sessionStorage.setItem('popupSuccess', 'true');
                     sessionStorage.setItem('create', this.create ? 'true' : 'false');
+                    window.location.href = `/connexion`;
                 } else {
                     this.popupError = true;
                     setTimeout(() => {
