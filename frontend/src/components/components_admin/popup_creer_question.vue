@@ -14,18 +14,18 @@ export default {
             type:Boolean,
             required:true
             },
-            laselectedQuestion:{
-                type:String,
-                required:true,
-                },
-            listeQuestion:{
-                type:Array,
-                required:true,
-            },   //liste des Questions totals
+
+        extraitUuid: {
+            type: String,
+            required: true
+         }
 
     },data(){
         return {
+            laselectedQuestion:"",
             laselectedTheme:"",
+            laselectedThemeUuid:"",
+            listeQuestion:[],
             listetheme:[],   //liste des Questions totals
         }
     },
@@ -35,45 +35,58 @@ export default {
         },
 
         async recupetheme(){
-            //reccupere la liste des Questions
+            //reccupere la liste des Themes
             this.listetheme =  markRaw(await Theme.list());
         },
 
-
-        FoncSelectedTheme(event) {
-
-                const value = event.target.value;
-                this.laselectedTheme = value;
-                
-                console.log("Theme sélectionné:", value);
-                
-                const theme = this.listetheme.find(a => a.name === value);
-                
-                if (theme) {
-                    console.log("Theme trouvé:", theme);
-                } else {
-                    console.log("Nouveau theme:", value);
-                }
+        async recupeQuestion(){
+            //reccupere la liste des Questions
+            this.listeQuestion =  markRaw(await Question.list());
         },
 
-        creerNouvelleQuestion(){
-            if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
+        FoncSelectedTheme(event) {
+            const value = event.target.value; 
+            this.laselectedTheme = value;
+
+            const theme = this.listetheme.find(t => t.name === value);
+
+            if (theme) {
+                this.laselectedThemeUuid = theme.uuid;
+                console.log("Theme trouvé :", theme.name, theme.uuid);
+            } else {
+                this.laselectedThemeUuid = null;
+                console.log("Nouveau thème :", value);
+            }
+        },
+
+        async creerNouvelleQuestion(){
+            if( this.laselectedQuestion != "" &&  this.laselectedQuestion != null){     
                 console.log(this.laselectedQuestion);
 
-                if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
+                if (!this.listeQuestion.find(a => a.texte === this.laselectedQuestion)){
                 const newQuestion = new Question({});
-                newQuestion.name = this.laselectedQuestion;
-                newQuestion.theme = this.laselectedTheme;
-                newQuestion.create()
-                this.listeQuestion.add(newQuestion);
-                console.log('creer artiste');
+                console.log("ha",this.laselectedQuestion);
+                newQuestion.texte = await this.laselectedQuestion;
+                newQuestion.theme = await this.laselectedThemeUuid;
+                newQuestion.theme_uuid = await this.laselectedThemeUuid;
+
+                console.log(newQuestion);
+                
+                await newQuestion.create();
+
+                console.log(newQuestion);
+                this.listeQuestion.push(markRaw(newQuestion));
+                alert('Question creer');
+                // Reload brutal
+                window.location.href = `/admin/extrait/${this.extraitUuid}`;
+
+
 
                 }else{
                 console.log('question existe deja');
                 }
             }else{
-                changement_etat_popup ();
-                alert('pas de champs null pour Quesion');
+                alert('pas de champs null pour Question');
             }
         
         },
@@ -142,7 +155,7 @@ export default {
             <div   style="--bs-gutter-x: 0em;">
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question Name :</span>
-                    <input list="Questiondata" id="question" name="question" class="form-control " style="border: solid; border-color: var(--vert-midel);"  :value="laselectedQuestion" @input="FoncSelectedQuestion"/>
+                    <input list="Questiondata" id="question" name="question" class="form-control " style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedQuestion"/>
 
                     <datalist id="Questiondata">
                     <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -151,7 +164,8 @@ export default {
 
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question theme :</span>
-                     <input list="Questiontheme" id="questiontheme" name="questiontheme" class="form-control" style="border: solid; border-color: var(--vert-midel);" :value="laselectedTheme"@input="laselectedTheme = $event.target.value"
+                     <input list="Questiontheme" id="questiontheme" name="questiontheme" class="form-control" style="border: solid; border-color: var(--vert-midel);" :value="laselectedTheme"
+  @input="FoncSelectedTheme"
     />
 
                     <datalist id="Questiontheme">
@@ -161,7 +175,7 @@ export default {
                     <button class="bt" type="button" style="background-color: var(--gris-ultraclair);" @click="creerNouvelleTheme">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
                 </div>
 
-                <button @click="" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
+                <button @click="creerNouvelleQuestion" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
                   alt="Enregistrer"> Enregistrer </button>
 
                 <button @click="" type="button" class="btn  btn-outline-danger"> <img

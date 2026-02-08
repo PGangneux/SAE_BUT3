@@ -369,7 +369,7 @@ export default {
           alert('question existe deja');
         }
       }else{
-        alert('pas de champs null pour Quesion');
+        this.popupCreerQuestion = true;
       }
       
     },
@@ -935,7 +935,7 @@ export default {
     />
     
    
-   <div v-if="popupCreerQuestion">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" /> </div>
+   <div v-if="popupCreerQuestion">  <popup_creer_question v-on:popupcreationquestion="popupchangequestion" :extraitUuid="this.current_extrait.uuid" /> </div>
 
 
     <div v-if="popup">  <popup_interview v-on:ecoutepopup="popupchange" /> </div>
