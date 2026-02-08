@@ -17,9 +17,7 @@ async function mm_reset_hard(mminfo) {
     // create root
     let root = markRaw(new mmch_Root(mminfo, 0, 0, 0, null));
     mminfo.node_add(root);
-    mminfo.root_key = root.mmch_key;
-    console.log("mm_reset_hard root.mmch_key",root.mmch_key,mminfo);
-    
+    mminfo.root_key = root.mmch_key;    
     await mm_draw_onecat(mminfo, root, false,false);
 }
 
@@ -67,11 +65,11 @@ export async function mm_reset_soft(mminfo) {
             return null;
         }
     }
-    console.log("mm_reset_soft list_cat");
-    console.table({"list_cat" : list_cat,
-                    "list_obj" : list_obj,
-                    "search_cat" : search_cat,
-                    "search_obj" : search_obj});
+    // console.log("mm_reset_soft list_cat");
+    // console.table({"list_cat" : list_cat,
+    //                 "list_obj" : list_obj,
+    //                 "search_cat" : search_cat,
+    //                 "search_obj" : search_obj});
 
     if (mminfo.searchval && mminfo.searchval.trim()){
         // on fait une recherche
@@ -88,10 +86,10 @@ export async function mm_reset_soft(mminfo) {
             return;
         } else {
             console.error("unknown mm_reset_soft state in search",rootNode.childrens.lenght,"!= list",(list_cat.length + list_obj.length),"!= search",(search_cat.length + search_obj.length));
-            console.table({"list_cat" : list_cat,
-                    "list_obj" : list_obj,
-                    "search_cat" : search_cat,
-                    "search_obj" : search_obj});
+            // console.table({"list_cat" : list_cat,
+            //         "list_obj" : list_obj,
+            //         "search_cat" : search_cat,
+            //         "search_obj" : search_obj});
             mm_reset_hard(mminfo);
             return;
         }
@@ -111,10 +109,10 @@ export async function mm_reset_soft(mminfo) {
             return;
         } else {
             console.error("unknown mm_reset_soft state in search",rootNode.childrens.lenght,"!= list",(list_cat.length + list_obj.length),"!= search",(search_cat.length + search_obj.length));
-            console.table({"list_cat" : list_cat,
-                    "list_obj" : list_obj,
-                    "search_cat" : search_cat,
-                    "search_obj" : search_obj});
+            // console.table({"list_cat" : list_cat,
+            //         "list_obj" : list_obj,
+            //         "search_cat" : search_cat,
+            //         "search_obj" : search_obj});
             mm_reset_hard(mminfo);
             return;
         }
@@ -130,7 +128,7 @@ export async function mm_reset_soft(mminfo) {
  * @param {boolean?} isPreview? = false whether this is a preview node
 */
 export async function mm_draw_onecat(mminfo, node, createLink = true, isPreview = false) {
-    console.log("mm_draw_onecat","mminfo",mminfo, "depth",node.depth,"node",node, "createLink",createLink , "isPreview",isPreview);
+    // console.log("mm_draw_onecat","mminfo",mminfo, "depth",node.depth,"node",node, "createLink",createLink , "isPreview",isPreview);
     // 0. safe Guards
     // Video / preview-only nodes never expand
     /// console.warn(node.depth, "Link",createLink, "isPreview", isPreview,"isPreview Node" , node.ispreview, "node obj", !!node.mmch_obj, node, mminfo.chemin);

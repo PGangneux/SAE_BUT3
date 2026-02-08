@@ -6,7 +6,7 @@ import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 
 export default class mm_Mindmap {
 
-    static min_zoom = 0.2;
+    static min_zoom = 0.1;
     static max_zoom = 2.0;
 
     /** @type {Object} */
@@ -264,8 +264,8 @@ export default class mm_Mindmap {
             const targetOffx = container.clientWidth / 2 - node.targetX * this.scale;
             const targetOffy = container.clientHeight / 2 - node.targetY * this.scale;
 
-            // Animate over 1 second (1000ms)
-            this.animateToPosition(targetOffx, targetOffy, 1000);
+            // Animate over 3 second to the new position
+            this.animateToPosition(targetOffx, targetOffy);
         }
     }
 
@@ -275,7 +275,7 @@ export default class mm_Mindmap {
      * @param {Number} targetOffy 
      * @param {Number} duration 
      */
-    animateToPosition(targetOffx, targetOffy, duration) {
+    animateToPosition(targetOffx, targetOffy, duration=1000) {
         const startOffx = this.offx;
         const startOffy = this.offy;
         const startTime = performance.now();

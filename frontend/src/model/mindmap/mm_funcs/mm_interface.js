@@ -13,7 +13,6 @@ async function mm_draw_root(mminfo) {
     await mm_reset_soft(mminfo); // weither we needed to recreate everything or not
     let changevideo, changepath = mm_chemin_filter(mminfo); // we can ignore change path here because it's drawing from the root
     if (changevideo) return true;
-    console.log("mm_draw_root changepath:", changepath);
     for (const cheminpath of mminfo.chemin) {
         console.log("mm_draw_root loop", "chemin", mminfo.chemin, cheminpath);
         await mm_draw_onecat(mminfo, mminfo.node_get(cheminpath));
@@ -73,11 +72,11 @@ class SimpleClickLock {
 */
 export function mm_interface_handleclick(mminfo, node) {
     SimpleClickLock.runIfLatest(async () => {
-        console.log("running mm hanldeclick algo");
+        // console.log("running mm hanldeclick algo");
         try {
             if (node) {
                 mminfo.chemin.push(node.mmch_key);
-                console.log("mm hanldeclick", "chemin", mminfo.chemin, "node key", node.mmch_key, "node", node);
+                // console.log("mm hanldeclick", "chemin", mminfo.chemin, "node key", node.mmch_key, "node", node);
             }
             let isvideo = await mm_draw_update(mminfo);
             if (isvideo) {
@@ -85,7 +84,7 @@ export function mm_interface_handleclick(mminfo, node) {
                 // console.log("video store set", mminfo.chemin, mminfo);
                 videoStore.chemin = mminfo.chemin;
             }
-            console.log("mm hanldeclick end", mminfo);
+            // console.log("mm hanldeclick end", mminfo);
             mminfo.update();
         } catch (error) {
             console.error(error);
