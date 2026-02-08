@@ -9,25 +9,25 @@ export default {
     },
     methods: {
         async deleteElement() {
-            let chemin_redirection ="";
+            let chemin_redirection = "";
 
-            if(this.Element_Supp.youtube_url != null || this.Element_Supp.vimeo_url!= null){
-                chemin_redirection="extraits";
-            }else if(this.Element_Supp.titre != null || this.Element_Supp.titre!= null){
-                chemin_redirection="interview";
-            }else if(this.Element_Supp.is_admin != null || this.Element_Supp.is_admin!= null){
-                chemin_redirection="user";
+            if (this.Element_Supp.youtube_url != null || this.Element_Supp.vimeo_url != null) {
+                chemin_redirection = "extraits";
+            } else if (this.Element_Supp.titre != null || this.Element_Supp.titre != null) {
+                chemin_redirection = "interview";
+            } else if (this.Element_Supp.is_admin != null || this.Element_Supp.is_admin != null) {
+                chemin_redirection = "user";
             }
-            
-            
+
+
             await this.Element_Supp.delete();
             this.$router.push(`/admin/${chemin_redirection}`);
         }
     },
-    mounted(){
+    mounted() {
         console.log("elem sup", this.Element_Supp)
     },
-    emits : ["closePopup"],
+    emits: ["closePopup"],
 };
 </script>
 

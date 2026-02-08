@@ -290,23 +290,25 @@ export default {
         </div>
         <div class="row bottom_button client">
 
-            <RouterLink v-if="!create" to="/admin/user/" class="btn btn-outline-light" > <img src="/imgs/add.svg"
+            <RouterLink v-if="!create" to="/admin/user/" class="btn btn-outline-light"> <img src="/imgs/add.svg"
                     alt="add">
                 Ajouter un USER</RouterLink>
 
             <button @click="modificationDonnees()" type="button" class="btn btn-outline-success"> <img
                     src="/imgs/save.svg" alt="Enregistrer"> Enregistrer </button>
 
-            <button v-if="!this.current_utilisateur.is_admin && create == false" @click="this.popupDelete = true" type="button" class="btn  btn-outline-danger"> <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer </button>
+            <button v-if="!this.current_utilisateur.is_admin && create == false" @click="this.popupDelete = true"
+                type="button" class="btn  btn-outline-danger"> <img src="/imgs/delete.svg" alt="Supprimer"> Supprimer
+            </button>
 
-            <button v-if="create" @click="$router.go(-1)" type="button" class="btn btn-outline-danger"> 
-                <img src="/imgs/delete.svg" alt="Annuler"> Annuler 
+            <button v-if="create" @click="$router.go(-1)" type="button" class="btn btn-outline-danger">
+                <img src="/imgs/delete.svg" alt="Annuler"> Annuler
             </button>
 
         </div>
     </form>
 
-    
+
 
     <supprimer v-if="popupDelete" :Element_Supp="current_utilisateur" @closePopup="popupDelete = false" />
 
@@ -340,8 +342,8 @@ h2 {
 
 .grisee {
     background-color: var(--gris-moyen);
-    margin-top: 5vh; 
-    margin-bottom: 5vh; 
+    margin-top: 5vh;
+    margin-bottom: 5vh;
 }
 
 label {

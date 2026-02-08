@@ -30,7 +30,7 @@ export default {
     <h1 class="text-center">Utilisateur</h1>
     <div class="row">
         <RouterLink to="/admin/user/" class="col btgris btn change"> Ajouter un utilisateur <img src="/imgs/add.svg"
-                alt="ajouter" ></RouterLink>
+                alt="ajouter"></RouterLink>
         <div class="container col">
             <div class="search-bar">
                 <div class="input-group">
@@ -188,7 +188,7 @@ ul {
     justify-content: space-between;
 }
 
-.change{
+.change {
     max-width: 16em;
     margin-left: 3em;
 }

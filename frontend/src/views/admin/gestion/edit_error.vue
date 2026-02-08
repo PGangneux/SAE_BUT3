@@ -21,7 +21,8 @@ export default {
 .toast-error {
     position: fixed;
     top: 10vh;
-    right: 0;                     /* haut droite */
+    right: 0;
+    /* haut droite */
     background-color: var(--rouge);
     color: var(--white);
     padding: 20px 30px;
@@ -56,6 +57,7 @@ export default {
         transform: translateX(50px);
         opacity: 0;
     }
+
     to {
         transform: translateX(0);
         opacity: 1;
@@ -67,6 +69,7 @@ export default {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }

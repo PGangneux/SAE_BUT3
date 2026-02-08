@@ -1,4 +1,3 @@
-
 <script>
 export default {
     name: "page_reset_password",

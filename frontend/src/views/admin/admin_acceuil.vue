@@ -1,7 +1,7 @@
 <script>
 export default {
   name: "page_admin_acceuil",
-  
+
 };
 
 
@@ -40,7 +40,8 @@ export default {
   </nav>
 </template>
 
-<style scoped>.card {
+<style scoped>
+.card {
   background-color: var(--gris-moyen);
   filter: drop-shadow(20px 13px 4px var(--noir));
   padding: 2rem;
@@ -79,8 +80,8 @@ export default {
 }
 
 .card-icon {
-  width: 311px; 
-  height: 311px; 
+  width: 311px;
+  height: 311px;
   transition: transform 0.4s ease;
 }
 
@@ -108,7 +109,7 @@ export default {
     width: 280px;
     height: 280px;
   }
-  
+
   .card {
     min-height: 500px;
   }
@@ -119,20 +120,19 @@ export default {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .blocchoix li {
     width: 100%;
     max-width: 400px;
   }
-  
+
   .card {
     min-height: 450px;
   }
-  
+
   .card-icon {
     width: 250px;
     height: 250px;
   }
 }
-
 </style>

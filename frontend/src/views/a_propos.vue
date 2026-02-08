@@ -13,7 +13,8 @@ export default {
         <div class="spacy">
             <p>HERE</p>
         </div>
-    </div><div class="local-flex row">
+    </div>
+    <div class="local-flex row">
         <div class="spacy">
             <p>HERE</p>
         </div>
@@ -55,13 +56,15 @@ export default {
     justify-content: space-evenly;
     flex: 1 1 200px;
 }
+
 .spacy {
-    border-radius: 20px;    
+    border-radius: 20px;
     width: 500px;
     height: 500px;
     background-color: var(--gris-moyen);
 }
-.logo{
+
+.logo {
     max-width: 100px;
 }
 </style>

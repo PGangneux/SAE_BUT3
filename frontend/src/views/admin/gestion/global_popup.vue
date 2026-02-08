@@ -27,7 +27,7 @@ export default {
           this.message = data.message || "";
           this.type = data.type;
           console.log(this.type, "toast type reçu");
-          
+
           this.visible = true;
           localStorage.removeItem("globalToast");
 
@@ -64,14 +64,20 @@ export default {
   color: #fff;
   z-index: 9999;
   pointer-events: none;
-  opacity: 1; /* bien visible */
+  opacity: 1;
+  /* bien visible */
   /* animation d'entrée et sortie */
   animation: slideInRight 0.4s ease-out, fadeOut 1s ease-in 4s forwards;
 }
 
 /* Couleurs selon le type */
-.toast.success { background-color: var(--vert-midel); }
-.toast.error   { background-color: var(--rouge); }
+.toast.success {
+  background-color: var(--vert-midel);
+}
+
+.toast.error {
+  background-color: var(--rouge);
+}
 
 .toast p {
   margin: 0;
@@ -79,19 +85,26 @@ export default {
 }
 
 @keyframes slideInRight {
-  from { transform: translateX(50px); opacity: 0; }
-  to   { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 
 /* animation de disparition (fade out) */
 @keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
+  from {
+    opacity: 1;
+  }
 
+  to {
+    opacity: 0;
+  }
+}
 </style>

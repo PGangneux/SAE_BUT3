@@ -33,9 +33,9 @@ export default {
                 erreur += "il manque un pseudo  \n";
             } if (this.current_utilisateur.nom == null || this.current_utilisateur.nom == "") {
                 erreur += "il manque un nom  \n";
-            }if (this.current_utilisateur.prenom == null || this.current_utilisateur.prenom == "") {
+            } if (this.current_utilisateur.prenom == null || this.current_utilisateur.prenom == "") {
                 erreur += "il manque un prenom  \n";
-            }  if (this.current_utilisateur.email == null || this.current_utilisateur.email == "") {
+            } if (this.current_utilisateur.email == null || this.current_utilisateur.email == "") {
                 erreur += "il manque un email  \n";
             } if (this.current_utilisateur.password == null || this.current_utilisateur.password == "") {
                 erreur += "il manque un mot de passe  \n";
@@ -181,18 +181,9 @@ export default {
     </form>
 
 
-    <edit_success 
-        v-if="popupSuccess && create"
-        message="utilisateur créée !"
-    />
-    <edit_success 
-        v-else-if="popupSuccess && !create"
-        message="Modification enregistrée !"
-    />
-    <edit_error
-        v-if="popupError"
-        :message="this.message_error"
-    />
+    <edit_success v-if="popupSuccess && create" message="utilisateur créée !" />
+    <edit_success v-else-if="popupSuccess && !create" message="Modification enregistrée !" />
+    <edit_error v-if="popupError" :message="this.message_error" />
 
 </template>
 
