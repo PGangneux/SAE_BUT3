@@ -23,7 +23,6 @@ export default {
 
       searchExtrait($event){
         this.search =$event;
-        console.log(this.search)
     },
   },
 
@@ -97,7 +96,7 @@ li > .card {
 
 .scroller2 {
   width: 100%;
-  height: 80vh;
+  height: 100vh;
   overflow-y: scroll;
   scrollbar-color: var(--blanc) #A6A6A6;
   scrollbar-width: thin;

@@ -2,8 +2,9 @@
 import { markRaw } from 'vue';
 
 
-import Theme from '@model/theme.js';
+
 import Question from "@model/question";
+import Theme from "@model/theme";
 
 
 export default {
@@ -24,8 +25,7 @@ export default {
 
     },data(){
         return {
-            
-            
+            laselectedTheme:"",
             listetheme:[],   //liste des Questions totals
         }
     },
@@ -40,6 +40,22 @@ export default {
         },
 
 
+        FoncSelectedTheme(event) {
+
+                const value = event.target.value;
+                this.laselectedTheme = value;
+                
+                console.log("Theme sélectionné:", value);
+                
+                const theme = this.listetheme.find(a => a.name === value);
+                
+                if (theme) {
+                    console.log("Theme trouvé:", theme);
+                } else {
+                    console.log("Nouveau theme:", value);
+                }
+        },
+
         creerNouvelleQuestion(){
             if( this.laselectedQuestion != "" ||  this.laselectedQuestion == null){     
                 console.log(this.laselectedQuestion);
@@ -47,6 +63,7 @@ export default {
                 if (!this.listeQuestion.find(a => a.name === this.laselectedQuestion)){
                 const newQuestion = new Question({});
                 newQuestion.name = this.laselectedQuestion;
+                newQuestion.theme = this.laselectedTheme;
                 newQuestion.create()
                 this.listeQuestion.add(newQuestion);
                 console.log('creer artiste');
@@ -61,8 +78,25 @@ export default {
         
         },
 
-        creerNouvelleTheme(){
+        async creerNouvelleTheme(){
+            if( this.laselectedTheme != "" && this.laselectedTheme != null ){
+                
+                if (!this.listetheme.find(a => a.name === this.laselectedTheme)){
+                    const newTheme = await new Theme({});
+                    newTheme.name =  this.laselectedTheme; 
+                    
+                    await newTheme.create()
+                    this.listetheme.push(newTheme);
 
+                    
+                    alert('le Theme ' + newTheme.name + ' est creer'); // ← ERREUR ICI : newArtiste au lieu de newTheme
+                }else{
+                    alert('le Theme existe deja')
+                }
+            }else{
+                alert('pas de champs null pour theme'); // ← Changé "artiste" en "theme"
+            }
+            
         },
 
         creerQuestion(e) {
@@ -102,13 +136,13 @@ export default {
 
 <div class="grisee allmighty trie-tagsfoncer row">
     <div class="row collumpopu ">
-        <h1 class="row"> creation une nouvelle question </h1>
+        <h1 class="row"> creation d'une nouvelle question </h1>
 
         <form class="row" @submit.prevent="creerQuestion">
             <div   style="--bs-gutter-x: 0em;">
                 <div class=" input-group mb-3" >
-                    <span  class="input-group-text colovert" id="basic-addon3" > Question :</span>
-                    <input list="Questiondata" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  :value="laselectedQuestion" @input="FoncSelectedQuestion"/>
+                    <span  class="input-group-text colovert" id="basic-addon3" > Question Name :</span>
+                    <input list="Questiondata" id="question" name="question" class="form-control " style="border: solid; border-color: var(--vert-midel);"  :value="laselectedQuestion" @input="FoncSelectedQuestion"/>
 
                     <datalist id="Questiondata">
                     <option v-for="question in listeQuestion" :key="question.id" :value="question.texte" :label="question.texte" > </option> 
@@ -117,13 +151,14 @@ export default {
 
                 <div class=" input-group mb-3" >
                     <span  class="input-group-text colovert" id="basic-addon3" > Question theme :</span>
-                    <input list="Questiontheme" id="question" name="question" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"  />
+                     <input list="Questiontheme" id="questiontheme" name="questiontheme" class="form-control" style="border: solid; border-color: var(--vert-midel);" :value="laselectedTheme"@input="laselectedTheme = $event.target.value"
+    />
 
                     <datalist id="Questiontheme">
-                    <option v-for="theme in listetheme" :key="theme.id" :value="theme.theme" :label="theme.name" > </option> 
+                    <option v-for="theme in listetheme" :key="theme.id" :value="theme.name" :label="theme.name" > </option> 
                     </datalist>
 
-                    <button class="bt" style="background-color: var(--gris-ultraclair);">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
+                    <button class="bt" type="button" style="background-color: var(--gris-ultraclair);" @click="creerNouvelleTheme">  <img src="/imgs/add_black.svg" alt="add" class="col "> </button>
                 </div>
 
                 <button @click="" type="button" class="btn btn-outline-success"> <img src="/imgs/save.svg"
@@ -155,6 +190,10 @@ export default {
 </template>
 
 <style scoped>
+
+span{
+      min-width: 10em;
+}
 
 .scroller {
     width: 300px;
@@ -228,6 +267,12 @@ thead{
 .ultagger {
     list-style-type: none;
 
+}
+
+.colovert {
+    border-color: var(--vert-pale);
+    background-color: var(--vert-pale);
+    color: var(--blanc);
 }
 
 

@@ -134,7 +134,6 @@ export default {
 
           // Reload brutal
           window.location.href = `/admin/extrait/${this.current_extrait.uuid}`;
-          alert("creer");
         }else{
           this.popupError = true;
                 setTimeout(()=>{
@@ -868,7 +867,7 @@ export default {
           </div>
           
 
-          <div class="row"  style="--bs-gutter-x: 0em;">
+          <div v-if="false" class="row"  style="--bs-gutter-x: 0em;">
               <div class="input-group mb-3" >
                 <span class="input-group-text colovert" >Audios :</span>
                 <input list="Audiodata" id="choixAudio" name="choixAudio" class="form-control colovert" style="border: solid; border-color: var(--vert-midel);"   v-model="laselectedAudio" @input="SelectedAudiosId">
