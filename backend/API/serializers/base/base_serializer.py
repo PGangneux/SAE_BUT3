@@ -1,4 +1,3 @@
-import re
 from django.urls import reverse
 from django.http import HttpRequest
 from rest_framework import serializers
@@ -9,6 +8,7 @@ from neomodel.exceptions import (
     DoesNotExist,
     RequiredProperty,
 )
+import re
 from ...errors import ValidatorUnique, ValidatorRequired, NotFound
 
 

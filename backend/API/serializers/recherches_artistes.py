@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Artiste
+from . import RelationShipUtilisateurSerializer
 
 
 class RecherchesArtistesSerializer(RelationShipUtilisateurSerializer):

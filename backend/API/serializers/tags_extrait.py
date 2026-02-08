@@ -1,5 +1,5 @@
-from ..serializers import RelationShipTagSerializer
 from ..models import Extrait
+from . import RelationShipTagSerializer
 
 
 class TagsExtraitRelationShipSerializer(RelationShipTagSerializer):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import BaseRelationShipSerializer
 from ..models import Extrait, Interview
+from . import BaseRelationShipSerializer
 
 
 class InterviewsSerializer(BaseRelationShipSerializer):

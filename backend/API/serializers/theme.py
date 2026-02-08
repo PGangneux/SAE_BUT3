@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import BaseSerializer
 from ..models import Theme
+from . import BaseSerializer
 
 
 class ThemeSerializer(BaseSerializer):

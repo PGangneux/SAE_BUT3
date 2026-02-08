@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from neomodel import StructuredNode
 from ...models import Tag
-from ..base import BaseRelationShipSerializer
+from . import BaseRelationShipSerializer
 
 
 class RelationShipTagSerializer(BaseRelationShipSerializer):

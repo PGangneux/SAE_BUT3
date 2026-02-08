@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from neomodel import db, StructuredNode
 from ..errors import ValidatorUnique
-from ..serializers import BaseSerializer
 from ..models import Artiste, Audio, Extrait, Question
+from . import BaseSerializer
 
 
 class ExtraitSerializer(BaseSerializer):

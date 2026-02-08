@@ -1,5 +1,5 @@
-from ..serializers import RelationShipTagSerializer
 from ..models import Interview
+from . import RelationShipTagSerializer
 
 
 class TagsInterviewRelationShipSerializer(RelationShipTagSerializer):

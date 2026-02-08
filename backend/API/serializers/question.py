@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist
-from ..serializers import BaseSerializer
 from ..models import Question, Theme
-from ..errors import NotFound
+from . import BaseSerializer
 
 
 class QuestionSerializer(BaseSerializer):

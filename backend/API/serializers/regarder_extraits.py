@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Extrait
+from . import RelationShipUtilisateurSerializer
 
 
 class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):

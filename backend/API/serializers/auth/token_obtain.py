@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import check_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
-from neomodel import DoesNotExist, NodeSet
+from neomodel import DoesNotExist
 from ...models import Utilisateur
 
 

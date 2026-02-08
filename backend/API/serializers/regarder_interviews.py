@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Interview
+from . import RelationShipUtilisateurSerializer
 
 
 class RegarderInterviewsSerializer(RelationShipUtilisateurSerializer):

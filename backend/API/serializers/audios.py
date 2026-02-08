@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from ..serializers import BaseRelationShipSerializer
 from ..models import Extrait, Audio
+from . import BaseRelationShipSerializer
 
 
 class AudiosSerializer(BaseRelationShipSerializer):

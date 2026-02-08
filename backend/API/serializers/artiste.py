@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist
-from ..errors import NotFound
 from ..models import Artiste
-from ..serializers import BaseSerializer
+from . import BaseSerializer
 
 
 class ArtisteSerializer(BaseSerializer):
