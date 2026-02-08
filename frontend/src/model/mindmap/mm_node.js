@@ -76,6 +76,7 @@ export default class mm_Node {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             }
+            this.mminfo.update();
         };
         requestAnimationFrame(animate);
     }
