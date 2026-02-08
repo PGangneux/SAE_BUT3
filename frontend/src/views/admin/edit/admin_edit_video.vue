@@ -112,6 +112,101 @@ export default {
     },
 
 
+  async getYouTubeDuration(videoId) {
+    // UTILISE LAPI YOUTUBE
+    if (!videoId) {
+      console.log("Pas de videoId fourni");
+      return null;
+    }
+
+    try {
+      const API_KEY = import.meta.env.YOUTUBE_API_KEY;
+      
+      if (!API_KEY) {
+        console.error("Clé API YouTube manquante");
+        return 1;
+      }
+
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=contentDetails&key=${API_KEY}`
+      );
+      
+      if (!response.ok) {
+        console.log("Erreur API YouTube");
+        return null;
+      }
+      
+      const data = await response.json();
+      
+      if (data.items && data.items.length > 0) {
+        const duration = data.items[0].contentDetails.duration;
+        // Convertir ISO duration en secondes
+        return this.parseDuration(duration);
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la durée:", error);
+      return null;
+    }
+  },
+
+  // la fonction qui convertie la durée ISO en secondes
+  parseDuration(duration) {
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    if (!match) return 0;
+    
+    const hours = parseInt(match[1] || 0);
+    const minutes = parseInt(match[2] || 0);
+    const seconds = parseInt(match[3] || 0);
+    
+    return hours * 3600 + minutes * 60 + seconds;
+  },
+
+
+  async getVimeoDuration(videoId) {
+      // Appel à l'API Vimeo
+    if (!videoId) {
+      console.log("Pas de videoId Vimeo fourni");
+      return null;
+    }
+
+    try {
+      const ACCESS_TOKEN = import.meta.env.VITE_VIMEO_ACCESS_TOKEN;
+      
+      if (!ACCESS_TOKEN) {
+        console.error("Token d'accès Vimeo manquant");
+        return 1;
+      }
+
+      const response = await fetch(
+        `https://api.vimeo.com/videos/${videoId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${ACCESS_TOKEN}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        console.log("Erreur API Vimeo");
+        return null;
+      }
+      
+      const data = await response.json();
+      
+      //get la duree depuis l'API Vimeo
+      if (data.duration) {
+        return data.duration;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la durée Vimeo:", error);
+      return null;
+    }
+  },
 
 
 
@@ -119,8 +214,6 @@ export default {
 
       try {
         //fonction pour enregistrer un extraits dans L'api
-        this.current_extrait.duree = 1;
-
         this.message_error = await this.validationExtrait();
 
         if (this.message_error == "") {
@@ -583,11 +676,43 @@ export default {
         console.log('erreur');
       }
 
+        try {
+          // Récupérer la durée de la vidéo YouTube
+          this.current_extrait.youtube_url = this.get_YT_videoId(this.urlyoutubeReconstruit);
+          if (this.current_extrait.youtube_url) {
+            const duration = await this.getYouTubeDuration(this.current_extrait.youtube_url);
+            if (duration) {
+              this.current_extrait.duree = duration;
+            }
+          }
+        } catch {
+          this.current_extrait.youtube_url = "";
+          console.log('erreur');
+        }
+
       try {
         this.current_extrait.vimeo_url = await this.get_Vimeo_videoId(this.urlVimeoReconstruit);
       } catch {
         this.current_extrait.vimeo_url = "";
         console.log('erreur');
+      }
+
+
+      let vimeoId = null;
+
+      try {
+        // Extraction de l'ID Vimeo
+        vimeoId = await this.get_Vimeo_videoId(this.urlVimeoReconstruit);
+        this.current_extrait.vimeo_url = vimeoId;
+        
+        //reccuperation de la duree de la video
+        if (vimeoId) {
+           this.current_extrait.duree = await this.getVimeoDuration(vimeoId);
+        }
+      } catch (error) {
+        // En cas d'erreur
+        this.current_extrait.vimeo_url = "";
+        console.log('Erreur lors de l\'extraction de l\'ID Vimeo:', error);
       }
 
 

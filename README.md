@@ -91,5 +91,7 @@ NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password
 NEO4J_HOST=localhost
 NEO4J_PORT=7687
+YOUTUBE_API_KEY=cle_api_youtube
+VIMEO_ACCESS_TOKEN=token_vimeo
 ```
 
