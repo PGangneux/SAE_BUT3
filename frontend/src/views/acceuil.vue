@@ -218,7 +218,7 @@ export default {
 
     .flex-grow {
         margin-bottom: 1rem;
-        min-height: 50vmin;
+        min-height: 100vmin;
     }
 
     .recent-component {
