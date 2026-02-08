@@ -1,11 +1,19 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Artiste
+from . import RelationShipUtilisateurSerializer
 
 
 class RecherchesArtistesSerializer(RelationShipUtilisateurSerializer):
     """
     Sérializer RelationShip recherches_artistes (Utilisateur <-> Artiste)
+
+    Gestion des artistes liés à une recherche d'un utilisateur
+
+    Champs aditionnels :
+        Relations :
+            - extraits : les extraits liés à l'artiste
+        Champs en read_only :
+            - name : nom de l'artiste
     """
 
     # Outputs

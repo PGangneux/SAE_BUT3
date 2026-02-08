@@ -11,7 +11,13 @@ from ...errors import NotFound, ConnexionDB, OrderError
 
 class BaseGenericViewSet(GenericViewSet):
     """
-    Classe de base contenant les méthodes pour les viewsets de l'api
+    Classe de base générique contenant les méthodes pour les viewsets de l'api
+
+    Gestion de la recherche, de l'ordonnancement, de la pagination et de la récupération d'instance
+
+    Champs :
+        - lookup_field : champ utilisé pour la recherche d'une instance
+        - permission_classes : permissions utilisées pour les viewsets enfants (ici, utilise les permissions par défaut, voir settings.py)
 
     Raises:
         ValidationError: Données du mauvais type
@@ -30,7 +36,8 @@ class BaseGenericViewSet(GenericViewSet):
         search_field: str = None,
         **kwargs,
     ):
-        """ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
+        """
+        ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
 
         Args:
             serializer_class (Serializer): Serializer du ViewSet
@@ -43,8 +50,11 @@ class BaseGenericViewSet(GenericViewSet):
         self.search_field: str = search_field
 
     def get_nodeset(self) -> NodeSet:
-        """Récupère le nodeset de la view,
+        """
+        Récupère le nodeset (neomodel) de la view,
         même chose qu'un queryset mais pour neomodel
+
+        Méthode overrideable pour les viewsets enfants, pour appliquer des filtres par défaut sur le nodeset (sous nodeset)
 
         Returns:
             NodeSet: ensemble de StructuredNode du modèle
@@ -52,7 +62,10 @@ class BaseGenericViewSet(GenericViewSet):
         return self.model_class.nodes
 
     def get_queryset(self) -> QuerySet:
-        """Récupère le queryset de la view
+        """
+        Récupère le queryset (django) de la view
+
+        Applique les filtres de recherche, d'ordonnancement et de pagination sur le queryset
 
         Raises:
             ValidationError: Les données dans les paramètres d'url ne sont pas du bon type
@@ -100,7 +113,8 @@ class BaseGenericViewSet(GenericViewSet):
             raise ConnexionDB()  # pragma: no cover
 
     def get_object(self) -> StructuredNode:
-        """Récupère l'objet dans le nodeset
+        """
+        Récupère l'objet dans le nodeset
 
         Raises:
             NotFound: L'objet rechercher n'a pas été trouvé
@@ -118,7 +132,8 @@ class BaseGenericViewSet(GenericViewSet):
             raise ConnexionDB()  # pragma: no cover
 
     def search_nodeset(self, nodeset: NodeSet, search: str) -> NodeSet:
-        """Filtre le nodeset en fonction de la recherche
+        """
+        Filtre le nodeset en fonction de la recherche
 
         Args:
             nodeset (NodeSet): nodeset dans lequel on effectue la recherche
@@ -135,7 +150,8 @@ class BaseGenericViewSet(GenericViewSet):
         return nodeset
 
     def order_nodeset(self, nodeset: NodeSet, orders: str) -> NodeSet:
-        """Ordonne le nodeset en fonction du champ renseigner
+        """
+        Ordonne le nodeset en fonction du champ renseigner
         Ne fonctionne que si les éléments rechercher existent sinon renvoie une erreur
 
         Args:
@@ -242,7 +258,8 @@ class BaseGenericViewSet(GenericViewSet):
         return nodeset.order_by(*ordering)
 
     def pagination_nodeset(self, nodeset: NodeSet, size: int, page: int) -> NodeSet:
-        """Pagination du nodeset avec une taille de page et le numéro de la page actuelle
+        """
+        Pagination du nodeset avec une taille de page et le numéro de la page actuelle
 
         Args:
             nodeset (NodeSet): nodeset sur lequel est appliqué la pagination
@@ -260,7 +277,8 @@ class BaseGenericViewSet(GenericViewSet):
         return nodeset[(page - 1) * size : page * size]
 
     def skip_nodeset(self, nodeset: NodeSet, skip: int) -> NodeSet:
-        """Passe les premiers éléments du nodeset, le faisant commencer après
+        """
+        Passe les premiers éléments du nodeset, le faisant commencer après
 
         Args:
             nodeset (NodeSet): nodeset exploiter

@@ -1,6 +1,7 @@
 # SAE_BUT3
 Navigateur de contenus vidéos
 
+Monorepo contenant le service backend et le service frontend
 
 ## Installation et lancement local
 
@@ -11,7 +12,7 @@ Navigateur de contenus vidéos
 
 ### Configuration initiale
 
-1. **Installer les dépendances** :
+#### 1. **Installer les dépendances** :
 ```bash
 make install
 ```
@@ -20,6 +21,17 @@ Cette commande :
 - Crée un environnement virtuel Python (`venv`)
 - Installe les dépendances backend depuis `backend/requirements.txt`
 - Installe les dépendances frontend avec npm
+
+
+#### 2. **Initialiser les bases de données**
+```bash
+make migration
+```
+
+Cette commande :
+- Initialise la base de données sqlite3 avec les configurations Django
+- Initialise la base de données Neo4j en envoyant le schéma du model à la base de données (label et index)
+    - supprime le précédent schéma du model (pas de gestion de migration de Django)
 
 ### Lancement de l'application
 
@@ -44,12 +56,10 @@ make tests
 
 **Tests frontend** :
 ```bash
-make npm run test
-# ou directement
-cd frontend && npm test
+make tests_front
 ```
 
-**Couverture de code (backend)** :
+**Couverture des tests (backend)** :
 ```bash
 make coverage
 ```
@@ -71,7 +81,13 @@ Charger les données par défaut :
 make load_bd
 ```
 
-Créer un utilisateur administrateur par défaut :
+Créer un utilisateur administrateur (Neo4j / frontend) :
+```bash
+make neo4j_create_admin pseudo=<pseudo> password=<password> email=<email>
+```
+
+
+Créer un utilisateur administrateur Django par défaut :
 ```bash
 make default_admin_user
 # Username: admin, Password: admin

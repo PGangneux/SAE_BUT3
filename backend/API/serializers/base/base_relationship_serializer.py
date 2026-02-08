@@ -8,6 +8,12 @@ from . import BaseSerializer
 class BaseRelationShipSerializer(BaseSerializer):
     """
     Classe de base contenant les méthodes pour la gestion des relations entre les nodes de la base de données
+        Afin d'avoir une gestion des champs write_only, utiliser pour créer des relations one-to-many,
+        il faut ajouter dans la classe fille un dictionnaire input_fields de la forme :
+        {"nom du champ du serializer": {"relationship": "attribut python relationship dans node", "node": Classe de node (model)}, }
+    
+    Champs :
+        - uuid : uuid du node à relier (obligatoire)
 
     Raises:
         ContextError: node de context manquant

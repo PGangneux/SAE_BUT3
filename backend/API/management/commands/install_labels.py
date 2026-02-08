@@ -1,11 +1,11 @@
-from neomodel import db
 from django.core.management.base import BaseCommand
-from neomodel import install_all_labels
+from neomodel import install_all_labels, db
 
 
 class Command(BaseCommand):
     """
-    Permet d'enregistrer l'ensemble des labels et contraintes du model vers la base de données neo4j
+    Permet de créer tous les labels et contraintes Neo4j pour les modèles StructuredNode
+    Supprime d'abord tous les labels et contraintes existants pour éviter les conflits
     """
 
     help = "Crée tous les labels et contraintes Neo4j pour les modèles StructuredNode"

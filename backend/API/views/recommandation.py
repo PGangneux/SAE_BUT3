@@ -127,7 +127,7 @@ class Recommandation(APIView):
             "Tag": ("Tag", "*..3"),
             "Audio": ("Audio", "*..2"),
         }
-        # Pour des causes de retro compatibilités
+        # Pour des causes de retro compatibilités avec les anciennes versions de Neo4j server
         # filter_configs = {
         #     "Thème": ("Theme", "*2..3"),
         #     "Artiste": ("Artiste", "*..2"),
@@ -150,7 +150,7 @@ class Recommandation(APIView):
                     f"!:{node_type}" if filtre_key == "Tag" else f"t:{node_type}"
                 )
                 node_var = "!" if filtre_key == "Tag" else "t"
-                # Pour des questions de retro compatibilité avec les anciennes versions de neo4j
+                # Pour des questions de retro compatibilité avec les anciennes versions de Neo4j server
                 # filter_clause = f"""EXISTS {{
                 #     MATCH p = SHORTEST 1 (v)-[{path_length}]-({node_pattern})
                 #     WHERE {node_var}.uuid = '{filtres[filtre_key]}'
@@ -166,7 +166,7 @@ class Recommandation(APIView):
                 parts["where"].append(filter_clause)
 
         # === OPTIONAL MATCH pour le scoring ===
-        # Pour des questions de retro compatibilité avec les anciennes versions de neo4j
+        # Pour des questions de retro compatibilité avec les anciennes versions de Neo4j server
         # score_configs = {
         #     "Thème": ("Theme", "*..3", "c_t", "v_t"),
         #     "Artiste": ("Artiste", "*0..2", "c_a", "v_a"),

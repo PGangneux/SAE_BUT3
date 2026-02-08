@@ -7,7 +7,8 @@ from .errors import ConnexionDB
 
 
 class Neo4jJWTAuthentication(JWTAuthentication):
-    """Gestion de l'authentification avec Utilisateur
+    """
+    Gestion de l'authentification avec Utilisateur
     N'utilise pas le système de user de Django par défaut
     Adaptation du système avec les utilisateurs du modèle Neo4j
     """

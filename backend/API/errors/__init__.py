@@ -9,4 +9,4 @@ from .connexion_db import ConnexionDB
 from .order_error import OrderError
 from .validator_required import ValidatorRequired
 
-__all__ = ("ValidatorUnique", "NotFound", "ContextError", "ConnexionDB", "OrderError")
+__all__ = ("ValidatorUnique", "NotFound", "ContextError", "ConnexionDB", "OrderError", "ValidatorRequired")
