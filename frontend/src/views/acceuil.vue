@@ -203,7 +203,7 @@ export default {
 
 .recent-component {
     margin: 1%;
-    width: 30%;
+    min-width: 10%;
     min-width: 300px;
     flex-direction: column;
     align-items: center;
@@ -218,7 +218,7 @@ export default {
 
     .flex-grow {
         margin-bottom: 1rem;
-        min-height: 50vmin;
+        min-height: 100vmin;
     }
 
     .recent-component {
