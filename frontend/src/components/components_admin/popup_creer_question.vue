@@ -61,8 +61,6 @@ export default {
 
         async creerNouvelleQuestion() {
             if (this.laselectedQuestion != "" && this.laselectedQuestion != null) {
-                console.log(this.laselectedQuestion);
-
                 if (!this.listeQuestion.find(a => a.texte === this.laselectedQuestion)) {
                     const newQuestion = new Question({});
                     newQuestion.texte = await this.laselectedQuestion;
@@ -73,9 +71,6 @@ export default {
                     alert('Question creer');
                     // Reload brutal
                     window.location.href = `/admin/extrait/${this.extraitUuid}`;
-
-
-
                 } else {
                     console.log('question existe deja');
                 }

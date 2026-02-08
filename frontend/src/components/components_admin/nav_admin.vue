@@ -1,4 +1,3 @@
-n
 <script>
 
 export default {

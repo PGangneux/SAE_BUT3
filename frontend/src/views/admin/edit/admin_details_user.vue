@@ -40,15 +40,11 @@ export default {
 
 
     methods: {
-
         popupchangeEnregistrer() {
             //permet de changer l'etat de la popup Enregistrer
             this.popupEnregistrer = !this.popupEnregistrer
 
         },
-
-
-
 
         async validationUSER() {
             let erreur = "";
@@ -62,19 +58,9 @@ export default {
             return erreur;
         },
 
-
-
-
-
         changeAdmin() {
             this.current_utilisateur.is_admin = !this.current_utilisateur.is_admin;
         },
-
-
-
-
-
-
 
         async modificationDonnees() {
             if (this.create) {
@@ -87,22 +73,14 @@ export default {
         async enregistrer() {
 
             try {
-
-
-
                 this.message_error = await this.validationUSER();
 
                 if (this.message_error == "") {
-
                     this.popupEnregistrer = true;
-
                     await this.current_utilisateur.create();
                     //this.new_extrait = new markRaw(new Extrait({}));
-
-
                     sessionStorage.setItem('popupSuccess', 'true');
                     sessionStorage.setItem('create', this.create ? 'true' : 'false');
-
                     // Reload brutal
                     window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
                     alert("creer");
@@ -112,8 +90,6 @@ export default {
                         this.popupError = false;
                     }, 5000)
                 }
-
-
             } catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
@@ -122,25 +98,18 @@ export default {
                     this.popupError = false;
                 }, 5000)
             }
-
         },
-
-
         togglePassword() {
             this.showPassword = !this.showPassword;
         },
 
-
-
         async Update() {
             try {
                 this.message_error = await this.validationUSER();
-
                 if (this.message_error == "") {
                     await this.current_utilisateur.update();
                     sessionStorage.setItem('popupSuccess', 'true');
                     sessionStorage.setItem('create', this.create ? 'true' : 'false');
-
                     // Reload brutal
                     window.location.href = `/admin/user/${this.current_utilisateur.uuid}`;
 
@@ -150,7 +119,6 @@ export default {
                         this.popupError = false;
                     }, 5000)
                 }
-
             } catch (error) {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
@@ -159,12 +127,8 @@ export default {
                     this.popupError = false;
                 }, 5000)
             }
-
         },
-
-
     },
-
     computed: {
         isAdmin() {
             return this.current_utilisateur.is_admin;
@@ -173,7 +137,6 @@ export default {
 
 
     async mounted() {
-
         // Popup succès après reload brutal
         if (sessionStorage.getItem('popupSuccess') === 'true') {
             this.popupSuccess = true;
@@ -190,9 +153,7 @@ export default {
                 this.popupSuccess = false;
             }, 5000);
         }
-
         const utilisateurId = this.$route.params.id;
-
         if (utilisateurId != null) {
             //reccuperation de l'Extrait via l'id
             this.current_utilisateur = markRaw(await Utilisateur.detail(utilisateurId));
@@ -200,19 +161,11 @@ export default {
             this.regarder_interviews = (markRaw(await this.current_utilisateur.regarder_interviews()));
             this.regarder_extraits = (markRaw(await this.current_utilisateur.regarder_extraits()));
             this.recherches_questions = (markRaw(await this.current_utilisateur.recherches_questions()));
-
-
-
         } else {
             this.current_utilisateur = markRaw(await new Utilisateur({}));
             this.create = true;
         }
-
-
-        this.tags = markRaw(await Tags.list())
-
-
-
+        this.tags = markRaw(await Tags.list());
     },
 };
 

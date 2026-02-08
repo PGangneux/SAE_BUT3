@@ -3,7 +3,6 @@ import { markRaw } from 'vue';
 import Tags from '@model/tag.js';
 import Extrait from '@model/extrait.js';
 
-
 export default {
     name: "comp_admin_trie_extrait",
     components: {
@@ -16,8 +15,6 @@ export default {
         };
 
     },
-
-
     methods: {
         changement_extrait() {
             this.$emit('searchextrait', this.extraitsearch)
@@ -40,10 +37,6 @@ export default {
     },
 
 };
-
-
-
-
 </script>
 
 
