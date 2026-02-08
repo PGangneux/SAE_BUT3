@@ -54,7 +54,6 @@ export default {
                 <button @click="mm_instance.zoomreset()" @touchend="mm_instance.zoomreset()">reset zoom</button>
                 <button @click="mm_instance.centerOnNode(mm_instance.node_get(mm_instance.root_key))"
                     @touchend="mm_instance.centerOnNode(mm_instance.node_get(mm_instance.root_key))">recenter</button>
-                <button @click="this.mm_instance.update">redraw</button>
             </div>
             <div class="mm_legend_outer">
                 <button v-if="mm_instance.togglelegend" @click="mm_instance.togglelegend = false;"
