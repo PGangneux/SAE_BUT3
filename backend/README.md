@@ -92,6 +92,11 @@ make load_bd
 # Compte utilisateur (pseudo: Test Utilisateur, password: testmdp)
 ```
 
+### Créer un utilisateur administrateur (Neo4j / frontend)
+```bash
+make neo4j_create_admin pseudo=<pseudo> password=<password> email=<email>
+```
+
 ### Créer un utilisateur administrateur Django par défaut (pas Neo4j / frontend)
 ```bash
 make default_admin_user

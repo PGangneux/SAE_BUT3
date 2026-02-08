@@ -51,6 +51,9 @@ load_bd:
 show_django_urls:
 	$(python) $(manage) show_urls
 
+neo4j_create_admin:
+	$(python) $(manage) create_admin $(pseudo) $(password) $(email)
+
 default_admin_user:
 	DJANGO_SUPERUSER_USERNAME=admin \
 	DJANGO_SUPERUSER_PASSWORD=admin \

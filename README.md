@@ -81,6 +81,12 @@ Charger les données par défaut :
 make load_bd
 ```
 
+Créer un utilisateur administrateur (Neo4j / frontend) :
+```bash
+make neo4j_create_admin pseudo=<pseudo> password=<password> email=<email>
+```
+
+
 Créer un utilisateur administrateur Django par défaut :
 ```bash
 make default_admin_user
