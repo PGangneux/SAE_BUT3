@@ -42,6 +42,7 @@ export default {
         }
         
     },
+    
     emits : [ "popupenregistrer"],   
     
     
@@ -81,8 +82,8 @@ export default {
 
         <form @submit.prevent="creerExtrait">
             <div class="container row fullwith" style="max-height: 4em;">
-                <button type="submit" value="envoyer"> Yes </button>
-                <button type="submit" value="no"> No </button>
+                <button type="submit" :value="true"> OUI </button>
+                <button type="submit" :value="false"> NON </button>
             </div>
         </form>
 

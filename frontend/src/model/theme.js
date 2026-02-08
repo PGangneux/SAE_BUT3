@@ -14,7 +14,7 @@ export default class Theme extends Model {
     static get endpoint() { return "themes"; }
 
     get name() { return this.#name; }
-    set name(value) { this.#name = this.validateString(value, "name"); }
+    set name(value) { this.#name = this.constructor.validateString(value, "name"); }
 
     async questions(args) { return await this.fetchList(this.#questions, Question, args); }
 

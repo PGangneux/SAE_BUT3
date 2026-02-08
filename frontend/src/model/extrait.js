@@ -1,9 +1,10 @@
-import Model from "@model/model.js";
-import Artiste from "@model/artiste.js";
-import Question from "@model/question.js";
-import Interview from "@model/interview.js";
-import Tag from "@model/tag.js";
-import ClientAPI from "@model/clientAPI.js";
+import Model from "./model.js";
+import Artiste from "./artiste.js";
+import Question from "./question.js";
+import Audio from "./audio.js";
+import Interview from "./interview.js";
+import Tag from "./tag.js";
+import ClientAPI from "./clientAPI.js";
 
 export default class Extrait extends Model {
     #titre;
@@ -14,14 +15,15 @@ export default class Extrait extends Model {
     #uploaded_at;
     #artiste;
     #question;
+    #audio;
     #interviews;
     #tags;
     #position;
-    #duree;
     #audios;
     #artiste_uuid;
     #question_uuid;
     #audio_uuid;
+    #duree;
 
     constructor({
         uuid,
@@ -36,6 +38,7 @@ export default class Extrait extends Model {
         interviews,
         tags,
         position,
+        audio,
         duree,
         audios,
     }) {
@@ -48,6 +51,7 @@ export default class Extrait extends Model {
         this.#uploaded_at = uploaded_at;
         this.#artiste = artiste;
         this.#question = question;
+        this.#audio = audio;
         this.#interviews = interviews;
         this.#tags = tags;
         this.#position = position;
@@ -119,6 +123,14 @@ export default class Extrait extends Model {
             value,
             "question_uuid"
         );
+    }
+
+
+    get audio() {
+        return this.fetchDetail(this.#audio, Audio);
+    }
+    set audio(value) {
+        this.#audio_uuid = this.constructor.validateString(value, "audio_uuid");
     }
 
     get duree() {
@@ -222,7 +234,7 @@ export default class Extrait extends Model {
      * Déconnecte un extrait d'un audio
      * @param {Audio} audio 
      */
-    async connect_audio(audio) {
+    async disconnect_audio(audio) {
         await this.disconnect(this.#audios, audio);
     }
 
@@ -239,8 +251,8 @@ export default class Extrait extends Model {
         this.#interviews = json.interviews;
         this.#tags = json.tags;
         this.#position = json.position;
+        this.#audio = json.audio;
         this.#duree = json.duree;
-        this.#audios = json.audios;
         return this;
     }
 

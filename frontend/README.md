@@ -22,7 +22,13 @@ fonction trie
 modifier 100vh dans popup
 
 
-reccuperer object a la place de id ( qi on a la liste de base au moment daller sur une autre pages on la genere)
+this.current_extrait.duree =  0;
+mettre en place avec une api plus tard
+
+reutiliser callback pour validation
+
+
+
 
 # Tests
 Se placer dans frontnend 
