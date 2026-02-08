@@ -85,13 +85,13 @@ export function set_children_pos(mminfo, parent) {
     
     // ANGLE WEIGHTS - control spacing around circle
     const anglePreviewWeight = 20.0;    // Big preview images get more space
-    const angleContentWeight = 5.0;     // Content nodes get medium space  
-    const angleEmptyWeight = 3.0;       // Empty nodes get less space
+    const angleContentWeight = 8.0;     // Content nodes get medium space  
+    const angleEmptyWeight = 5.0;       // Empty nodes get less space
     
     // DISTANCE WEIGHTS - control how far from parent
     const distancePreviewWeight = 8.0;  // Preview nodes go further
-    const distanceContentWeight = 3.0;  // Content nodes medium distance
-    const distanceEmptyWeight = 1.5;    // Empty nodes stay closer
+    const distanceContentWeight = 3.5;  // Content nodes medium distance
+    const distanceEmptyWeight = 2;    // Empty nodes stay closer
     
     // Calculate angle per child based on content
     const effectiveAngleChildren = childrenWithPreview * anglePreviewWeight
