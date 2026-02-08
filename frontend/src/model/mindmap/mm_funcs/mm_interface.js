@@ -45,7 +45,7 @@ class SimpleClickLock {
         this.#latestClickId = myClickId;
         // Wait if already running
         while (this.#isRunning) {
-            await new Promise(resolve => setTimeout(resolve, 500)); // Check every 500ms
+            await new Promise(resolve => setTimeout(resolve, 100)); // Check every 500ms
             // Check if I'm no longer the latest click
             if (myClickId < this.#latestClickId) {
                 return;
