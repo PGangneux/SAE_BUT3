@@ -203,7 +203,7 @@ export default {
 
 .recent-component {
     margin: 1%;
-    width: 30%;
+    min-width: 10%;
     min-width: 300px;
     flex-direction: column;
     align-items: center;
