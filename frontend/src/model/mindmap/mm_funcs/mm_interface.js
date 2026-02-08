@@ -13,7 +13,6 @@ async function mm_draw_root(mminfo) {
     await mm_reset_soft(mminfo); // weither we needed to recreate everything or not
     let changevideo, changepath = mm_chemin_filter(mminfo); // we can ignore change path here because it's drawing from the root
     if (changevideo) return true;
-    console.log("mm_draw_root changepath:", changepath);
     for (const cheminpath of mminfo.chemin) {
         console.log("mm_draw_root loop", "chemin", mminfo.chemin, cheminpath);
         await mm_draw_onecat(mminfo, mminfo.node_get(cheminpath));
