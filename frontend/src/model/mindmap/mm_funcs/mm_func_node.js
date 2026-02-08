@@ -105,20 +105,20 @@ export function set_children_pos(mminfo, parent) {
         + childrenEmpty * distanceEmptyWeight;
 
     // console.log("set_children_pos", parent.depth, parent);
-    console.table({
-        "prev": childrenWithPreview, 
-        "angleCalc": childrenWithPreview * anglePreviewWeight,
-        "distanceCalc": childrenWithPreview * distancePreviewWeight,
-        "content": childrenWithContent, 
-        "angleCalc": childrenWithContent * angleContentWeight,
-        "distanceCalc": childrenWithContent * distanceContentWeight,
-        "empty": childrenEmpty, 
-        "angleCalc": childrenEmpty * angleEmptyWeight,
-        "distanceCalc": childrenEmpty * distanceEmptyWeight,
-        "totalEffectiveAngle": effectiveAngleChildren, 
-        "totalEffectiveDistance": effectiveDistanceChildren,
-        "angle_per_child": angle_per_child
-    });
+    // console.table({
+    //     "prev": childrenWithPreview, 
+    //     "angleCalc": childrenWithPreview * anglePreviewWeight,
+    //     "distanceCalc": childrenWithPreview * distancePreviewWeight,
+    //     "content": childrenWithContent, 
+    //     "angleCalc": childrenWithContent * angleContentWeight,
+    //     "distanceCalc": childrenWithContent * distanceContentWeight,
+    //     "empty": childrenEmpty, 
+    //     "angleCalc": childrenEmpty * angleEmptyWeight,
+    //     "distanceCalc": childrenEmpty * distanceEmptyWeight,
+    //     "totalEffectiveAngle": effectiveAngleChildren, 
+    //     "totalEffectiveDistance": effectiveDistanceChildren,
+    //     "angle_per_child": angle_per_child
+    // });
 
 
     // distance entre root et enfant ;

@@ -72,11 +72,11 @@ class SimpleClickLock {
 */
 export function mm_interface_handleclick(mminfo, node) {
     SimpleClickLock.runIfLatest(async () => {
-        console.log("running mm hanldeclick algo");
+        // console.log("running mm hanldeclick algo");
         try {
             if (node) {
                 mminfo.chemin.push(node.mmch_key);
-                console.log("mm hanldeclick", "chemin", mminfo.chemin, "node key", node.mmch_key, "node", node);
+                // console.log("mm hanldeclick", "chemin", mminfo.chemin, "node key", node.mmch_key, "node", node);
             }
             let isvideo = await mm_draw_update(mminfo);
             if (isvideo) {
@@ -84,7 +84,7 @@ export function mm_interface_handleclick(mminfo, node) {
                 // console.log("video store set", mminfo.chemin, mminfo);
                 videoStore.chemin = mminfo.chemin;
             }
-            console.log("mm hanldeclick end", mminfo);
+            // console.log("mm hanldeclick end", mminfo);
             mminfo.update();
         } catch (error) {
             console.error(error);
