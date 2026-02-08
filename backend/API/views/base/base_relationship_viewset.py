@@ -15,7 +15,7 @@ from neomodel import StructuredNode, db
 from neo4j.exceptions import ServiceUnavailable
 from ...errors import NotFound, ConnexionDB
 from ...serializers import BaseRelationShipSerializer
-from ..base import BaseGenericViewSet
+from . import BaseGenericViewSet
 
 
 class BaseRelationShipViewSet(
@@ -28,6 +28,14 @@ class BaseRelationShipViewSet(
     """
     Classe de base pour les ModelViewSets des relations,
     contient les méthode de base pour les ViewSet de relationship
+
+    Héritant de BaseGenericViewSet, CRUD incomplet par défaut pour les relations,
+    d'où la différence avec les autres ViewSet héritant de ModelViewSet, pas de update ou de partial_update
+
+    Champs additionnels :
+        - router_lookup_field : nom du champ à récupérer dans l'url pour avoir le node de context
+        - router_model_class : type de node du context du ViewSet
+        - relationship : nom de la relation entre le node et le node de context
     """
 
     def __init__(
@@ -40,7 +48,8 @@ class BaseRelationShipViewSet(
         search_field: str = None,
         **kwargs,
     ):
-        """ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
+        """
+        ViewSet générique contenant toutes les méthodes pour les ViewSets enfants
 
         Args:
             serializer_class (Serializer): Serializer du ViewSet
@@ -56,7 +65,8 @@ class BaseRelationShipViewSet(
         self.relationship: str = relationship
 
     def get_nodeset(self) -> NodeSet:
-        """Récupère le nodeset de la view,
+        """
+        Récupère le nodeset de la view,
         même chose qu'un queryset mais pour neomodel
 
         Raises:
@@ -92,7 +102,8 @@ class BaseRelationShipViewSet(
             raise ConnexionDB()  # pragma: no cover
 
     def get_context_model(self) -> StructuredNode:
-        """Récupère le node router pour le context
+        """
+        Récupère le node router pour le context
 
         Raises:
             NotFound: Instance introuvable
@@ -112,7 +123,8 @@ class BaseRelationShipViewSet(
             raise ConnexionDB()  # pragma: no cover
 
     def get_serializer_context(self) -> dict[str, Any]:
-        """Modification du contexte du sérializer
+        """
+        Modification du contexte du sérializer
 
         Returns:
             dict[str, Any]: context du Serializer
@@ -123,7 +135,8 @@ class BaseRelationShipViewSet(
         return context
 
     def perform_destroy(self, instance: StructuredNode):
-        """Suppression de la RelationShip
+        """
+        Suppression de la RelationShip
 
         Args:
             instance (StructuredNode): instance à déconnecter
@@ -135,7 +148,8 @@ class BaseRelationShipViewSet(
         serializer.delete(instance.uuid)
 
     def create(self, request: HttpRequest, *args, **kwargs) -> Response:
-        """Création de la RelationShip
+        """
+        Création de la RelationShip
 
         Args:
             request (HttpRequest): requête pour la création

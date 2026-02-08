@@ -1,5 +1,11 @@
 """
 Ensemble des classes ViewSet contenant les méthodes génériques utilisé par leurs classes enfants
+
+Classes :
+    - BaseGenericViewSet : ViewSet générique de base
+    - BaseModelViewSet : ViewSet de base pour les modèles
+    - SubBaseModelViewSet : ViewSet de base pour les modèles enfants
+    - BaseRelationShipViewSet : ViewSet de base pour les relations entre modèles
 """
 
 from .base_generic import BaseGenericViewSet

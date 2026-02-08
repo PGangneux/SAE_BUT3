@@ -62,6 +62,8 @@ class ExtraitSerializer(BaseSerializer):
         Retire le champ `position` si aucune interview n'est dans le contexte.
         """
         super().__init__(Extrait, *args, **kwargs)
+
+        # Champ position uniquement pertinent dans le contexte d'une interview, on le retire sinon
         if not self.context.get("interview"):
             self.fields.pop("position", None)
 
