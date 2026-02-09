@@ -5,6 +5,10 @@ import mm_Node from './mm_node.js';
 import { mm_interface_handleclick } from "./mm_funcs/mm_interface.js";
 
 export default class mm_Mindmap {
+
+    static min_zoom = 0.1;
+    static max_zoom = 2.0;
+
     /** @type {Object} */
     vueobj;
     /** @type {Array<mm_Linkage>} */
@@ -22,7 +26,7 @@ export default class mm_Mindmap {
     /** @type {boolean} */
     togglelegend = true;
     /** @type {number} */
-    scale = 0.5;
+    scale = 1.0;
     /** @type {number} */
     offx = 0;
     /** @type {number} */
@@ -123,7 +127,22 @@ export default class mm_Mindmap {
      * @param {Number} categoryK the number key of the child to delete
      */
     node_delete(parent,categoryK){
-        ;
+        const index = parent.childrens.findIndex(k => k === categoryK);
+        if (index === -1) {
+            console.error(`key not in parent.childrens ${categoryK}`);
+            return;
+        }
+        const child = this.node_get(categoryK);
+        // recursivly delete childrens
+        for (let child_key of child.childrens) {
+            this.node_delete(child,child_key);
+        }
+        // delete child from parent
+        parent.childrens.splice(index, 1);
+        // delete child from mminfo map
+        this.node_data["data"].delete(categoryK);
+        // delete child linkages
+        this.linkages.value = this.linkages.value.filter(linkage => linkage.source.mmch_key !== categoryK && linkage.target.mmch_key !== categoryK);
     }
 
     /**
@@ -131,9 +150,8 @@ export default class mm_Mindmap {
      */
     draw_root() {
         this.centerMindmap();
-        mm_interface_handleclick(this, null).then(() => {
-            this.centerOnNode(this.node_get(this.root_key));
-        });
+        mm_interface_handleclick(this, null);
+        this.centerOnNode(this.node_get(this.root_key));
     }
 
     /**
@@ -142,9 +160,7 @@ export default class mm_Mindmap {
      */
     handleClick(node) {
         this.centerOnNode(node);
-        mm_interface_handleclick(this, node).then(() => {
-            ;
-        });
+        mm_interface_handleclick(this, node);
     }
 
     /**
@@ -172,8 +188,8 @@ export default class mm_Mindmap {
      * clamped zoom in +
      */
     zoomin() {
-        this.scale += 0.2;
-        this.scale = Math.min(2, this.scale);
+        this.scale += 0.1;
+        this.scale = Math.min(mm_Mindmap.max_zoom, this.scale);
         if (!this.offx || !this.offy) {
             this.centerMindmap();
             this.centerOnNode(this.node_get(this.root_key));
@@ -184,8 +200,8 @@ export default class mm_Mindmap {
      * clamped zoom out -
      */
     zoomout() {
-        this.scale -= 0.2;
-        this.scale = Math.max(0.2, this.scale);
+        this.scale -= 0.1;
+        this.scale = Math.max(mm_Mindmap.min_zoom, this.scale);
         if (!this.offx || !this.offy) {
             this.centerMindmap();
             this.centerOnNode(this.node_get(this.root_key));
@@ -196,7 +212,7 @@ export default class mm_Mindmap {
      * zoom reset
      */
     zoomreset() {
-        this.scale = 0.8;
+        this.scale = 1.2;
         if (!this.offx || !this.offy) {
             this.centerMindmap();
             this.centerOnNode(this.node_get(this.root_key));
@@ -210,7 +226,7 @@ export default class mm_Mindmap {
     handleWheel(event) {
         event.preventDefault();
         const delta = -Math.sign(event.deltaY) * 0.1;
-        const newScale = Math.max(0.1, Math.min(3, this.scale + delta));
+        const newScale = Math.max(mm_Mindmap.min_zoom, Math.min(mm_Mindmap.max_zoom, this.scale + delta));
 
         // Adjust offsets to zoom toward mouse position
         const rect = event.currentTarget.getBoundingClientRect();
@@ -248,8 +264,8 @@ export default class mm_Mindmap {
             const targetOffx = container.clientWidth / 2 - node.targetX * this.scale;
             const targetOffy = container.clientHeight / 2 - node.targetY * this.scale;
 
-            // Animate over 1 second (1000ms)
-            this.animateToPosition(targetOffx, targetOffy, 1000);
+            // Animate over 3 second to the new position
+            this.animateToPosition(targetOffx, targetOffy);
         }
     }
 
@@ -259,7 +275,7 @@ export default class mm_Mindmap {
      * @param {Number} targetOffy 
      * @param {Number} duration 
      */
-    animateToPosition(targetOffx, targetOffy, duration) {
+    animateToPosition(targetOffx, targetOffy, duration=1000) {
         const startOffx = this.offx;
         const startOffy = this.offy;
         const startTime = performance.now();

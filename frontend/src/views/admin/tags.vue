@@ -13,7 +13,7 @@ export default {
     emits: ['update:tagsCreated', 'update:tagsDisconnected', 'update:tagsConnected'],
     computed: {
         tagExistsInDatabase() {
-            return this.liste_tags_bd.some(tag => 
+            return this.liste_tags_bd.some(tag =>
                 tag.name.toLowerCase() === this.newTagName.trim().toLowerCase()
             );
         },
@@ -45,19 +45,19 @@ export default {
     methods: {
         loadTags() {
             // Filter out tags that are already associated with the video
-            this.liste_tags_bd = this.allTags.filter(tag => 
+            this.liste_tags_bd = this.allTags.filter(tag =>
                 !this.liste_tags_video.some(videoTag => videoTag.uuid === tag.uuid) &&
                 !this.liste_tags_video_created.some(createdTag => createdTag.name.toLowerCase() === tag.name.toLowerCase())
             );
         },
-        
+
         addTag() {
             // Find the tag in the available list
             const tag = this.liste_tags_bd.find(t => t.name === this.newTagName);
             if (tag) {
                 // Add to video tags
                 this.liste_tags_video.push(markRaw(tag));
-                
+
                 // Remove from disconnected list if it was there
                 const disconnectedIndex = this.liste_tags_video_disconnected.findIndex(
                     t => t.uuid === tag.uuid
@@ -65,64 +65,64 @@ export default {
                 if (disconnectedIndex !== -1) {
                     this.liste_tags_video_disconnected.splice(disconnectedIndex, 1);
                 }
-                
+
                 // Emit the connected tag
                 this.$emit('update:tagsConnected', tag);
-                
+
                 this.loadTags(); // Reload tags
                 this.newTagName = '';
             }
         },
-        
+
         createTag() {
             if (this.newTagName.trim()) {
                 const tagName = this.newTagName.trim();
-                
+
                 const newTag = {
                     uuid: `temp-${Date.now()}-${tagName}`,
                     name: tagName,
                     isNew: true
                 };
-                
+
                 // Track that this tag needs to be created
                 this.liste_tags_video_created.push(newTag);
-                
+
                 // Emit the created tag
                 this.$emit('update:tagsCreated', newTag);
-                
+
                 this.loadTags(); // Reload tags
                 this.newTagName = '';
             }
         },
-        
+
         removeTag(tag) {
             // Check if this tag is in the created list
             const createdIndex = this.liste_tags_video_created.findIndex(t => t.uuid === tag.uuid);
-            
+
             if (createdIndex !== -1) {
                 // If it was in created list, just remove it from there
                 this.liste_tags_video_created.splice(createdIndex, 1);
-                
+
                 // Emit that a created tag was removed (you might want to handle this differently)
                 this.$emit('update:tagsCreated', null);
             } else {
                 // Find the tag in the video list
                 const index = this.liste_tags_video.findIndex(t => t.uuid === tag.uuid);
-                
+
                 if (index !== -1) {
                     // Remove from video tags
                     const removedTag = this.liste_tags_video.splice(index, 1)[0];
                     this.liste_tags_video_disconnected.push(removedTag);
-                    
+
                     // Emit the disconnected tag
                     this.$emit('update:tagsDisconnected', removedTag);
                 }
             }
-            
+
             this.loadTags(); // Reload tags
         }
     },
-    
+
     watch: {
         // Emit all created tags whenever the list changes
         liste_tags_video_created: {
@@ -143,11 +143,11 @@ export default {
     async mounted() {
         const videoTags = await this.video.tags();
         const allTagsList = await Tag.list();
-        
+
         // Store tags with markRaw on individual objects, not arrays
         this.liste_tags_video = videoTags.map(tag => markRaw(tag));
         this.allTags = allTagsList.map(tag => markRaw(tag));
-        
+
         this.loadTags();
     }
 };
@@ -158,32 +158,17 @@ export default {
         <h1>Tags</h1>
 
         <div>
-            <input 
-                type="text" 
-                v-model="newTagName"
-                list="tagData"
-                placeholder="Tags..." 
-            />
+            <input type="text" v-model="newTagName" list="tagData" placeholder="Tags..." />
             <datalist id="tagData">
-                <option 
-                    v-for="tag in liste_tags_bd" 
-                    :key="tag.uuid" 
-                    :value="tag.name"
-                />
+                <option v-for="tag in liste_tags_bd" :key="tag.uuid" :value="tag.name" />
             </datalist>
-            <button 
-                :disabled="tagExistsInDatabase || !isValidTagName || tagAlreadyInVideo" 
-                @click="createTag"
-            >
+            <button :disabled="tagExistsInDatabase || !isValidTagName || tagAlreadyInVideo" @click="createTag">
                 Créer
             </button>
-            <button 
-                :disabled="!tagExistsInDatabase || !isValidTagName || tagAlreadyInVideo" 
-                @click="addTag"
-            >
+            <button :disabled="!tagExistsInDatabase || !isValidTagName || tagAlreadyInVideo" @click="addTag">
                 Ajouter
             </button>
-            
+
         </div>
         <div class="champ_tags">
             <ul>
@@ -219,7 +204,7 @@ input[type="text"]:focus {
 
 
 /* ====== BOUTONS ====== */
-div > button {
+div>button {
     padding: 8px 14px;
     border-radius: 8px;
     border: none;
@@ -230,26 +215,26 @@ div > button {
 }
 
 /* Bouton créer */
-div > button:first-of-type {
+div>button:first-of-type {
     background-color: #4caf50;
     color: white;
 }
 
-div > button:first-of-type:hover:not(:disabled) {
+div>button:first-of-type:hover:not(:disabled) {
     background-color: #43a047;
 }
 
 /* Bouton ajouter */
-div > button:last-of-type {
+div>button:last-of-type {
     background-color: #2196f3;
     color: white;
 }
 
-div > button:last-of-type:hover:not(:disabled) {
+div>button:last-of-type:hover:not(:disabled) {
     background-color: #1e88e5;
 }
 
-div > button:disabled {
+div>button:disabled {
     opacity: 0.45;
     cursor: not-allowed;
 }

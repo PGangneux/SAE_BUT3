@@ -1,3 +1,7 @@
+"""
+Liste des urls et routers de l'API
+"""
+
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_nested.routers import NestedDefaultRouter

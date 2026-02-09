@@ -47,7 +47,7 @@ export default {
             searchAvailable: "",
             searchPlaylist: "",
             chargement: false,
-            createMode: false,  
+            createMode: false,
             message_error: '',
         };
     },
@@ -126,7 +126,7 @@ export default {
         onDrop(evt, targetList) {
             evt.preventDefault();
 
-  
+
 
             const itemID = evt.dataTransfer.getData('itemID');       // UUID de l’élément drag
             const sourceList = evt.dataTransfer.getData('sourceList'); // 'available' ou 'playlist'
@@ -177,7 +177,7 @@ export default {
             this.taillelist2 = this.current_list_extraits.length;
 
             // misa à jour des filtres de recherche
-            const tmp_searchAvaible =  this.searchAvailable;
+            const tmp_searchAvaible = this.searchAvailable;
             const tmp_searchPlaylist = this.searchPlaylist;
             this.searchAvailable = '';
             this.searchPlaylist = '';
@@ -203,18 +203,18 @@ export default {
                 for (const tag of this.tagsConnected) {
                     await this.current_interview.connect_tag(tag);
                 }
-                
+
                 // Créer et connecter les nouveaux tags
                 for (const tagData of this.tagsToCreate) {
                     const newTag = await new Tag({ name: tagData.name }).create();
                     await this.current_interview.connect_tag(newTag);
                 }
-                
+
                 // Déconnecter les tags
                 for (const tag of this.tagsToDisconnect) {
                     await this.current_interview.disconnect_tag(tag);
                 }
-                
+
                 // Réinitialiser les listes après sauvegarde
                 this.tagsConnected = [];
                 this.tagsToCreate = [];
@@ -230,7 +230,6 @@ export default {
             try {
                 console.log("titre", this.titre)
                 this.current_interview.titre = this.titre;
-                console.log(this.current_interview)
                 // if(this.titre === ''){
                 // //     throw new Error("Le titre est obligatoire")
                 //     this.current_interview.titre = null;
@@ -239,17 +238,16 @@ export default {
 
                 // Find the tag in the available list
                 const occas = this.liste_occasion_bd.find(o => o.name === this.name_occasion);
-                if (occas){
+                if (occas) {
                     this.occasion = occas.uuid
                 }
-                else{
-                    if (this.name_occasion){
-                        console.log("create occas")
-                        const occas_object = new Occasion({'name':this.name_occasion})
+                else {
+                    if (this.name_occasion) {
+                        const occas_object = new Occasion({ 'name': this.name_occasion })
                         await occas_object.create()
                         this.occasion = occas_object.uuid
                     }
-                    else{
+                    else {
                         throw new Error("Occasion ne doit pas être vide")
                     }
 
@@ -277,9 +275,9 @@ export default {
                 console.error('Erreur lors de la sauvegarde:', error.toString());
                 this.message_error = error.toString();
                 this.popupError = true;
-                setTimeout(()=>{
+                setTimeout(() => {
                     this.popupError = false;
-                },5000)
+                }, 5000)
                 this.chargement = false;
             } finally {
                 this.chargement = false;
@@ -293,9 +291,9 @@ export default {
         if (sessionStorage.getItem('popupSuccess') === 'true') {
             this.popupSuccess = true;
 
-                // Déterminer si c'était en mode création ou modification
+            // Déterminer si c'était en mode création ou modification
             this.createMode = sessionStorage.getItem('create') === 'true';
-            console.log("createmode",this.createMode)
+            console.log("createmode", this.createMode)
 
             sessionStorage.removeItem('popupSuccess');
             sessionStorage.removeItem('create');
@@ -307,22 +305,22 @@ export default {
         }
 
 
-        
+
 
         const InterviewId = this.$route.params.id;
         if (InterviewId) {
             this.current_interview = markRaw(await Interview.detail(InterviewId));
-            
+
             // pré-remplissage du formulaire
             this.titre = this.current_interview.titre;
             this.description = this.current_interview.description;
             this.occasion = markRaw(await this.current_interview.occasion)
             this.name_occasion = this.occasion.name
             console.log("occasion", this.occasion)
-            
-            
-            this.liste_occasion_bd = markRaw(await Occasion.list()) 
-            
+
+
+            this.liste_occasion_bd = markRaw(await Occasion.list())
+
             this.current_list_extraits = markRaw(await this.current_interview.extraits({ 'order': 'APPARTIENT_A|position' }));
             this.taillelist2 = this.current_list_extraits.length;
 
@@ -335,13 +333,13 @@ export default {
 
 
 
-           
+
         } else {
             this.create = true;
             this.current_interview = markRaw(new Interview({}));
             this.Extraitlist = allExtraits;
         }
-        
+
         this.taillelist1 = this.Extraitlist.length;
     },
 
@@ -356,13 +354,9 @@ export default {
         <h1 v-else class="text-center"> Modification d'une Playlist </h1>
         <input v-model="titre" class="form-control" placeholder="Titre (Obligatoire)" />
         <textarea type="aera" v-model="description" placeholder="Description" class="form-control"></textarea>
-        <input v-model="name_occasion" class="form-control" placeholder="Occasion" list="occasionData"/>
+        <input v-model="name_occasion" class="form-control" placeholder="Occasion" list="occasionData" />
         <datalist id="occasionData">
-            <option 
-                v-for="occasion in liste_occasion_bd" 
-                :key="occasion.uuid" 
-                :value="occasion.name"
-            />
+            <option v-for="occasion in liste_occasion_bd" :key="occasion.uuid" :value="occasion.name" />
         </datalist>
 
 
@@ -418,13 +412,8 @@ export default {
             </div>
         </div>
         <!-- Only render tags when current_interview is loaded -->
-        <tags 
-            v-if="current_interview"
-            :video="current_interview"
-            @update:tagsCreated="handleTagsCreated"
-            @update:tagsDisconnected="handleTagsDisconnected"
-            @update:tagsConnected="handleTagsConnected"
-        />
+        <tags v-if="current_interview" :video="current_interview" @update:tagsCreated="handleTagsCreated"
+            @update:tagsDisconnected="handleTagsDisconnected" @update:tagsConnected="handleTagsConnected" />
 
         <div class="bottom_button">
             <RouterLink to="/admin/extrait/" class="btn btn-outline-light">
@@ -441,21 +430,12 @@ export default {
             </button>
         </div>
     </div>
-    
+
     <supprimer v-if="popupDelete" :Element_Supp="current_interview" @closePopup="popupDelete = false" />
     <!-- BON - s'affiche SEULEMENT quand popupSuccess est true -->
-    <edit_success 
-        v-if="popupSuccess && createMode"
-        message="Playlist créée !"
-    />
-    <edit_success 
-        v-else-if="popupSuccess && !createMode"
-        message="Modification enregistrée !"
-    />
-    <edit_error
-        v-if="popupError"
-        :message="this.message_error"
-    />
+    <edit_success v-if="popupSuccess && createMode" message="Playlist créée !" />
+    <edit_success v-else-if="popupSuccess && !createMode" message="Modification enregistrée !" />
+    <edit_error v-if="popupError" :message="this.message_error" />
 
     <div v-if="chargement" class="overlay">
         <img src="/imgs/spinner.gif" alt="loading image...">
@@ -513,7 +493,8 @@ export default {
 
 .drop-zone {
     flex: 1 1 auto;
-    overflow-y: auto;   /* scroll vertical */
+    overflow-y: auto;
+    /* scroll vertical */
     overflow-x: hidden;
     padding: 10px;
     list-style: none;
@@ -524,12 +505,15 @@ export default {
 /* cacher scrollbar mais garder le scroll */
 .drop-zone {
     overflow-y: auto;
-    scrollbar-width: none;      /* Firefox */
-    -ms-overflow-style: none;   /* IE / Edge legacy */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE / Edge legacy */
 }
 
 .drop-zone::-webkit-scrollbar {
-    display: none;              /* Chrome / Safari */
+    display: none;
+    /* Chrome / Safari */
 }
 
 
@@ -562,7 +546,8 @@ export default {
 
 /* outlines pour debugger (enlever en production) */
 .aggrandir {
-    flex: 0 0 45%;   /* largeur fixe en % */
+    flex: 0 0 45%;
+    /* largeur fixe en % */
     max-height: 90vh;
     outline: 1px dashed rgba(0, 0, 0, 0.05);
 }

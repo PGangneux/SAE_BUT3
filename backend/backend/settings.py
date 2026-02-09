@@ -25,11 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# TODO : Mettre générer une nouvelle clé secrète dans un fichier de configuration séparé pour éviter de la hardcoder dans le code
 SECRET_KEY = "django-insecure-l4u@!%q!92pin=b=4u)lr2@u+bt*rqhz43s4nz1%%#+dc@2!ln"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# TODO : à changer en False pour la production (True en développement)
 DEBUG = True
 
+# TODO : à adapter pour la production, doit accepter le frontend (ex: ['mon-domaine.com'])
 ALLOWED_HOSTS = []
 
 
@@ -101,6 +104,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+# TODO exporter la configuration de JWT dans un fichier de configuration séparé pour l'importer correctement et éviter les impmorts circulaires
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(
         minutes=30
@@ -184,6 +188,7 @@ NEO4J_PORT = os.getenv("NEO4J_PORT")
 config.DATABASE_URL = f"bolt://{NEO4J_USER}:{NEO4J_PASSWORD}@{NEO4J_HOST}:{NEO4J_PORT}"
 TEST_RUNNER = "backend.runner.CustomTestRunner"
 
+# TODO : à adapter pour la production, doit accepter le frontend (ex: ['http://localhost:5173'] en développement, avec 5173 le port du frontend)
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]

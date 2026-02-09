@@ -47,6 +47,7 @@ class Occasion(StructuredNode):
     Noeud Occasion
     Pour quel occasion la playlist existe
     """
+
     uuid = UniqueIdProperty()
     name = RegexProperty(unique_index=True, required=True, expression=r".+")
 
@@ -127,6 +128,7 @@ class Utilisateur(StructuredNode):
     prenom = RegexProperty(required=True, expression=r".+")
     nom = RegexProperty(required=True, expression=r".+")
     email = StringProperty(required=True, unique_index=True)
+    # TODO La propriété email est définie comme une StringProperty au lieu d'une EmailProperty car l'EmailProperty de neomodel a un fonctionnement particulier
     # email = EmailProperty(required=True, unique_index=True)
     password = StringProperty(required=True)
     is_admin = BooleanProperty(default=False)
@@ -158,10 +160,6 @@ class CSVImportJob(StructuredNode):
     uuid = UniqueIdProperty()
     status = StringProperty(
         choices={v: v for v in ["pending", "success", "error", "in_progress"]},
-        default="pending"
+        default="pending",
     )
     message = StringProperty(default="")
-
-
-    
-

@@ -117,8 +117,8 @@ export default class mmch_CheminT extends mm_Node {
 
         const isVideoContent = this.mmch_hasMiniature(); // this.isVideoContent();
         const nodeDimensions = isVideoContent ?
-            { width: 300, height: 150 } : // Squircle dimensions
-            { width: 100, height: 100 };  // Round dimensions
+            { width: 400, height: 300 } : // Squircle dimensions
+            { width: 200, height: 200 };  // Round dimensions
 
         const scaledWidth = nodeDimensions.width * this.mminfo.scale;
         const scaledHeight = nodeDimensions.height * this.mminfo.scale;

@@ -6,7 +6,7 @@ pip = ${venv}/pip
 npm = npm --prefix ./frontend
 coverage = $(venv)/coverage
 
-.PHONY: install migration tests coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
+.PHONY: install migration tests tests_front coverage run_back shell run_front neomodel_gen_diagram show_django_urls load_bd default_admin_user clean
 
 run_back:
 	$(python) $(manage) runserver
@@ -33,6 +33,9 @@ migration:
 tests:
 	$(python) $(manage) test $(APP)
 
+tests_front:
+	$(npm) run test
+
 coverage:
 	$(coverage) run --source='$(APP)' $(manage) test ./backend/$(APP)/tests/$(package)
 	$(coverage) report
@@ -47,6 +50,9 @@ load_bd:
 
 show_django_urls:
 	$(python) $(manage) show_urls
+
+neo4j_create_admin:
+	$(python) $(manage) create_admin $(pseudo) $(password) $(email)
 
 default_admin_user:
 	DJANGO_SUPERUSER_USERNAME=admin \

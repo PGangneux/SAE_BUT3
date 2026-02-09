@@ -1,11 +1,24 @@
 from rest_framework import serializers
-from ..serializers import BaseRelationShipSerializer
 from ..models import Extrait, Interview
+from . import BaseRelationShipSerializer
 
 
 class InterviewsSerializer(BaseRelationShipSerializer):
     """
     Sérializer RelationShip interviews (Extrait <-> Interview)
+
+    Gestion des interviews liées à un extrait
+
+    Champs aditionnels :
+        - position : position de l'extrait dans l'interview (obligatoire)
+        Relations :
+            - extraits : les extraits liés à l'interview
+            - tags : les tags liés à l'interview
+        Champs en read_only :
+            - titre : titre de l'interview
+            - date : date de l'interview
+            - occasion : l'occasion de l'interview
+            - description : description de l'interview
     """
 
     position = serializers.IntegerField(write_only=True, required=True)
@@ -19,6 +32,11 @@ class InterviewsSerializer(BaseRelationShipSerializer):
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Interview
+        context_node : Extrait
+        relation : interviews
+        """
         super().__init__(Interview, Extrait, "interviews", *args, **kwargs)
 
     def get_extraits(self, interview):

@@ -1,14 +1,19 @@
 from rest_framework import serializers
 from ..models import Tag
-from ..serializers import BaseSerializer
+from . import BaseSerializer
 
 
 class TagSerializer(BaseSerializer):
     """
     Sérializer du node Tag
+
+    Champs aditionnels :
+        - name : nom du tag (obligatoire)
+        Relations :
+            - interviews : les interviews liées au tag
+            - extraits : les extraits liés au tag
     """
 
-    uuid = serializers.CharField(read_only=True)
     name = serializers.CharField(required=True)
 
     # Outputs
@@ -16,6 +21,9 @@ class TagSerializer(BaseSerializer):
     extraits = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Tag
+        """
         super().__init__(Tag, *args, **kwargs)
 
     def get_interviews(self, tag):

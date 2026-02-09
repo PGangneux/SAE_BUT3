@@ -1,13 +1,20 @@
 from rest_framework import serializers
-from neomodel.exceptions import DoesNotExist
-from ..serializers import BaseSerializer
 from ..models import Interview, Occasion
-from ..errors import NotFound
+from . import BaseSerializer
 
 
 class InterviewSerializer(BaseSerializer):
     """
     Sérializer du node Interview
+
+    Champs aditionnels :
+        - titre : titre de l'interview
+        - date : date de l'interview
+        - description : description de l'interview
+        Relations :
+            - occasion : l'occasion liée à l'interview
+            - extraits : les extraits liés à l'interview
+            - tags : les tags liés à l'interview
     """
 
     titre = serializers.CharField(required=False, allow_blank=True, allow_null=True)
@@ -29,6 +36,9 @@ class InterviewSerializer(BaseSerializer):
     tags = serializers.SerializerMethodField(read_only=True)
 
     def __init__(self, *args, **kwargs):
+        """
+        node : Interview
+        """
         super().__init__(Interview, *args, **kwargs)
 
     def get_occasion(self, interview):

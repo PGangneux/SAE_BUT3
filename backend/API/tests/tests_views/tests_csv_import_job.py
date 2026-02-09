@@ -1,3 +1,14 @@
+"""Tests unitaires pour le mécanisme d'import CSV (backend).
+
+Ce module contient des tests pour:
+- la fonction statique `CSVImportView.run_import` qui exécute l'import
+    en tâche de fond et met à jour l'objet `CSVImportJob`;
+- la vue `CSVImportJobStatusView` qui expose le statut du job via l'API.
+
+Les tests vérifient les transitions de statut (`in_progress` → `success`/
+`error`) ainsi que le comportement de la vue de consultation du statut.
+"""
+
 import io
 from unittest.mock import Mock, patch
 from django.urls import reverse

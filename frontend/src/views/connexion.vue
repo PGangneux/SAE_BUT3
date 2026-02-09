@@ -53,7 +53,7 @@ export default {
                 <label class="d-flex justify-content-center px-5 fw-bold fs-5 gap-5">
                     Rester connecter ?
                     <!-- Refaire le style de la checkbox -->
-                    <div class="form-check form-switch">    
+                    <div class="form-check form-switch">
                         <input v-model="stay_connected" type="checkbox" class="my-2 p-2 rounded form-check-input" />
                     </div>
                 </label>

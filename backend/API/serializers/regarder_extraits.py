@@ -1,11 +1,29 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Extrait
+from . import RelationShipUtilisateurSerializer
 
 
 class RegarderExtraitsSerializer(RelationShipUtilisateurSerializer):
     """
     Sérializer RelationShip regarder_extraits (Utilisateur <-> Extrait)
+
+    Gestion des extraits liés à une recherche d'un utilisateur
+
+    Champs aditionnels :
+        Relations :
+            - artiste : l'artiste lié à l'extrait
+            - question : la question liée à l'extrait
+            - interviews : les interviews liées à l'extrait
+            - audios : les audios liés à l'extrait
+            - tags : les tags liés à l'extrait
+        Champs en read_only :
+            - titre : titre de l'extrait
+            - description : description de l'extrait
+            - youtube_url : url de la vidéo youtube de l'extrait
+            - vimeo_url : url de la vidéo vimeo de l'extrait
+            - lieu : lieu de l'extrait
+            - uploaded_at : date de mise en ligne de l'extrait
+            - duree : durée de l'extrait en secondes
     """
 
     # Outputs

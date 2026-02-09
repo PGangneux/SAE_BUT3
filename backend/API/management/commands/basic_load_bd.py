@@ -1,5 +1,6 @@
-from datetime import date
 from django.core.management.base import BaseCommand
+from django.contrib.auth.hashers import make_password
+from datetime import date
 from neomodel import db
 from ...models import (
     Artiste,
@@ -11,12 +12,14 @@ from ...models import (
     Utilisateur,
     Occasion,
 )
-from django.contrib.auth.hashers import make_password
 
 
 class Command(BaseCommand):
     """
-    Permet de charger la base de données avec des données de test
+    Permet de créer des données simples dans la base de données pour les tests
+     - Supprime d'abord tous les nodes de la base de données pour éviter les conflits
+     - Crée des nodes pour les modèles Artiste, Interview, Extrait, Question, Tag, Theme, Utilisateur et Occasion
+     - Crée des relations entre les nodes pour les modèles Artiste, Interview, Extrait, Question, Tag, Theme, Utilisateur et Occasion
     """
 
     help = "Charge la base de données avec des données simples"

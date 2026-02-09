@@ -32,19 +32,19 @@ export default class Utilisateur extends Model {
     static get endpoint() { return "utilisateurs"; }
 
     get pseudo() { return this.#pseudo; }
-    set pseudo(value) { this.#pseudo = this.validateString(value, "pseudo"); }
+    set pseudo(value) { this.#pseudo = this.constructor.validateString(value, "pseudo"); }
 
     get prenom() { return this.#prenom; }
-    set prenom(value) { this.#prenom = this.validateString(value, "prenom"); }
+    set prenom(value) { this.#prenom = this.constructor.validateString(value, "prenom"); }
 
     get nom() { return this.#nom; }
-    set nom(value) { this.#nom = this.validateString(value, "nom"); }
+    set nom(value) { this.#nom = this.constructor.validateString(value, "nom"); }
 
     get email() { return this.#email; }
-    set email(value) { this.#email = this.validateString(value, "email"); }
+    set email(value) { this.#email = this.constructor.validateString(value, "email"); }
 
     get password() { return this.#password; }
-    set password(value) { this.#password = this.validateString(value, "password"); } // hash à gérer côté backend
+    set password(value) { this.#password = this.constructor.validateString(value, "password"); } // hash à gérer côté backend
 
     get is_admin() { return this.#is_admin; }
     set is_admin(value) { this.#is_admin = !!value; }

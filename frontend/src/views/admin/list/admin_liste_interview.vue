@@ -118,7 +118,7 @@ export default {
                 setTimeout(() => {
                     this.popupSuccess = false;
                 }, 5000);
-                
+
             } catch (error) {
                 showGlobalToast(error.message || "Erreur lors de l'import CSV", "error");
             }
@@ -150,13 +150,7 @@ export default {
 
 
             <button ref="btn_csv" @click="importCSV">Importer un CSV</button>
-            <input
-                type="file"
-                ref="csvInput"
-                accept=".csv"
-                style="display: none"
-                @change="handleFile"
-            />
+            <input type="file" ref="csvInput" accept=".csv" style="display: none" @change="handleFile" />
 
             <RouterLink to="/admin/interview/creer/" class="btn btn-outline-light btn-add">
                 Ajouter une Playlist
@@ -207,10 +201,7 @@ export default {
 
     <edit_error v-if="popupError" :message="this.message_error" />
 
-    <edit_success 
-        v-if="popupSuccess"
-        message="Lancement de l'import CSV en arrière-plan."
-    />
+    <edit_success v-if="popupSuccess" message="Lancement de l'import CSV en arrière-plan." />
 </template>
 
 

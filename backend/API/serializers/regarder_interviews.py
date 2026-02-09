@@ -1,11 +1,23 @@
 from rest_framework import serializers
-from ..serializers import RelationShipUtilisateurSerializer
 from ..models import Interview
+from . import RelationShipUtilisateurSerializer
 
 
 class RegarderInterviewsSerializer(RelationShipUtilisateurSerializer):
     """
     Sérializer RelationShip regarder_interviews (Utilisateur <-> Interview)
+
+    Gestion des interviews liées à une recherche d'un utilisateur
+
+    Champs aditionnels :
+        Relations :
+            - extraits : les extraits liés à l'interview
+            - tags : les tags liés à l'interview
+        Champs en read_only :
+            - titre : titre de l'interview
+            - date : date de l'interview
+            - occasion : l'occasion de l'interview
+            - description : description de l'interview
     """
 
     # Outputs

@@ -36,3 +36,13 @@ Principes importants :
 - Construire pour la production : `npm run build`
 - Linter : `npm run lint` (si configuré)
 
+this.current_extrait.duree =  0;
+mettre en place avec une api plus tard
+
+reutiliser callback pour validation
+
+
+# Tests
+Se placer dans frontnend 
+- Run `npm run test` to execute the unit tests via [Vitest](https://vitest.dev/).
+pour run  fichier spesifique : npm run test -- <file path>

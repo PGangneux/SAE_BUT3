@@ -58,7 +58,7 @@ export default class mm_Node {
     }
 
     // Animate to target position
-    animateToTarget(duration = 1000) {
+    animateToTarget(duration = 500) {
         const startX = this.x;
         const startY = this.y;
         const endX = this.targetX;
@@ -76,6 +76,7 @@ export default class mm_Node {
             if (progress < 1) {
                 requestAnimationFrame(animate);
             }
+            this.mminfo.update();
         };
         requestAnimationFrame(animate);
     }

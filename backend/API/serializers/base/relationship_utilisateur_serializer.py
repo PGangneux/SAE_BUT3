@@ -10,6 +10,12 @@ class RelationShipUtilisateurSerializer(BaseRelationShipSerializer):
     """
     Classe de base contenant les méthodes pour la gestion des relations concernant les utilisateurs
 
+    Gestion des artistes, questions, extraits ou interviews liés à un utilisateur
+
+    Champs aditionnels :
+        Champs en read_only :
+            - date_heure : date de la relationship
+
     Raises:
         ContextError: node de context manquant
     """
@@ -29,6 +35,8 @@ class RelationShipUtilisateurSerializer(BaseRelationShipSerializer):
         Args:
             node (Artiste|Question|Interview|Extrait): type de node, ayant un type de relationship existante avec Utilisateur
             relationship (str): le nom de la relation entre node et Utilisateur
+
+            context_node : Utilisateur
         """
         super().__init__(node, Utilisateur, relationship, *args, **kwargs)
 
