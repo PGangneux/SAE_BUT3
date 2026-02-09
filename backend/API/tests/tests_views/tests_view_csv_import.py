@@ -1,3 +1,13 @@
+"""Tests unitaires pour la vue d'import CSV (`CSVImportView`).
+
+Les tests couvrent:
+- la validation d'entrée du endpoint POST (fichier absent, mauvais format,
+    en-têtes manquants/extra);
+- le déclenchement du job en arrière-plan pour un CSV valide;
+- le comportement des méthodes internes `save_data`, `save_row` et
+    `save_interview` à l'aide de mocks.
+"""
+
 import io
 from unittest.mock import Mock, patch
 from django.urls import reverse

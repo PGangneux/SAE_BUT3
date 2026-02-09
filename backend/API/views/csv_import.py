@@ -1,3 +1,19 @@
+"""Vues API pour l'import CSV d'extraits d'interviews.
+
+Ce module fournit `CSVImportView` qui accepte l'upload d'un fichier CSV,
+valide les en-têtes, crée un `CSVImportJob` en arrière-plan et traite le
+fichier pour créer ou mettre à jour les nœuds `Extrait`, `Interview`,
+`Artiste`, `Tag`, `Audio`, `Occasion` et `Question`.
+
+L'import s'exécute dans un thread via `CSVImportView.run_import` qui
+met à jour le statut du `CSVImportJob`. Le statut de l'import peut être
+consulté via la vue `CSVImportJobStatusView` (fichier
+`csv_import_job_status.py`).
+
+Le format CSV attendu et les détails de traitement sont documentés dans
+`docs/CSV_IMPORT.md`.
+"""
+
 import csv
 import logging
 from datetime import date as Date, datetime
