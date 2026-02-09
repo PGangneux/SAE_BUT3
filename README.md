@@ -93,3 +93,34 @@ NEO4J_HOST=localhost
 NEO4J_PORT=7687
 ```
 
+
+# Analyse
+
+Vous pouvez accéder à différent diagramme d'analyse qui explquent le fonctionnement de l'application
+sur ce lien : https://drive.google.com/file/d/1NtczicyzqroLYPXIKMU5J1TaDGLkbJWk/view?usp=sharing
+ou vous pouvez aussi trouver les diagrammes dans le dossier `docs/diagrams` du projet.
+
+# Architecture de l'application
+
+L'application est structurée en deux parties principales : le backend et le frontend.
+
+## Backend
+- **Framework** : Django + Django REST Framework (DRF) pour exposer une API REST.
+- **Rôle** : gère les données, la logique métier, l'authentification, les permissions et les intégrations avec Neo4j.
+- **Structure** : application `API/` modulaire (models, serializers/, views/, urls.py, permissions, auth, errors, tests).
+- **Base de données** : Neo4j pour stocker les relations entre contenus vidéo (artistes, interviews, extraits, tags, etc.).
+- **Port** : `http://localhost:8000` en développement.
+- Voir [backend/README.md](backend/README.md) pour les détails.
+
+## Frontend
+- **Framework** : Vue 3 + Vite (bundler rapide).
+- **Rôle** : interface utilisateur réactive et moderne pour naviguer les contenus et interagir avec l'API.
+- **Structure** : modulaire (src/components/, src/views/, src/model/, src/router.js).
+- **Services** : centralisés dans `src/model/` (apiClient, services métiers).
+- **Port** : `http://localhost:5173` en développement (Vite dev server).
+- Voir [frontend/README.md](frontend/README.md) pour les détails.
+
+## Communication
+- RESTful API : le frontend consomme les endpoints du backend via `fetch`.
+- Authentification : tokens JWT ou session (à définir) injectés dans les en-têtes HTTP.
+- CORS : à configurer côté backend pour autoriser l'origine du frontend.
